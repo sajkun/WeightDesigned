@@ -10780,8 +10780,36 @@ body {
   flex-grow: 1;
 }
 
+.form-control-custom {
+  padding: 0.5em 0.5em;
+  width: 100%;
+  background: #ffffff;
+  border: 1px solid #dfe6fa;
+  border-radius: 0.5em;
+  transition: "border" 0.15s, "color" 0.15s;
+  outline: 0;
+}
+.form-control-custom:focus-visible {
+  border-color: #aab3cb;
+}
+.form-control-custom:active {
+  border-color: #7e89a5;
+}
+
 body {
   background-image: url(/images/auth.png?7b9198c4ca4c6bc50f82ed16e4c5d0eb);
   background-size: cover;
   background-position: 50%;
+}
+
+.form-auth {
+  padding: 1.5rem;
+  max-width: 400px;
+  background: #ffffff;
+  border: 1px solid #dfe6fa;
+  border-radius: 8px;
+  margin: 0 auto;
+}
+.form-auth__header {
+  font-size: 1.25rem;
 }
