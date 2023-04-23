@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -18,10 +17,16 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
+        'first_name',
+        'last_name',
+        'organisation_id',
+        'role',
         'email',
+        'login',
         'password',
     ];
+
+    protected $keyName = 'login';
 
     /**
      * The attributes that should be hidden for serialization.
@@ -41,4 +46,9 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function hasVerifiedEmail()
+    {
+        return true;
+    }
 }
