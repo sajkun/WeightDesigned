@@ -15,4 +15,22 @@ body {
     &__header {
         font-size: 1.25rem;
     }
+
+    &__comment {
+        font-style: normal;
+        font-weight: 400;
+        font-size: 16px;
+        line-height: 20px;
+        color: #aab3cb;
+    }
+
+    a {
+        color: #66b28a;
+        text-decoration: none;
+        outline: 0;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
 }
