@@ -21,7 +21,22 @@
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 </head>
 
-<body class="{{ $bodyClass }}">
+<body class="admin">
+    <header class="admin-header">
+        <div class="container pt-2 pb-2">
+            <div class="row  align-items-center">
+                <div class="col-5">
+                    <img src="./images/svg/logo-admin.svg" alt="">
+                </div>
+                <div class="col-7 text-end ">
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST">
+                        @csrf
+                        <button class="btn btn-link-contrast" type="Sudmit">Выйти</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </header>
     <div id="app" class='d-flex flex-column flex-grow-1'>
         @yield('content')
     </div>

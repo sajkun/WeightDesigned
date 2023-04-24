@@ -10768,6 +10768,11 @@ textarea.form-control-lg {
     display: none !important;
   }
 }
+.admin-header {
+  background: linear-gradient(103.06deg, #007e3c 18.83%, #032422 100%);
+  box-shadow: 6px 6px 6px rgba(33, 40, 41, 0.03);
+}
+
 html {
   height: 100%;
 }
@@ -10815,7 +10820,25 @@ body {
   --bs-btn-border-width: 2px;
 }
 
-body {
+.btn-link-contrast {
+  --bs-btn-color: #fff;
+  --bs-btn-bg: transparent;
+  --bs-btn-border-color: transparent;
+  --bs-btn-hover-color: #c8e7ff;
+  --bs-btn-hover-bg: transparent;
+  --bs-btn-hover-border-color: transparent;
+  --bs-btn-focus-shadow-rgb: 0, 126, 60;
+  --bs-btn-active-color: #fff;
+  --bs-btn-active-bg: transparent;
+  --bs-btn-active-border-color: transparent;
+  --bs-btn-active-shadow: none;
+  --bs-btn-disabled-color: #eee;
+  --bs-btn-disabled-bg: transparent;
+  --bs-btn-disabled-border-color: transparent;
+  --bs-btn-border-width: 2px;
+}
+
+body.auth {
   background-image: url(/images/auth.png?7b9198c4ca4c6bc50f82ed16e4c5d0eb);
   background-size: cover;
   background-position: 50%;

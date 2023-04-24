@@ -52,7 +52,6 @@
 
                                     <div class="mt-4 form-auth__comment">
                                         <p class="m-0">
-
                                             Если у вас нет логина или пароля, обратитесь по электронному адресу:
                                             <a href="mailto:auth@liliani.ru">auth@liliani.ru</a>
                                         </p>

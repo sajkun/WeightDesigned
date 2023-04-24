@@ -1,7 +1,9 @@
 body {
-    background-image: url(../../img/bg/auth.png);
-    background-size: cover;
-    background-position: 50%;
+    &.auth {
+        background-image: url(../../img/bg/auth.png);
+        background-size: cover;
+        background-position: 50%;
+    }
 }
 
 .form-auth {
