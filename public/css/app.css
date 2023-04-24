@@ -10792,11 +10792,15 @@ body {
   background: #ffffff;
   border: 1px solid #dfe6fa;
   border-radius: 0.5em;
-  transition: "border" 0.15s, "color" 0.15s;
-  outline: 0;
+  transition: border-color 0.15s, color 0.15s, outline 0.3s;
+  outline: 2px solid transparent;
+}
+.form-control-custom:hover {
+  border-color: #aab3cb;
 }
 .form-control-custom:focus-visible {
-  border-color: #aab3cb;
+  border-color: #409bff;
+  outline: 2px solid #409bff;
 }
 .form-control-custom:active {
   border-color: #7e89a5;
