@@ -2,6 +2,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Organisation;
 use App\Providers\RouteServiceProvider;
 use App\Models\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
@@ -59,25 +60,15 @@ class RegisterController extends Controller
      */
     protected function validator(array $data)
     {
+        $organisation = new Organisation();
+
         return Validator::make($data, [
             'login' => ['required', 'string', 'max:255', 'unique:users'],
-            'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
-            // 'tax_number' => ['required', 'string', 'min:9', 'max:15'],
-            // 'organisation_name' => ['required', 'string', 'min:3'],
+            'tax_number' => ['required', 'string', 'min:9', 'max:15'],
+            'organisation_name' => ['required', 'string', 'min:3'],
         ]);
-    }
-
-    /**
-     * Handle a registration request for the application.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
-     */
-    public function register(Request $request)
-    {
-        dd('reg');
     }
 
     /**
@@ -88,12 +79,22 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
+        $organisation = Organisation::where('tax_number', $data['tax_number'])->first();
+
+        if (!$organisation) {
+            $organisation = Organisation::create([
+                'name' => $data['organisation_name'],
+                'tax_number' => $data['tax_number'],
+                'subscription' => '',
+            ]);
+        }
+
         return User::create([
             'login' => $data['login'],
-            'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
-            'role' => config('users.roles_nice_names')['customer_admin_roles'][0],
+            'role' => config('users.customer_register_role'),
+            'organisation_id' => $organisation->id,
         ]);
     }
 
@@ -106,7 +107,6 @@ class RegisterController extends Controller
      */
     protected function registered(Request $request, $user)
     {
-        dump('registered');
-        //
+        return(redirect()->route('public.index'));
     }
 }

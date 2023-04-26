@@ -46,11 +46,11 @@
                                     @enderror
                                 </div>
 
-                                {{--
-                                    <div class="form-control-custom ">
+                                <div class="mt-3">
+                                    <div class="form-control-custom">
 
                                         <input id="organisation-name" type="text"
-                                            class=" @error('organisation_name') is-invalid @enderror"
+                                            class="@error('organisation_name') is-invalid @enderror"
                                             name="organisation_name" value="{{ old('organisation_name') }}" required
                                             autocomplete="organisation-name" autofocus>
 
@@ -84,8 +84,6 @@
                                         </span>
                                     @enderror
                                 </div>
-
-                                --}}
 
                                 <div class="mt-3">
                                     <div class="form-control-custom">

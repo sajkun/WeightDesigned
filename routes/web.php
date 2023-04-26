@@ -29,3 +29,6 @@ Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('ho
 Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
     Route::get('/', 'IndexController')->name('admin.index');
 });
+Route::group(['namespace' => 'PublicArea', 'prefix' => '/'], function () {
+    Route::get('/', 'IndexController')->name('public.index');
+});
