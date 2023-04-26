@@ -25,6 +25,7 @@ class User extends Authenticatable
         'email',
         'login',
         'password',
+        'role',
     ];
 
     protected $keyName = 'login';

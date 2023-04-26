@@ -1,77 +1,161 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">{{ __('Register') }}</div>
+    <div class="d-flex flex-column flex-grow-1 justify-content-center">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-12">
+                    <div class="text-center">
+                        <img src="./images/svg/logo-auth.svg" alt="">
+                    </div>
+                    <div class="form-auth mt-2">
+                        <div class="form-auth__header "><b>Регистрация учётной записи</b></div>
+                        <div class="form-auth__body mt-3">
+                            <form method="POST" action="{{ route('register') }}">
+                                @csrf
+                                <div>
+                                    <div class="form-control-custom">
 
-                <div class="card-body">
-                    <form method="POST" action="{{ route('register') }}">
-                        @csrf
+                                        <input id="login" type="text" class="@error('login') is-invalid @enderror"
+                                            name="login" value="{{ old('login') }}" required autocomplete="login"
+                                            autofocus>
+                                        <label for="login"
+                                            class="@if (old('login')) active @endif">Логин</label>
 
-                        <div class="row mb-3">
-                            <label for="name" class="col-md-4 col-form-label text-md-end">{{ __('Name') }}</label>
+                                    </div>
+                                    @error('login')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
 
-                            <div class="col-md-6">
-                                <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" required autocomplete="name" autofocus>
+                                <div class="mt-3">
+                                    <div class="form-control-custom ">
+                                        <input id="email" type="email" class="@error('email') is-invalid @enderror"
+                                            name="email" value="{{ old('email') }}" required autocomplete="email">
 
-                                @error('name')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
+                                        <label for="email"
+                                            class="@if (old('email')) active @endif">E-mail</label>
+                                    </div>
+
+                                    @error('email')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+
+                                {{--
+                                    <div class="form-control-custom ">
+
+                                        <input id="organisation-name" type="text"
+                                            class=" @error('organisation_name') is-invalid @enderror"
+                                            name="organisation_name" value="{{ old('organisation_name') }}" required
+                                            autocomplete="organisation-name" autofocus>
+
+                                        <label for="organisation-name"
+                                            class="@if (old('organisation_name')) active @endif">Название
+                                            организации</label>
+                                    </div>
+
+                                    @error('organisation_name')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+
+
+                                <div class="mt-3">
+                                    <div class="form-control-custom">
+                                        <input id="tax-number" type="text"
+                                            class="@error('tax_number') is-invalid @enderror" name="tax_number"
+                                            value="{{ old('tax_number') }}" required autocomplete="organisation-name"
+                                            autofocus>
+
+                                        <label for="tax-number" class="@if (old('tax_number')) active @endif">ИНН
+                                            организации</label>
+                                    </div>
+
+                                    @error('tax_number')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+
+                                --}}
+
+                                <div class="mt-3">
+                                    <div class="form-control-custom">
+                                        <input id="password" type="password"
+                                            class="@error('password') is-invalid @enderror" name="password" required
+                                            autocomplete="off">
+
+                                        <label for="password">Пароль</label>
+                                    </div>
+
+                                    @error('password')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+
+                                <div class="form-control-custom  mt-3">
+                                    <input id="password-confirm" type="password" class="" name="password_confirmation"
+                                        required autocomplete="off">
+                                    <label for="password-confirm">Подтверждение
+                                        пароля</label>
+                                </div>
+
+
+                                <div class="mt-4 form-auth__comment">
+                                    <p class="m-0">
+                                        Если у вас возникли сложности с регистрацией, обратитесь по электронному адресу:
+                                        <a href="mailto:auth@liliani.ru">auth@liliani.ru</a>
+                                    </p>
+                                </div>
+
+                                <div class="mt-3">
+                                    <button type="submit" class="btn w-100 btn-primary-alt">
+                                        Регистрация
+                                    </button>
+                                </div>
+
+
+                                <div class="form-auth__vseparator mt-4">
+                                    <div class="d-flex justify-content-center">
+                                        <div class="line"></div>
+                                        <p class="m-0">Уже зарегистрированы?</p>
+                                        <div class="line"></div>
+                                    </div>
+                                </div>
+
+                                <div class="text-center mt-3">
+                                    <a class="btn btn-borders" href="{{ route('login') }}">Авторизоваться</a>
+                                </div>
+                            </form>
                         </div>
-
-                        <div class="row mb-3">
-                            <label for="email" class="col-md-4 col-form-label text-md-end">{{ __('Email Address') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email">
-
-                                @error('email')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="row mb-3">
-                            <label for="password" class="col-md-4 col-form-label text-md-end">{{ __('Password') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="new-password">
-
-                                @error('password')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="row mb-3">
-                            <label for="password-confirm" class="col-md-4 col-form-label text-md-end">{{ __('Confirm Password') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required autocomplete="new-password">
-                            </div>
-                        </div>
-
-                        <div class="row mb-0">
-                            <div class="col-md-6 offset-md-4">
-                                <button type="submit" class="btn btn-primary">
-                                    {{ __('Register') }}
-                                </button>
-                            </div>
-                        </div>
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
+
+
+    <script>
+        const inputs = document.querySelectorAll('input');
+        inputs.forEach((input) => {
+            input.addEventListener('input', e => {
+
+                if (e.srcElement.value) {
+                    e.target.classList.add('active')
+                } else {
+                    e.target.classList.remove('active')
+                }
+            })
+        });
+    </script>
 @endsection

@@ -21,7 +21,7 @@ body {
     &__comment {
         font-style: normal;
         font-weight: 400;
-        font-size: 16px;
+        font-size: 14px;
         line-height: 20px;
         color: #aab3cb;
     }
@@ -33,6 +33,22 @@ body {
 
         &:hover {
             text-decoration: underline;
+        }
+    }
+
+    &__vseparator {
+        color: #8f8e8e;
+
+        .d-flex {
+            align-items: center;
+        }
+
+        .line {
+            height: 1px;
+            flex-basis: 15%;
+            background-color: #8f8e8e;
+            opacity: 0.7;
+            margin: 0 10px;
         }
     }
 }

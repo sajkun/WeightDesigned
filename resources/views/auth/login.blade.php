@@ -4,7 +4,7 @@
     <div class="d-flex flex-column flex-grow-1 justify-content-center">
         <div class="container">
             <div class="row justify-content-center">
-                <div class="col-md-8">
+                <div class="col-md-12">
                     <div class="text-center">
                         <img src="./images/svg/logo-auth.svg" alt="">
                     </div>
@@ -16,13 +16,16 @@
                                 @csrf
 
                                 <div>
-                                    <label for="login" class="d-none">Логин</label>
+                                    <div class="form-control-custom">
 
-                                    <input id="login" type="text"
-                                        class="form-control-custom @error('login') is-invalid @enderror" name="login"
-                                        value="{{ old('login') }}" required autocomplete="login" placeholder="Логин"
-                                        autofocus>
+                                        <input id="login" type="text" class=" @error('login') is-invalid @enderror"
+                                            name="login" value="{{ old('login') }}" required autocomplete="login"
+                                            autofocus>
 
+                                        <label for="login"
+                                            class="@if (old('login')) active @endif">Логин</label>
+
+                                    </div>
                                     @error('login')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
@@ -30,12 +33,11 @@
                                     @enderror
                                 </div>
 
-                                <div class="mt-3">
-                                    <label for="password" class="d-none">{{ __('Password') }}</label>
+                                <div class="form-control-custom mt-3">
+                                    <input id="password" type="password" class="@error('password') is-invalid @enderror"
+                                        name="password" required autocomplete="current-password">
 
-                                    <input id="password" type="password"
-                                        class="form-control-custom @error('password') is-invalid @enderror" name="password"
-                                        placeholder="пароль" required autocomplete="current-password">
+                                    <label for="password">Пароль</label>
 
                                     @error('password')
                                         <span class="invalid-feedback" role="alert">
@@ -65,6 +67,18 @@
                                             </a>
                                         @endif
                                     </div>
+
+                                    <div class="form-auth__vseparator mt-4">
+                                        <div class="d-flex justify-content-center">
+                                            <div class="line"></div>
+                                            <p class="m-0">Нет аккаунта?</p>
+                                            <div class="line"></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="text-center mt-3">
+                                        <a class="btn btn-borders" href="{{ route('register') }}">Регистрация</a>
+                                    </div>
                                 </div>
                             </form>
                         </div>
@@ -73,4 +87,18 @@
             </div>
         </div>
     </div>
+
+    <script>
+        const inputs = document.querySelectorAll('input');
+        inputs.forEach((input) => {
+            input.addEventListener('input', e => {
+
+                if (e.srcElement.value) {
+                    e.target.classList.add('active')
+                } else {
+                    e.target.classList.remove('active')
+                }
+            })
+        });
+    </script>
 @endsection

@@ -10787,7 +10787,14 @@ body {
 }
 
 .form-control-custom {
-  padding: 0.5em 0.5em;
+  position: relative;
+  --shift-top: -125%;
+}
+.form-control-custom input[type=password],
+.form-control-custom input[type=number],
+.form-control-custom input[type=email],
+.form-control-custom input[type=text] {
+  padding: 0.75em;
   width: 100%;
   background: #ffffff;
   border: 1px solid #dfe6fa;
@@ -10795,15 +10802,46 @@ body {
   transition: border-color 0.15s, color 0.15s, outline 0.3s;
   outline: 2px solid transparent;
 }
-.form-control-custom:hover {
+.form-control-custom input[type=password]:hover,
+.form-control-custom input[type=number]:hover,
+.form-control-custom input[type=email]:hover,
+.form-control-custom input[type=text]:hover {
   border-color: #aab3cb;
 }
-.form-control-custom:focus-visible {
+.form-control-custom input[type=password]:focus-visible,
+.form-control-custom input[type=number]:focus-visible,
+.form-control-custom input[type=email]:focus-visible,
+.form-control-custom input[type=text]:focus-visible {
   border-color: #409bff;
   outline: 2px solid #409bff;
 }
-.form-control-custom:active {
+.form-control-custom input[type=password]:active,
+.form-control-custom input[type=number]:active,
+.form-control-custom input[type=email]:active,
+.form-control-custom input[type=text]:active {
   border-color: #7e89a5;
+}
+.form-control-custom label {
+  position: absolute;
+  top: 50%;
+  left: 1rem;
+  font-size: 1rem;
+  color: #7e89a5;
+  transform: translateY(-50%);
+  transition: left 0.15s, transform 0.15s, font-size 0.15s, color 0.15s;
+  z-index: 5;
+}
+.form-control-custom label.active {
+  left: 0.5rem;
+  transform: translateY(var(--shift-top));
+  font-size: 0.75rem;
+}
+.form-control-custom input.active + label,
+.form-control-custom input:focus + label {
+  left: 0.5rem;
+  transform: translateY(var(--shift-top));
+  font-size: 0.75rem;
+  color: #000;
 }
 
 .btn-primary-alt {
@@ -10842,6 +10880,25 @@ body {
   --bs-btn-border-width: 2px;
 }
 
+.btn-borders {
+  text-decoration: none !important;
+  --bs-btn-color: #007e3c;
+  --bs-btn-bg: transparent;
+  --bs-btn-border-color: #007e3c;
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: #007e3c;
+  --bs-btn-hover-border-color: #007e3c;
+  --bs-btn-focus-shadow-rgb: 0, 126, 60;
+  --bs-btn-active-color: #fff;
+  --bs-btn-active-bg: #007e3c;
+  --bs-btn-active-border-color: transparent;
+  --bs-btn-active-shadow: none;
+  --bs-btn-disabled-color: #eee;
+  --bs-btn-disabled-bg: transparent;
+  --bs-btn-disabled-border-color: transparent;
+  --bs-btn-border-width: 2px;
+}
+
 body.auth {
   background-image: url(/images/auth.png?7b9198c4ca4c6bc50f82ed16e4c5d0eb);
   background-size: cover;
@@ -10862,7 +10919,7 @@ body.auth {
 .form-auth__comment {
   font-style: normal;
   font-weight: 400;
-  font-size: 16px;
+  font-size: 14px;
   line-height: 20px;
   color: #aab3cb;
 }
@@ -10873,4 +10930,17 @@ body.auth {
 }
 .form-auth a:hover {
   text-decoration: underline;
+}
+.form-auth__vseparator {
+  color: #8f8e8e;
+}
+.form-auth__vseparator .d-flex {
+  align-items: center;
+}
+.form-auth__vseparator .line {
+  height: 1px;
+  flex-basis: 15%;
+  background-color: #8f8e8e;
+  opacity: 0.7;
+  margin: 0 10px;
 }
