@@ -28,6 +28,22 @@ Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('ho
 
 Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
     Route::get('/', 'IndexController')->name('admin.index');
+    Route::group(['namespace' => 'User', 'prefix' => 'users'], function () {
+        // Route::get('/', 'IndexController')->name('admin.user.index');
+        // Route::get('/create', 'CreateController')->name('admin.user.create');
+        // Route::get('/{user}/edit', 'EditController')->name('admin.user.edit');
+        // Route::post('/store', 'StoreController')->name('admin.user.store');
+        // Route::patch('/{user}', 'UpdateController')->name('admin.user.update');
+        Route::delete('/{user}', 'DestroyController')->name('admin.user.destroy');
+    });
+
+    Route::group(['namespace' => 'Organisation', 'prefix' => 'organisations'], function () {
+        // Route::get('/create', 'CreateController')->name('admin.organisation.create');
+        // Route::get('/{organisation}/edit', 'EditController')->name('admin.organisation.edit');
+        Route::post('/store', 'StoreController')->name('admin.organisation.store');
+        // Route::patch('/{organisation}', 'UpdateController')->name('admin.organisation.update');
+        Route::delete('/{organisation}', 'DestroyController')->name('admin.organisation.destroy');
+    });
 });
 Route::group(['namespace' => 'PublicArea', 'prefix' => '/'], function () {
     Route::get('/', 'IndexController')->name('public.index');

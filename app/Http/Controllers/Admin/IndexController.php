@@ -1,8 +1,10 @@
 <?php
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
+use App\Models\User;
+use App\Models\Organisation;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class IndexController extends Controller
 {
@@ -14,6 +16,14 @@ class IndexController extends Controller
      */
     public function __invoke(Request $request)
     {
-        return view('admin.index');
+        $organisations = Organisation::all();
+        $organisations->map(
+            function ($o) {
+                $users = User::where('organisation_id', $o->id)->get();
+                $o->users = $users;
+                return $o;
+            }
+        );
+        return view('admin.index', ['organisations' => $organisations]);
     }
 }

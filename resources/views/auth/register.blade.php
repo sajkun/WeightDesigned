@@ -122,7 +122,6 @@
                                     </button>
                                 </div>
 
-
                                 <div class="form-auth__vseparator mt-4">
                                     <div class="d-flex justify-content-center">
                                         <div class="line"></div>
