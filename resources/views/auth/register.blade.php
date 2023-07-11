@@ -57,6 +57,8 @@
                                         <label for="organisation-name"
                                             class="@if (old('organisation_name')) active @endif">Название
                                             организации</label>
+
+                                        <div id="dropdown-place-name"></div>
                                     </div>
 
                                     @error('organisation_name')
@@ -71,11 +73,12 @@
                                     <div class="form-control-custom">
                                         <input id="tax-number" type="text"
                                             class="@error('tax_number') is-invalid @enderror" name="tax_number"
-                                            value="{{ old('tax_number') }}" required autocomplete="organisation-name"
-                                            autofocus>
+                                            value="{{ old('tax_number') }}" required autocomplete="tax-number" autofocus>
 
                                         <label for="tax-number" class="@if (old('tax_number')) active @endif">ИНН
                                             организации</label>
+
+                                        <div id="dropdown-place-tax"></div>
                                     </div>
 
                                     @error('tax_number')
@@ -155,4 +158,17 @@
             })
         });
     </script>
+
+    <template id='dropdownWrapper'>
+        <div class="dropdown-container">
+            <div class="dropdown">
+
+            </div>
+        </div>
+    </template>
+    <template id='dropdownItem'>
+        <button class="btn-list-imitation" type='button'>
+            <span></span>
+        </button>
+    </template>
 @endsection
