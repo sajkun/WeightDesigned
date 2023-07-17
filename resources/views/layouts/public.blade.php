@@ -22,6 +22,42 @@
 </head>
 
 <body class="">
+    <header class="public-header py-2">
+        <div class="container">
+            <div class="row align-content-center">
+                <div class="flex-grow-0 logo align-self-center">
+                    <a href="{{ route('public.index') }}" class="">
+                        <img src="./images/svg/logo-public.svg" alt="ООО Лилиани">
+                    </a>
+                </div>
+                <div class="flex-grow-1 col align-self-center">
+                    <div class="row align-content-center ">
+                        <div class="col flex-grow-0 align-self-center">
+                            <ul class="main-menu">
+                                <li><a href="">Поля</a></li>
+                                <li><a href="">Техника</a></li>
+                                <li><a href="">Сотрудники</a></li>
+                                <li><a href="">Пользователи</a></li>
+                                <li>
+                                    <form id="logout-form d-flex " action="{{ route('logout') }}" method="POST">
+                                        @csrf
+                                        <button class="btn btn-link-contrast p-0 bd-0 align-self-center"
+                                            type="Sudmit">Выйти</button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col flex-grow-1 text-end align-self-center">
+                            <a href='' title='Настройки' class="organisation-name">
+                                {{ $organisation }}
+                            </a>
+                            <i class="organisation-marker"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
     <div id="app" class='d-flex flex-column flex-grow-1'>
         @yield('content')
     </div>

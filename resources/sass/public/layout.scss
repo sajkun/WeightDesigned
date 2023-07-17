@@ -1,0 +1,81 @@
+.public-header {
+    background: linear-gradient(103.06deg, #007e3c 18.83%, #032422 100%);
+    box-shadow: 6px 6px 6px rgba(33, 40, 41, 0.03);
+
+    .row {
+        & > .logo {
+            width: max-content;
+        }
+    }
+}
+
+.main-menu {
+    padding: 0;
+    margin: 0;
+    display: flex;
+    align-content: center;
+
+    li {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+        align-self: center;
+        padding: 0 0.5rem;
+    }
+
+    button {
+        display: block;
+
+        &:hover {
+            color: var(--link-color);
+            text-decoration: underline;
+        }
+    }
+
+    a {
+        display: block;
+        text-decoration: none;
+        color: var(--link-color);
+        transition: color 0.15s, text-decoration 0.15s;
+        text-decoration: none;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+
+    .active {
+        a {
+            color: var(--link-color-active);
+        }
+    }
+}
+
+.organisation-name {
+    padding: 0;
+    margin: 0;
+    color: var(--contrast);
+    line-height: 1;
+    display: inline;
+    vertical-align: middle;
+    text-decoration: none;
+    color: var(--link-color) !important;
+
+    &:hover {
+        text-decoration: underline;
+    }
+}
+
+.organisation-marker {
+    background: linear-gradient(#ff9040, #ff4040);
+    border-radius: 999rem;
+    display: inline-block;
+    width: 1.25rem;
+    height: 1.25rem;
+    margin-left: 0.25rem;
+    vertical-align: top;
+}
+
+.bd-0 {
+    border: 0 !important;
+}
