@@ -16,15 +16,16 @@ use Illuminate\Support\Facades\Auth;
 
 Auth::routes();
 
-// Route::get('login', [App\Http\Controllers\Auth\LoginController::class, 'showLoginForm'])->name('login');
-// Route::post('login')->name('login.attempt')->uses('Auth\LoginController@login');
+Route::get('login', [App\Http\Controllers\Auth\LoginController::class, 'showLoginForm'])->name('login');
+Route::post('login')->name('login.attempt')->uses('Auth\LoginController@login');
 
-// Route::group(['middleware' => 'auth'], function () {
-//     Route::resource('/', 'DashController');
-//     Route::post('/logout')->name('logout')->uses('Auth\LoginController@logout');
-// });
+Route::group(['middleware' => 'auth'], function () {
+    Route::resource('/', 'DashController');
+    Route::post('/logout')->name('logout')->uses('Auth\LoginController@logout');
+    Route::get('/', 'PublicArea\IndexController')->name('public.index');
+});
 
-Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+// Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
     Route::get('/', 'IndexController')->name('admin.index');
@@ -45,6 +46,7 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
         Route::delete('/{organisation}', 'DestroyController')->name('admin.organisation.destroy');
     });
 });
-Route::group(['namespace' => 'PublicArea', 'prefix' => '/'], function () {
-    Route::get('/', 'IndexController')->name('public.index');
-});
+
+// Route::group(['namespace' => 'PublicArea', 'prefix' => '/'], function () {
+//     Route::get('/', 'IndexController')->name('public.index');
+// });

@@ -11025,10 +11025,11 @@ body {
   background-color: #c8e7ff;
 }
 
-body.auth {
+body.auth #app {
   background-image: url(/images/auth.png?7b9198c4ca4c6bc50f82ed16e4c5d0eb);
   background-size: cover;
   background-position: 50%;
+  background-repeat: no-repeat;
 }
 
 .form-auth {

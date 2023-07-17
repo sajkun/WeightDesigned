@@ -3,6 +3,15 @@
 @section('content')
     <div class="d-flex flex-column flex-grow-1 justify-content-center">
         <div class="container">
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
             <div class="row justify-content-center">
                 <div class="col-md-12">
                     <div class="text-center">

@@ -45,19 +45,19 @@ class LoginController extends Controller
 
     protected function authenticated(Request $request, $user)
     {
-        // if (in_array($user->role, config('users.admin_roles'))) {
-        //     return(redirect()->route('admin.index'));
-        // }
+        if (in_array($user->role, config('users.admin_roles'))) {
+            return(redirect()->route('admin.index'));
+        }
 
-        //     if (in_array($user->role, config('users.customer_roles'))) {
-        //         $organisation_id = $user->organisation_id;
+        if (in_array($user->role, config('users.customer_roles'))) {
+            $organisation_id = $user->organisation_id;
 
-        //         if (!$organisation_id) {
-        //             abort(403);
-        //         }
+            if (!$organisation_id) {
+                abort(403);
+            }
 
-        return(redirect()->route('admin.index'));
-        //     }
+            return(redirect()->route('public.index'));
+        }
     }
 
     public function username()

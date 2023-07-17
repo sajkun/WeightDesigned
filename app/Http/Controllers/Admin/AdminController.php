@@ -1,10 +1,10 @@
 <?php
-namespace App\Http\Controllers\PublicArea;
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class IndexController extends Controller
+class AdminController extends Controller
 {
     /**
      * Handle the incoming request.
@@ -14,8 +14,6 @@ class IndexController extends Controller
      */
     public function __invoke(Request $request)
     {
-        dump('public area');
         //
-        return view('pages.main');
     }
 }

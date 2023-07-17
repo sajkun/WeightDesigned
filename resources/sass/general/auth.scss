@@ -1,8 +1,11 @@
 body {
     &.auth {
-        background-image: url(../../img/bg/auth.png);
-        background-size: cover;
-        background-position: 50%;
+        #app {
+            background-image: url(../../img/bg/auth.png);
+            background-size: cover;
+            background-position: 50%;
+            background-repeat: no-repeat;
+        }
     }
 }
 
