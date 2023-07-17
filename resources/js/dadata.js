@@ -70,8 +70,9 @@ function checkQuery(query, selector) {
 }
 
 function applyOrganisation(e) {
-    nameInput.value = e.target.dataset.name;
-    taxInput.value = e.target.dataset.taxnumber;
+    nameInput.value = e.target.closest("button").dataset.name;
+    taxInput.value = e.target.closest("button").dataset.taxnumber;
+
     nameInput.classList.add("active");
     taxInput.classList.add("active");
     document.querySelector(".dropdown-container")?.remove();
