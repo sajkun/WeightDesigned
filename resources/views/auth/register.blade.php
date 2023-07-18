@@ -153,7 +153,9 @@
         </div>
     </div>
 
+@endsection
 
+@section('endbody')
     <script>
         const inputs = document.querySelectorAll('input');
         inputs.forEach((input) => {

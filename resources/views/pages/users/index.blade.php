@@ -1,7 +1,7 @@
 @extends('layouts.public')
 
 @section('content')
-    <div class="container-fluid">
+    <div class="container-fluid" id='public-users'>
         <div class="row h-100 position-relative">
             <div class="col-lg-6 col-lg-12 h-100 p-3">
                 <div class="d-lg-flex flex-column org-wrapper h-100">
@@ -14,10 +14,10 @@
                                 <th>Роль</th>
                             </tr>
                             @foreach ($users as $user)
-                                <tr>
+                                <tr onclick=''>
                                     <td>{{ $user->id }}</td>
                                     <td>{{ $user->login }}</td>
-                                    <td></td>
+                                    <td>{{ $user->first_name }} {{ $user->middle_name }} {{ $user->last_name }}</td>
                                     <td>{{ $roles[$user->role] }}</td>
                                 </tr>
                             @endforeach

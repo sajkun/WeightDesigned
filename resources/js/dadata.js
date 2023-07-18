@@ -2,6 +2,7 @@
  * отправка запроса в дадата при регистрации
  *
  */
+
 const nameInput = document.getElementById("organisation-name");
 const taxInput = document.getElementById("tax-number");
 let isFetching = false;

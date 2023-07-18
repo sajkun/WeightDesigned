@@ -25,6 +25,8 @@
     <div id="app" class='d-flex flex-column flex-grow-1'>
         @yield('content')
     </div>
+
+    @yield('endbody')
 </body>
 
 </html>
