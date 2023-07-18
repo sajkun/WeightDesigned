@@ -23,7 +23,7 @@
 
 <body class="">
     <header class="public-header py-2">
-        <div class="container">
+        <div class="container-fluid">
             <div class="row align-content-center">
                 <div class="flex-grow-0 logo align-self-center">
                     <a href="{{ route('public.index') }}" class="">
@@ -37,9 +37,9 @@
                                 <li><a href="">Поля</a></li>
                                 <li><a href="">Техника</a></li>
                                 <li><a href="">Сотрудники</a></li>
-                                <li><a href="">Пользователи</a></li>
+                                <li><a href="{{ route('public.users.index') }}">Пользователи</a></li>
                                 <li>
-                                    <form id="logout-form d-flex " action="{{ route('logout') }}" method="POST">
+                                    <form id="logout-form" class='m-0' action="{{ route('logout') }}" method="POST">
                                         @csrf
                                         <button class="btn btn-link-contrast p-0 bd-0 align-self-center"
                                             type="Sudmit">Выйти</button>
