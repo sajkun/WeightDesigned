@@ -20,6 +20,8 @@ class GetUsersController extends Controller
 
         $users->map(function ($u) use ($roles) {
             $u['role_name'] = $roles[$u['role']];
+            unset($u['password'], $u['organisation_id']);
+
             return $u;
         });
 

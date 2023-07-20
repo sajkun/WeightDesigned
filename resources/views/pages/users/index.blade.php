@@ -23,9 +23,14 @@
                                 <td>@{{ user.login }}</td>
                                 <td>@{{ user.first_name }} @{{ user.middle_name }} @{{ user.last_name }}</td>
                                 <td>@{{ user.role_name }}</td>
-                                <td><button class='btn'>
+                                <td>
+                                    <button class='btn' @click.prevent.stop>
+                                        <i class="fa fa-solid fa-trash"></i>
+                                    </button>
+                                    <button class='btn'>
                                         <i class="fa fa-solid fa-pencil"></i>
-                                    </button></td>
+                                    </button>
+                                </td>
                             </tr>
 
                         </tbody>
@@ -97,11 +102,23 @@
                                     </div>
                                 </div>
 
+                                <div class="col-12">
+                                    <button class="btn-link btn" type='button'>Редактировать пароль</button>
+                                </div>
+
+                                <div class="col-12 col-md-6">
+                                    <button type='button' @click='editMode=false' class='w-100 mt-3 btn btn-borders'>
+                                        Отмена
+                                    </button>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <button type='submit' class='w-100 mt-3 btn btn-primary-alt'>
+                                        Сохранить
+                                    </button>
+                                </div>
+
                             </div>
 
-                            <button type='submit' class='w-100 mt-3 btn btn-primary-alt'>
-                                Сохранить
-                            </button>
                         </form>
                     </div>
                 </div>
