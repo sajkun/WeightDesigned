@@ -5580,25 +5580,53 @@ document.addEventListener("click", function (e) {
  */
 
 if (document.getElementById("public-users")) {
-  /*     Vue.component(
-      "users-row",
-      require("./components/PublicUsersRowsComponent/*").default
-  ); */
+  /* add icons to the library */
+
   var appPublicUsers = new Vue({
     el: "#public-users",
     data: {
-      users: []
+      organisationId: -1,
+      users: [],
+      roles: [],
+      editedUser: {},
+      editMode: false
     },
     mounted: function mounted() {
-      console.log("users mounted");
       var vm = this;
+      vm.organisationId = vm.$refs.organisationId.value;
       vm.getUsers();
     },
+    computed: {
+      listClass: function listClass() {
+        var editClass = "col-md-6 d-sm-none d-md-block";
+        var displayClass = "col-md-12 ";
+        return this.editMode ? editClass : displayClass;
+      }
+    },
     methods: {
+      editUser: function editUser(user) {
+        var vm = this;
+        vm.editMode = !vm.editMode;
+        vm.editedUser = JSON.parse(JSON.stringify(user));
+      },
       getUsers: function getUsers() {
-        axios.get("./api/public/users/get").then(function (response) {
-          console.log(response);
+        var vm = this;
+        var token = vm.$refs.token.value;
+        if (vm.$refs.organisationId < 0) {
+          return;
+        }
+        axios.post("./api/public/users/get/" + vm.organisationId, {
+          _token: token
+        }).then(function (response) {
+          vm.users = response.data.users;
+          vm.roles = response.data.roles;
+          console.log(response.data);
+        })["catch"](function (e) {
+          console.log(e);
         });
+      },
+      sudmitForm: function sudmitForm() {
+        console.log("sudmitForm");
       }
     }
   });

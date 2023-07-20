@@ -79,3 +79,9 @@
 .bd-0 {
     border: 0 !important;
 }
+
+#public-users {
+    .row {
+        --bs-gutter-x: 0.5rem;
+    }
+}

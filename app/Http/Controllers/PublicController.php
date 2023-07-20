@@ -18,8 +18,11 @@ class PublicController extends Controller
         $organisation = Organisation::find($user->organisation_id);
         $roles = config('users.roles_nice_names');
 
+        unset($roles['admin'], $roles['superadmin']);
+
         view()->share('roles', $roles);
         view()->share('organisation', $organisation->name);
+        view()->share('organisation_id', $organisation->id);
         view()->share('users', $organisation->users()->get());
     }
 }

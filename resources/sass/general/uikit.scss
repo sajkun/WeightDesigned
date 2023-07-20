@@ -1,6 +1,7 @@
 .form-control-custom {
     position: relative;
 
+    select,
     input[type="password"],
     input[type="number"],
     input[type="email"],
@@ -46,6 +47,7 @@
         }
     }
 
+    select.active + label,
     input.active + label,
     input:focus + label {
         left: 0.5rem;

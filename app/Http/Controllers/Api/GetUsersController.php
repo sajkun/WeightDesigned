@@ -1,8 +1,9 @@
 <?php
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class GetUsersController extends Controller
 {
@@ -11,10 +12,20 @@ class GetUsersController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      */
-    public function __invoke(Request $request)
+    public function __invoke($organisation_id, Request $request)
     {
-        $user = $request->user();
+        $users = User::where('organisation_id', $organisation_id)->get();
+        $roles = config('users.roles_nice_names');
+        unset($roles['admin'], $roles['superadmin']);
 
-        return $user;
+        $users->map(function ($u) use ($roles) {
+            $u['role_name'] = $roles[$u['role']];
+            return $u;
+        });
+
+        return [
+            'users' => $users,
+            'roles' => $roles
+        ];
     }
 }

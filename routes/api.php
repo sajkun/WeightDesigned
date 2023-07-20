@@ -22,5 +22,5 @@ Route::group([
     'middleware' => 'api',
     'prefix' => 'public/users'
 ], function ($router) {
-    Route::get('get', Api\GetUsersController::class);
+    Route::post('get/{organisation_id}', Api\GetUsersController::class);
 });
