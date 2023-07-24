@@ -1,8 +1,9 @@
 @extends('layouts.public')
 
 @section('content')
-    <div class="container-fluid" id='public-users'>
+    <div class="container-fluid d-none" id='public-users'>
         <input type="hidden" ref='organisationId' value='{{ $organisation_id }}'>
+        <input type="hidden" ref='userId' value='{{ $user_id }}'>
         <input type="hidden" ref="token" value="{{ csrf_token() }}" />
 
         <div class="row h-100 position-relative">
@@ -23,7 +24,7 @@
                                 <td>@{{ user.login }}</td>
                                 <td>@{{ user.first_name }} @{{ user.middle_name }} @{{ user.last_name }}</td>
                                 <td>@{{ user.role_name }}</td>
-                                <td>
+                                <td class='text-end'>
                                     <button class='btn' @click.prevent.stop>
                                         <i class="fa fa-solid fa-trash"></i>
                                     </button>
@@ -42,8 +43,9 @@
                     <div class="org-wrapper">
                         <header class="org-details__header"><b>@{{ editedUser.login }}</b></header>
 
-                        <form @submit.prevent="sudmitForm" method='POST'>
+                        <form @submit.prevent="pathUser" method='POST'>
                             <div class="row">
+                                <input type="hidden" v-model='editedUser.id'>
                                 <div class="col-12 mt-2 col-lg-6 form-control-custom ">
                                     <div class="form-control-custom ">
                                         <input type="text" :class='{ "active": editedUser.first_name }' id='first_name'

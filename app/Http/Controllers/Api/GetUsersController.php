@@ -14,6 +14,11 @@ class GetUsersController extends Controller
      */
     public function __invoke($organisation_id, Request $request)
     {
+        if ($request->user_id < 0) {
+            return [
+                'error' => 'unauthorized user'
+            ];
+        }
         $users = User::where('organisation_id', $organisation_id)->get();
         $roles = config('users.roles_nice_names');
         unset($roles['admin'], $roles['superadmin']);
@@ -27,7 +32,7 @@ class GetUsersController extends Controller
 
         return [
             'users' => $users,
-            'roles' => $roles
+            'roles' => $roles,
         ];
     }
 }

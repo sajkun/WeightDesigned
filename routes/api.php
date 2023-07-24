@@ -23,4 +23,5 @@ Route::group([
     'prefix' => 'public/users'
 ], function ($router) {
     Route::post('get/{organisation_id}', Api\GetUsersController::class);
+    Route::post('set', Api\PatchUsersController::class);
 });

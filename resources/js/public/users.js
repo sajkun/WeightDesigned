@@ -10,6 +10,7 @@ if (document.getElementById("public-users")) {
 
         data: {
             organisationId: -1,
+            userId: -1,
             users: [],
             roles: [],
             editedUser: {},
@@ -18,7 +19,9 @@ if (document.getElementById("public-users")) {
 
         mounted() {
             const vm = this;
+            vm.$el.classList.remove("d-none");
             vm.organisationId = vm.$refs.organisationId.value;
+            vm.userId = vm.$refs.userId.value;
             vm.getUsers();
         },
 
@@ -47,19 +50,33 @@ if (document.getElementById("public-users")) {
                 axios
                     .post("./api/public/users/get/" + vm.organisationId, {
                         _token: token,
+                        user_id: vm.userId,
                     })
                     .then((response) => {
                         vm.users = response.data.users;
                         vm.roles = response.data.roles;
-                        console.log(response.data);
                     })
                     .catch((e) => {
                         console.log(e);
                     });
             },
 
-            sudmitForm() {
+            pathUser() {
+                const vm = this;
                 console.log("sudmitForm");
+                axios
+                    .post(`./api/public/users/set`, {
+                        user_id: vm.userId,
+                        organisation_id: vm.organisationId,
+                        edit_user: vm.editedUser,
+                    })
+                    .then((response) => {
+                        vm.editedUser = response.data.patch_user;
+                        vm.getUsers();
+                    })
+                    .catch((e) => {
+                        console.log(e);
+                    });
             },
         },
     });

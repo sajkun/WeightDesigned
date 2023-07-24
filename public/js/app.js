@@ -5561,6 +5561,7 @@ if (document.getElementById("public-users")) {
     el: "#public-users",
     data: {
       organisationId: -1,
+      userId: -1,
       users: [],
       roles: [],
       editedUser: {},
@@ -5568,7 +5569,9 @@ if (document.getElementById("public-users")) {
     },
     mounted: function mounted() {
       var vm = this;
+      vm.$el.classList.remove("d-none");
       vm.organisationId = vm.$refs.organisationId.value;
+      vm.userId = vm.$refs.userId.value;
       vm.getUsers();
     },
     computed: {
@@ -5591,17 +5594,28 @@ if (document.getElementById("public-users")) {
           return;
         }
         axios.post("./api/public/users/get/" + vm.organisationId, {
-          _token: token
+          _token: token,
+          user_id: vm.userId
         }).then(function (response) {
           vm.users = response.data.users;
           vm.roles = response.data.roles;
-          console.log(response.data);
         })["catch"](function (e) {
           console.log(e);
         });
       },
-      sudmitForm: function sudmitForm() {
+      pathUser: function pathUser() {
+        var vm = this;
         console.log("sudmitForm");
+        axios.post("./api/public/users/set", {
+          user_id: vm.userId,
+          organisation_id: vm.organisationId,
+          edit_user: vm.editedUser
+        }).then(function (response) {
+          vm.editedUser = response.data.patch_user;
+          vm.getUsers();
+        })["catch"](function (e) {
+          console.log(e);
+        });
       }
     }
   });
