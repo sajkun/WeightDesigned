@@ -5550,11 +5550,16 @@ document.addEventListener("click", function (e) {
   \**************************************/
 /***/ (() => {
 
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
+function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
+function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
 /**
  * работа с пользователями публичной зоны
  */
 
 if (document.getElementById("public-users")) {
+  var _editedUser;
   /* add icons to the library */
 
   var appPublicUsers = new Vue({
@@ -5564,9 +5569,32 @@ if (document.getElementById("public-users")) {
       userId: -1,
       users: [],
       roles: [],
-      editedUser: {},
+      editedUser: (_editedUser = {
+        id: -1,
+        email: null,
+        first_name: null,
+        last_name: null,
+        middle_name: null,
+        phone: null,
+        organisation_id: null,
+        role: null
+      }, _defineProperty(_editedUser, "email", null), _defineProperty(_editedUser, "login", null), _defineProperty(_editedUser, "password", null), _defineProperty(_editedUser, "role", null), _editedUser),
+      validationMessages: {
+        inputOldPassword: "Введите пожалуйста старый пароль",
+        inputNewPassword: "Задайте  пожалуйста новый пароль",
+        passwordMinimal: "минимальная длина пароля 6 символов"
+      },
+      passwords: {
+        old: null,
+        "new": null
+      },
       editMode: false,
-      errorMessage: null
+      messages: {
+        error: null,
+        info: null,
+        success: null
+      },
+      editPassword: false
     },
     mounted: function mounted() {
       var vm = this;
@@ -5574,6 +5602,13 @@ if (document.getElementById("public-users")) {
       vm.organisationId = vm.$refs.organisationId.value;
       vm.userId = vm.$refs.userId.value;
       vm.getUsers();
+      vm.$el.addEventListener("click", function (e) {
+        if (e.target.type !== "button") {
+          vm.messages.error = null;
+          vm.messages.info = null;
+          vm.messages.success = null;
+        }
+      });
     },
     computed: {
       listClass: function listClass() {
@@ -5587,6 +5622,9 @@ if (document.getElementById("public-users")) {
         var vm = this;
         vm.editMode = !vm.editMode;
         vm.editedUser = JSON.parse(JSON.stringify(user));
+      },
+      generatePassword: function generatePassword() {
+        this.passwords["new"] = Math.random().toString(36).slice(-12);
       },
       getUsers: function getUsers() {
         var vm = this;
@@ -5615,7 +5653,38 @@ if (document.getElementById("public-users")) {
           vm.editedUser = response.data.patch_user;
           vm.getUsers();
         })["catch"](function (e) {
-          vm.errorMessage = "".concat(e.response.status, " ").concat(e.response.statusText, " : ").concat(e.response.data.message);
+          vm.messages.error = "".concat(e.response.status, " ").concat(e.response.statusText, " : ").concat(e.response.data.message);
+        });
+      },
+      submitPassword: function submitPassword() {
+        var vm = this;
+        if (!vm.passwords.old) {
+          vm.messages.error = vm.validationMessages.inputOldPassword;
+          return;
+        }
+        if (!vm.passwords["new"]) {
+          vm.messages.error = vm.validationMessages.inputNewPassword;
+          return;
+        }
+        if (vm.passwords["new"].length < 6) {
+          vm.messages.error = vm.validationMessages.passwordMinimal;
+          return;
+        }
+        axios.post("./api/public/users/spw", {
+          user_id: vm.userId,
+          organisation_id: vm.organisationId,
+          edit_user_id: vm.editedUser.id,
+          new_password: vm.passwords["new"],
+          old_password: vm.passwords.old
+        }).then(function (response) {
+          console.log(response);
+          vm.passwords["new"] = null;
+          vm.passwords.old = null;
+          vm.editPassword = false;
+          vm.messages.success = response.data.message ? response.data.message : "Пароль успешно изменен";
+        })["catch"](function (e) {
+          console.log(e.response);
+          vm.messages.error = "".concat(e.response.status, " ").concat(e.response.statusText, " : ").concat(e.response.data.message);
         });
       }
     }

@@ -86,10 +86,24 @@
     }
 }
 
+.info-message {
+    --message-bg-color: var(--blue-light);
+}
+
+.success-message {
+    --message-bg-color: var(--green-light);
+}
+
+.error-message {
+    --message-bg-color: var(--red-light);
+}
+
+.info-message,
+.success-message,
 .error-message {
     border-radius: 0.75rem;
     padding: 1rem 2.5rem;
-    background-color: var(--red-light);
+    background-color: var(--message-bg-color);
     position: relative;
     max-width: 30rem;
     margin: auto;

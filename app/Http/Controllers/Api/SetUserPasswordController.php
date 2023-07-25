@@ -3,10 +3,10 @@ namespace App\Http\Controllers\Api;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Hash;
 
-class PatchUsersController extends Controller
+class SetUserPasswordController extends Controller
 {
     /**
      * Handle the incoming request.
@@ -18,34 +18,40 @@ class PatchUsersController extends Controller
     {
         try {
             $request->validate([
+                'old_password' => 'required',
+                'new_password' => 'required',
                 'organisation_id' => 'required',
                 'user_id' => 'required',
-                'new_data' => 'required',
+                'edit_user_id' => 'required',
             ]);
 
             $user_id = $request->user_id;
             $organisation_id = $request->organisation_id;
-
             $user = User::find($user_id);
 
             if ($user->organisation_id != $organisation_id) {
                 throw new \ErrorException('невторизованный запрос', 403);
             }
 
-            $new_data = $request->edit_user;
-            $patch_user = User::find($new_data['id']);
+            $edit_user = User::find($request->edit_user_id);
 
-            unset($new_data['login'], $new_data['id'], $new_data['created_at'], $new_data['created_at']);
+            if (!$edit_user) {
+                throw new \ErrorException('Пользователь не найден', 404);
+            }
 
-            $patch_user->update($new_data);
+            if (!Hash::check($request->old_password, $edit_user->password)) {
+                throw new \ErrorException('Старый пароль указан не верно', 403);
+            }
+
+            $edit_user->update([
+                'password' => Hash::make($request->new_password)
+            ]);
 
             return response()->json([
-                'user_id' => $user_id,
-                'user' => $user,
-                'patch_user' => $patch_user,
-                'new_data' => $new_data,
+                'message' => 'Пароль изменен успешно',
+                'user_id' => $edit_user->id
             ], 200);
-        } catch (\Exception  $e) {
+        } catch (\Exception $e) {
             return response()->json([
                 'message' => $e->getMessage(),
             ], $e->getCode());

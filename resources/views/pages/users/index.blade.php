@@ -2,12 +2,13 @@
 
 @section('content')
     <div class="container-fluid d-none" id='public-users'>
-        <Transition name="bounce">
-            <div class="error-message" v-if='errorMessage'>
-                @{{ errorMessage }}
-                <button class="btn btn-close" type='button' @click='errorMessage=null'></button>
+        <Transition name="bounce" v-for='msg, key in messages'>
+            <div :class="key + '-message'" v-if='msg'>
+                @{{ msg }}
+                <button class="btn btn-close" type='button' @click='msg=null'></button>
             </div>
         </Transition>
+
         <input type="hidden" ref='organisationId' value='{{ $organisation_id }}'>
         <input type="hidden" ref='userId' value='{{ $user_id }}'>
         <input type="hidden" ref="token" value="{{ csrf_token() }}" />
@@ -52,7 +53,7 @@
                             <div class="row">
                                 <input type="hidden" v-model='editedUser.id'>
                                 <div class="col-12 mt-2 col-lg-6 form-control-custom ">
-                                    <div class="form-control-custom ">
+                                    <div class="form-control-custom " :class='{ "d-none": editPassword }'>
                                         <input type="text" :class='{ "active": editedUser.first_name }' id='first_name'
                                             required v-model='editedUser.first_name'>
 
@@ -60,7 +61,7 @@
                                     </div>
                                 </div>
                                 <div class="col-12 mt-2  col-lg-6">
-                                    <div class="form-control-custom ">
+                                    <div class="form-control-custom " :class='{ "d-none": editPassword }'>
 
                                         <input type="text" :class='{ "active": editedUser.last_name }' id='last_name'
                                             required v-model='editedUser.last_name'>
@@ -69,7 +70,7 @@
                                     </div>
                                 </div>
                                 <div class="col-12 mt-2">
-                                    <div class="form-control-custom ">
+                                    <div class="form-control-custom " :class='{ "d-none": editPassword }'>
 
                                         <input type="text" :class='{ "active": editedUser.middle_name }' id='middle_name'
                                             required v-model='editedUser.middle_name'>
@@ -78,7 +79,7 @@
                                     </div>
                                 </div>
                                 <div class="col-12 mt-2  col-lg-6">
-                                    <div class="form-control-custom ">
+                                    <div class="form-control-custom " :class='{ "d-none": editPassword }'>
 
                                         <input type="text" :class='{ "active": editedUser.email }' id='email'
                                             required v-model='editedUser.email'>
@@ -87,7 +88,7 @@
                                     </div>
                                 </div>
                                 <div class="col-12 mt-2  col-lg-6">
-                                    <div class="form-control-custom ">
+                                    <div class="form-control-custom " :class='{ "d-none": editPassword }'>
 
                                         <input type="text" :class='{ "active": editedUser.phone }' id='phone'
                                             required v-model='editedUser.phone'>
@@ -97,11 +98,11 @@
                                 </div>
 
                                 <div class="col-12 mt-2">
-                                    <div class="form-control-custom ">
+                                    <div class="form-control-custom " :class='{ "d-none": editPassword }'>
 
                                         <select id='role' class='active' v-model='editedUser.role'>
-                                            <option v-for='name, key in roles' :key='"role" + key' :value="key"
-                                                :selected=' key === editedUser.role'>
+                                            <option v-for='name, key in roles' :key='"role" + key'
+                                                :value="key" :selected=' key === editedUser.role'>
                                                 @{{ name }} </option>
                                         </select>
 
@@ -109,17 +110,48 @@
                                     </div>
                                 </div>
 
-                                <div class="col-12">
-                                    <button class="btn-link btn" type='button'>Редактировать пароль</button>
+                                <div class="col-12 ">
+                                    <div class='row' v-if='editPassword'>
+                                        <div class="col-12">
+                                            <div class="form-control-custom ">
+                                                <input type="password" :class='{ "active": passwords.old }'
+                                                    id='passwordold' v-model='passwords.old'>
+                                                <label for="passwordold">Старый пароль</label>
+                                            </div>
+                                            <div class="form-control-custom mt-2">
+                                                <input type="text" :class='{ "active": passwords.new }' id='password'
+                                                    v-model='passwords.new'>
+                                                <label for="password">Новый пароль</label>
+                                            </div>
+                                            <button class="btn btn-link" type='button'
+                                                @click='generatePassword'>Сгенерировать
+                                                пароль</button>
+                                        </div>
+
+                                        <div class="col-12 col-lg-6 mt-1">
+                                            <button class="w-100 btn btn-borders-grey" type='button'
+                                                @click='editPassword=false'>Отмена</button>
+                                        </div>
+                                        <div class="col-12 col-lg-6 mt-1">
+                                            <button class="w-100 btn btn-borders" type='button'
+                                                @click='submitPassword'>Сохранить
+                                                пароль</button>
+                                        </div>
+                                    </div>
+                                    <button class="btn-link btn" v-if='!editPassword' type='button'
+                                        @click='editPassword=true'>Редактировать
+                                        пароль</button>
                                 </div>
 
-                                <div class="col-12 col-md-6">
-                                    <button type='button' @click='editMode=false' class='w-100 mt-3 btn btn-borders'>
+                                <div class="col-12 col-md-6" :class='{ "d-none": editPassword }'>
+                                    <button type='button' @click='editMode=false' :disabled='editPassword'
+                                        class='w-100 mt-3 btn btn-borders-grey'>
                                         Отмена
                                     </button>
                                 </div>
-                                <div class="col-12 col-md-6">
-                                    <button type='submit' class='w-100 mt-3 btn btn-primary-alt'>
+                                <div class="col-12 col-md-6" :class='{ "d-none": editPassword }'>
+                                    <button type='submit' :disabled='editPassword'
+                                        class='w-100 mt-3 btn  btn-primary-alt'>
                                         Сохранить
                                     </button>
                                 </div>
