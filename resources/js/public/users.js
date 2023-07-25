@@ -15,6 +15,7 @@ if (document.getElementById("public-users")) {
             roles: [],
             editedUser: {},
             editMode: false,
+            errorMessage: null,
         },
 
         mounted() {
@@ -75,7 +76,7 @@ if (document.getElementById("public-users")) {
                         vm.getUsers();
                     })
                     .catch((e) => {
-                        console.log(e);
+                        vm.errorMessage = `${e.response.status} ${e.response.statusText} : ${e.response.data.message}`;
                     });
             },
         },

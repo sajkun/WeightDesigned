@@ -5565,7 +5565,8 @@ if (document.getElementById("public-users")) {
       users: [],
       roles: [],
       editedUser: {},
-      editMode: false
+      editMode: false,
+      errorMessage: null
     },
     mounted: function mounted() {
       var vm = this;
@@ -5614,7 +5615,7 @@ if (document.getElementById("public-users")) {
           vm.editedUser = response.data.patch_user;
           vm.getUsers();
         })["catch"](function (e) {
-          console.log(e);
+          vm.errorMessage = "".concat(e.response.status, " ").concat(e.response.statusText, " : ").concat(e.response.data.message);
         });
       }
     }

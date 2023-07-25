@@ -2,10 +2,15 @@
 
 @section('content')
     <div class="container-fluid d-none" id='public-users'>
+        <Transition name="bounce">
+            <div class="error-message" v-if='errorMessage'>
+                @{{ errorMessage }}
+                <button class="btn btn-close" type='button' @click='errorMessage=null'></button>
+            </div>
+        </Transition>
         <input type="hidden" ref='organisationId' value='{{ $organisation_id }}'>
         <input type="hidden" ref='userId' value='{{ $user_id }}'>
         <input type="hidden" ref="token" value="{{ csrf_token() }}" />
-
         <div class="row h-100 position-relative">
             <div class="p-3 align-self-start" :class='listClass'
                 :style="!editMode ? 'transition: width .15s ease .1s' : ''">
