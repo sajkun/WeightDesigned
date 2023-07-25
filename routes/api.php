@@ -25,4 +25,5 @@ Route::group([
     Route::post('get/{organisation_id}', Api\GetUsersController::class);
     Route::post('set', Api\PatchUsersController::class);
     Route::post('spw', Api\SetUserPasswordController::class);
+    Route::post('delete', Api\DestroyUserController::class);
 });

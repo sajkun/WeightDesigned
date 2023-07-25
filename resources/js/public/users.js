@@ -3,8 +3,6 @@
  */
 
 if (document.getElementById("public-users")) {
-    /* add icons to the library */
-
     const appPublicUsers = new Vue({
         el: "#public-users",
 
@@ -31,16 +29,19 @@ if (document.getElementById("public-users")) {
                 inputOldPassword: "Введите пожалуйста старый пароль",
                 inputNewPassword: "Задайте  пожалуйста новый пароль",
                 passwordMinimal: "минимальная длина пароля 6 символов",
+                deleteUser: "Вы уверены, что хотите удалить пользователя",
             },
             passwords: {
                 old: null,
                 new: null,
             },
+            confirmAction: null,
             editMode: false,
             messages: {
                 error: null,
                 info: null,
                 success: null,
+                confirm: null,
             },
             editPassword: false,
         },
@@ -70,6 +71,60 @@ if (document.getElementById("public-users")) {
         },
 
         methods: {
+            confirmActionCb() {
+                document.dispatchEvent(new CustomEvent("confirmEvent"));
+            },
+
+            deleteUser(user) {
+                const vm = this;
+                console.log("deleteUser");
+                const handler = () => {
+                    vm.deleteUserCb(user);
+
+                    document.removeEventListener(
+                        "confirmEvent",
+                        handler,
+                        false
+                    );
+                    vm.$nextTick(() => {
+                        vm.messages.confirm = null;
+                    });
+                };
+
+                if (!vm.messages.confirm) {
+                    console.log("if");
+                    document.addEventListener("confirmEvent", handler);
+                    vm.messages.confirm = `${vm.validationMessages.deleteUser} ${user.login} ?`;
+                } else {
+                    document.removeEventListener(
+                        "confirmEvent",
+                        handler,
+                        false
+                    );
+
+                    vm.$nextTick(() => {
+                        vm.messages.confirm = null;
+                    });
+                }
+            },
+
+            deleteUserCb(user) {
+                console.log("deleteUserCb");
+                const vm = this;
+                axios
+                    .post(`./api/public/users/delete`, {
+                        user_id: vm.userId,
+                        organisation_id: vm.organisationId,
+                        delete_user_id: user.id,
+                    })
+                    .then((response) => {
+                        vm.getUsers();
+                    })
+                    .catch((e) => {
+                        vm.messages.error = `${e.response.status} ${e.response.statusText} : ${e.response.data.message}`;
+                    });
+            },
+
             editUser(user) {
                 const vm = this;
                 vm.editMode = !vm.editMode;

@@ -5,6 +5,15 @@
         <Transition name="bounce" v-for='msg, key in messages'>
             <div :class="key + '-message'" v-if='msg'>
                 @{{ msg }}
+
+                <div class="row" v-if='key==="confirm"'>
+                    <div class="col-12 col-md-6 mt-2"><button class="btn btn-borders-grey w-100"
+                            @click='messages.confirm = null' type="button">Отмена</button>
+                    </div>
+                    <div class="col-12 col-md-6 mt-2"><button class="btn btn-borders w-100" type="button"
+                            @click='confirmActionCb'>Подтведить</button>
+                    </div>
+                </div>
                 <button class="btn btn-close" type='button' @click='msg=null'></button>
             </div>
         </Transition>
@@ -31,7 +40,7 @@
                                 <td>@{{ user.first_name }} @{{ user.middle_name }} @{{ user.last_name }}</td>
                                 <td>@{{ user.role_name }}</td>
                                 <td class='text-end'>
-                                    <button class='btn' @click.prevent.stop>
+                                    <button class='btn' @click.prevent.stop='deleteUser(user)'>
                                         <i class="fa fa-solid fa-trash"></i>
                                     </button>
                                     <button class='btn'>
@@ -110,7 +119,7 @@
                                     </div>
                                 </div>
 
-                                <div class="col-12 ">
+                                <div class="col-12">
                                     <div class='row' v-if='editPassword'>
                                         <div class="col-12">
                                             <div class="form-control-custom ">

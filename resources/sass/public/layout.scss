@@ -86,6 +86,10 @@
     }
 }
 
+.confirm-message {
+    --message-bg-color: var(--blue-light);
+}
+
 .info-message {
     --message-bg-color: var(--blue-light);
 }
@@ -98,6 +102,7 @@
     --message-bg-color: var(--red-light);
 }
 
+.confirm-message,
 .info-message,
 .success-message,
 .error-message {

@@ -11227,6 +11227,10 @@ body.auth #app {
   --bs-gutter-x: 0.5rem;
 }
 
+.confirm-message {
+  --message-bg-color: var(--blue-light);
+}
+
 .info-message {
   --message-bg-color: var(--blue-light);
 }
@@ -11239,6 +11243,7 @@ body.auth #app {
   --message-bg-color: var(--red-light);
 }
 
+.confirm-message,
 .info-message,
 .success-message,
 .error-message {
@@ -11255,6 +11260,7 @@ body.auth #app {
   z-index: 100;
   box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.25);
 }
+.confirm-message .btn-close,
 .info-message .btn-close,
 .success-message .btn-close,
 .error-message .btn-close {
