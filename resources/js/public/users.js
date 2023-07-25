@@ -22,7 +22,6 @@ if (document.getElementById("public-users")) {
                 role: null,
                 email: null,
                 login: null,
-                password: null,
                 role: null,
             },
             validationMessages: {
@@ -55,55 +54,127 @@ if (document.getElementById("public-users")) {
 
             vm.$el.addEventListener("click", (e) => {
                 if (e.target.type !== "button") {
-                    vm.messages.error = null;
-                    vm.messages.info = null;
-                    vm.messages.success = null;
+                    vm.clearMessages();
                 }
             });
         },
 
         computed: {
             listClass() {
-                const editClass = "col-md-6 d-sm-none d-md-block";
-                const displayClass = "col-md-12 ";
+                const editClass = "col-12 col-lg-6 d-sm-none d-lg-block";
+                const displayClass = "col-12 ";
                 return this.editMode ? editClass : displayClass;
             },
         },
 
         methods: {
+            addUser() {
+                this.clearUser();
+                this.editMode = true;
+            },
+
+            cancelConfirmActionCb() {
+                document.dispatchEvent(new CustomEvent("cancelConfirmEvent"));
+            },
+
+            clearMessages(confirm) {
+                this.messages = {
+                    error: null,
+                    info: null,
+                    success: null,
+                    confirm: this.messages.confirm,
+                };
+
+                if (confirm) {
+                    this.messages.confirm = null;
+                }
+            },
+
+            clearUser() {
+                this.editedUser = {
+                    id: -1,
+                    email: null,
+                    first_name: null,
+                    last_name: null,
+                    middle_name: null,
+                    phone: null,
+                    organisation_id: null,
+                    role: null,
+                    email: null,
+                    login: null,
+                    role: null,
+                };
+            },
+
             confirmActionCb() {
-                document.dispatchEvent(new CustomEvent("confirmEvent"));
+                document.dispatchEvent(new CustomEvent("submitConfirmEvent"));
             },
 
             deleteUser(user) {
                 const vm = this;
-                console.log("deleteUser");
-                const handler = () => {
-                    vm.deleteUserCb(user);
 
+                let handlerSubmit = null;
+                let handlerCancel = null;
+                vm.editMode = false;
+
+                handlerSubmit = () => {
+                    vm.deleteUserCb(user);
                     document.removeEventListener(
-                        "confirmEvent",
-                        handler,
+                        "submitConfirmEvent",
+                        handlerSubmit,
                         false
                     );
+
                     vm.$nextTick(() => {
-                        vm.messages.confirm = null;
+                        vm.clearMessages(true);
+                    });
+                };
+
+                handlerCancel = () => {
+                    document.removeEventListener(
+                        "submitConfirmEvent",
+                        handlerSubmit,
+                        false
+                    );
+
+                    document.removeEventListener(
+                        "cancelConfirmEvent",
+                        handlerCancel,
+                        false
+                    );
+
+                    vm.$nextTick(() => {
+                        vm.clearMessages(true);
                     });
                 };
 
                 if (!vm.messages.confirm) {
-                    console.log("if");
-                    document.addEventListener("confirmEvent", handler);
+                    document.addEventListener(
+                        "submitConfirmEvent",
+                        handlerSubmit
+                    );
+
+                    document.addEventListener(
+                        "cancelConfirmEvent",
+                        handlerCancel
+                    );
+
                     vm.messages.confirm = `${vm.validationMessages.deleteUser} ${user.login} ?`;
                 } else {
                     document.removeEventListener(
                         "confirmEvent",
-                        handler,
+                        handlerSubmit,
+                        false
+                    );
+
+                    document.removeEventListener(
+                        "submitConfirmEvent",
+                        handlerCancel,
                         false
                     );
 
                     vm.$nextTick(() => {
-                        vm.messages.confirm = null;
+                        vm.clearMessages(true);
                     });
                 }
             },
@@ -112,7 +183,7 @@ if (document.getElementById("public-users")) {
                 console.log("deleteUserCb");
                 const vm = this;
                 axios
-                    .post(`./api/public/users/delete`, {
+                    .post(`./api/public/users/destroy`, {
                         user_id: vm.userId,
                         organisation_id: vm.organisationId,
                         delete_user_id: user.id,
@@ -127,7 +198,7 @@ if (document.getElementById("public-users")) {
 
             editUser(user) {
                 const vm = this;
-                vm.editMode = !vm.editMode;
+                vm.editMode = true;
                 vm.editedUser = JSON.parse(JSON.stringify(user));
             },
 
@@ -143,7 +214,7 @@ if (document.getElementById("public-users")) {
                     return;
                 }
                 axios
-                    .post("./api/public/users/get/" + vm.organisationId, {
+                    .post("./api/public/users/list/" + vm.organisationId, {
                         _token: token,
                         user_id: vm.userId,
                     })
@@ -156,22 +227,53 @@ if (document.getElementById("public-users")) {
                     });
             },
 
-            pathUser() {
+            patchUser() {
                 const vm = this;
-                console.log("sudmitForm");
                 axios
-                    .post(`./api/public/users/set`, {
+                    .post(`./api/public/users/patch`, {
                         user_id: vm.userId,
                         organisation_id: vm.organisationId,
                         edit_user: vm.editedUser,
                     })
                     .then((response) => {
                         vm.editedUser = response.data.patch_user;
+                        vm.messages.success = "Успешно сохранен";
                         vm.getUsers();
                     })
                     .catch((e) => {
+                        console.log(e.response);
                         vm.messages.error = `${e.response.status} ${e.response.statusText} : ${e.response.data.message}`;
                     });
+            },
+
+            storeUser() {
+                const vm = this;
+                axios
+                    .post(`./api/public/users/store`, {
+                        user_id: vm.userId,
+                        organisation_id: vm.organisationId,
+                        new_user: vm.editedUser,
+                        password: vm.passwords.new,
+                    })
+                    .then((response) => {
+                        console.log(response);
+                        vm.editedUser = response.data.new_user;
+                        vm.getUsers();
+                    })
+                    .catch((e) => {
+                        console.log(e.response);
+                        vm.messages.error = `${e.response.status} ${e.response.statusText} : ${e.response.data.message}`;
+                    });
+            },
+
+            submitForm() {
+                const vm = this;
+                console.log(vm.editedUser.id);
+                if (vm.editedUser.id == -1) {
+                    vm.storeUser();
+                } else {
+                    vm.patchUser();
+                }
             },
 
             submitPassword() {
@@ -208,7 +310,6 @@ if (document.getElementById("public-users")) {
                             : "Пароль успешно изменен";
                     })
                     .catch((e) => {
-                        console.log(e.response);
                         vm.messages.error = `${e.response.status} ${e.response.statusText} : ${e.response.data.message}`;
                     });
             },

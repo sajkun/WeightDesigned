@@ -5576,7 +5576,7 @@ if (document.getElementById("public-users")) {
         phone: null,
         organisation_id: null,
         role: null
-      }, _defineProperty(_editedUser, "email", null), _defineProperty(_editedUser, "login", null), _defineProperty(_editedUser, "password", null), _defineProperty(_editedUser, "role", null), _editedUser),
+      }, _defineProperty(_editedUser, "email", null), _defineProperty(_editedUser, "login", null), _defineProperty(_editedUser, "role", null), _editedUser),
       validationMessages: {
         inputOldPassword: "Введите пожалуйста старый пароль",
         inputNewPassword: "Задайте  пожалуйста новый пароль",
@@ -5605,48 +5605,87 @@ if (document.getElementById("public-users")) {
       vm.getUsers();
       vm.$el.addEventListener("click", function (e) {
         if (e.target.type !== "button") {
-          vm.messages.error = null;
-          vm.messages.info = null;
-          vm.messages.success = null;
+          vm.clearMessages();
         }
       });
     },
     computed: {
       listClass: function listClass() {
-        var editClass = "col-md-6 d-sm-none d-md-block";
-        var displayClass = "col-md-12 ";
+        var editClass = "col-12 col-lg-6 d-sm-none d-lg-block";
+        var displayClass = "col-12 ";
         return this.editMode ? editClass : displayClass;
       }
     },
     methods: {
+      addUser: function addUser() {
+        this.clearUser();
+        this.editMode = true;
+      },
+      cancelConfirmActionCb: function cancelConfirmActionCb() {
+        document.dispatchEvent(new CustomEvent("cancelConfirmEvent"));
+      },
+      clearMessages: function clearMessages(confirm) {
+        this.messages = {
+          error: null,
+          info: null,
+          success: null,
+          confirm: this.messages.confirm
+        };
+        if (confirm) {
+          this.messages.confirm = null;
+        }
+      },
+      clearUser: function clearUser() {
+        var _this$editedUser;
+        this.editedUser = (_this$editedUser = {
+          id: -1,
+          email: null,
+          first_name: null,
+          last_name: null,
+          middle_name: null,
+          phone: null,
+          organisation_id: null,
+          role: null
+        }, _defineProperty(_this$editedUser, "email", null), _defineProperty(_this$editedUser, "login", null), _defineProperty(_this$editedUser, "role", null), _this$editedUser);
+      },
       confirmActionCb: function confirmActionCb() {
-        document.dispatchEvent(new CustomEvent("confirmEvent"));
+        document.dispatchEvent(new CustomEvent("submitConfirmEvent"));
       },
       deleteUser: function deleteUser(user) {
         var vm = this;
-        console.log("deleteUser");
-        var handler = function handler() {
+        var _handlerSubmit = null;
+        var _handlerCancel = null;
+        vm.editMode = false;
+        _handlerSubmit = function handlerSubmit() {
           vm.deleteUserCb(user);
-          document.removeEventListener("confirmEvent", handler, false);
+          document.removeEventListener("submitConfirmEvent", _handlerSubmit, false);
           vm.$nextTick(function () {
-            vm.messages.confirm = null;
+            vm.clearMessages(true);
+          });
+        };
+        _handlerCancel = function handlerCancel() {
+          document.removeEventListener("submitConfirmEvent", _handlerSubmit, false);
+          document.removeEventListener("cancelConfirmEvent", _handlerCancel, false);
+          vm.$nextTick(function () {
+            vm.clearMessages(true);
           });
         };
         if (!vm.messages.confirm) {
-          console.log("if");
-          document.addEventListener("confirmEvent", handler);
+          document.addEventListener("submitConfirmEvent", _handlerSubmit);
+          document.addEventListener("cancelConfirmEvent", _handlerCancel);
           vm.messages.confirm = "".concat(vm.validationMessages.deleteUser, " ").concat(user.login, " ?");
         } else {
-          document.removeEventListener("confirmEvent", handler, false);
+          document.removeEventListener("confirmEvent", _handlerSubmit, false);
+          document.removeEventListener("submitConfirmEvent", _handlerCancel, false);
           vm.$nextTick(function () {
-            vm.messages.confirm = null;
+            vm.clearMessages(true);
           });
         }
       },
       deleteUserCb: function deleteUserCb(user) {
         console.log("deleteUserCb");
         var vm = this;
-        axios.post("./api/public/users/delete", {
+        axios.post("./api/public/users/destroy", {
           user_id: vm.userId,
           organisation_id: vm.organisationId,
           delete_user_id: user.id
@@ -5658,7 +5697,7 @@ if (document.getElementById("public-users")) {
       },
       editUser: function editUser(user) {
         var vm = this;
-        vm.editMode = !vm.editMode;
+        vm.editMode = true;
         vm.editedUser = JSON.parse(JSON.stringify(user));
       },
       generatePassword: function generatePassword() {
@@ -5670,7 +5709,7 @@ if (document.getElementById("public-users")) {
         if (vm.$refs.organisationId < 0) {
           return;
         }
-        axios.post("./api/public/users/get/" + vm.organisationId, {
+        axios.post("./api/public/users/list/" + vm.organisationId, {
           _token: token,
           user_id: vm.userId
         }).then(function (response) {
@@ -5680,19 +5719,45 @@ if (document.getElementById("public-users")) {
           console.log(e);
         });
       },
-      pathUser: function pathUser() {
+      patchUser: function patchUser() {
         var vm = this;
-        console.log("sudmitForm");
-        axios.post("./api/public/users/set", {
+        axios.post("./api/public/users/patch", {
           user_id: vm.userId,
           organisation_id: vm.organisationId,
           edit_user: vm.editedUser
         }).then(function (response) {
           vm.editedUser = response.data.patch_user;
+          vm.messages.success = "Успешно сохранен";
           vm.getUsers();
         })["catch"](function (e) {
+          console.log(e.response);
           vm.messages.error = "".concat(e.response.status, " ").concat(e.response.statusText, " : ").concat(e.response.data.message);
         });
+      },
+      storeUser: function storeUser() {
+        var vm = this;
+        axios.post("./api/public/users/store", {
+          user_id: vm.userId,
+          organisation_id: vm.organisationId,
+          new_user: vm.editedUser,
+          password: vm.passwords["new"]
+        }).then(function (response) {
+          console.log(response);
+          vm.editedUser = response.data.new_user;
+          vm.getUsers();
+        })["catch"](function (e) {
+          console.log(e.response);
+          vm.messages.error = "".concat(e.response.status, " ").concat(e.response.statusText, " : ").concat(e.response.data.message);
+        });
+      },
+      submitForm: function submitForm() {
+        var vm = this;
+        console.log(vm.editedUser.id);
+        if (vm.editedUser.id == -1) {
+          vm.storeUser();
+        } else {
+          vm.patchUser();
+        }
       },
       submitPassword: function submitPassword() {
         var vm = this;
@@ -5721,7 +5786,6 @@ if (document.getElementById("public-users")) {
           vm.editPassword = false;
           vm.messages.success = response.data.message ? response.data.message : "Пароль успешно изменен";
         })["catch"](function (e) {
-          console.log(e.response);
           vm.messages.error = "".concat(e.response.status, " ").concat(e.response.statusText, " : ").concat(e.response.data.message);
         });
       }

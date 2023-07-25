@@ -22,8 +22,9 @@ Route::group([
     'middleware' => 'api',
     'prefix' => 'public/users'
 ], function ($router) {
-    Route::post('get/{organisation_id}', Api\GetUsersController::class);
-    Route::post('set', Api\PatchUsersController::class);
+    Route::post('list/{organisation_id}', Api\GetUsersController::class);
+    Route::post('patch', Api\PatchUsersController::class);
     Route::post('spw', Api\SetUserPasswordController::class);
-    Route::post('delete', Api\DestroyUserController::class);
+    Route::post('destroy', Api\DestroyUserController::class);
+    Route::post('store', Api\StoreUserController::class);
 });

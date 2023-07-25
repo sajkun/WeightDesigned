@@ -20,7 +20,7 @@ class PatchUsersController extends Controller
             $request->validate([
                 'organisation_id' => 'required',
                 'user_id' => 'required',
-                'new_data' => 'required',
+                'edit_user' => 'required',
             ]);
 
             $user_id = $request->user_id;
@@ -35,7 +35,7 @@ class PatchUsersController extends Controller
             $new_data = $request->edit_user;
             $patch_user = User::find($new_data['id']);
 
-            unset($new_data['login'], $new_data['id'], $new_data['created_at'], $new_data['created_at']);
+            unset($new_data['login'],$new_data['password'], $new_data['id'], $new_data['created_at'], $new_data['created_at']);
 
             $patch_user->update($new_data);
 
