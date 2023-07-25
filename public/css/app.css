@@ -1,10 +1,29 @@
 @import url(https://fonts.googleapis.com/css?family=Nunito);
 @charset "UTF-8";
 body {
-  --link-color: #fff;
-  --link-color-active: #7e89a5;
-  --contrast: #fff;
+  --red-ultralight: #ffeaeb;
   --red-light: #f8c4c6;
+  --red-medium: #f1898e;
+  --red: #e73a42;
+  --blue-ultralight: #ebf6ff;
+  --blue-light: #c8e7ff;
+  --blue-medium: #409bff;
+  --blue: #0870e2;
+  --green-ultralight: #e1f3ea;
+  --green-light: #b3d8c5;
+  --green-medium: #66b28a;
+  --green: #007e3c;
+  --grey-ultralight: #eef2fd;
+  --grey-light: #dfe6fa;
+  --grey-medium: #aab3cb;
+  --grey: #7e89a5;
+  --yellow-ultralight: #fff9e0;
+  --yellow-light: #fff1b8;
+  --yellow-medium: #ffe370;
+  --yellow: #ffd111;
+  --link-color: #fff;
+  --link-color-active: var(--grey);
+  --contrast: #fff;
 }
 
 /*!
