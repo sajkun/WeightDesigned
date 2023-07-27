@@ -1,11 +1,10 @@
 <?php
-
 namespace App\Http\Controllers\PublicArea\Employees;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Http\Controllers\PublicController;
 
-class IndexController extends Controller
+class IndexController extends PublicController
 {
     /**
      * Handle the incoming request.
@@ -15,6 +14,7 @@ class IndexController extends Controller
      */
     public function __invoke(Request $request)
     {
-        //
+        $this->prepareData();
+        return view('pages.employees.index');
     }
 }

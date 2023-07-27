@@ -22,8 +22,8 @@ if (document.getElementById("public-users")) {
                 role: null,
                 email: null,
                 login: null,
-                role: null,
             },
+
             validationMessages: {
                 inputOldPassword: "Введите пожалуйста старый пароль",
                 inputNewPassword: "Задайте  пожалуйста новый пароль",

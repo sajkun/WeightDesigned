@@ -29,6 +29,7 @@ Route::group(['middleware' => 'auth'], function () {
     });
     Route::group(['namespace' => 'PublicArea\Employees', 'prefix' => 'employees'], function () {
         Route::get('/', 'IndexController')->name('public.employees.index');
+        Route::post('/store', 'StoreController')->name('public.employees.store');
     });
 });
 

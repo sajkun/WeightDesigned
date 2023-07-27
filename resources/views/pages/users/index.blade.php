@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="container-fluid d-none" id='public-users'>
-        <Transition name="bounce" v-for='msg, key in messages'>
+        <Transition :key='"msg" + key' name="bounce" v-for='msg, key in messages'>
             <div :class="key + '-message'" v-if='msg'>
                 @{{ msg }}
 

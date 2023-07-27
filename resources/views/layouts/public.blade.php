@@ -36,7 +36,7 @@
                             <ul class="main-menu">
                                 <li><a href="">Поля</a></li>
                                 <li><a href="">Техника</a></li>
-                                <li><a href="">Сотрудники</a></li>
+                                <li><a href="{{ route('public.employees.index') }}">Сотрудники</a></li>
                                 <li><a href="{{ route('public.users.index') }}">Пользователи</a></li>
                                 <li>
                                     <form id="logout-form" class='m-0' action="{{ route('logout') }}" method="POST">

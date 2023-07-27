@@ -5366,20 +5366,7 @@ files.keys().map(function (key) {
   return Vue.component(key.split("/").pop().split(".")[0], files(key)["default"]);
 });
 __webpack_require__(/*! ./public/users */ "./resources/js/public/users.js");
-// Vue.component(
-//     "example-component",
-//     require("./components/ExampleComponent.vue").default
-// );
-
-/**
- * Next, we will create a fresh Vue application instance and attach it to
- * the page. Then, you may begin adding components to this application
- * or customize the JavaScript scaffolding to fit your unique needs.
- */
-
-// const app = new Vue({
-//     el: '#app',
-// });
+__webpack_require__(/*! ./public/employees */ "./resources/js/public/employees.js");
 
 /***/ }),
 
@@ -5544,6 +5531,84 @@ document.addEventListener("click", function (e) {
 
 /***/ }),
 
+/***/ "./resources/js/public/employees.js":
+/*!******************************************!*\
+  !*** ./resources/js/public/employees.js ***!
+  \******************************************/
+/***/ (() => {
+
+if (document.getElementById("public-employees")) {
+  var appPublicEmployees = new Vue({
+    el: "#public-employees",
+    data: {
+      organisationId: -1,
+      userId: -1,
+      editMode: false,
+      editedEmployee: {
+        id: -1,
+        first_name: null,
+        last_name: null,
+        middle_name: null,
+        phone: null,
+        organisation_id: null,
+        specialisation: null
+      },
+      specialisations: []
+    },
+    computed: {
+      listClass: function listClass() {
+        var editClass = "col-12 col-lg-6 d-sm-none d-lg-block";
+        var displayClass = "col-12 ";
+        return this.editMode ? editClass : displayClass;
+      }
+    },
+    mounted: function mounted() {
+      var vm = this;
+      vm.$el.classList.remove("d-none");
+      vm.organisationId = vm.$refs.organisationId.value;
+      vm.userId = vm.$refs.userId.value;
+      vm.getEmployees();
+      vm.$el.addEventListener("click", function (e) {
+        if (e.target.type !== "button") {
+          vm.clearMessages();
+        }
+      });
+    },
+    methods: {
+      addEmployee: function addEmployee() {
+        var vm = this;
+        vm.editMode = true;
+      },
+      clearMessages: function clearMessages() {},
+      getEmployees: function getEmployees() {},
+      patchEmployee: function patchEmployee() {},
+      storeEmployee: function storeEmployee() {
+        var vm = this;
+        axios.post("./employees/store", {
+          user_id: vm.userId,
+          organisation_id: vm.organisationId,
+          edited_employee: vm.editedEmployee
+        }).then(function (response) {
+          console.log(response);
+        })["catch"](function (e) {
+          console.log(e.response);
+          vm.messages.error = "".concat(e.response.status, " ").concat(e.response.statusText, " : ").concat(e.response.data.message);
+        });
+      },
+      submitForm: function submitForm() {
+        var vm = this;
+        if (vm.editedEmployee.id === -1) {
+          vm.storeEmployee();
+        } else {
+          vm.patchEmployee();
+        }
+      }
+    }
+  });
+}
+
+/***/ }),
+
 /***/ "./resources/js/public/users.js":
 /*!**************************************!*\
   !*** ./resources/js/public/users.js ***!
@@ -5576,7 +5641,7 @@ if (document.getElementById("public-users")) {
         phone: null,
         organisation_id: null,
         role: null
-      }, _defineProperty(_editedUser, "email", null), _defineProperty(_editedUser, "login", null), _defineProperty(_editedUser, "role", null), _editedUser),
+      }, _defineProperty(_editedUser, "email", null), _defineProperty(_editedUser, "login", null), _editedUser),
       validationMessages: {
         inputOldPassword: "Введите пожалуйста старый пароль",
         inputNewPassword: "Задайте  пожалуйста новый пароль",
