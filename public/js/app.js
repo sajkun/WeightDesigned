@@ -5750,6 +5750,7 @@ if (document.getElementById("public-users")) {
       addUser: function addUser() {
         this.clearUser();
         this.editMode = true;
+        this.editPassword = false;
       },
       cancelConfirmActionCb: function cancelConfirmActionCb() {
         document.dispatchEvent(new CustomEvent("cancelConfirmEvent"));
@@ -5828,6 +5829,7 @@ if (document.getElementById("public-users")) {
       editUser: function editUser(user) {
         var vm = this;
         vm.editMode = true;
+        vm.editPassword = false;
         vm.editedUser = JSON.parse(JSON.stringify(user));
       },
       generatePassword: function generatePassword() {
@@ -5866,6 +5868,7 @@ if (document.getElementById("public-users")) {
       },
       storeUser: function storeUser() {
         var vm = this;
+        console.log();
         axios.post("./api/public/users/store", {
           user_id: vm.userId,
           organisation_id: vm.organisationId,

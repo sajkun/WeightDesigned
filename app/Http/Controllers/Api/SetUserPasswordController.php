@@ -49,7 +49,8 @@ class SetUserPasswordController extends Controller
 
             return response()->json([
                 'message' => 'Пароль изменен успешно',
-                'user_id' => $edit_user->id
+                'user_id' => $edit_user->id,
+                'new_password' => $request->new_password
             ], 200);
         } catch (\Exception $e) {
             return response()->json([

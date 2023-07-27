@@ -53,7 +53,7 @@ class StoreUserController extends Controller
                 throw new \ErrorException('Пользователь с таким телефоном уже существует', 403);
             }
 
-            $new_user['password'] = Hash::make($request->new_password);
+            $new_user['password'] = Hash::make($request->password);
 
             $new_user = User::create($new_user);
 
