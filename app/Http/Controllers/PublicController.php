@@ -25,5 +25,6 @@ class PublicController extends Controller
         view()->share('organisation_id', $organisation->id);
         view()->share('user_id', $user->id);
         view()->share('users', $organisation->users()->get());
+        view()->share('users', $organisation->employees()->get());
     }
 }

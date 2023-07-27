@@ -27,6 +27,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::group(['namespace' => 'PublicArea\Users', 'prefix' => 'users'], function () {
         Route::get('/', 'IndexController')->name('public.users.index');
     });
+    Route::group(['namespace' => 'PublicArea\Employees', 'prefix' => 'employees'], function () {
+        Route::get('/', 'IndexController')->name('public.employees.index');
+    });
 });
 
 Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
