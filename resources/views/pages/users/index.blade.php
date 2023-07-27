@@ -26,8 +26,10 @@
                 :style="!editMode ? 'transition: width .15s ease .1s' : ''">
 
                 <div class="d-lg-flex flex-column org-wrapper h-100">
-                    <button class="btn w-100 btn-borders" type="button" @click='addUser()'>Добавить
-                        пользователя</button>
+                    @can('create', [App\Models\User::class, $organisation_id])
+                        <button class="btn w-100 btn-borders" type="button" @click='addUser()'>Добавить
+                            пользователя</button>
+                    @endcan
                     <table class="organisation">
                         <tbody>
                             <tr>
@@ -43,12 +45,16 @@
                                 <td>@{{ user.first_name }} @{{ user.middle_name }} @{{ user.last_name }}</td>
                                 <td>@{{ user.role_name }}</td>
                                 <td class='text-end'>
-                                    <button class='btn' @click.prevent.stop='deleteUser(user)'>
-                                        <i class="fa fa-solid fa-trash"></i>
-                                    </button>
-                                    <button class='btn'>
-                                        <i class="fa fa-solid fa-pencil"></i>
-                                    </button>
+                                    @can('delete', [App\Models\User::class, $organisation_id])
+                                        <button class='btn' @click.prevent.stop='deleteUser(user)'>
+                                            <i class="fa fa-solid fa-trash"></i>
+                                        </button>
+                                    @endcan
+                                    @can('update', [App\Models\User::class, $organisation_id])
+                                        <button class='btn'>
+                                            <i class="fa fa-solid fa-pencil"></i>
+                                        </button>
+                                    @endcan
                                 </td>
                             </tr>
 

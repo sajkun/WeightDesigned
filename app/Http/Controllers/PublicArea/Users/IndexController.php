@@ -1,9 +1,10 @@
 <?php
 namespace App\Http\Controllers\PublicArea\Users;
 
-use App\Http\Controllers\Controller;
-use App\Http\Controllers\PublicController;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\PublicController;
 
 class IndexController extends PublicController
 {
@@ -15,6 +16,7 @@ class IndexController extends PublicController
      */
     public function __invoke(Request $request)
     {
+        $this->authorize('viewAny', [User::class, Auth::user()->organisation_id]);
         $this->prepareData();
         return view('pages.users.index');
     }
