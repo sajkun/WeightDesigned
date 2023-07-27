@@ -36,8 +36,13 @@
                             <ul class="main-menu">
                                 <li><a href="">Поля</a></li>
                                 <li><a href="">Техника</a></li>
-                                <li><a href="">Сотрудники</a></li>
-                                <li><a href="{{ route('public.users.index') }}">Пользователи</a></li>
+                                @can('viewAny', [App\Models\Employee::class, $organisation_id])
+                                    <li><a href="{{ route('public.employees.index') }}">Сотрудники</a></li>
+                                @endcan
+
+                                @can('viewAny', [App\Models\User::class, $organisation_id])
+                                    <li><a href="{{ route('public.users.index') }}">Пользователи</a></li>
+                                @endcan
                                 <li>
                                     <form id="logout-form" class='m-0' action="{{ route('logout') }}" method="POST">
                                         @csrf

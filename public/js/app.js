@@ -5366,20 +5366,7 @@ files.keys().map(function (key) {
   return Vue.component(key.split("/").pop().split(".")[0], files(key)["default"]);
 });
 __webpack_require__(/*! ./public/users */ "./resources/js/public/users.js");
-// Vue.component(
-//     "example-component",
-//     require("./components/ExampleComponent.vue").default
-// );
-
-/**
- * Next, we will create a fresh Vue application instance and attach it to
- * the page. Then, you may begin adding components to this application
- * or customize the JavaScript scaffolding to fit your unique needs.
- */
-
-// const app = new Vue({
-//     el: '#app',
-// });
+__webpack_require__(/*! ./public/employees */ "./resources/js/public/employees.js");
 
 /***/ }),
 
@@ -5544,19 +5531,219 @@ document.addEventListener("click", function (e) {
 
 /***/ }),
 
+/***/ "./resources/js/public/employees.js":
+/*!******************************************!*\
+  !*** ./resources/js/public/employees.js ***!
+  \******************************************/
+/***/ (() => {
+
+if (document.getElementById("public-employees")) {
+  var appPublicEmployees = new Vue({
+    el: "#public-employees",
+    data: {
+      organisationId: -1,
+      userId: -1,
+      editMode: false,
+      employees: [],
+      editedEmployee: {
+        id: -1,
+        first_name: null,
+        last_name: null,
+        middle_name: null,
+        phone: null,
+        organisation_id: null,
+        specialisation: null
+      },
+      specialisations: {
+        "Водитель Зерновоза": "Водитель Зерновоза",
+        "Водитель Комбайна": "Водитель Комбайна",
+        "Водитель Трактора": "Водитель Трактора"
+      },
+      messages: {
+        error: null,
+        info: null,
+        success: null,
+        confirm: null
+      },
+      validationMessages: {
+        deleteEmployee: "Вы уверены, что хотите удалить сотрудника"
+      }
+    },
+    computed: {
+      listClass: function listClass() {
+        var editClass = "col-12 col-lg-6 d-sm-none d-lg-block";
+        var displayClass = "col-12 ";
+        return this.editMode ? editClass : displayClass;
+      }
+    },
+    mounted: function mounted() {
+      var vm = this;
+      vm.$el.classList.remove("d-none");
+      vm.organisationId = vm.$refs.organisationId.value;
+      vm.userId = vm.$refs.userId.value;
+      vm.getEmployees();
+      vm.$el.addEventListener("click", function (e) {
+        if (e.target.type !== "button") {
+          vm.clearMessages();
+        }
+      });
+    },
+    methods: {
+      addEmployee: function addEmployee() {
+        var vm = this;
+        vm.editMode = true;
+        vm.clearEmployee();
+      },
+      clearEmployee: function clearEmployee() {
+        var vm = this;
+        vm.editedEmployee = {
+          id: -1,
+          first_name: null,
+          last_name: null,
+          middle_name: null,
+          phone: null,
+          organisation_id: null,
+          specialisation: null
+        };
+      },
+      confirmActionCb: function confirmActionCb() {
+        document.dispatchEvent(new CustomEvent("submitConfirmEvent"));
+      },
+      cancelConfirmActionCb: function cancelConfirmActionCb() {
+        document.dispatchEvent(new CustomEvent("cancelConfirmEvent"));
+      },
+      clearMessages: function clearMessages(confirm) {
+        this.messages = {
+          error: null,
+          info: null,
+          success: null,
+          confirm: this.messages.confirm
+        };
+        if (confirm) {
+          this.messages.confirm = null;
+        }
+      },
+      deleteEmployee: function deleteEmployee(person) {
+        var vm = this;
+        var _handlerSubmit = null;
+        var _handlerCancel = null;
+        vm.editMode = false;
+        _handlerSubmit = function handlerSubmit() {
+          vm.deleteEmployeeCb(person);
+          document.removeEventListener("submitConfirmEvent", _handlerSubmit, false);
+          vm.$nextTick(function () {
+            vm.clearMessages(true);
+          });
+        };
+        _handlerCancel = function handlerCancel() {
+          document.removeEventListener("submitConfirmEvent", _handlerSubmit, false);
+          document.removeEventListener("cancelConfirmEvent", _handlerCancel, false);
+          vm.$nextTick(function () {
+            vm.clearMessages(true);
+          });
+        };
+        if (!vm.messages.confirm) {
+          document.addEventListener("submitConfirmEvent", _handlerSubmit);
+          document.addEventListener("cancelConfirmEvent", _handlerCancel);
+          vm.messages.confirm = "".concat(vm.validationMessages.deleteEmployee, " ").concat(person.last_name, " ?");
+        } else {
+          document.removeEventListener("confirmEvent", _handlerSubmit, false);
+          document.removeEventListener("submitConfirmEvent", _handlerCancel, false);
+          vm.$nextTick(function () {
+            vm.clearMessages(true);
+          });
+        }
+      },
+      deleteEmployeeCb: function deleteEmployeeCb(person) {
+        var vm = this;
+        axios.post("./employees/delete", {
+          user_id: vm.userId,
+          organisation_id: vm.organisationId,
+          delete_employee_id: person.id
+        }).then(function (response) {
+          console.log(response);
+          vm.getEmployees();
+        })["catch"](function (e) {
+          console.log(e.response);
+          vm.messages.error = "".concat(e.response.status, " ").concat(e.response.statusText, " : ").concat(e.response.data.message);
+        });
+      },
+      edit: function edit(person) {
+        var vm = this;
+        vm.editMode = true;
+        vm.editedEmployee = JSON.parse(JSON.stringify(person));
+      },
+      getEmployees: function getEmployees() {
+        var vm = this;
+        if (vm.$refs.organisationId < 0) {
+          return;
+        }
+        axios.post("./api/public/employees/list/" + vm.organisationId, {
+          user_id: vm.userId
+        }).then(function (response) {
+          vm.employees = response.data.employees;
+        })["catch"](function (e) {
+          console.log(e);
+        });
+      },
+      patchEmployee: function patchEmployee() {
+        var vm = this;
+        axios.post("./employees/edit", {
+          user_id: vm.userId,
+          organisation_id: vm.organisationId,
+          edited_employee: vm.editedEmployee
+        }).then(function (response) {
+          console.log(response);
+          vm.getEmployees();
+        })["catch"](function (e) {
+          console.log(e.response);
+          vm.messages.error = "".concat(e.response.status, " ").concat(e.response.statusText, " : ").concat(e.response.data.message);
+        });
+      },
+      storeEmployee: function storeEmployee() {
+        var vm = this;
+        axios.post("./employees/store", {
+          user_id: vm.userId,
+          organisation_id: vm.organisationId,
+          edited_employee: vm.editedEmployee
+        }).then(function (response) {
+          console.log(response);
+          vm.getEmployees();
+        })["catch"](function (e) {
+          console.log(e.response);
+          vm.messages.error = "".concat(e.response.status, " ").concat(e.response.statusText, " : ").concat(e.response.data.message);
+        });
+      },
+      submitForm: function submitForm() {
+        var vm = this;
+        if (vm.editedEmployee.id === -1) {
+          vm.storeEmployee();
+        } else {
+          vm.patchEmployee();
+        }
+      }
+    }
+  });
+}
+
+/***/ }),
+
 /***/ "./resources/js/public/users.js":
 /*!**************************************!*\
   !*** ./resources/js/public/users.js ***!
   \**************************************/
 /***/ (() => {
 
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
+function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
+function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
 /**
  * работа с пользователями публичной зоны
  */
 
 if (document.getElementById("public-users")) {
-  /* add icons to the library */
-
+  var _editedUser;
   var appPublicUsers = new Vue({
     el: "#public-users",
     data: {
@@ -5564,9 +5751,35 @@ if (document.getElementById("public-users")) {
       userId: -1,
       users: [],
       roles: [],
-      editedUser: {},
+      editedUser: (_editedUser = {
+        id: -1,
+        email: null,
+        first_name: null,
+        last_name: null,
+        middle_name: null,
+        phone: null,
+        organisation_id: null,
+        role: null
+      }, _defineProperty(_editedUser, "email", null), _defineProperty(_editedUser, "login", null), _editedUser),
+      validationMessages: {
+        inputOldPassword: "Введите пожалуйста старый пароль",
+        inputNewPassword: "Задайте  пожалуйста новый пароль",
+        passwordMinimal: "минимальная длина пароля 6 символов",
+        deleteUser: "Вы уверены, что хотите удалить пользователя"
+      },
+      passwords: {
+        old: null,
+        "new": null
+      },
+      confirmAction: null,
       editMode: false,
-      errorMessage: null
+      messages: {
+        error: null,
+        info: null,
+        success: null,
+        confirm: null
+      },
+      editPassword: false
     },
     mounted: function mounted() {
       var vm = this;
@@ -5574,19 +5787,107 @@ if (document.getElementById("public-users")) {
       vm.organisationId = vm.$refs.organisationId.value;
       vm.userId = vm.$refs.userId.value;
       vm.getUsers();
+      vm.$el.addEventListener("click", function (e) {
+        if (e.target.type !== "button") {
+          vm.clearMessages();
+        }
+      });
     },
     computed: {
       listClass: function listClass() {
-        var editClass = "col-md-6 d-sm-none d-md-block";
-        var displayClass = "col-md-12 ";
+        var editClass = "col-12 col-lg-6 d-sm-none d-lg-block";
+        var displayClass = "col-12 ";
         return this.editMode ? editClass : displayClass;
       }
     },
     methods: {
+      addUser: function addUser() {
+        this.clearUser();
+        this.editMode = true;
+        this.editPassword = false;
+      },
+      cancelConfirmActionCb: function cancelConfirmActionCb() {
+        document.dispatchEvent(new CustomEvent("cancelConfirmEvent"));
+      },
+      clearMessages: function clearMessages(confirm) {
+        this.messages = {
+          error: null,
+          info: null,
+          success: null,
+          confirm: this.messages.confirm
+        };
+        if (confirm) {
+          this.messages.confirm = null;
+        }
+      },
+      clearUser: function clearUser() {
+        var _this$editedUser;
+        this.editedUser = (_this$editedUser = {
+          id: -1,
+          email: null,
+          first_name: null,
+          last_name: null,
+          middle_name: null,
+          phone: null,
+          organisation_id: null,
+          role: null
+        }, _defineProperty(_this$editedUser, "email", null), _defineProperty(_this$editedUser, "login", null), _defineProperty(_this$editedUser, "role", null), _this$editedUser);
+      },
+      confirmActionCb: function confirmActionCb() {
+        document.dispatchEvent(new CustomEvent("submitConfirmEvent"));
+      },
+      deleteUser: function deleteUser(user) {
+        var vm = this;
+        var _handlerSubmit = null;
+        var _handlerCancel = null;
+        vm.editMode = false;
+        _handlerSubmit = function handlerSubmit() {
+          vm.deleteUserCb(user);
+          document.removeEventListener("submitConfirmEvent", _handlerSubmit, false);
+          vm.$nextTick(function () {
+            vm.clearMessages(true);
+          });
+        };
+        _handlerCancel = function handlerCancel() {
+          document.removeEventListener("submitConfirmEvent", _handlerSubmit, false);
+          document.removeEventListener("cancelConfirmEvent", _handlerCancel, false);
+          vm.$nextTick(function () {
+            vm.clearMessages(true);
+          });
+        };
+        if (!vm.messages.confirm) {
+          document.addEventListener("submitConfirmEvent", _handlerSubmit);
+          document.addEventListener("cancelConfirmEvent", _handlerCancel);
+          vm.messages.confirm = "".concat(vm.validationMessages.deleteUser, " ").concat(user.login, " ?");
+        } else {
+          document.removeEventListener("confirmEvent", _handlerSubmit, false);
+          document.removeEventListener("submitConfirmEvent", _handlerCancel, false);
+          vm.$nextTick(function () {
+            vm.clearMessages(true);
+          });
+        }
+      },
+      deleteUserCb: function deleteUserCb(user) {
+        console.log("deleteUserCb");
+        var vm = this;
+        axios.post("./api/public/users/destroy", {
+          user_id: vm.userId,
+          organisation_id: vm.organisationId,
+          delete_user_id: user.id
+        }).then(function (response) {
+          vm.getUsers();
+        })["catch"](function (e) {
+          vm.messages.error = "".concat(e.response.status, " ").concat(e.response.statusText, " : ").concat(e.response.data.message);
+        });
+      },
       editUser: function editUser(user) {
         var vm = this;
-        vm.editMode = !vm.editMode;
+        vm.editMode = true;
+        vm.editPassword = false;
         vm.editedUser = JSON.parse(JSON.stringify(user));
+      },
+      generatePassword: function generatePassword() {
+        this.passwords["new"] = Math.random().toString(36).slice(-12);
       },
       getUsers: function getUsers() {
         var vm = this;
@@ -5594,7 +5895,7 @@ if (document.getElementById("public-users")) {
         if (vm.$refs.organisationId < 0) {
           return;
         }
-        axios.post("./api/public/users/get/" + vm.organisationId, {
+        axios.post("./api/public/users/list/" + vm.organisationId, {
           _token: token,
           user_id: vm.userId
         }).then(function (response) {
@@ -5604,18 +5905,75 @@ if (document.getElementById("public-users")) {
           console.log(e);
         });
       },
-      pathUser: function pathUser() {
+      patchUser: function patchUser() {
         var vm = this;
-        console.log("sudmitForm");
-        axios.post("./api/public/users/set", {
+        axios.post("./api/public/users/patch", {
           user_id: vm.userId,
           organisation_id: vm.organisationId,
           edit_user: vm.editedUser
         }).then(function (response) {
           vm.editedUser = response.data.patch_user;
+          vm.messages.success = "Успешно сохранен";
           vm.getUsers();
         })["catch"](function (e) {
-          vm.errorMessage = "".concat(e.response.status, " ").concat(e.response.statusText, " : ").concat(e.response.data.message);
+          console.log(e.response);
+          vm.messages.error = "".concat(e.response.status, " ").concat(e.response.statusText, " : ").concat(e.response.data.message);
+        });
+      },
+      storeUser: function storeUser() {
+        var vm = this;
+        console.log();
+        axios.post("./api/public/users/store", {
+          user_id: vm.userId,
+          organisation_id: vm.organisationId,
+          new_user: vm.editedUser,
+          password: vm.passwords["new"]
+        }).then(function (response) {
+          console.log(response);
+          vm.editedUser = response.data.new_user;
+          vm.getUsers();
+        })["catch"](function (e) {
+          console.log(e.response);
+          vm.messages.error = "".concat(e.response.status, " ").concat(e.response.statusText, " : ").concat(e.response.data.message);
+        });
+      },
+      submitForm: function submitForm() {
+        var vm = this;
+        console.log(vm.editedUser.id);
+        if (vm.editedUser.id == -1) {
+          vm.storeUser();
+        } else {
+          vm.patchUser();
+        }
+      },
+      submitPassword: function submitPassword() {
+        var vm = this;
+        if (!vm.passwords.old) {
+          vm.messages.error = vm.validationMessages.inputOldPassword;
+          return;
+        }
+        if (!vm.passwords["new"]) {
+          vm.messages.error = vm.validationMessages.inputNewPassword;
+          return;
+        }
+        if (vm.passwords["new"].length < 6) {
+          vm.messages.error = vm.validationMessages.passwordMinimal;
+          return;
+        }
+        axios.post("./api/public/users/spw", {
+          user_id: vm.userId,
+          organisation_id: vm.organisationId,
+          edit_user_id: vm.editedUser.id,
+          new_password: vm.passwords["new"],
+          old_password: vm.passwords.old
+        }).then(function (response) {
+          console.log(response);
+          vm.passwords["new"] = null;
+          vm.passwords.old = null;
+          vm.editPassword = false;
+          vm.messages.success = response.data.message ? response.data.message : "Пароль успешно изменен";
+        })["catch"](function (e) {
+          vm.messages.error = "".concat(e.response.status, " ").concat(e.response.statusText, " : ").concat(e.response.data.message);
         });
       }
     }

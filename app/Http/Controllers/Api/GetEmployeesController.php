@@ -1,18 +1,19 @@
 <?php
 namespace App\Http\Controllers\Api;
 
-use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Employee;
 
-class GetUsersController extends Controller
+class GetEmployeesController extends Controller
 {
     /**
      * Handle the incoming request.
      *
      * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
      */
-    public function __invoke($organisation_id, Request $request)
+    public function __invoke(Request $request, $organisation_id)
     {
         try {
             $request->validate([
@@ -25,20 +26,10 @@ class GetUsersController extends Controller
                 ];
             }
 
-            $users = User::where('organisation_id', $organisation_id)->get();
-            $roles = config('users.roles_nice_names');
-            unset($roles['admin'], $roles['superadmin']);
-
-            $users->map(function ($u) use ($roles) {
-                $u['role_name'] = $roles[$u['role']];
-                unset($u['password'], $u['organisation_id']);
-
-                return $u;
-            });
+            $employees = Employee::where('organisation_id', $organisation_id)->get();
 
             return response()->json([
-                'users' => $users,
-                'roles' => $roles,
+                'employees' => $employees,
             ], 200);
         } catch (\Exception $e) {
             return response()->json([

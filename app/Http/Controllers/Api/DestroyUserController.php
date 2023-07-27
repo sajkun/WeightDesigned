@@ -3,10 +3,9 @@ namespace App\Http\Controllers\Api;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
 
-class PatchUsersController extends Controller
+class DestroyUserController extends Controller
 {
     /**
      * Handle the incoming request.
@@ -20,11 +19,12 @@ class PatchUsersController extends Controller
             $request->validate([
                 'organisation_id' => 'required',
                 'user_id' => 'required',
-                'edit_user' => 'required',
+                'delete_user_id' => 'required',
             ]);
 
             $user_id = $request->user_id;
             $organisation_id = $request->organisation_id;
+            $delete_user_id = $request->delete_user_id;
 
             $user = User::find($user_id);
 
@@ -32,18 +32,24 @@ class PatchUsersController extends Controller
                 throw new \ErrorException('невторизованный запрос', 403);
             }
 
-            $new_data = $request->edit_user;
-            $patch_user = User::find($new_data['id']);
+            if ($user->id == $delete_user_id) {
+                throw new \ErrorException('Попытка удалить собственную учетную запись', 403);
+            }
 
-            unset($new_data['login'],$new_data['password'], $new_data['id'], $new_data['created_at'], $new_data['created_at']);
+            $delete_user = User::find($delete_user_id);
 
-            $patch_user->update($new_data);
+            if (!$delete_user) {
+                throw new \ErrorException('Попытка удалить несуществующего пользоывателя', 404);
+            }
+
+            if ($delete_user->organisation_id != $organisation_id) {
+                throw new \ErrorException('Попытка удалить пользователя другой организации', 403);
+            }
+
+            $delete_user->delete();
 
             return response()->json([
-                'user_id' => $user_id,
-                'user' => $user,
-                'patch_user' => $patch_user,
-                'new_data' => $new_data,
+                'delete_user' => $delete_user,
             ], 200);
         } catch (\Exception  $e) {
             return response()->json([
