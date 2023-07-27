@@ -27,6 +27,10 @@ if (document.getElementById("public-employees")) {
                 success: null,
                 confirm: null,
             },
+
+            validationMessages: {
+                deleteEmployee: "Вы уверены, что хотите удалить сотрудника",
+            },
         },
 
         computed: {
@@ -58,8 +62,6 @@ if (document.getElementById("public-employees")) {
                 vm.clearEmployee();
             },
 
-            clearMessages() {},
-
             clearEmployee() {
                 const vm = this;
                 vm.editedEmployee = {
@@ -71,6 +73,14 @@ if (document.getElementById("public-employees")) {
                     organisation_id: null,
                     specialisation: null,
                 };
+            },
+
+            confirmActionCb() {
+                document.dispatchEvent(new CustomEvent("submitConfirmEvent"));
+            },
+
+            cancelConfirmActionCb() {
+                document.dispatchEvent(new CustomEvent("cancelConfirmEvent"));
             },
 
             clearMessages(confirm) {
@@ -86,7 +96,92 @@ if (document.getElementById("public-employees")) {
                 }
             },
 
-            deleteEmployee() {},
+            deleteEmployee(person) {
+                const vm = this;
+
+                let handlerSubmit = null;
+                let handlerCancel = null;
+                vm.editMode = false;
+
+                handlerSubmit = () => {
+                    vm.deleteEmployeeCb(person);
+                    document.removeEventListener(
+                        "submitConfirmEvent",
+                        handlerSubmit,
+                        false
+                    );
+
+                    vm.$nextTick(() => {
+                        vm.clearMessages(true);
+                    });
+                };
+
+                handlerCancel = () => {
+                    document.removeEventListener(
+                        "submitConfirmEvent",
+                        handlerSubmit,
+                        false
+                    );
+
+                    document.removeEventListener(
+                        "cancelConfirmEvent",
+                        handlerCancel,
+                        false
+                    );
+
+                    vm.$nextTick(() => {
+                        vm.clearMessages(true);
+                    });
+                };
+
+                if (!vm.messages.confirm) {
+                    document.addEventListener(
+                        "submitConfirmEvent",
+                        handlerSubmit
+                    );
+
+                    document.addEventListener(
+                        "cancelConfirmEvent",
+                        handlerCancel
+                    );
+
+                    vm.messages.confirm = `${vm.validationMessages.deleteEmployee} ${person.last_name} ?`;
+                } else {
+                    document.removeEventListener(
+                        "confirmEvent",
+                        handlerSubmit,
+                        false
+                    );
+
+                    document.removeEventListener(
+                        "submitConfirmEvent",
+                        handlerCancel,
+                        false
+                    );
+
+                    vm.$nextTick(() => {
+                        vm.clearMessages(true);
+                    });
+                }
+            },
+
+            deleteEmployeeCb(person) {
+                const vm = this;
+                axios
+                    .post(`./employees/delete`, {
+                        user_id: vm.userId,
+                        organisation_id: vm.organisationId,
+                        delete_employee_id: person.id,
+                    })
+                    .then((response) => {
+                        console.log(response);
+                        vm.getEmployees();
+                    })
+                    .catch((e) => {
+                        console.log(e.response);
+                        vm.messages.error = `${e.response.status} ${e.response.statusText} : ${e.response.data.message}`;
+                    });
+            },
 
             edit(person) {
                 const vm = this;

@@ -18,7 +18,7 @@ class EmployeePolicy
      */
     public function viewAny(User $user, $organisation_id)
     {
-        return in_array($user->role, ['user_director', 'user_control_employees', 'user_control']) && $user->organisation_id === $organisation_id;
+        return in_array($user->role, ['user_director', 'user_control_employees', 'user_control']) && $user->organisation_id === (int)$organisation_id;
     }
 
     /**
@@ -30,7 +30,7 @@ class EmployeePolicy
      */
     public function view(User $user, $organisation_id)
     {
-        return in_array($user->role, ['user_director', 'user_control_employees', 'user_control']) && $user->organisation_id === $organisation_id;
+        return in_array($user->role, ['user_director', 'user_control_employees', 'user_control']) && $user->organisation_id === (int)$organisation_id;
     }
 
     /**
@@ -42,7 +42,7 @@ class EmployeePolicy
      */
     public function create(User $user, $organisation_id)
     {
-        return in_array($user->role, ['user_control_employees', 'user_control']) && $user->organisation_id === $organisation_id;
+        return in_array($user->role, ['user_control_employees', 'user_control']) && $user->organisation_id === (int)$organisation_id;
     }
 
     /**
@@ -54,7 +54,7 @@ class EmployeePolicy
      */
     public function update(User $user, $organisation_id)
     {
-        return in_array($user->role, ['user_control_employees', 'user_control']) && $user->organisation_id === $organisation_id;
+        return in_array($user->role, ['user_control_employees', 'user_control']) && $user->organisation_id === (int)$organisation_id;
     }
 
     /**
@@ -66,7 +66,7 @@ class EmployeePolicy
      */
     public function delete(User $user, $organisation_id)
     {
-        return in_array($user->role, ['user_control_employees', 'user_control']) && $user->organisation_id === $organisation_id;
+        return in_array($user->role, ['user_control_employees', 'user_control']) && $user->organisation_id === (int)$organisation_id;
     }
 
     /**
@@ -78,7 +78,7 @@ class EmployeePolicy
      */
     public function restore(User $user, $organisation_id)
     {
-        return in_array($user->role, ['user_control_employees', 'user_control']) && $user->organisation_id === $organisation_id;
+        return in_array($user->role, ['user_control_employees', 'user_control']) && $user->organisation_id === (int)$organisation_id;
     }
 
     /**
@@ -90,6 +90,6 @@ class EmployeePolicy
      */
     public function forceDelete(User $user, $organisation_id)
     {
-        return in_array($user->role, ['user_control_employees', 'user_control']) && $user->organisation_id === $organisation_id;
+        return in_array($user->role, ['user_control_employees', 'user_control']) && $user->organisation_id === (int)$organisation_id;
     }
 }

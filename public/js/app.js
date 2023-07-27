@@ -5537,12 +5537,7 @@ document.addEventListener("click", function (e) {
   \******************************************/
 /***/ (() => {
 
-function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
-function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
-function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
 if (document.getElementById("public-employees")) {
-  var _methods;
   var appPublicEmployees = new Vue({
     el: "#public-employees",
     data: {
@@ -5569,6 +5564,9 @@ if (document.getElementById("public-employees")) {
         info: null,
         success: null,
         confirm: null
+      },
+      validationMessages: {
+        deleteEmployee: "Вы уверены, что хотите удалить сотрудника"
       }
     },
     computed: {
@@ -5590,13 +5588,12 @@ if (document.getElementById("public-employees")) {
         }
       });
     },
-    methods: (_methods = {
+    methods: {
       addEmployee: function addEmployee() {
         var vm = this;
         vm.editMode = true;
         vm.clearEmployee();
       },
-      clearMessages: function clearMessages() {},
       clearEmployee: function clearEmployee() {
         var vm = this;
         vm.editedEmployee = {
@@ -5608,67 +5605,124 @@ if (document.getElementById("public-employees")) {
           organisation_id: null,
           specialisation: null
         };
+      },
+      confirmActionCb: function confirmActionCb() {
+        document.dispatchEvent(new CustomEvent("submitConfirmEvent"));
+      },
+      cancelConfirmActionCb: function cancelConfirmActionCb() {
+        document.dispatchEvent(new CustomEvent("cancelConfirmEvent"));
+      },
+      clearMessages: function clearMessages(confirm) {
+        this.messages = {
+          error: null,
+          info: null,
+          success: null,
+          confirm: this.messages.confirm
+        };
+        if (confirm) {
+          this.messages.confirm = null;
+        }
+      },
+      deleteEmployee: function deleteEmployee(person) {
+        var vm = this;
+        var _handlerSubmit = null;
+        var _handlerCancel = null;
+        vm.editMode = false;
+        _handlerSubmit = function handlerSubmit() {
+          vm.deleteEmployeeCb(person);
+          document.removeEventListener("submitConfirmEvent", _handlerSubmit, false);
+          vm.$nextTick(function () {
+            vm.clearMessages(true);
+          });
+        };
+        _handlerCancel = function handlerCancel() {
+          document.removeEventListener("submitConfirmEvent", _handlerSubmit, false);
+          document.removeEventListener("cancelConfirmEvent", _handlerCancel, false);
+          vm.$nextTick(function () {
+            vm.clearMessages(true);
+          });
+        };
+        if (!vm.messages.confirm) {
+          document.addEventListener("submitConfirmEvent", _handlerSubmit);
+          document.addEventListener("cancelConfirmEvent", _handlerCancel);
+          vm.messages.confirm = "".concat(vm.validationMessages.deleteEmployee, " ").concat(person.last_name, " ?");
+        } else {
+          document.removeEventListener("confirmEvent", _handlerSubmit, false);
+          document.removeEventListener("submitConfirmEvent", _handlerCancel, false);
+          vm.$nextTick(function () {
+            vm.clearMessages(true);
+          });
+        }
+      },
+      deleteEmployeeCb: function deleteEmployeeCb(person) {
+        var vm = this;
+        axios.post("./employees/delete", {
+          user_id: vm.userId,
+          organisation_id: vm.organisationId,
+          delete_employee_id: person.id
+        }).then(function (response) {
+          console.log(response);
+          vm.getEmployees();
+        })["catch"](function (e) {
+          console.log(e.response);
+          vm.messages.error = "".concat(e.response.status, " ").concat(e.response.statusText, " : ").concat(e.response.data.message);
+        });
+      },
+      edit: function edit(person) {
+        var vm = this;
+        vm.editMode = true;
+        vm.editedEmployee = JSON.parse(JSON.stringify(person));
+      },
+      getEmployees: function getEmployees() {
+        var vm = this;
+        if (vm.$refs.organisationId < 0) {
+          return;
+        }
+        axios.post("./api/public/employees/list/" + vm.organisationId, {
+          user_id: vm.userId
+        }).then(function (response) {
+          vm.employees = response.data.employees;
+        })["catch"](function (e) {
+          console.log(e);
+        });
+      },
+      patchEmployee: function patchEmployee() {
+        var vm = this;
+        axios.post("./employees/edit", {
+          user_id: vm.userId,
+          organisation_id: vm.organisationId,
+          edited_employee: vm.editedEmployee
+        }).then(function (response) {
+          console.log(response);
+          vm.getEmployees();
+        })["catch"](function (e) {
+          console.log(e.response);
+          vm.messages.error = "".concat(e.response.status, " ").concat(e.response.statusText, " : ").concat(e.response.data.message);
+        });
+      },
+      storeEmployee: function storeEmployee() {
+        var vm = this;
+        axios.post("./employees/store", {
+          user_id: vm.userId,
+          organisation_id: vm.organisationId,
+          edited_employee: vm.editedEmployee
+        }).then(function (response) {
+          console.log(response);
+          vm.getEmployees();
+        })["catch"](function (e) {
+          console.log(e.response);
+          vm.messages.error = "".concat(e.response.status, " ").concat(e.response.statusText, " : ").concat(e.response.data.message);
+        });
+      },
+      submitForm: function submitForm() {
+        var vm = this;
+        if (vm.editedEmployee.id === -1) {
+          vm.storeEmployee();
+        } else {
+          vm.patchEmployee();
+        }
       }
-    }, _defineProperty(_methods, "clearMessages", function clearMessages(confirm) {
-      this.messages = {
-        error: null,
-        info: null,
-        success: null,
-        confirm: this.messages.confirm
-      };
-      if (confirm) {
-        this.messages.confirm = null;
-      }
-    }), _defineProperty(_methods, "deleteEmployee", function deleteEmployee() {}), _defineProperty(_methods, "edit", function edit(person) {
-      var vm = this;
-      vm.editMode = true;
-      vm.editedEmployee = JSON.parse(JSON.stringify(person));
-    }), _defineProperty(_methods, "getEmployees", function getEmployees() {
-      var vm = this;
-      if (vm.$refs.organisationId < 0) {
-        return;
-      }
-      axios.post("./api/public/employees/list/" + vm.organisationId, {
-        user_id: vm.userId
-      }).then(function (response) {
-        vm.employees = response.data.employees;
-      })["catch"](function (e) {
-        console.log(e);
-      });
-    }), _defineProperty(_methods, "patchEmployee", function patchEmployee() {
-      var vm = this;
-      axios.post("./employees/edit", {
-        user_id: vm.userId,
-        organisation_id: vm.organisationId,
-        edited_employee: vm.editedEmployee
-      }).then(function (response) {
-        console.log(response);
-        vm.getEmployees();
-      })["catch"](function (e) {
-        console.log(e.response);
-        vm.messages.error = "".concat(e.response.status, " ").concat(e.response.statusText, " : ").concat(e.response.data.message);
-      });
-    }), _defineProperty(_methods, "storeEmployee", function storeEmployee() {
-      var vm = this;
-      axios.post("./employees/store", {
-        user_id: vm.userId,
-        organisation_id: vm.organisationId,
-        edited_employee: vm.editedEmployee
-      }).then(function (response) {
-        console.log(response);
-        vm.getEmployees();
-      })["catch"](function (e) {
-        console.log(e.response);
-        vm.messages.error = "".concat(e.response.status, " ").concat(e.response.statusText, " : ").concat(e.response.data.message);
-      });
-    }), _defineProperty(_methods, "submitForm", function submitForm() {
-      var vm = this;
-      if (vm.editedEmployee.id === -1) {
-        vm.storeEmployee();
-      } else {
-        vm.patchEmployee();
-      }
-    }), _methods)
+    }
   });
 }
 

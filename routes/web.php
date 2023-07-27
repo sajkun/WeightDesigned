@@ -31,6 +31,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/', 'IndexController')->name('public.employees.index');
         Route::post('/store', 'StoreController')->name('public.employees.store');
         Route::post('/edit', 'PatchController')->name('public.employees.edit');
+        Route::post('/delete', 'DestroyController')->name('public.employees.delete');
     });
 });
 
