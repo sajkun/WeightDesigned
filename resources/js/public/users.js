@@ -71,6 +71,7 @@ if (document.getElementById("public-users")) {
             addUser() {
                 this.clearUser();
                 this.editMode = true;
+                this.editPassword = false;
             },
 
             cancelConfirmActionCb() {
@@ -199,6 +200,7 @@ if (document.getElementById("public-users")) {
             editUser(user) {
                 const vm = this;
                 vm.editMode = true;
+                vm.editPassword = false;
                 vm.editedUser = JSON.parse(JSON.stringify(user));
             },
 
@@ -248,6 +250,7 @@ if (document.getElementById("public-users")) {
 
             storeUser() {
                 const vm = this;
+                console.log();
                 axios
                     .post(`./api/public/users/store`, {
                         user_id: vm.userId,
