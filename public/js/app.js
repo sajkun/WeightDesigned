@@ -5544,6 +5544,7 @@ if (document.getElementById("public-employees")) {
       organisationId: -1,
       userId: -1,
       editMode: false,
+      employees: [],
       editedEmployee: {
         id: -1,
         first_name: null,
@@ -5553,7 +5554,11 @@ if (document.getElementById("public-employees")) {
         organisation_id: null,
         specialisation: null
       },
-      specialisations: []
+      specialisations: {
+        "Водитель Зерновоза": "Водитель Зерновоза",
+        "Водитель Комбайна": "Водитель Комбайна",
+        "Водитель Трактора": "Водитель Трактора"
+      }
     },
     computed: {
       listClass: function listClass() {
@@ -5580,7 +5585,19 @@ if (document.getElementById("public-employees")) {
         vm.editMode = true;
       },
       clearMessages: function clearMessages() {},
-      getEmployees: function getEmployees() {},
+      getEmployees: function getEmployees() {
+        var vm = this;
+        if (vm.$refs.organisationId < 0) {
+          return;
+        }
+        axios.post("./api/public/employees/list/" + vm.organisationId, {
+          user_id: vm.userId
+        }).then(function (response) {
+          vm.employees = response.data.employees;
+        })["catch"](function (e) {
+          console.log(e);
+        });
+      },
       patchEmployee: function patchEmployee() {},
       storeEmployee: function storeEmployee() {
         var vm = this;

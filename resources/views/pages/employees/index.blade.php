@@ -11,8 +11,10 @@
                 :style="!editMode ? 'transition: width .15s ease .1s' : ''">
 
                 <div class="d-lg-flex flex-column org-wrapper h-100">
-                    <button class="btn w-100 btn-borders" type="button" @click='addEmployee()'>Добавить
-                        Сотрудника</button>
+                    @can('create', [App\Models\Employee::class, $organisation_id])
+                        <button class="btn w-100 btn-borders" type="button" @click='addEmployee()'>Добавить
+                            Сотрудника</button>
+                    @endcan
                     <table class="organisation">
                         <tbody>
                             <tr>
@@ -20,10 +22,10 @@
                                 <th>ФИО</th>
                                 <th>Профессия</th>
                             </tr>
-                            <tr>
-                                <td></td>
-                                <td></td>
-                                <td></td>
+                            <tr v-for='person, key in employees' :key='"emp" + key'>
+                                <td>@{{ person.first_name }} @{{ person.middle_name }} @{{ person.last_name }}</td>
+                                <td>@{{ person.phone }}</td>
+                                <td>@{{ person.specialisation }}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -70,8 +72,7 @@
                             </div>
                             <div class="col-12 mt-2">
                                 <div class="form-control-custom ">
-
-                                    <select id='specialisation'
+                                    <select id='specialisation' required
                                         :class='{ "active": editedEmployee.specialisation }'v-model='editedEmployee.specialisation'>
                                         <option v-for='name, key in specialisations' :key='"specialisation" + key'
                                             :value="key" :selected=' key === editedEmployee.specialisation'>

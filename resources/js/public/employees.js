@@ -6,6 +6,7 @@ if (document.getElementById("public-employees")) {
             organisationId: -1,
             userId: -1,
             editMode: false,
+            employees: [],
             editedEmployee: {
                 id: -1,
                 first_name: null,
@@ -15,7 +16,11 @@ if (document.getElementById("public-employees")) {
                 organisation_id: null,
                 specialisation: null,
             },
-            specialisations: [],
+            specialisations: {
+                "Водитель Зерновоза": "Водитель Зерновоза",
+                "Водитель Комбайна": "Водитель Комбайна",
+                "Водитель Трактора": "Водитель Трактора",
+            },
         },
 
         computed: {
@@ -47,7 +52,25 @@ if (document.getElementById("public-employees")) {
             },
 
             clearMessages() {},
-            getEmployees() {},
+
+            getEmployees() {
+                const vm = this;
+
+                if (vm.$refs.organisationId < 0) {
+                    return;
+                }
+
+                axios
+                    .post("./api/public/employees/list/" + vm.organisationId, {
+                        user_id: vm.userId,
+                    })
+                    .then((response) => {
+                        vm.employees = response.data.employees;
+                    })
+                    .catch((e) => {
+                        console.log(e);
+                    });
+            },
 
             patchEmployee() {},
 
