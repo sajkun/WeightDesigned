@@ -21,6 +21,12 @@ if (document.getElementById("public-employees")) {
                 "Водитель Комбайна": "Водитель Комбайна",
                 "Водитель Трактора": "Водитель Трактора",
             },
+            messages: {
+                error: null,
+                info: null,
+                success: null,
+                confirm: null,
+            },
         },
 
         computed: {
@@ -49,9 +55,44 @@ if (document.getElementById("public-employees")) {
             addEmployee() {
                 const vm = this;
                 vm.editMode = true;
+                vm.clearEmployee();
             },
 
             clearMessages() {},
+
+            clearEmployee() {
+                const vm = this;
+                vm.editedEmployee = {
+                    id: -1,
+                    first_name: null,
+                    last_name: null,
+                    middle_name: null,
+                    phone: null,
+                    organisation_id: null,
+                    specialisation: null,
+                };
+            },
+
+            clearMessages(confirm) {
+                this.messages = {
+                    error: null,
+                    info: null,
+                    success: null,
+                    confirm: this.messages.confirm,
+                };
+
+                if (confirm) {
+                    this.messages.confirm = null;
+                }
+            },
+
+            deleteEmployee() {},
+
+            edit(person) {
+                const vm = this;
+                vm.editMode = true;
+                vm.editedEmployee = JSON.parse(JSON.stringify(person));
+            },
 
             getEmployees() {
                 const vm = this;
@@ -72,7 +113,23 @@ if (document.getElementById("public-employees")) {
                     });
             },
 
-            patchEmployee() {},
+            patchEmployee() {
+                const vm = this;
+                axios
+                    .post(`./employees/edit`, {
+                        user_id: vm.userId,
+                        organisation_id: vm.organisationId,
+                        edited_employee: vm.editedEmployee,
+                    })
+                    .then((response) => {
+                        console.log(response);
+                        vm.getEmployees();
+                    })
+                    .catch((e) => {
+                        console.log(e.response);
+                        vm.messages.error = `${e.response.status} ${e.response.statusText} : ${e.response.data.message}`;
+                    });
+            },
 
             storeEmployee() {
                 const vm = this;
@@ -84,6 +141,7 @@ if (document.getElementById("public-employees")) {
                     })
                     .then((response) => {
                         console.log(response);
+                        vm.getEmployees();
                     })
                     .catch((e) => {
                         console.log(e.response);

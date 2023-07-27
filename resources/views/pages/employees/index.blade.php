@@ -4,8 +4,21 @@
     <div class="container-fluid d-none" id='public-employees'>
         <input type="hidden" ref='organisationId' value='{{ $organisation_id }}'>
         <input type="hidden" ref='userId' value='{{ $user_id }}'>
+        <Transition :key='"msg" + key' name="bounce" v-for='msg, key in messages'>
+            <div :class="key + '-message'" v-if='msg'>
+                @{{ msg }}
 
-
+                <div class="row" v-if='key==="confirm"'>
+                    <div class="col-12 col-md-6 mt-2"><button class="btn btn-borders-grey w-100"
+                            @click='cancelConfirmActionCb' type="button">Отмена</button>
+                    </div>
+                    <div class="col-12 col-md-6 mt-2"><button class="btn btn-borders w-100" type="button"
+                            @click='confirmActionCb'>Подтведить</button>
+                    </div>
+                </div>
+                <button class="btn btn-close" type='button' @click='clearMessages()' v-if="key!='confirm'"></button>
+            </div>
+        </Transition>
         <div class="row h-100 position-relative">
             <div class="p-3 align-self-start" :class='listClass'
                 :style="!editMode ? 'transition: width .15s ease .1s' : ''">
@@ -21,11 +34,24 @@
                                 <th>ID</th>
                                 <th>ФИО</th>
                                 <th>Профессия</th>
+                                <td></td>
                             </tr>
-                            <tr v-for='person, key in employees' :key='"emp" + key'>
+                            <tr v-for='person, key in employees' :key='"emp" + key' @click='edit(person)'>
                                 <td>@{{ person.first_name }} @{{ person.middle_name }} @{{ person.last_name }}</td>
                                 <td>@{{ person.phone }}</td>
                                 <td>@{{ person.specialisation }}</td>
+                                <td class='text-end'>
+                                    @can('delete', [App\Models\Employee::class, $organisation_id])
+                                        <button class='btn' @click.prevent.stop='deleteEmployee(person)'>
+                                            <i class="fa fa-solid fa-trash"></i>
+                                        </button>
+                                    @endcan
+                                    @can('update', [App\Models\Employee::class, $organisation_id])
+                                        <button class='btn'>
+                                            <i class="fa fa-solid fa-pencil"></i>
+                                        </button>
+                                    @endcan
+                                </td>
                             </tr>
                         </tbody>
                     </table>
