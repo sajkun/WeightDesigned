@@ -5544,7 +5544,10 @@ if (document.getElementById("public-employees")) {
       organisationId: -1,
       userId: -1,
       editMode: false,
+      showForm: false,
       employees: [],
+      activeTab: "info",
+      // info | activity | settings
       editedEmployee: {
         id: -1,
         first_name: null,
@@ -5567,6 +5570,25 @@ if (document.getElementById("public-employees")) {
       },
       validationMessages: {
         deleteEmployee: "Вы уверены, что хотите удалить сотрудника"
+      }
+    },
+    watch: {
+      editMode: function editMode(_editMode) {
+        var vm = this;
+        if (!_editMode) {
+          vm.showForm = false;
+        }
+        if (_editMode && vm.editedEmployee.id < 0) {
+          vm.showForm = true;
+        }
+      },
+      "editedEmployee.id": function editedEmployeeId(val) {
+        var vm = this;
+        if (val < 0) {
+          vm.showForm = true;
+        } else {
+          vm.showForm = false;
+        }
       }
     },
     computed: {
@@ -5654,6 +5676,10 @@ if (document.getElementById("public-employees")) {
           });
         }
       },
+      getDate: function getDate(dateString) {
+        var date = new Date(dateString);
+        return date.getFullYear();
+      },
       deleteEmployeeCb: function deleteEmployeeCb(person) {
         var vm = this;
         axios.post("./employees/delete", {
@@ -5668,10 +5694,13 @@ if (document.getElementById("public-employees")) {
           vm.messages.error = "".concat(e.response.status, " ").concat(e.response.statusText, " : ").concat(e.response.data.message);
         });
       },
-      edit: function edit(person) {
+      edit: function edit(person, showForm) {
         var vm = this;
         vm.editMode = true;
         vm.editedEmployee = JSON.parse(JSON.stringify(person));
+        vm.$nextTick(function () {
+          vm.showForm = Boolean(showForm);
+        });
       },
       getEmployees: function getEmployees() {
         var vm = this;

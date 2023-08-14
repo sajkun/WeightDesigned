@@ -28,7 +28,7 @@
                         <button class="btn w-100 btn-borders" type="button" @click='addEmployee()'>Добавить
                             Сотрудника</button>
                     @endcan
-                    <table class="organisation">
+                    <table class="organisation mt-3">
                         <tbody>
                             <tr>
                                 <th>ID</th>
@@ -36,7 +36,7 @@
                                 <th>Профессия</th>
                                 <td></td>
                             </tr>
-                            <tr v-for='person, key in employees' :key='"emp" + key' @click='edit(person)'>
+                            <tr v-for='person, key in employees' :key='"emp" + key' @click.stop='edit(person, false )'>
                                 <td>@{{ person.first_name }} @{{ person.middle_name }} @{{ person.last_name }}</td>
                                 <td>@{{ person.phone }}</td>
                                 <td>@{{ person.specialisation }}</td>
@@ -47,8 +47,8 @@
                                         </button>
                                     @endcan
                                     @can('update', [App\Models\Employee::class, $organisation_id])
-                                        <button class='btn'>
-                                            <i class="fa fa-solid fa-pencil"></i>
+                                        <button class='btn' @click.stop='edit(person, true )'> <i
+                                                class="fa fa-solid fa-pencil"></i>
                                         </button>
                                     @endcan
                                 </td>
@@ -60,70 +60,127 @@
 
             <Transition name="bounce">
                 <div class="col-12 col-lg-6 p-3 org-details" v-show='editMode'>
-                    <form @submit.prevent="submitForm" method='POST'>
+                    <div class="d-lg-flex flex-column org-wrapper h-100" v-if='showForm'>
+                        <form @submit.prevent="submitForm" method='POST'>
+                            <div class="row">
+                                <div class="col-12 mt-2 col-lg-6 form-control-custom ">
+                                    <div class="form-control-custom ">
+                                        <input type="text" autocomplete='off'
+                                            :class='{ "active": editedEmployee.first_name }' id='first_name' required
+                                            v-model='editedEmployee.first_name'>
+
+                                        <label for="first_name">Имя </label>
+                                    </div>
+                                </div>
+                                <div class="col-12 mt-2  col-lg-6">
+                                    <div class="form-control-custom ">
+                                        <input type="text" autocomplete='off'
+                                            :class='{ "active": editedEmployee.middle_name }' id='middle_name'
+                                            v-model='editedEmployee.middle_name'>
+
+                                        <label for="middle_name">Отчество </label>
+                                    </div>
+                                </div>
+                                <div class="col-12 mt-2">
+                                    <div class="form-control-custom ">
+                                        <input type="text" autocomplete='off'
+                                            :class='{ "active": editedEmployee.last_name }' id='last_name' required
+                                            v-model='editedEmployee.last_name'>
+
+                                        <label for="last_name">Фамилия </label>
+                                    </div>
+                                </div>
+                                <div class="col-12 mt-2">
+                                    <div class="form-control-custom ">
+
+                                        <input type="text" autocomplete='off' :class='{ "active": editedEmployee.phone }'
+                                            id='phone' required v-model='editedEmployee.phone'>
+                                        <label for="phone">Телефон</label>
+                                    </div>
+                                </div>
+                                <div class="col-12 mt-2">
+                                    <div class="form-control-custom ">
+                                        <select id='specialisation' required
+                                            :class='{ "active": editedEmployee.specialisation }'v-model='editedEmployee.specialisation'>
+                                            <option v-for='name, key in specialisations' :key='"specialisation" + key'
+                                                :value="key" :selected=' key === editedEmployee.specialisation'>
+                                                @{{ name }} </option>
+                                        </select>
+
+                                        <label for="specialisation">Профессия</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+
+                                <div class="col-12 col-md-6">
+                                    <button type='button' @click='editMode=false' class='w-100 mt-3 btn btn-borders-grey'>
+                                        Отмена
+                                    </button>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <button type='submit' class='w-100 mt-3 btn  btn-primary-alt'>
+                                        Сохранить
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="d-lg-flex flex-column org-wrapper h-100" v-if='!showForm'>
+                        <button class="btn toggle-expand">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M5 5V8.81818M5 5H8.81818M5 5L9.45455 9.45455M5 19V15.1818M5 19H8.81818M5 19L9.45455 14.5455M19 5L15.1818 5M19 5V8.81818M19 5L14.5455 9.45455M19 19H15.1818M19 19V15.1818M19 19L14.5455 14.5455"
+                                    stroke="#007E3C" stroke-width="1.5" stroke-linecap="round"
+                                    stroke-linejoin="round" />
+                            </svg>
+
+                        </button>
                         <div class="row">
-                            <div class="col-12 mt-2 col-lg-6 form-control-custom ">
-                                <div class="form-control-custom ">
-                                    <input type="text" autocomplete='off'
-                                        :class='{ "active": editedEmployee.first_name }' id='first_name' required
-                                        v-model='editedEmployee.first_name'>
-
-                                    <label for="first_name">Имя </label>
+                            <h2 class="h4 m-0">
+                                @{{ editedEmployee.first_name }}
+                                @{{ editedEmployee.middle_name }}
+                                @{{ editedEmployee.last_name }}
+                            </h2>
+                            <nav class="tabs mt-2">
+                                <div class="row">
+                                    <ul>
+                                        <li>
+                                            <button class="btn  btn-tab" :class="{ 'active': activeTab === 'info' }"
+                                                @click="activeTab = 'info'" type='button'>Информация</button>
+                                        </li>
+                                        <li>
+                                            <button class="btn btn-tab" :class="{ 'active': activeTab === 'activity' }"
+                                                @click="activeTab = 'activity'" type='button'>Активность</button>
+                                        </li>
+                                        <li>
+                                            <button class="btn btn-tab" :class="{ 'active': activeTab === 'settings' }"
+                                                @click="activeTab = 'settings'" type='button'>Настройки</button>
+                                        </li>
+                                    </ul>
                                 </div>
-                            </div>
-                            <div class="col-12 mt-2  col-lg-6">
-                                <div class="form-control-custom ">
-                                    <input type="text" autocomplete='off'
-                                        :class='{ "active": editedEmployee.middle_name }' id='middle_name'
-                                        v-model='editedEmployee.middle_name'>
+                            </nav>
+                        </div>
 
-                                    <label for="middle_name">Отчество </label>
+                        <div class="" v-if='activeTab=== "info"'>
+                            <div class="row mt-2">
+                                <div class="col-12 col-md-6 mt-2">
+                                    <h4 class="m-0 label">Специальность</h4>
+                                    <p class="mt-1">@{{ editedEmployee.specialisation }}</p>
                                 </div>
-                            </div>
-                            <div class="col-12 mt-2">
-                                <div class="form-control-custom ">
-                                    <input type="text" autocomplete='off' :class='{ "active": editedEmployee.last_name }'
-                                        id='last_name' required v-model='editedEmployee.last_name'>
-
-                                    <label for="last_name">Фамилия </label>
+                                <div class="col-12 col-md-6 mt-2">
+                                    <h4 class="m-0 label">Работает</h4>
+                                    <p class="mt-1">с @{{ getDate(editedEmployee.created_at) }}</p>
                                 </div>
-                            </div>
-                            <div class="col-12 mt-2">
-                                <div class="form-control-custom ">
-
-                                    <input type="text" autocomplete='off' :class='{ "active": editedEmployee.phone }'
-                                        id='phone' required v-model='editedEmployee.phone'>
-                                    <label for="phone">Телефон</label>
-                                </div>
-                            </div>
-                            <div class="col-12 mt-2">
-                                <div class="form-control-custom ">
-                                    <select id='specialisation' required
-                                        :class='{ "active": editedEmployee.specialisation }'v-model='editedEmployee.specialisation'>
-                                        <option v-for='name, key in specialisations' :key='"specialisation" + key'
-                                            :value="key" :selected=' key === editedEmployee.specialisation'>
-                                            @{{ name }} </option>
-                                    </select>
-
-                                    <label for="specialisation">Профессия</label>
+                                <div class="col-12 col-md-6 mt-2 ">
+                                    <h4 class="m-0 label">Контактный телефон</h4>
+                                    <p class="mt-1">@{{ editedEmployee.phone }}</p>
                                 </div>
                             </div>
                         </div>
-
-                        <div class="row">
-
-                            <div class="col-12 col-md-6">
-                                <button type='button' @click='editMode=false' class='w-100 mt-3 btn btn-borders-grey'>
-                                    Отмена
-                                </button>
-                            </div>
-                            <div class="col-12 col-md-6">
-                                <button type='submit' class='w-100 mt-3 btn  btn-primary-alt'>
-                                    Сохранить
-                                </button>
-                            </div>
-                        </div>
-                    </form>
+                    </div>
                 </div>
             </Transition>
         </div>

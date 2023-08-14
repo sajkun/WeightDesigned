@@ -6,7 +6,9 @@ if (document.getElementById("public-employees")) {
             organisationId: -1,
             userId: -1,
             editMode: false,
+            showForm: false,
             employees: [],
+            activeTab: "info", // info | activity | settings
             editedEmployee: {
                 id: -1,
                 first_name: null,
@@ -30,6 +32,28 @@ if (document.getElementById("public-employees")) {
 
             validationMessages: {
                 deleteEmployee: "Вы уверены, что хотите удалить сотрудника",
+            },
+        },
+
+        watch: {
+            editMode(editMode) {
+                const vm = this;
+                if (!editMode) {
+                    vm.showForm = false;
+                }
+
+                if (editMode && vm.editedEmployee.id < 0) {
+                    vm.showForm = true;
+                }
+            },
+
+            "editedEmployee.id"(val) {
+                const vm = this;
+                if (val < 0) {
+                    vm.showForm = true;
+                } else {
+                    vm.showForm = false;
+                }
             },
         },
 
@@ -165,6 +189,12 @@ if (document.getElementById("public-employees")) {
                 }
             },
 
+            getDate(dateString) {
+                const date = new Date(dateString);
+
+                return date.getFullYear();
+            },
+
             deleteEmployeeCb(person) {
                 const vm = this;
                 axios
@@ -183,10 +213,14 @@ if (document.getElementById("public-employees")) {
                     });
             },
 
-            edit(person) {
+            edit(person, showForm) {
                 const vm = this;
                 vm.editMode = true;
                 vm.editedEmployee = JSON.parse(JSON.stringify(person));
+
+                vm.$nextTick(() => {
+                    vm.showForm = Boolean(showForm);
+                });
             },
 
             getEmployees() {
