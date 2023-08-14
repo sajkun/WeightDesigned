@@ -115,7 +115,12 @@
                             <div class="row">
 
                                 <div class="col-12 col-md-6">
-                                    <button type='button' @click='editMode=false' class='w-100 mt-3 btn btn-borders-grey'>
+                                    <button type='button' @click='editMode=false' v-if="editedEmployee.id < 0"
+                                        class='w-100 mt-3 btn btn-borders-grey'>
+                                        Отмена
+                                    </button>
+                                    <button type='button' @click='showForm=false' v-if="editedEmployee.id >= 0"
+                                        class='w-100 mt-3 btn btn-borders-grey'>
                                         Отмена
                                     </button>
                                 </div>
@@ -143,6 +148,10 @@
                                 @{{ editedEmployee.first_name }}
                                 @{{ editedEmployee.middle_name }}
                                 @{{ editedEmployee.last_name }}
+
+                                <button class='btn' @click.stop='showForm = true'> <i
+                                        class="fa fa-solid fa-pencil"></i>
+                                </button>
                             </h2>
                             <nav class="tabs mt-2">
                                 <div class="row">

@@ -23,7 +23,6 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('/', 'DashController');
     Route::post('/logout')->name('logout')->uses('Auth\LoginController@logout');
     Route::get('/', 'PublicArea\IndexController')->name('public.index');
-
     Route::group(['namespace' => 'PublicArea\Users', 'prefix' => 'users'], function () {
         Route::get('/', 'IndexController')->name('public.users.index');
     });
