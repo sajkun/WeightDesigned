@@ -1,6 +1,7 @@
 .public-header {
     background: linear-gradient(103.06deg, #007e3c 18.83%, #032422 100%);
     box-shadow: 6px 6px 6px rgba(33, 40, 41, 0.03);
+    z-index: 100;
 
     .row {
         & > .logo {
@@ -15,12 +16,55 @@
     display: flex;
     align-content: center;
 
-    li {
+    .submenu {
+        position: absolute;
+        top: 100%;
+        background: #fff;
+        border-radius: 0.5rem;
+        transform: translateY(0.75rem) translateX(-1rem);
+        box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+        padding: 0.5rem 0;
+
+        visibility: hidden;
+        opacity: 0;
+        transition: visibility 0.15s, opacity 0.15s;
+
+        ul {
+            margin: 0;
+            padding: 0;
+            list-style-type: none;
+        }
+
+        li {
+            padding: 0;
+        }
+
+        a {
+            color: var(--darkest);
+            padding: 0.25rem 1rem;
+            text-decoration: none !important;
+
+            &:hover {
+                background: var(--grey-medium);
+                color: var(--lightest);
+            }
+        }
+    }
+
+    & > li {
         list-style-type: none;
         padding: 0;
         margin: 0;
         align-self: center;
         padding: 0 0.5rem;
+        position: relative;
+
+        &:hover {
+            .submenu {
+                visibility: visible;
+                opacity: 1;
+            }
+        }
     }
 
     button {

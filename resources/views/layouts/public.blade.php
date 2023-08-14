@@ -35,7 +35,16 @@
                         <div class="col flex-grow-0 align-self-center">
                             <ul class="main-menu">
                                 <li><a href="">Поля</a></li>
-                                <li><a href="">Техника</a></li>
+                                <li><a href="">Техника</a>
+                                    <nav class="submenu">
+                                        <ul class="submenu-list">
+                                            <li><a href="">
+                                                    Бункеры&nbsp;перегрузчеки</a></li>
+                                            <li><a href="">Тракторы</a></li>
+                                            <li><a href="">Комбайны</a></li>
+                                        </ul>
+                                    </nav>
+                                </li>
                                 @can('viewAny', [App\Models\Employee::class, $organisation_id])
                                     <li><a href="{{ route('public.employees.index') }}">Сотрудники</a></li>
                                 @endcan
