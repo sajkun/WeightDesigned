@@ -37,6 +37,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('/store', 'StoreController')->name('public.bunker.store');
         Route::post('/edit', 'PatchController')->name('public.bunker.edit');
         Route::post('/delete', 'DestroyController')->name('public.bunker.delete');
+        Route::post('/pincode', 'CheckPinController')->name('public.bunker.pincode');
     });
     Route::group(['namespace' => 'PublicArea\Tractor', 'prefix' => 'tractors'], function () {
         Route::get('/', 'IndexController')->name('public.tractor.index');

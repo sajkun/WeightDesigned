@@ -14,6 +14,7 @@ if (document.getElementById("public-vehicles")) {
             mayBeGroupedVehicles: [],
             popup: null, // employees | vehicles
             employees: [],
+            employeeSearch: "",
             vehicles: {
                 bunkers: {},
                 transporters: {},
@@ -38,6 +39,33 @@ if (document.getElementById("public-vehicles")) {
                         name: "Комбайн",
                     },
                 };
+            },
+
+            employeesList() {
+                const vm = this;
+                if (vm.employeeSearch.length < 3) {
+                    return vm.employees;
+                }
+
+                return vm.employees.filter((e) => {
+                    return (
+                        e.first_name
+                            .toLowerCase()
+                            .search(vm.employeeSearch.toLowerCase()) >= 0 ||
+                        e.last_name
+                            .toLowerCase()
+                            .search(vm.employeeSearch.toLowerCase()) >= 0 ||
+                        e.middle_name
+                            .toLowerCase()
+                            .search(vm.employeeSearch.toLowerCase()) >= 0 ||
+                        e.phone
+                            .toLowerCase()
+                            .search(vm.employeeSearch.toLowerCase()) >= 0 ||
+                        e.specialisation
+                            .toLowerCase()
+                            .search(vm.employeeSearch.toLowerCase()) >= 0
+                    );
+                });
             },
 
             bunkerModels() {
@@ -111,6 +139,39 @@ if (document.getElementById("public-vehicles")) {
                 const vm = this;
                 vm.mode = "create";
                 vm.vehicleType = type;
+            },
+
+            checkPin() {
+                const vm = this;
+                const pin = vm.$refs.bunkerPin.value;
+                const name = vm.$refs.bunkerName.value;
+
+                if (!Boolean(pin)) {
+                    vm.messages.error = "Пинкод не задан";
+                    return;
+                }
+                if (!Boolean(name)) {
+                    vm.messages.error = "Имя техники не задано";
+                    return;
+                }
+
+                if (pin.length !== 5) {
+                    vm.messages.error = "Пинкод должен быть из 5 символов";
+                    return;
+                }
+
+                axios
+                    .post("./bunkers/pincode", {
+                        user_id: vm.userId,
+                        name,
+                        pin,
+                    })
+                    .then((response) => {
+                        console.log(response);
+                    })
+                    .catch((e) => {
+                        console.log(e);
+                    });
             },
 
             createVehicle() {

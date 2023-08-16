@@ -6048,6 +6048,7 @@ if (document.getElementById("public-vehicles")) {
       popup: null,
       // employees | vehicles
       employees: [],
+      employeeSearch: "",
       vehicles: {
         bunkers: {},
         transporters: {},
@@ -6071,6 +6072,15 @@ if (document.getElementById("public-vehicles")) {
             name: "Комбайн"
           }
         };
+      },
+      employeesList: function employeesList() {
+        var vm = this;
+        if (vm.employeeSearch.length < 3) {
+          return vm.employees;
+        }
+        return vm.employees.filter(function (e) {
+          return e.first_name.toLowerCase().search(vm.employeeSearch.toLowerCase()) >= 0 || e.last_name.toLowerCase().search(vm.employeeSearch.toLowerCase()) >= 0 || e.middle_name.toLowerCase().search(vm.employeeSearch.toLowerCase()) >= 0 || e.phone.toLowerCase().search(vm.employeeSearch.toLowerCase()) >= 0 || e.specialisation.toLowerCase().search(vm.employeeSearch.toLowerCase()) >= 0;
+        });
       },
       bunkerModels: function bunkerModels() {
         return ["БП-16/20", "БП-22/28", "БП-22/28 габаритный", "БП-22/28 (8 колес)", "БП-22/31", "БП-22/31 хоппер", "БП-22/31 габаритный", "БП-22/31 8 колес", "БП-33/42 хоппер", "БП-33/42 8 колес", "БП-40/50"];
@@ -6118,6 +6128,32 @@ if (document.getElementById("public-vehicles")) {
         var vm = this;
         vm.mode = "create";
         vm.vehicleType = type;
+      },
+      checkPin: function checkPin() {
+        var vm = this;
+        var pin = vm.$refs.bunkerPin.value;
+        var name = vm.$refs.bunkerName.value;
+        if (!Boolean(pin)) {
+          vm.messages.error = "Пинкод не задан";
+          return;
+        }
+        if (!Boolean(name)) {
+          vm.messages.error = "Имя техники не задано";
+          return;
+        }
+        if (pin.length !== 5) {
+          vm.messages.error = "Пинкод должен быть из 5 символов";
+          return;
+        }
+        axios.post("./bunkers/pincode", {
+          user_id: vm.userId,
+          name: name,
+          pin: pin
+        }).then(function (response) {
+          console.log(response);
+        })["catch"](function (e) {
+          console.log(e);
+        });
       },
       createVehicle: function createVehicle() {
         var vm = this;

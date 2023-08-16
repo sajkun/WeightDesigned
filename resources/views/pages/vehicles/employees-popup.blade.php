@@ -1,6 +1,6 @@
 <div class="popup-wrapper" v-if='popup === "employees"'>
     <div class="popup p-2">
-        <div class="popup__header">
+        <div class="popup__header pt-2">
             <div class="row">
 
                 <div class="col-8">
@@ -27,6 +27,23 @@
             </div>
         </div>
         <div class="popup__body">
+            <div class="px-1">
+                <div class="search-wrapper">
+                    <input type="text" class="w-100 search-field" v-model='employeeSearch' id='employeeSearch'>
+
+                    <label for="employeeSearch">
+
+                        <svg width="25" height="24" viewBox="0 0 25 24" fill="none" aria-hidde='true'
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M21.5 21L16.3033 15.8033M16.3033 15.8033C17.6605 14.4461 18.5 12.5711 18.5 10.5C18.5 6.35786 15.1421 3 11 3C6.85786 3 3.5 6.35786 3.5 10.5C3.5 14.6421 6.85786 18 11 18C13.0711 18 14.9461 17.1605 16.3033 15.8033Z"
+                                stroke="#AAB3CB" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                    </label>
+                </div>
+
+            </div>
+
             <table class="organisation mt-3">
                 <tbody>
                     <tr>
@@ -36,15 +53,22 @@
                         <th>профессия</th>
                     </tr>
 
-                    <tr v-for='person, key in employees' :key='"person" + key'
+                    <tr v-for='person, key in employeesList' :key='"person" + key'
                         @click='selectResponsiblePerson(person)'>
                         <td>@{{ person.id }}</td>
                         <td>@{{ person.last_name }} @{{ person.first_name }} @{{ person.middle_name }}</td>
                         <td>@{{ person.phone }}</td>
                         <td>@{{ person.specialisation }}</td>
                     </tr>
+
+                    <tr v-if='employeesList.length === 0' class='no-hover'>
+                        <td colspan='4' class='alert-danger'><span class="alert">Сотрудники не найдены</span></td>
+                    </tr>
                 </tbody>
             </table>
         </div>
     </div>
 </div>
+@auth
+
+@endauth

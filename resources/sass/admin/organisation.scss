@@ -20,7 +20,7 @@ table.organisation {
         }
 
         &:hover {
-            &:not(:first-child) {
+            &:not(:first-child):not(.no-hover) {
                 outline: 2px solid #007e3c;
             }
         }

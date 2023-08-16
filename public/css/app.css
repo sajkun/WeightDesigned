@@ -10819,7 +10819,7 @@ table.organisation tr:not(:first-child) {
   border-radius: 8px;
   cursor: pointer;
 }
-table.organisation tr:hover:not(:first-child) {
+table.organisation tr:hover:not(:first-child):not(.no-hover) {
   outline: 2px solid #007e3c;
 }
 
@@ -11015,6 +11015,47 @@ body {
 .label {
   font-size: 1rem;
   font-weight: 400;
+  color: var(--grey-medium);
+}
+
+.search-wrapper {
+  position: relative;
+}
+.search-wrapper label {
+  z-index: 10;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%) translateX(-1rem);
+  right: 0%;
+}
+
+.search-field {
+  border: 1px solid var(--grey-light);
+  padding: 0.5rem 1rem;
+  background-color: var(--grey-ultralight);
+  border-radius: 0.5rem;
+  transition: border-color 0.15s, background-color 0.15s;
+  outline: 0;
+}
+.search-field:focus {
+  background-color: transparent;
+  border-color: var(--blue);
+}
+
+.responsible {
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--grey-light);
+}
+.responsible__title {
+  margin: 0;
+  font-weight: 400;
+  font-size: 1rem;
+}
+.responsible__label {
+  margin: 0;
+  font-weight: 400;
+  font-size: 0.7rem;
   color: var(--grey-medium);
 }
 

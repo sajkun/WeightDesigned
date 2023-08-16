@@ -43,7 +43,9 @@
             </div>
 
             <div class="h-100 position-relative" v-if='mode=== "create"'>
-                @include('pages.vehicles.create')
+                @can('create', [App\Models\Bunker::class, $organisation_id])
+                    @include('pages.vehicles.create')
+                @endcan
             </div>
         </Transition>
 
