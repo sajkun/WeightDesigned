@@ -20,4 +20,24 @@ class Organisation extends Model
     {
         return $this->hasMany(Employee::class, 'organisation_id', 'id');
     }
+
+    public function tractors()
+    {
+        return $this->hasMany(Tractor::class, 'organisation_id', 'id');
+    }
+
+    public function transporters()
+    {
+        return $this->hasMany(Transporter::class, 'organisation_id', 'id');
+    }
+
+    public function harvesters()
+    {
+        return $this->hasMany(Harvester::class, 'organisation_id', 'id');
+    }
+
+    public function bunkers()
+    {
+        return $this->hasMany(Bunker::class, 'organisation_id', 'id');
+    }
 }

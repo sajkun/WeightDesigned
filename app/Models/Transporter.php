@@ -4,7 +4,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Tractor extends Model
+class Transporter extends Model
 {
     use HasFactory;
     protected $guarded = false;
