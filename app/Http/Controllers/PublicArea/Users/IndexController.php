@@ -18,6 +18,6 @@ class IndexController extends PublicController
     {
         $this->authorize('viewAny', [User::class, Auth::user()->organisation_id]);
         $this->prepareData();
-        return view('pages.users.index');
+        return view('pages.users');
     }
 }
