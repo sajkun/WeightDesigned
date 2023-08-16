@@ -32,6 +32,30 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('/edit', 'PatchController')->name('public.employees.edit');
         Route::post('/delete', 'DestroyController')->name('public.employees.delete');
     });
+    Route::group(['namespace' => 'PublicArea\Bunker', 'prefix' => 'bunker'], function () {
+        Route::get('/', 'IndexController')->name('public.bunker.index');
+        Route::post('/store', 'StoreController')->name('public.bunker.store');
+        Route::post('/edit', 'PatchController')->name('public.bunker.edit');
+        Route::post('/delete', 'DestroyController')->name('public.bunker.delete');
+    });
+    Route::group(['namespace' => 'PublicArea\Tractor', 'prefix' => 'tractor'], function () {
+        Route::get('/', 'IndexController')->name('public.tractor.index');
+        Route::post('/store', 'StoreController')->name('public.tractor.store');
+        Route::post('/edit', 'PatchController')->name('public.tractor.edit');
+        Route::post('/delete', 'DestroyController')->name('public.tractor.delete');
+    });
+    Route::group(['namespace' => 'PublicArea\Transporter', 'prefix' => 'transporter'], function () {
+        Route::get('/', 'IndexController')->name('public.transporter.index');
+        Route::post('/store', 'StoreController')->name('public.transporter.store');
+        Route::post('/edit', 'PatchController')->name('public.transporter.edit');
+        Route::post('/delete', 'DestroyController')->name('public.transporter.delete');
+    });
+    Route::group(['namespace' => 'PublicArea\Harvester', 'prefix' => 'harvester'], function () {
+        Route::get('/', 'IndexController')->name('public.harvester.index');
+        Route::post('/store', 'StoreController')->name('public.harvester.store');
+        Route::post('/edit', 'PatchController')->name('public.harvester.edit');
+        Route::post('/delete', 'DestroyController')->name('public.harvester.delete');
+    });
 });
 
 Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {

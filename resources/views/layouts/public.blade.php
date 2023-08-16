@@ -35,13 +35,14 @@
                         <div class="col flex-grow-0 align-self-center">
                             <ul class="main-menu">
                                 <li><a href="">Поля</a></li>
-                                <li><a href="">Техника</a>
+                                <li><a href="javascript:void(0)">Техника</a>
                                     <nav class="submenu">
                                         <ul class="submenu-list">
-                                            <li><a href="">
+                                            <li><a href="{{ route('public.bunker.index') }}">
                                                     Бункеры&nbsp;перегрузчеки</a></li>
-                                            <li><a href="">Тракторы</a></li>
-                                            <li><a href="">Комбайны</a></li>
+                                            <li><a href="{{ route('public.tractor.index') }}">Тракторы</a></li>
+                                            <li><a href="{{ route('public.harvester.index') }}">Комбайны</a></li>
+                                            <li><a href="{{ route('public.transporter.index') }}">Зерновозы</a></li>
                                         </ul>
                                     </nav>
                                 </li>
@@ -53,7 +54,8 @@
                                     <li><a href="{{ route('public.users.index') }}">Пользователи</a></li>
                                 @endcan
                                 <li>
-                                    <form id="logout-form" class='m-0' action="{{ route('logout') }}" method="POST">
+                                    <form id="logout-form" class='m-0' action="{{ route('logout') }}"
+                                        method="POST">
                                         @csrf
                                         <button class="btn btn-link-contrast p-0 bd-0 align-self-center"
                                             type="Sudmit">Выйти</button>
