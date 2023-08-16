@@ -10,6 +10,16 @@ if (document.getElementById("public-vehicles")) {
             userId: -1,
             mode: "list", // list | edit | create
             vehicleType: null, // bunkers | transporters | tractors | harvesters
+            mayBeResponsiblePerson: null,
+            mayBeGroupedVehicles: [],
+            popup: null, // employees | vehicles
+            employees: [],
+            vehicles: {
+                bunkers: {},
+                transporters: {},
+                tractors: {},
+                harvesters: {},
+            },
         },
 
         computed: {
@@ -79,6 +89,7 @@ if (document.getElementById("public-vehicles")) {
 
             vehicleType() {
                 const vm = this;
+                vm.reset();
                 vm.$nextTick(() => {
                     // vm.$refs.formCreateVehicle?.reset();
                 });
@@ -90,6 +101,9 @@ if (document.getElementById("public-vehicles")) {
             vm.$el.classList.remove("d-none");
             vm.organisationId = vm.$refs.organisationId.value;
             vm.userId = vm.$refs.userId.value;
+
+            vm.getEmployees();
+            vm.getVehicles();
         },
 
         methods: {
@@ -110,6 +124,42 @@ if (document.getElementById("public-vehicles")) {
                 }
 
                 console.log(postData);
+            },
+
+            getEmployees() {
+                const vm = this;
+
+                if (vm.$refs.organisationId < 0) {
+                    return;
+                }
+
+                axios
+                    .post("./api/public/employees/list/" + vm.organisationId, {
+                        user_id: vm.userId,
+                    })
+                    .then((response) => {
+                        vm.employees = response.data.employees;
+                    })
+                    .catch((e) => {
+                        console.log(e);
+                    });
+            },
+
+            reset() {
+                const vm = this;
+                vm.mayBeResponsiblePerson = null;
+                vm.popup = null;
+                vm.mayBeGroupedVehicles = [];
+            },
+
+            getVehicles() {},
+
+            selectResponsiblePerson(person) {
+                const vm = this;
+                vm.mayBeResponsiblePerson = person;
+                vm.popup = null;
+
+                console.log(person);
             },
 
             submitCreate() {

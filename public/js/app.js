@@ -6041,9 +6041,20 @@ if (document.getElementById("public-vehicles")) {
       userId: -1,
       mode: "list",
       // list | edit | create
-      vehicleType: null // bunkers | transporters | tractors | harvesters
+      vehicleType: null,
+      // bunkers | transporters | tractors | harvesters
+      mayBeResponsiblePerson: null,
+      mayBeGroupedVehicles: [],
+      popup: null,
+      // employees | vehicles
+      employees: [],
+      vehicles: {
+        bunkers: {},
+        transporters: {},
+        tractors: {},
+        harvesters: {}
+      }
     },
-
     computed: {
       vehicleTypesList: function vehicleTypesList() {
         return {
@@ -6088,6 +6099,7 @@ if (document.getElementById("public-vehicles")) {
       },
       vehicleType: function vehicleType() {
         var vm = this;
+        vm.reset();
         vm.$nextTick(function () {
           // vm.$refs.formCreateVehicle?.reset();
         });
@@ -6098,6 +6110,8 @@ if (document.getElementById("public-vehicles")) {
       vm.$el.classList.remove("d-none");
       vm.organisationId = vm.$refs.organisationId.value;
       vm.userId = vm.$refs.userId.value;
+      vm.getEmployees();
+      vm.getVehicles();
     },
     methods: {
       addVehicle: function addVehicle(type) {
@@ -6124,6 +6138,32 @@ if (document.getElementById("public-vehicles")) {
           _iterator.f();
         }
         console.log(postData);
+      },
+      getEmployees: function getEmployees() {
+        var vm = this;
+        if (vm.$refs.organisationId < 0) {
+          return;
+        }
+        axios.post("./api/public/employees/list/" + vm.organisationId, {
+          user_id: vm.userId
+        }).then(function (response) {
+          vm.employees = response.data.employees;
+        })["catch"](function (e) {
+          console.log(e);
+        });
+      },
+      reset: function reset() {
+        var vm = this;
+        vm.mayBeResponsiblePerson = null;
+        vm.popup = null;
+        vm.mayBeGroupedVehicles = [];
+      },
+      getVehicles: function getVehicles() {},
+      selectResponsiblePerson: function selectResponsiblePerson(person) {
+        var vm = this;
+        vm.mayBeResponsiblePerson = person;
+        vm.popup = null;
+        console.log(person);
       },
       submitCreate: function submitCreate() {
         this.$refs.formCreateVehicle.requestSubmit();

@@ -11208,6 +11208,29 @@ body.auth #app {
   margin: 0 10px;
 }
 
+.popup-wrapper {
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 0;
+  background: rgba(0, 0, 0, 0.3);
+}
+.popup-wrapper .popup {
+  max-height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background-color: var(--lightest);
+  max-width: 800px;
+  width: 100%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-50%);
+  border-radius: 0.5rem;
+}
+
 .bounce-enter-active {
   animation: bounce-in 0.5s;
 }
