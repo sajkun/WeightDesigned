@@ -1,11 +1,12 @@
 <?php
-
 namespace App\Http\Controllers\PublicArea\Bunker;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\PublicController;
+use App\Models\Bunker;
 
-class IndexController extends Controller
+class IndexController extends PublicController
 {
     /**
      * Handle the incoming request.
@@ -15,6 +16,8 @@ class IndexController extends Controller
      */
     public function __invoke(Request $request)
     {
-        //
+        $this->authorize('viewAny', [Bunker::class]);
+        $this->prepareData();
+        return view('pages.bunkers');
     }
 }

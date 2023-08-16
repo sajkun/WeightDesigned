@@ -47,7 +47,7 @@
                                     </nav>
                                 </li>
                                 @can('viewAny', [App\Models\Employee::class, $organisation_id])
-                                    <li><a href="{{ route('public.employees.index') }}">Сотрудники</a></li>
+                                    <li><a href="{{ route('public.employee.index') }}">Сотрудники</a></li>
                                 @endcan
 
                                 @can('viewAny', [App\Models\User::class, $organisation_id])

@@ -27,30 +27,30 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/', 'IndexController')->name('public.users.index');
     });
     Route::group(['namespace' => 'PublicArea\Employees', 'prefix' => 'employees'], function () {
-        Route::get('/', 'IndexController')->name('public.employees.index');
-        Route::post('/store', 'StoreController')->name('public.employees.store');
-        Route::post('/edit', 'PatchController')->name('public.employees.edit');
-        Route::post('/delete', 'DestroyController')->name('public.employees.delete');
+        Route::get('/', 'IndexController')->name('public.employee.index');
+        Route::post('/store', 'StoreController')->name('public.employee.store');
+        Route::post('/edit', 'PatchController')->name('public.employee.edit');
+        Route::post('/delete', 'DestroyController')->name('public.employee.delete');
     });
-    Route::group(['namespace' => 'PublicArea\Bunker', 'prefix' => 'bunker'], function () {
+    Route::group(['namespace' => 'PublicArea\Bunker', 'prefix' => 'bunkers'], function () {
         Route::get('/', 'IndexController')->name('public.bunker.index');
         Route::post('/store', 'StoreController')->name('public.bunker.store');
         Route::post('/edit', 'PatchController')->name('public.bunker.edit');
         Route::post('/delete', 'DestroyController')->name('public.bunker.delete');
     });
-    Route::group(['namespace' => 'PublicArea\Tractor', 'prefix' => 'tractor'], function () {
+    Route::group(['namespace' => 'PublicArea\Tractor', 'prefix' => 'tractors'], function () {
         Route::get('/', 'IndexController')->name('public.tractor.index');
         Route::post('/store', 'StoreController')->name('public.tractor.store');
         Route::post('/edit', 'PatchController')->name('public.tractor.edit');
         Route::post('/delete', 'DestroyController')->name('public.tractor.delete');
     });
-    Route::group(['namespace' => 'PublicArea\Transporter', 'prefix' => 'transporter'], function () {
+    Route::group(['namespace' => 'PublicArea\Transporter', 'prefix' => 'transporters'], function () {
         Route::get('/', 'IndexController')->name('public.transporter.index');
         Route::post('/store', 'StoreController')->name('public.transporter.store');
         Route::post('/edit', 'PatchController')->name('public.transporter.edit');
         Route::post('/delete', 'DestroyController')->name('public.transporter.delete');
     });
-    Route::group(['namespace' => 'PublicArea\Harvester', 'prefix' => 'harvester'], function () {
+    Route::group(['namespace' => 'PublicArea\Harvester', 'prefix' => 'harvesters'], function () {
         Route::get('/', 'IndexController')->name('public.harvester.index');
         Route::post('/store', 'StoreController')->name('public.harvester.store');
         Route::post('/edit', 'PatchController')->name('public.harvester.edit');

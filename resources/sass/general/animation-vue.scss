@@ -19,3 +19,15 @@
         transform: scale(1);
     }
 }
+
+.fade-enter-active {
+    opacity: 1;
+    visibility: visible;
+    display: initial;
+}
+
+.fade-leave-to {
+    opacity: 0;
+    visibility: hidden;
+    display: none;
+}

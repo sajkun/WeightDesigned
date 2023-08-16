@@ -26,3 +26,4 @@ files
 
 require("./public/users");
 require("./public/employees");
+require("./public/vehicle");

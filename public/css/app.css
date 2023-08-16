@@ -10947,6 +10947,77 @@ body {
   border-color: var(--grey-light) !important;
 }
 
+.dropdown-container {
+  position: relative;
+  height: 0;
+  z-index: 100;
+}
+.dropdown-container .dropdown {
+  width: 100%;
+  padding: 1rem 0;
+  border-radius: 0.5rem;
+  border: 1px solid var(--grey-ultralight);
+  background: var(--lightest);
+  box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.3);
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+.dropdown-container .dropdown-elements {
+  padding: 0;
+  margin: 0;
+}
+.dropdown-container .dropdown-elements li {
+  list-style-type: none;
+  padding: 0;
+}
+.dropdown-container .btn-list-imitation {
+  border: 0;
+  background: transparent;
+  width: 100%;
+  text-align: left;
+  padding: 0.25rem 1rem;
+  font-size: 0.75rem;
+  color: var(--grey-light);
+  transition: background-color 0.15s;
+}
+.dropdown-container .btn-list-imitation span {
+  color: #000;
+}
+.dropdown-container .btn-list-imitation:hover {
+  background-color: var(--blue-light);
+}
+
+.tabs {
+  border-bottom: 1px solid var(--grey-medium);
+}
+.tabs .btn {
+  margin-bottom: -1px;
+}
+.tabs ul {
+  padding: 0;
+  margin: 0;
+  display: flex;
+  list-style-type: none;
+}
+.tabs li {
+  list-style-type: none;
+}
+
+.toggle-expand {
+  position: absolute;
+  top: 1rem;
+  right: 0.5rem;
+  z-index: 100;
+}
+
+.label {
+  font-size: 1rem;
+  font-weight: 400;
+  color: var(--grey-medium);
+}
+
 .btn-primary-alt {
   --bs-btn-color: var(--lightest);
   --bs-btn-bg: var(--green);
@@ -11038,6 +11109,31 @@ body {
   --bs-btn-disabled-bg: transparent;
   --bs-btn-disabled-border-color: transparent;
   --bs-btn-border-width: 2px;
+  --bs-btn-active-color: var(--green);
+  --bs-btn-active-bg: transparent;
+  --bs-btn-active-border-color: var(--green);
+}
+
+.btn-borders-grey-light {
+  text-decoration: none !important;
+  --bs-btn-color: var(--darkest);
+  --bs-btn-bg: transparent;
+  --bs-btn-border-color: var(--grey-light);
+  --bs-btn-hover-color: var(--green);
+  --bs-btn-hover-bg: transparent;
+  --bs-btn-hover-border-color: var(--green);
+  --bs-btn-focus-shadow-rgb: 0, 126, 60;
+  --bs-btn-active-color: var(--green);
+  --bs-btn-active-border-color: transparent;
+  --bs-btn-active-bg: var(--green);
+  --bs-btn-active-shadow: none;
+  --bs-btn-disabled-color: var(--grey-ultralight);
+  --bs-btn-disabled-bg: transparent;
+  --bs-btn-disabled-border-color: transparent;
+  --bs-btn-border-width: 1px;
+  --bs-btn-active-color: var(--green);
+  --bs-btn-active-bg: transparent;
+  --bs-btn-active-border-color: var(--green);
 }
 
 .btn-tab {
@@ -11063,77 +11159,6 @@ body {
   --bs-btn-active-color: var(--green);
   --bs-btn-active-bg: transparent;
   --bs-btn-active-border-color: var(--green);
-}
-
-.dropdown-container {
-  position: relative;
-  height: 0;
-  z-index: 100;
-}
-.dropdown-container .dropdown {
-  width: 100%;
-  padding: 1rem 0;
-  border-radius: 0.5rem;
-  border: 1px solid var(--grey-ultralight);
-  background: var(--lightest);
-  box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.3);
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-}
-.dropdown-container .dropdown-elements {
-  padding: 0;
-  margin: 0;
-}
-.dropdown-container .dropdown-elements li {
-  list-style-type: none;
-  padding: 0;
-}
-.dropdown-container .btn-list-imitation {
-  border: 0;
-  background: transparent;
-  width: 100%;
-  text-align: left;
-  padding: 0.25rem 1rem;
-  font-size: 0.75rem;
-  color: var(--grey-light);
-  transition: background-color 0.15s;
-}
-.dropdown-container .btn-list-imitation span {
-  color: #000;
-}
-.dropdown-container .btn-list-imitation:hover {
-  background-color: var(--blue-light);
-}
-
-.tabs {
-  border-bottom: 1px solid var(--grey-medium);
-}
-.tabs .btn {
-  margin-bottom: -1px;
-}
-.tabs ul {
-  padding: 0;
-  margin: 0;
-  display: flex;
-  list-style-type: none;
-}
-.tabs li {
-  list-style-type: none;
-}
-
-.toggle-expand {
-  position: absolute;
-  top: 1rem;
-  right: 0.5rem;
-  z-index: 100;
-}
-
-.label {
-  font-size: 1rem;
-  font-weight: 400;
-  color: var(--grey-medium);
 }
 
 body.auth #app {
@@ -11204,6 +11229,18 @@ body.auth #app {
     transform: scale(1);
   }
 }
+.fade-enter-active {
+  opacity: 1;
+  visibility: visible;
+  display: initial;
+}
+
+.fade-leave-to {
+  opacity: 0;
+  visibility: hidden;
+  display: none;
+}
+
 .public-header {
   background: linear-gradient(103.06deg, #007e3c 18.83%, #032422 100%);
   box-shadow: 6px 6px 6px rgba(33, 40, 41, 0.03);

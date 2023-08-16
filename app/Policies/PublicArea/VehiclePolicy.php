@@ -12,12 +12,11 @@ class VehiclePolicy
      * Determine whether the user can view any models.
      *
      * @param  \App\Models\User  $user
-     * @param  $organisation_id int
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function viewAny(User $user, $organisation_id)
+    public function viewAny(User $user)
     {
-        return in_array($user->role, ['user_director', 'user_control_vehicles', 'user_control']) && $user->organisation_id === (int)$organisation_id;
+        return in_array($user->role, ['user_director', 'user_control_vehicles', 'user_control']);
     }
 
     /**
@@ -29,7 +28,6 @@ class VehiclePolicy
      */
     public function view(User $user, $organisation_id)
     {
-        dd('test');
         return in_array($user->role, ['user_director', 'user_control_vehicles', 'user_control']) && $user->organisation_id === (int)$organisation_id;
     }
 
