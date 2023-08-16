@@ -163,11 +163,12 @@ if (document.getElementById("public-vehicles")) {
                 axios
                     .post("./bunkers/pincode", {
                         user_id: vm.userId,
-                        name,
-                        pin,
+                        name: name,
+                        pin: pin,
                     })
                     .then((response) => {
                         console.log(response);
+                        vm.messages.info = response.data.message;
                     })
                     .catch((e) => {
                         console.log(e);

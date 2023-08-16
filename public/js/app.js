@@ -6151,6 +6151,7 @@ if (document.getElementById("public-vehicles")) {
           pin: pin
         }).then(function (response) {
           console.log(response);
+          vm.messages.info = response.data.message;
         })["catch"](function (e) {
           console.log(e);
         });

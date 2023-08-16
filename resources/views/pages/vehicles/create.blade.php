@@ -65,7 +65,7 @@
 
                     <div class="col-12 col-sm-6 mt-2 ">
                         <div class="form-control-custom">
-                            <input type="text" id='vehiclePin' name='pin' ref='bunkerPin'>
+                            <input type="text" id='vehiclePin' name='pin' ref='bunkerPin' key='bunkerPin'>
                             <label for="vehiclePin">Пин код</label>
                         </div>
                     </div>

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateBunkerTable extends Migration
+class CreateBunkersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateBunkerTable extends Migration
      */
     public function up()
     {
-        Schema::create('bunker', function (Blueprint $table) {
+        Schema::create('bunkers', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
             $table->string('name')->nullable()->default('');
@@ -32,6 +32,6 @@ class CreateBunkerTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('bunker');
+        Schema::dropIfExists('bunkers');
     }
 }
