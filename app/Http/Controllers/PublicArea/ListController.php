@@ -23,7 +23,8 @@ class ListController extends Controller
             return response()->json([
                 'bunkers' => $organisation->bunkers()->get()->map(function ($item) {
                     $employee = $item->employee()->first();
-                    $item['employee'] = $employee ? "$employee->last_name $employee->first_name $employee->middle_name " : '-';
+                    $item['employee_name'] = $employee ? "$employee->last_name $employee->first_name $employee->middle_name " : '-';
+                    $item['employee'] = $employee ;
                     return $item;
                 }),
                 // 'tractors' => $organisation->tractors()->get(),

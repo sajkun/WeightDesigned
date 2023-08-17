@@ -6050,7 +6050,7 @@ if (document.getElementById("public-vehicles")) {
       organisationId: -1,
       userId: -1,
       mode: "list",
-      // list | edit | create
+      // list | edit | create | details
       vehicleType: null,
       // bunkers | transporters | tractors | harvesters
       mayBeResponsiblePerson: null,
@@ -6059,12 +6059,14 @@ if (document.getElementById("public-vehicles")) {
       // employees | vehicles
       employees: [],
       employeeSearch: "",
+      activeTab: "info",
       vehicles: {
         bunkers: [],
         transporters: [],
         tractors: [],
         harvesters: []
-      }
+      },
+      editedVehicle: {}
     },
     computed: {
       vehicleTypesList: function vehicleTypesList() {
@@ -6081,6 +6083,13 @@ if (document.getElementById("public-vehicles")) {
           harvesters: {
             name: "Комбайн"
           }
+        };
+      },
+      columnClass: function columnClass() {
+        var vm = this;
+        var tableClass = vm.mode === "details" ? "col-12 col-md-6 d-none d-md-block" : "col-12";
+        return {
+          tableClass: tableClass
         };
       },
       employeesList: function employeesList() {
@@ -6238,6 +6247,12 @@ if (document.getElementById("public-vehicles")) {
       },
       submitCreate: function submitCreate() {
         this.$refs.formCreateVehicle.requestSubmit();
+      },
+      viewVehicle: function viewVehicle(item) {
+        var vm = this;
+        this.mode = "details";
+        console.log(item);
+        vm.editedVehicle = item;
       }
     }
   });
