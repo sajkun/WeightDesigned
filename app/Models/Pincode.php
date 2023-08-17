@@ -3,6 +3,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Pincode extends Model
 {
@@ -19,8 +20,13 @@ class Pincode extends Model
         return $this->pin !== $pin;
     }
 
+    public function bunker() :BelongsTo
+    {
+        return $this->belongsTo(Bunker::class, 'bunker_id');
+    }
+
     public function checkIfRegistered()
     {
-        return $this->updated_at;
+        return !!count($this->bunker()->get());
     }
 }

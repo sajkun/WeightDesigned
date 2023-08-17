@@ -18,8 +18,6 @@ class CreatePincodesTable extends Migration
             $table->timestamps();
             $table->string('name')->nullable()->default('');
             $table->string('pin')->nullable()->default('');
-            $table->date('validated')->nullable();
-            $table->string('validated_by')->nullable()->default('');
         });
     }
 
@@ -30,6 +28,6 @@ class CreatePincodesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('pincode');
+        Schema::dropIfExists('pincodes');
     }
 }

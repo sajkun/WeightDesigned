@@ -271,9 +271,11 @@ if (document.getElementById("public-employees")) {
                     .then((response) => {
                         console.log(response);
                         vm.getEmployees();
+                        vm.clearEmployee();
+                        vm.messages[response.data.type] = response.data.message;
                     })
                     .catch((e) => {
-                        console.log(e.response);
+                        console.log(e);
                         vm.messages.error = `${e.response.status} ${e.response.statusText} : ${e.response.data.message}`;
                     });
             },

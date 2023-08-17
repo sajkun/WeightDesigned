@@ -21,7 +21,6 @@ class CreateBunkersTable extends Migration
             $table->unsignedBigInteger('organisation_id')->nullable();
             $table->index('organisation_id', 'bunker_organisation_idx');
             $table->foreign('organisation_id', 'bunker_organisation_fk')->on('organisations')->references('id');
-            $table->boolean('pin_checked')->nullable();
         });
     }
 

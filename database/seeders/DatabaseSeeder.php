@@ -22,5 +22,19 @@ class DatabaseSeeder extends Seeder
             'role' => config('users.superadmin'),
             'created_at' => new \DateTime('now'),
         ]);
+
+        DB::table('pincodes')->insert([
+            'name' => 'test',
+            'pin' => '12345',
+            'created_at' => new \DateTime('now'),
+        ]);
+
+        DB::table('employees')->insert([
+            'first_name' => 'Иван',
+            'middle_name' => 'Петрович',
+            'last_name' => 'Сидоров',
+            'phone' => '12345',
+            'specialisation' => 'Водитель Трактора',
+        ]);
     }
 }

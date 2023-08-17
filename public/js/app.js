@@ -5518,6 +5518,14 @@ __webpack_require__.r(__webpack_exports__);
       }
     };
   },
+  mounted: function mounted() {
+    var vm = this;
+    document.body.addEventListener("click", function (e) {
+      if (e.target.type !== "button") {
+        vm.clearMessages();
+      }
+    });
+  },
   methods: {
     clearMessages: function clearMessages(confirm) {
       this.messages = {
@@ -5742,8 +5750,10 @@ if (document.getElementById("public-employees")) {
         }).then(function (response) {
           console.log(response);
           vm.getEmployees();
+          vm.clearEmployee();
+          vm.messages[response.data.type] = response.data.message;
         })["catch"](function (e) {
-          console.log(e.response);
+          console.log(e);
           vm.messages.error = "".concat(e.response.status, " ").concat(e.response.statusText, " : ").concat(e.response.data.message);
         });
       },
@@ -6050,10 +6060,10 @@ if (document.getElementById("public-vehicles")) {
       employees: [],
       employeeSearch: "",
       vehicles: {
-        bunkers: {},
-        transporters: {},
-        tractors: {},
-        harvesters: {}
+        bunkers: [],
+        transporters: [],
+        tractors: [],
+        harvesters: []
       }
     },
     computed: {
@@ -6150,13 +6160,15 @@ if (document.getElementById("public-vehicles")) {
           name: name,
           pin: pin
         }).then(function (response) {
+          console.log(JSON.parse(JSON.stringify(response)));
           vm.messages[response.data.type] = response.data.message;
         })["catch"](function (e) {
-          console.log(e.toJSON());
-          vm.messages.error = e;
+          console.log(e.response);
+          vm.messages.error = e.response.data.message;
         });
       },
       createVehicle: function createVehicle() {
+        var _vm$mayBeResponsibleP;
         var vm = this;
         var formData = new FormData(vm.$refs.formCreateVehicle);
         var postData = {};
@@ -6177,11 +6189,17 @@ if (document.getElementById("public-vehicles")) {
         axios.post("./bunkers/store", {
           user_id: vm.userId,
           organisation_id: vm.organisationId,
+          employee_id: (_vm$mayBeResponsibleP = vm.mayBeResponsiblePerson) === null || _vm$mayBeResponsibleP === void 0 ? void 0 : _vm$mayBeResponsibleP.id,
           post_data: postData
         }).then(function (response) {
+          var _vm$$refs$formCreateV;
           console.log(response);
+          vm.messages[response.data.type] = response.data.message;
+          (_vm$$refs$formCreateV = vm.$refs.formCreateVehicle) === null || _vm$$refs$formCreateV === void 0 ? void 0 : _vm$$refs$formCreateV.reset();
+          vm.reset();
         })["catch"](function (e) {
-          console.log(e.toJSON());
+          console.log(e.response);
+          vm.messages.error = e.response.data.message;
         });
       },
       getEmployees: function getEmployees() {
@@ -6203,7 +6221,15 @@ if (document.getElementById("public-vehicles")) {
         vm.popup = null;
         vm.mayBeGroupedVehicles = [];
       },
-      getVehicles: function getVehicles() {},
+      getVehicles: function getVehicles() {
+        var vm = this;
+        axios.get("./vehicles").then(function (response) {
+          vm.vehicles = response.data;
+        })["catch"](function (e) {
+          console.log(e.response);
+          vm.messages.error = e.response.data.message;
+        });
+      },
       selectResponsiblePerson: function selectResponsiblePerson(person) {
         var vm = this;
         vm.mayBeResponsiblePerson = person;

@@ -16,10 +16,10 @@ if (document.getElementById("public-vehicles")) {
             employees: [],
             employeeSearch: "",
             vehicles: {
-                bunkers: {},
-                transporters: {},
-                tractors: {},
-                harvesters: {},
+                bunkers: [],
+                transporters: [],
+                tractors: [],
+                harvesters: [],
             },
         },
 
@@ -167,11 +167,12 @@ if (document.getElementById("public-vehicles")) {
                         pin: pin,
                     })
                     .then((response) => {
+                        console.log(JSON.parse(JSON.stringify(response)));
                         vm.messages[response.data.type] = response.data.message;
                     })
                     .catch((e) => {
-                        console.log(e.toJSON());
-                        vm.messages.error = e;
+                        console.log(e.response);
+                        vm.messages.error = e.response.data.message;
                     });
             },
 
@@ -189,13 +190,18 @@ if (document.getElementById("public-vehicles")) {
                     .post("./bunkers/store", {
                         user_id: vm.userId,
                         organisation_id: vm.organisationId,
+                        employee_id: vm.mayBeResponsiblePerson?.id,
                         post_data: postData,
                     })
                     .then((response) => {
                         console.log(response);
+                        vm.messages[response.data.type] = response.data.message;
+                        vm.$refs.formCreateVehicle?.reset();
+                        vm.reset();
                     })
                     .catch((e) => {
-                        console.log(e.toJSON());
+                        console.log(e.response);
+                        vm.messages.error = e.response.data.message;
                     });
             },
 
@@ -225,7 +231,18 @@ if (document.getElementById("public-vehicles")) {
                 vm.mayBeGroupedVehicles = [];
             },
 
-            getVehicles() {},
+            getVehicles() {
+                const vm = this;
+                axios
+                    .get("./vehicles")
+                    .then((response) => {
+                        vm.vehicles = response.data;
+                    })
+                    .catch((e) => {
+                        console.log(e.response);
+                        vm.messages.error = e.response.data.message;
+                    });
+            },
 
             selectResponsiblePerson(person) {
                 const vm = this;

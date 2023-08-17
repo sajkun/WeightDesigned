@@ -16,24 +16,33 @@ class StoreController extends Controller
      */
     public function __invoke(Request $request)
     {
-        $user = Auth::user();
-        $this->authorize('create', [Employee::class, $user->organisation_id]);
+        try {
+            $user = Auth::user();
+            $this->authorize('create', [Employee::class, $user->organisation_id]);
 
-        $request->validate([
-            'user_id' => 'required',
-            'organisation_id' => 'required',
-            'edited_employee' => 'required',
-        ]);
+            $request->validate([
+                'user_id' => 'required',
+                'organisation_id' => 'required',
+                'edited_employee' => 'required',
+            ]);
 
-        $edited_employee = $request->edited_employee;
-        $edited_employee['organisation_id'] = $request->organisation_id;
+            $edited_employee = $request->edited_employee;
+            $edited_employee['organisation_id'] = $request->organisation_id;
 
-        unset($edited_employee['id']);
+            unset($edited_employee['id']);
 
-        $edited_employee = Employee::create($edited_employee);
+            $edited_employee = Employee::create($edited_employee);
 
-        return [
-            'edited_employee' => $edited_employee,
-        ];
+            return response()->json([
+                'edited_employee' => $edited_employee,
+                'type' => 'success',
+                'message' => sprintf('Запись о сотруднике %s успешно добавлена', $edited_employee['last_name']),
+
+            ]);
+        } catch (\Exception  $e) {
+            return response()->json([
+                'error' => $e->getMessage(),
+            ], $e->getCode());
+        }
     }
 }

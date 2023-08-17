@@ -10,6 +10,15 @@ export default {
         };
     },
 
+    mounted() {
+        const vm = this;
+        document.body.addEventListener("click", (e) => {
+            if (e.target.type !== "button") {
+                vm.clearMessages();
+            }
+        });
+    },
+
     methods: {
         clearMessages(confirm) {
             this.messages = {

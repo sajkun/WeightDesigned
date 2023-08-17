@@ -1,9 +1,11 @@
 <?php
 namespace App\Http\Controllers\PublicArea\Bunker;
 
-use App\Http\Controllers\Controller;
+use App\Models\Bunker;
 use App\Models\Pincode;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Models\Organisation;
 
 class CheckPinController extends Controller
 {
@@ -22,23 +24,18 @@ class CheckPinController extends Controller
             ])->first();
 
             if (!$pincode) {
-                return  [
-                    'type' => 'error',
-                    'message' => ' Неверная пара имя - пинкод',
-                ];
+                throw new \ErrorException(' Неверная пара имя - пинкод', 403);
             };
 
-            if ($pincode->checkIfRegistered()) {
-                return  [
-                    'type' => 'error',
-                    'message' => 'Техника уже зарегистрирована',
-                ];
+            if (boolval($pincode->checkIfRegistered())) {
+                throw new \ErrorException('Техника уже зарегистрирована', 403);
             };
 
-            return  [
+            return  response()->json([
                 'type' => 'success',
                 'message' => 'Пинкод верен',
-            ];
+
+            ]);
         } catch (\Exception  $e) {
             return response()->json([
                 'message' => $e->getMessage(),
