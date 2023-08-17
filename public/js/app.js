@@ -6186,17 +6186,16 @@ if (document.getElementById("public-vehicles")) {
         } finally {
           _iterator.f();
         }
-        axios.post("./bunkers/store", {
+        axios.post("./".concat(vm.vehicleType, "/store"), {
           user_id: vm.userId,
           organisation_id: vm.organisationId,
           employee_id: (_vm$mayBeResponsibleP = vm.mayBeResponsiblePerson) === null || _vm$mayBeResponsibleP === void 0 ? void 0 : _vm$mayBeResponsibleP.id,
           post_data: postData
         }).then(function (response) {
-          var _vm$$refs$formCreateV;
           console.log(response);
           vm.messages[response.data.type] = response.data.message;
-          (_vm$$refs$formCreateV = vm.$refs.formCreateVehicle) === null || _vm$$refs$formCreateV === void 0 ? void 0 : _vm$$refs$formCreateV.reset();
-          vm.reset();
+          // vm.$refs.formCreateVehicle?.reset();
+          // vm.reset();
         })["catch"](function (e) {
           console.log(e.response);
           vm.messages.error = e.response.data.message;
@@ -6224,6 +6223,7 @@ if (document.getElementById("public-vehicles")) {
       getVehicles: function getVehicles() {
         var vm = this;
         axios.get("./vehicles").then(function (response) {
+          console.log(response);
           vm.vehicles = response.data;
         })["catch"](function (e) {
           console.log(e.response);

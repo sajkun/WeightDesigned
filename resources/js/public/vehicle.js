@@ -187,7 +187,7 @@ if (document.getElementById("public-vehicles")) {
                 }
 
                 axios
-                    .post("./bunkers/store", {
+                    .post(`./${vm.vehicleType}/store`, {
                         user_id: vm.userId,
                         organisation_id: vm.organisationId,
                         employee_id: vm.mayBeResponsiblePerson?.id,
@@ -196,8 +196,8 @@ if (document.getElementById("public-vehicles")) {
                     .then((response) => {
                         console.log(response);
                         vm.messages[response.data.type] = response.data.message;
-                        vm.$refs.formCreateVehicle?.reset();
-                        vm.reset();
+                        // vm.$refs.formCreateVehicle?.reset();
+                        // vm.reset();
                     })
                     .catch((e) => {
                         console.log(e.response);
@@ -236,6 +236,7 @@ if (document.getElementById("public-vehicles")) {
                 axios
                     .get("./vehicles")
                     .then((response) => {
+                        console.log(response);
                         vm.vehicles = response.data;
                     })
                     .catch((e) => {

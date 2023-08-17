@@ -65,7 +65,7 @@ class StoreController extends Controller
 
             $bunker = Bunker::create($may_be_bunker);
 
-            if ($pincode) {
+            if (isset($pincode)) {
                 $bunker->pincode()->save($pincode);
             }
 

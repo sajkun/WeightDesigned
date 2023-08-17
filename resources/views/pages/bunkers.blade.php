@@ -31,12 +31,20 @@
                         <table class="organisation mt-3">
                             <tbody>
                                 <tr>
-                                    <th>ID</th>
+                                    <th>№</th>
                                     <th>Название</th>
                                     <th>Модель</th>
                                     <th>Ответственный</th>
                                 </tr>
+
+                                <tr v-for='item, key in vehicles.bunkers'>
+                                    <td>@{{ key }}</td>
+                                    <td>@{{ item.name }}</td>
+                                    <td>@{{ item.model }}</td>
+                                    <td>@{{ item.employee }}</td>
+                                </tr>
                             </tbody>
+
                         </table>
                     </div>
                 </div>
