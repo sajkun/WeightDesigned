@@ -167,11 +167,11 @@ if (document.getElementById("public-vehicles")) {
                         pin: pin,
                     })
                     .then((response) => {
-                        console.log(response);
-                        vm.messages.info = response.data.message;
+                        vm.messages[response.data.type] = response.data.message;
                     })
                     .catch((e) => {
-                        console.log(e);
+                        console.log(e.toJSON());
+                        vm.messages.error = e;
                     });
             },
 
@@ -185,7 +185,18 @@ if (document.getElementById("public-vehicles")) {
                     postData[key] = value;
                 }
 
-                console.log(postData);
+                axios
+                    .post("./bunkers/store", {
+                        user_id: vm.userId,
+                        organisation_id: vm.organisationId,
+                        post_data: postData,
+                    })
+                    .then((response) => {
+                        console.log(response);
+                    })
+                    .catch((e) => {
+                        console.log(e.toJSON());
+                    });
             },
 
             getEmployees() {

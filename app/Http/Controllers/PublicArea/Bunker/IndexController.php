@@ -18,6 +18,7 @@ class IndexController extends PublicController
     {
         $this->authorize('viewAny', [Bunker::class]);
         $this->prepareData();
+
         return view('pages.bunkers');
     }
 }

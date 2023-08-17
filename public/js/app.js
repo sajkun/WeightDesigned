@@ -6150,10 +6150,10 @@ if (document.getElementById("public-vehicles")) {
           name: name,
           pin: pin
         }).then(function (response) {
-          console.log(response);
-          vm.messages.info = response.data.message;
+          vm.messages[response.data.type] = response.data.message;
         })["catch"](function (e) {
-          console.log(e);
+          console.log(e.toJSON());
+          vm.messages.error = e;
         });
       },
       createVehicle: function createVehicle() {
@@ -6174,7 +6174,15 @@ if (document.getElementById("public-vehicles")) {
         } finally {
           _iterator.f();
         }
-        console.log(postData);
+        axios.post("./bunkers/store", {
+          user_id: vm.userId,
+          organisation_id: vm.organisationId,
+          post_data: postData
+        }).then(function (response) {
+          console.log(response);
+        })["catch"](function (e) {
+          console.log(e.toJSON());
+        });
       },
       getEmployees: function getEmployees() {
         var vm = this;

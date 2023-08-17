@@ -23,24 +23,21 @@ class CheckPinController extends Controller
 
             if (!$pincode) {
                 return  [
+                    'type' => 'error',
                     'message' => ' Неверная пара имя - пинкод',
                 ];
             };
 
-            if ($pincode->updated_at) {
+            if ($pincode->checkIfRegistered()) {
                 return  [
+                    'type' => 'error',
                     'message' => 'Техника уже зарегистрирована',
                 ];
             };
 
-            if ($pincode) {
-                return  [
-                    'message' => 'Пинкод верен',
-                ];
-            };
-
             return  [
-                'message' => 'Неизвестная ошибка',
+                'type' => 'success',
+                'message' => 'Пинкод верен',
             ];
         } catch (\Exception  $e) {
             return response()->json([
