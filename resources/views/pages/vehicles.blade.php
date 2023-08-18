@@ -4,6 +4,7 @@
     <div class="container-fluid d-none" id='public-vehicles'>
         <input type="hidden" ref='organisationId' value='{{ $organisation_id }}'>
         <input type="hidden" ref='userId' value='{{ $user_id }}'>
+        <input type="hidden" ref='vehicleType' value='{{ $type }}'>
         <Transition :key='"msg" + key' name="bounce" v-for='msg, key in messages'>
             <div :class="key + '-message'" v-if='msg'>
                 @{{ msg }}
@@ -29,7 +30,7 @@
                             <div class="d-lg-flex org-wrapper flex-column h-100">
                                 @can('create', [App\Models\Bunker::class, $organisation_id])
                                     <button class="btn w-100 btn-borders" type="button" @click='addVehicle("bunkers")'>Добавить
-                                        Бункер Перегрузчик</button>
+                                        @{{ vehicleName }}</button>
                                 @endcan
                                 <table class="organisation mt-3">
                                     <tbody>
@@ -38,14 +39,27 @@
                                             <th>Название</th>
                                             <th>Модель</th>
                                             <th>Ответственный</th>
+                                            <th></th>
                                         </tr>
 
-                                        <tr v-for='item, key in vehicles.bunkers' :key='"vehicklerow" + key'
+                                        <tr v-for='item, key in vehiclesCurrent' :key='"vehicklerow" + key'
                                             @click='viewVehicle(item)'>
                                             <td>@{{ key }}</td>
                                             <td>@{{ item.name }}</td>
                                             <td>@{{ item.model }}</td>
                                             <td>@{{ item.employee_name }}</td>
+                                            <th width='100' class='text-end'>
+                                                @can('delete', [App\Models\Bunker::class, $organisation_id])
+                                                    <button class='btn p-1' @click.prevent.stop='deleteVehicle(item)'>
+                                                        <i class="fa fa-solid fa-trash"></i>
+                                                    </button>
+                                                @endcan
+                                                @can('update', [App\Models\Bunker::class, $organisation_id])
+                                                    <button class='btn  p-1' @click.stop='editVehicle(item, true )'> <i
+                                                            class="fa fa-solid fa-pencil"></i>
+                                                    </button>
+                                                @endcan
+                                            </th>
                                         </tr>
                                     </tbody>
 
@@ -57,7 +71,7 @@
                             <div class="org-wrapper">
                                 <div class="row ">
                                     <h2 class="h4 m-0">
-                                        Бункер Перегрузчик @{{ editedVehicle.name }}
+                                        @{{ vehicleName }} @{{ editedVehicle.name }}
                                     </h2>
                                     <nav class="tabs mt-2">
                                         <div class="row">

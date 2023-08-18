@@ -12,11 +12,11 @@
 
         <div class="mt-2 org-wrapper p-0">
             <button v-for='vehicle, key in vehicleTypesList' :key='"btn" + key'
-                class="btn btn-borders-grey-light col-lg-3 col-12 col-sm-6" type='button' @click='vehicleType = key'
-                :class='{ "active": vehicleType === key }'>@{{ vehicle.name }}</button>
+                class="btn btn-borders-grey-light col-lg-3 col-12 col-sm-6" type='button' @click='vehicleAddType = key'
+                :class='{ "active": vehicleAddType === key }'>@{{ vehicle.name }}</button>
         </div>
 
-        <div class="mt-2 org-wrapper" v-if='vehicleType'>
+        <div class="mt-2 org-wrapper" v-if='vehicleAddType'>
             <p class='m-0'>
                 <svg width="26" height="26" viewBox="0 0 26 26" fill="none"
                     xmlns="http://www.w3.org/2000/svg">
@@ -27,7 +27,7 @@
                 Данные техники
             </p>
             <form method='POST' @submit.prevent='createVehicle' ref='formCreateVehicle'>
-                <div class="mt-3 row" v-if='vehicleType !== "bunkers"'>
+                <div class="mt-3 row" v-if='vehicleAddType !== "bunkers"'>
                     <div class="col-12 col-sm-6 ">
                         <div class="form-control-custom">
                             <input type="text" id='vehicleName' name='name' key='name1' autocomplete='off'
@@ -42,7 +42,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="mt-3 row" v-if='vehicleType === "bunkers"'>
+                <div class="mt-3 row" v-if='vehicleAddType === "bunkers"'>
                     <div class="col-12 col-sm-6 ">
                         <div class="form-control-custom">
                             <input type="text" id='vehicleName' name='name' key='name2' autocomplete='off'
@@ -78,7 +78,7 @@
             </form>
         </div>
 
-        <div class="mt-2 org-wrapper" v-if='vehicleType'>
+        <div class="mt-2 org-wrapper" v-if='vehicleAddType'>
             <p class='m-0'>
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
                     xmlns="http://www.w3.org/2000/svg">
@@ -137,7 +137,7 @@
             </div>
         </div>
 
-        <div class="mt-2 org-wrapper" v-if='vehicleType'>
+        <div class="mt-2 org-wrapper" v-if='vehicleAddType'>
             <p class='m-0'>
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
                     xmlns="http://www.w3.org/2000/svg">

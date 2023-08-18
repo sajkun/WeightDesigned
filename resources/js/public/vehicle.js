@@ -9,6 +9,7 @@ if (document.getElementById("public-vehicles")) {
             organisationId: -1,
             userId: -1,
             mode: "list", // list | edit | create | details
+            vehicleAddType: null,
             vehicleType: null, // bunkers | transporters | tractors | harvesters
             mayBeResponsiblePerson: null,
             mayBeGroupedVehicles: [],
@@ -41,6 +42,10 @@ if (document.getElementById("public-vehicles")) {
                         name: "Комбайн",
                     },
                 };
+            },
+
+            vehicleName() {
+                return this.vehicleTypesList[this.vehicleType]?.name;
             },
 
             columnClass() {
@@ -96,14 +101,16 @@ if (document.getElementById("public-vehicles")) {
                     "БП-40/50",
                 ];
             },
+
+            vehiclesCurrent() {
+                return this.vehicles[this.vehicleType];
+            },
         },
 
         watch: {
             mode(mode) {
+                console.log("mode:", mode);
                 const vm = this;
-                if (mode !== "create") {
-                    vm.vehicleType = null;
-                }
 
                 if (mode === "create") {
                     vm.$nextTick(() => {
@@ -128,7 +135,10 @@ if (document.getElementById("public-vehicles")) {
                 }
             },
 
-            vehicleType() {
+            vehicleType(vehicleType) {
+                console.log("vehicleType: ", vehicleType);
+
+                this.vehicleAddType = vehicleType;
                 const vm = this;
                 vm.reset();
                 vm.$nextTick(() => {
@@ -142,6 +152,7 @@ if (document.getElementById("public-vehicles")) {
             vm.$el.classList.remove("d-none");
             vm.organisationId = vm.$refs.organisationId.value;
             vm.userId = vm.$refs.userId.value;
+            vm.vehicleType = vm.$refs.vehicleType.value;
 
             vm.getEmployees();
             vm.getVehicles();
@@ -217,6 +228,8 @@ if (document.getElementById("public-vehicles")) {
                         vm.messages.error = e.response.data.message;
                     });
             },
+
+            deleteVehicle() {},
 
             getEmployees() {
                 const vm = this;

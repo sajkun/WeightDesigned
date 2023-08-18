@@ -6051,6 +6051,7 @@ if (document.getElementById("public-vehicles")) {
       userId: -1,
       mode: "list",
       // list | edit | create | details
+      vehicleAddType: null,
       vehicleType: null,
       // bunkers | transporters | tractors | harvesters
       mayBeResponsiblePerson: null,
@@ -6085,6 +6086,10 @@ if (document.getElementById("public-vehicles")) {
           }
         };
       },
+      vehicleName: function vehicleName() {
+        var _this$vehicleTypesLis;
+        return (_this$vehicleTypesLis = this.vehicleTypesList[this.vehicleType]) === null || _this$vehicleTypesLis === void 0 ? void 0 : _this$vehicleTypesLis.name;
+      },
       columnClass: function columnClass() {
         var vm = this;
         var tableClass = vm.mode === "details" ? "col-12 col-md-6 d-none d-md-block" : "col-12";
@@ -6103,14 +6108,15 @@ if (document.getElementById("public-vehicles")) {
       },
       bunkerModels: function bunkerModels() {
         return ["БП-16/20", "БП-22/28", "БП-22/28 габаритный", "БП-22/28 (8 колес)", "БП-22/31", "БП-22/31 хоппер", "БП-22/31 габаритный", "БП-22/31 8 колес", "БП-33/42 хоппер", "БП-33/42 8 колес", "БП-40/50"];
+      },
+      vehiclesCurrent: function vehiclesCurrent() {
+        return this.vehicles[this.vehicleType];
       }
     },
     watch: {
       mode: function mode(_mode) {
+        console.log("mode:", _mode);
         var vm = this;
-        if (_mode !== "create") {
-          vm.vehicleType = null;
-        }
         if (_mode === "create") {
           vm.$nextTick(function () {
             var inputs = document.querySelectorAll(".form-control-custom input");
@@ -6126,7 +6132,9 @@ if (document.getElementById("public-vehicles")) {
           });
         }
       },
-      vehicleType: function vehicleType() {
+      vehicleType: function vehicleType(_vehicleType) {
+        console.log("vehicleType: ", _vehicleType);
+        this.vehicleAddType = _vehicleType;
         var vm = this;
         vm.reset();
         vm.$nextTick(function () {
@@ -6139,6 +6147,7 @@ if (document.getElementById("public-vehicles")) {
       vm.$el.classList.remove("d-none");
       vm.organisationId = vm.$refs.organisationId.value;
       vm.userId = vm.$refs.userId.value;
+      vm.vehicleType = vm.$refs.vehicleType.value;
       vm.getEmployees();
       vm.getVehicles();
     },
@@ -6210,6 +6219,7 @@ if (document.getElementById("public-vehicles")) {
           vm.messages.error = e.response.data.message;
         });
       },
+      deleteVehicle: function deleteVehicle() {},
       getEmployees: function getEmployees() {
         var vm = this;
         if (vm.$refs.organisationId < 0) {
