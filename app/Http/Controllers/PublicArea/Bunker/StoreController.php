@@ -20,8 +20,13 @@ class StoreController extends Controller
     {
         try {
             //валидация запроса и проверка прав пользователя
+            // удалить после теста
+            // return response()->json([
+            //     'type' => 'тест ответа',
+            // ]);
             $user = Auth::user();
             $this->authorize('create', [Bunker::class, $user->organisation_id]);
+
             $request->validate([
                 'user_id' => 'required',
                 'organisation_id' => 'required',
@@ -32,6 +37,10 @@ class StoreController extends Controller
             $may_be_bunker = $request->post_data;
             $may_be_bunker['organisation_id'] = (int)$request->organisation_id;
             $may_be_bunker['name'] = strtolower($may_be_bunker['name']);
+            // удалить после теста
+            // return response()->json([
+            //     'type' => 'тест ответа',
+            // ]);
 
             // проверка уникальности имени бункера
             $exists_bunker = Bunker::where(['name' => $may_be_bunker['name']])->first();
@@ -41,7 +50,7 @@ class StoreController extends Controller
             }
 
             $employee = null;
-            if ($may_be_bunker['employee_id']) {
+            if (isset($may_be_bunker['employee_id'])) {
                 $employee = Employee::find($request->employee_id);
                 if ((int)$employee->id !== (int)$request->organisation_id) {
                     throw new \ErrorException('Ошибка добавления ответственного', 403);
@@ -63,6 +72,10 @@ class StoreController extends Controller
                     throw new \ErrorException('Техника уже зарегистрирована', 403);
                 };
             }
+            // удалить
+            // return response()->json([
+            //     'may_be_bunker' => $may_be_bunker,
+            // ]);
 
             $add_message = !$pincode ? ' Для просмотра данных весовой системы вам потребуется ввести пин код' : '';
             unset($may_be_bunker['pin']);

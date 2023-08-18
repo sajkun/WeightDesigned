@@ -1,4 +1,6 @@
 import messages from "../mixins/messages";
+import { strip } from "./functions";
+
 if (document.getElementById("public-vehicles")) {
     const appPublicBunkers = new Vue({
         el: "#public-vehicles",
@@ -136,14 +138,9 @@ if (document.getElementById("public-vehicles")) {
             },
 
             vehicleType(vehicleType) {
-                console.log("vehicleType: ", vehicleType);
-
                 this.vehicleAddType = vehicleType;
                 const vm = this;
                 vm.reset();
-                vm.$nextTick(() => {
-                    // vm.$refs.formCreateVehicle?.reset();
-                });
             },
         },
 
@@ -210,26 +207,70 @@ if (document.getElementById("public-vehicles")) {
                     postData[key] = value;
                 }
 
+                const sendData = {
+                    user_id: vm.userId,
+                    organisation_id: vm.organisationId,
+                    employee_id: vm.mayBeResponsiblePerson?.id,
+                    post_data: postData,
+                };
+                console.log("createVehicle: ", vm.vehicleType);
+                console.log("createVehicle data: ", sendData);
+
                 axios
-                    .post(`./${vm.vehicleType}/store`, {
-                        user_id: vm.userId,
-                        organisation_id: vm.organisationId,
-                        employee_id: vm.mayBeResponsiblePerson?.id,
-                        post_data: postData,
-                    })
+                    .post(`./${vm.vehicleAddType}/store`, sendData)
                     .then((response) => {
-                        console.log(response);
-                        vm.messages[response.data.type] = response.data.message;
+                        console.log(
+                            "%c createVehicle response",
+                            "color:green",
+                            response
+                        );
+                        vm.messages[response.data.type] =
+                            response?.data?.message;
                         // vm.$refs.formCreateVehicle?.reset();
                         // vm.reset();
+                        vm.getVehicles();
                     })
                     .catch((e) => {
-                        console.log(e.response);
+                        console.log(
+                            "%c createVehicle error",
+                            "color: red",
+                            e.response
+                        );
                         vm.messages.error = e.response.data.message;
                     });
             },
 
-            deleteVehicle() {},
+            deleteVehicle(item) {
+                console.log("%c deleteVehicle", "color: blue", item);
+                const vm = this;
+
+                const sendData = {
+                    user_id: vm.userId,
+                    organisation_id: vm.organisationId,
+                    delete_item: item,
+                };
+
+                axios
+                    .post(`./${vm.vehicleType}/delete`, sendData)
+                    .then((response) => {
+                        console.log(
+                            "%c deleteVehicle",
+                            "color:green",
+                            response
+                        );
+                        vm.messages[response.data.type] =
+                            response?.data?.message;
+                        vm.getVehicles();
+                    })
+                    .catch((e) => {
+                        console.log(
+                            "%c deleteVehicle error",
+                            "color: red",
+                            e.response
+                        );
+                        vm.messages.error = e.response.data.message;
+                    });
+            },
 
             getEmployees() {
                 const vm = this;
@@ -262,11 +303,15 @@ if (document.getElementById("public-vehicles")) {
                 axios
                     .get("./vehicles")
                     .then((response) => {
-                        console.log(response);
+                        console.log("%c getVehicles", "color: green", response);
                         vm.vehicles = response.data;
                     })
                     .catch((e) => {
-                        console.log(e.response);
+                        console.log(
+                            "%c getVehicles error",
+                            "color: red",
+                            e.response
+                        );
                         vm.messages.error = e.response.data.message;
                     });
             },
@@ -284,9 +329,9 @@ if (document.getElementById("public-vehicles")) {
             },
 
             viewVehicle(item) {
+                console.log("%c viewVehicle", "color: blue", strip(item));
                 const vm = this;
                 this.mode = "details";
-                console.log(item);
                 vm.editedVehicle = item;
             },
         },

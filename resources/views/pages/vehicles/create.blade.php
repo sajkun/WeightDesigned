@@ -37,7 +37,7 @@
                     </div>
                     <div class="col-12 col-sm-6">
                         <div class="form-control-custom">
-                            <input type="text" id='vehicleModel' name='model' required>
+                            <input type="text" id='vehicleModel' name='model' required key='modelInput'>
                             <label for="vehicleModel">Модель</label>
                         </div>
                     </div>
@@ -53,7 +53,7 @@
 
                     <div class="col-12 col-sm-6 mt-sm-0 mt-2">
                         <div class="form-control-custom h-100">
-                            <select id='vehicleModel' name='model' class='h-100' required>
+                            <select id='vehicleModel' name='model' class='h-100' required key='modelSelect'>
                                 <option disabled hidden selected>--выберите модель--</option>
                                 <option v-for='model,key in bunkerModels' :key='"model" + key' :value="model">
                                     @{{ model }}
