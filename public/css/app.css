@@ -11261,7 +11261,7 @@ body.auth #app {
 
 .popup-wrapper {
   position: fixed;
-  z-index: 1000;
+  z-index: 50;
   left: 0;
   right: 0;
   bottom: 0;
@@ -11453,7 +11453,7 @@ body.auth #app {
   position: relative;
   max-width: 30rem;
   margin: auto;
-  position: absolute;
+  position: fixed;
   top: 10%;
   left: 0;
   right: 0;

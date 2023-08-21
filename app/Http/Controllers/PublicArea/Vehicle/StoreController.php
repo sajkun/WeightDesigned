@@ -1,8 +1,9 @@
 <?php
 namespace App\Http\Controllers\PublicArea\Vehicle;
 
-use App\Models\Vehicle;
+use App\Models\Rfid;
 use App\Models\Pincode;
+use App\Models\Vehicle;
 use App\Models\Employee;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -73,6 +74,15 @@ class StoreController extends Controller
 
             if ($employee) {
                 $vehicle->employee()->associate($employee)->save();
+            }
+
+            if (isset($request->rfids) && count($request->rfids) > 0) {
+                $rfids = array_map(function ($rfid) use ($vehicle) {
+                    $rfid['vehicle_id'] = $vehicle['id'];
+                    return $rfid;
+                }, $request->rfids);
+
+                Rfid::insert($rfids);
             }
 
             return response()->json([

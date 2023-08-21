@@ -1,8 +1,9 @@
 <?php
 namespace App\Http\Controllers\PublicArea\Vehicle;
 
-use App\Models\Vehicle;
+use App\Models\Rfid;
 use App\Models\Pincode;
+use App\Models\Vehicle;
 use App\Models\Employee;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -46,8 +47,17 @@ class PatchController extends Controller
                 }
             }
 
-            $pincode = null;
+            $vehicle_to_edit->rfids()->delete();
+            if (isset($request->rfids) && count($request->rfids) > 0) {
+                $rfids = array_map(function ($rfid) use ($vehicle_to_edit) {
+                    $rfid['vehicle_id'] = $vehicle_to_edit['id'];
+                    return $rfid;
+                }, $request->rfids);
 
+                Rfid::insert($rfids);
+            }
+
+            $pincode = $vehicle_to_edit->pincode()->first();
             if (isset($new_vehicle_data['pin'])) {
                 $pincode = Pincode::where([
                     'name' => $new_vehicle_data['name'],

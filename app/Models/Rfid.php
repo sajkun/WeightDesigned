@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Rfid extends Model
 {
     use HasFactory;
+    protected $guarded = false;
 
     public function vehicle():BelongsTo
     {

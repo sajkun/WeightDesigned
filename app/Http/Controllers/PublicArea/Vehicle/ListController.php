@@ -25,6 +25,7 @@ class ListController extends Controller
                 $item['employee_name'] = $employee ? "$employee->last_name $employee->first_name $employee->middle_name " : '-';
                 $item['employee'] = $employee ;
                 $item['pin'] = $item->pincode()->first() ;
+                $item['rfids'] = $item->rfids()->get() ;
                 return $item;
             });
 

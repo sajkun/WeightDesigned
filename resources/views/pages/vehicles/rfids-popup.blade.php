@@ -1,5 +1,5 @@
 <div class="popup-wrapper" v-if='popup === "rfids"'>
-    <div class="popup p-2">
+    <div class="popup p-2" style='max-width: 640px'>
         <div class="popup__header pt-2">
             <div class="row">
                 <div class="col-8">
@@ -40,7 +40,8 @@
         <div class="popup__body">
             <div class="row">
                 <form ref='addRfid' @submit.prevent='submitRfid'>
-                    <div class="row">
+                    <input type="hidden" :value='organisationId' name='organisation_id'>
+                    <div class="row rfid-row">
                         <div class="col-12 col-md-6 mt-3">
                             <div class="form-control-custom">
                                 <input type="text" id='rfid-lable' required name='label'>
@@ -55,6 +56,7 @@
                         </div>
                     </div>
                     <div class="mt-2 text-end">
+                        <button type='button' @click='checkRfid' class='btn btn-borders ms-2'>Проверить</button>
                         <button type='submit' class='btn btn-primary-alt ms-2'>Сохранить</button>
                     </div>
                 </form>

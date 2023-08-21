@@ -33,6 +33,9 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('/edit', 'PatchController')->name('public.employee.edit');
         Route::post('/delete', 'DestroyController')->name('public.employee.delete');
     });
+    Route::group(['namespace' => 'PublicArea\Rfid', 'prefix' => 'rfids'], function () {
+        Route::post('/test', 'CheckController')->name('public.rfid.test');
+    });
     Route::group(['namespace' => 'PublicArea\Vehicle', 'prefix' => 'vehicles'], function () {
         Route::get('/list', 'ListController')->name('public.vehicles.list');
         Route::get('/{type}', 'IndexController')->name('public.vehicle.index');

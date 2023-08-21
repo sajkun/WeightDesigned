@@ -67,9 +67,18 @@
                         <div class="col-12 col-md-6" v-if='mode === "details" '>
                             <div class="org-wrapper">
                                 <div class="row ">
-                                    <h2 class="h4 m-0">
-                                        @{{ vehicleName }} @{{ editedVehicle.name }}
-                                    </h2>
+                                    <div class="col-10">
+                                        <h2 class="h4 m-0">
+                                            @{{ vehicleName }} @{{ editedVehicle.name }}
+                                        </h2>
+                                    </div>
+                                    <div class="col text-end">
+                                        <button class="btn p-0  btn-close" type='button' @click='mode="list"'>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="row">
                                     @include('pages.vehicles.view-tabs')
                                 </div>
 

@@ -6134,7 +6134,6 @@ if (document.getElementById("public-vehicles")) {
         return this.vehicles["".concat(this.vehicleType, "s")];
       },
       rfidsComputed: function rfidsComputed() {
-        console.log(this.rfids);
         return this.rfids;
       }
     },
@@ -6142,8 +6141,8 @@ if (document.getElementById("public-vehicles")) {
       mode: function mode(_mode) {
         console.log("mode:", _mode);
         var vm = this;
-        vm.reset();
         if (_mode === "create") {
+          vm.reset();
           vm.$nextTick(function () {
             vm.enableInputs();
           });
@@ -6174,9 +6173,6 @@ if (document.getElementById("public-vehicles")) {
         this.vehicleAddType = _vehicleType;
         var vm = this;
         vm.reset();
-      },
-      mayBeResponsiblePerson: function mayBeResponsiblePerson(_mayBeResponsiblePerson) {
-        console.log(_mayBeResponsiblePerson);
       }
     },
     mounted: function mounted() {
@@ -6234,10 +6230,9 @@ if (document.getElementById("public-vehicles")) {
           vm.messages.error = e.response.data.message;
         });
       },
-      createVehicle: function createVehicle() {
-        var _vm$mayBeResponsibleP;
+      checkRfid: function checkRfid() {
         var vm = this;
-        var formData = new FormData(vm.$refs.formCreateVehicle);
+        var formData = new FormData(vm.$refs.addRfid);
         var postData = {};
         var _iterator = _createForOfIteratorHelper(formData),
           _step;
@@ -6253,6 +6248,35 @@ if (document.getElementById("public-vehicles")) {
         } finally {
           _iterator.f();
         }
+        postData["organisation_id"] = vm.organisation_id;
+        axios.post("/rfids/test", postData).then(function (response) {
+          var _response$data;
+          console.log("%c checkRfid response", "color:green", response);
+          vm.messages[response.data.type] = response === null || response === void 0 || (_response$data = response.data) === null || _response$data === void 0 ? void 0 : _response$data.message;
+        })["catch"](function (e) {
+          console.log("%c checkRfid error", "color: red", e.response);
+          vm.messages.error = e.response.data.message;
+        });
+      },
+      createVehicle: function createVehicle() {
+        var _vm$mayBeResponsibleP;
+        var vm = this;
+        var formData = new FormData(vm.$refs.formCreateVehicle);
+        var postData = {};
+        var _iterator2 = _createForOfIteratorHelper(formData),
+          _step2;
+        try {
+          for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+            var _step2$value = _slicedToArray(_step2.value, 2),
+              key = _step2$value[0],
+              value = _step2$value[1];
+            postData[key] = value;
+          }
+        } catch (err) {
+          _iterator2.e(err);
+        } finally {
+          _iterator2.f();
+        }
         var sendData = {
           user_id: vm.userId,
           organisation_id: vm.organisationId,
@@ -6263,9 +6287,9 @@ if (document.getElementById("public-vehicles")) {
         console.log("createVehicle: ", vm.vehicleType);
         console.log("createVehicle data: ", sendData);
         axios.post("/vehicles/store", sendData).then(function (response) {
-          var _response$data;
+          var _response$data2;
           console.log("%c createVehicle response", "color:green", response);
-          vm.messages[response.data.type] = response === null || response === void 0 || (_response$data = response.data) === null || _response$data === void 0 ? void 0 : _response$data.message;
+          vm.messages[response.data.type] = response === null || response === void 0 || (_response$data2 = response.data) === null || _response$data2 === void 0 ? void 0 : _response$data2.message;
           // vm.$refs.formCreateVehicle?.reset();
           // vm.reset();
           vm.getVehicles();
@@ -6284,9 +6308,9 @@ if (document.getElementById("public-vehicles")) {
           delete_item: item
         };
         axios.post("/vehicles/delete", sendData).then(function (response) {
-          var _response$data2;
+          var _response$data3;
           console.log("%c deleteVehicle", "color:green", response);
-          vm.messages[response.data.type] = response === null || response === void 0 || (_response$data2 = response.data) === null || _response$data2 === void 0 ? void 0 : _response$data2.message;
+          vm.messages[response.data.type] = response === null || response === void 0 || (_response$data3 = response.data) === null || _response$data3 === void 0 ? void 0 : _response$data3.message;
           vm.getVehicles();
         })["catch"](function (e) {
           console.log("%c deleteVehicle error", "color: red", e.response);
@@ -6312,6 +6336,7 @@ if (document.getElementById("public-vehicles")) {
         vm.mayBeResponsiblePerson = null;
         vm.popup = null;
         vm.mayBeGroupedVehicles = [];
+        vm.rfids = [];
       },
       getVehicles: function getVehicles() {
         var vm = this;
@@ -6336,32 +6361,6 @@ if (document.getElementById("public-vehicles")) {
         var vm = this;
         var formData = new FormData(vm.$refs.addRfid);
         var postData = {};
-        var _iterator2 = _createForOfIteratorHelper(formData),
-          _step2;
-        try {
-          for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
-            var _step2$value = _slicedToArray(_step2.value, 2),
-              key = _step2$value[0],
-              value = _step2$value[1];
-            postData[key] = value;
-          }
-        } catch (err) {
-          _iterator2.e(err);
-        } finally {
-          _iterator2.f();
-        }
-        console.log(postData);
-        vm.rfids.push(postData);
-
-        // vm.$refs.addRfid?.reset();
-        vm.popup = null;
-      },
-      updateVehicle: function updateVehicle() {
-        var _vm$mayBeResponsibleP2;
-        var vm = this;
-        console.log("%c updateVehicle", "color: blue", (0,_functions__WEBPACK_IMPORTED_MODULE_1__.strip)(vm.editedVehicle));
-        var formData = new FormData(vm.$refs.editVehicleForm);
-        var postData = {};
         var _iterator3 = _createForOfIteratorHelper(formData),
           _step3;
         try {
@@ -6376,6 +6375,32 @@ if (document.getElementById("public-vehicles")) {
         } finally {
           _iterator3.f();
         }
+        console.log(postData);
+        vm.rfids.push(postData);
+
+        // vm.$refs.addRfid?.reset();
+        vm.popup = null;
+      },
+      updateVehicle: function updateVehicle() {
+        var _vm$mayBeResponsibleP2;
+        var vm = this;
+        console.log("%c updateVehicle", "color: blue", (0,_functions__WEBPACK_IMPORTED_MODULE_1__.strip)(vm.editedVehicle));
+        var formData = new FormData(vm.$refs.editVehicleForm);
+        var postData = {};
+        var _iterator4 = _createForOfIteratorHelper(formData),
+          _step4;
+        try {
+          for (_iterator4.s(); !(_step4 = _iterator4.n()).done;) {
+            var _step4$value = _slicedToArray(_step4.value, 2),
+              key = _step4$value[0],
+              value = _step4$value[1];
+            postData[key] = value;
+          }
+        } catch (err) {
+          _iterator4.e(err);
+        } finally {
+          _iterator4.f();
+        }
         var sendData = {
           user_id: vm.userId,
           organisation_id: vm.organisationId,
@@ -6384,9 +6409,9 @@ if (document.getElementById("public-vehicles")) {
           rfids: vm.rfids
         };
         axios.post("/vehicles/edit", sendData).then(function (response) {
-          var _response$data3;
+          var _response$data4;
           console.log("%c updateVehicle", "color:green", response);
-          vm.messages[response.data.type] = response === null || response === void 0 || (_response$data3 = response.data) === null || _response$data3 === void 0 ? void 0 : _response$data3.message;
+          vm.messages[response.data.type] = response === null || response === void 0 || (_response$data4 = response.data) === null || _response$data4 === void 0 ? void 0 : _response$data4.message;
           vm.getVehicles();
         })["catch"](function (e) {
           console.log("%c updateVehicle error", "color: red", e.response);
@@ -6398,6 +6423,8 @@ if (document.getElementById("public-vehicles")) {
         var vm = this;
         this.mode = "details";
         vm.editedVehicle = (0,_functions__WEBPACK_IMPORTED_MODULE_1__.strip)(item);
+        vm.mayBeResponsiblePerson = (0,_functions__WEBPACK_IMPORTED_MODULE_1__.strip)(item).employee;
+        vm.rfids = (0,_functions__WEBPACK_IMPORTED_MODULE_1__.strip)(item).rfids;
       },
       removeRfid: function removeRfid(rfid) {
         var vm = this;

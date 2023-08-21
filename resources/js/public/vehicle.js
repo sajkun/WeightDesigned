@@ -111,7 +111,6 @@ if (document.getElementById("public-vehicles")) {
             },
 
             rfidsComputed() {
-                console.log(this.rfids);
                 return this.rfids;
             },
         },
@@ -120,9 +119,9 @@ if (document.getElementById("public-vehicles")) {
             mode(mode) {
                 console.log("mode:", mode);
                 const vm = this;
-                vm.reset();
 
                 if (mode === "create") {
+                    vm.reset();
                     vm.$nextTick(() => {
                         vm.enableInputs();
                     });
@@ -156,10 +155,6 @@ if (document.getElementById("public-vehicles")) {
                 this.vehicleAddType = vehicleType;
                 const vm = this;
                 vm.reset();
-            },
-
-            mayBeResponsiblePerson(mayBeResponsiblePerson) {
-                console.log(mayBeResponsiblePerson);
             },
         },
 
@@ -232,6 +227,37 @@ if (document.getElementById("public-vehicles")) {
                     })
                     .catch((e) => {
                         console.log(e.response);
+                        vm.messages.error = e.response.data.message;
+                    });
+            },
+
+            checkRfid() {
+                const vm = this;
+
+                const formData = new FormData(vm.$refs.addRfid);
+                let postData = {};
+
+                for (const [key, value] of formData) {
+                    postData[key] = value;
+                }
+                postData["organisation_id"] = vm.organisation_id;
+                axios
+                    .post(`/rfids/test`, postData)
+                    .then((response) => {
+                        console.log(
+                            "%c checkRfid response",
+                            "color:green",
+                            response
+                        );
+                        vm.messages[response.data.type] =
+                            response?.data?.message;
+                    })
+                    .catch((e) => {
+                        console.log(
+                            "%c checkRfid error",
+                            "color: red",
+                            e.response
+                        );
                         vm.messages.error = e.response.data.message;
                     });
             },
@@ -339,6 +365,7 @@ if (document.getElementById("public-vehicles")) {
                 vm.mayBeResponsiblePerson = null;
                 vm.popup = null;
                 vm.mayBeGroupedVehicles = [];
+                vm.rfids = [];
             },
 
             getVehicles() {
@@ -442,6 +469,8 @@ if (document.getElementById("public-vehicles")) {
                 const vm = this;
                 this.mode = "details";
                 vm.editedVehicle = strip(item);
+                vm.mayBeResponsiblePerson = strip(item).employee;
+                vm.rfids = strip(item).rfids;
             },
 
             removeRfid(rfid) {

@@ -14,7 +14,7 @@
         <div class="row">
             <div class="col-12 col-sm-6 mt-3" v-if='!editedVehicle.pin'>
                 <div class="form-control-custom">
-                    <input type="text" id='vehicleEditName' name='name' v-model='editedVehicle.name' readonly
+                    <input type="text" id='vehicleEditName' name='name' v-model='editedVehicle.name'
                         autocomplete='off' required>
                     <label for="vehicleEditName" :class='{ "active": editedVehicle.name }'>Название</label>
                 </div>
@@ -145,7 +145,6 @@
         </p>
 
         <div class="row rfid-row">
-
             <div class="col mt-2" v-for='rfid, key in rfidsComputed'>
                 <div class="responsible">
                     <div class="row">
@@ -184,8 +183,11 @@
             RFID метку</button>
 
         <div class="mt-2 text-end">
+            <button type="button" type='button' @click='mode="list"'
+                class="btn btn-borders-grey ">Закрыть</button>
+
             <button type="button" type='submit' @click='updateVehicle'
-                class="btn btn-primary-alt">Сохранить</button>
+                class="btn btn-primary-alt ms-1">Сохранить</button>
         </div>
     </form>
 </div>
