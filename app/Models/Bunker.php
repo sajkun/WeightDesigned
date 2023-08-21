@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 class Bunker extends Model
 {
     use HasFactory;
+
     protected $guarded = false;
 
     public function getPincode()

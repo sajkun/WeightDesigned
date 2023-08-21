@@ -19,11 +19,6 @@ class StoreController extends Controller
     public function __invoke(Request $request)
     {
         try {
-            //валидация запроса и проверка прав пользователя
-            // удалить после теста
-            // return response()->json([
-            //     'type' => 'тест ответа',
-            // ]);
             $this->authorize('create', [Bunker::class, $request->organisation_id]);
 
             $request->validate([
@@ -35,11 +30,6 @@ class StoreController extends Controller
             // форматирование данных бункера
             $may_be_bunker = $request->post_data;
             $may_be_bunker['organisation_id'] = (int)$request->organisation_id;
-            // $may_be_bunker['name'] = htmlspecialchars(strtolower($may_be_bunker['name']), ENT_NOQUOTES, 'UTF-8');
-            // // удалить после теста
-            // return response()->json([
-            //     'may_be_bunker' => $may_be_bunker,
-            // ]);
 
             // проверка уникальности имени бункера
             $exists_bunker = Bunker::where(['name' => $may_be_bunker['name']])->first();
@@ -49,7 +39,7 @@ class StoreController extends Controller
             }
 
             $employee = null;
-            if (isset($may_be_bunker['employee_id'])) {
+            if (isset($request->employee_id)) {
                 $employee = Employee::find($request->employee_id);
                 if ((int)$employee->id !== (int)$request->organisation_id) {
                     throw new \ErrorException('Ошибка добавления ответственного', 403);

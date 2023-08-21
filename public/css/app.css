@@ -10828,7 +10828,7 @@ table.organisation tr:hover:not(:first-child):not(.no-hover) {
   border: 1px solid #dfe6fa;
   box-shadow: 6px 6px 6px rgba(33, 40, 41, 0.03);
   border-radius: 8px;
-  padding: 1rem;
+  padding: calc(var(--bs-gutter-x) * 0.5);
 }
 
 @media (max-width: 980px) {
@@ -10990,7 +10990,7 @@ body {
 }
 
 .tabs {
-  border-bottom: 1px solid var(--grey-medium);
+  border-bottom: 1px solid var(--grey-light);
 }
 .tabs .btn {
   margin-bottom: -1px;
@@ -11057,6 +11057,12 @@ body {
   font-weight: 400;
   font-size: 0.7rem;
   color: var(--grey-medium);
+}
+
+.horisontal-separator {
+  height: 1px;
+  background-color: var(--grey-light);
+  margin: 0 calc(var(--bs-gutter-x) * -0.5);
 }
 
 .btn-primary-alt {

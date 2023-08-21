@@ -6074,12 +6074,14 @@ if (document.getElementById("public-vehicles")) {
       vehicleType: null,
       // bunkers | transporters | tractors | harvesters
       mayBeResponsiblePerson: null,
+      rfids: [],
       mayBeGroupedVehicles: [],
       popup: null,
       // employees | vehicles
       employees: [],
       employeeSearch: "",
       activeTab: "info",
+      pincode: null,
       vehicles: {
         bunkers: [],
         transporters: [],
@@ -6130,31 +6132,35 @@ if (document.getElementById("public-vehicles")) {
       },
       vehiclesCurrent: function vehiclesCurrent() {
         return this.vehicles[this.vehicleType];
+      },
+      rfidsComputed: function rfidsComputed() {
+        return this.rfids;
       }
     },
     watch: {
       mode: function mode(_mode) {
         console.log("mode:", _mode);
         var vm = this;
+        vm.reset();
         if (_mode === "create") {
           vm.$nextTick(function () {
-            var inputs = document.querySelectorAll(".form-control-custom input");
-            inputs.forEach(function (el) {
-              el.addEventListener("input", function (e) {
-                if (e.target.value) {
-                  e.target.nextElementSibling.classList.add("active");
-                } else {
-                  e.target.nextElementSibling.classList.remove("active");
-                }
-              });
-            });
+            vm.enableInputs();
           });
         }
+      },
+      popup: function popup() {
+        var vm = this;
+        vm.$nextTick(function () {
+          vm.enableInputs();
+        });
       },
       vehicleType: function vehicleType(_vehicleType) {
         this.vehicleAddType = _vehicleType;
         var vm = this;
         vm.reset();
+      },
+      mayBeResponsiblePerson: function mayBeResponsiblePerson(_mayBeResponsiblePerson) {
+        console.log(_mayBeResponsiblePerson);
       }
     },
     mounted: function mounted() {
@@ -6172,10 +6178,22 @@ if (document.getElementById("public-vehicles")) {
         vm.mode = "create";
         vm.vehicleType = type;
       },
-      checkPin: function checkPin() {
+      enableInputs: function enableInputs() {
+        var inputs = document.querySelectorAll(".form-control-custom input");
+        inputs.forEach(function (el) {
+          el.addEventListener("input", function (e) {
+            if (e.target.value) {
+              e.target.nextElementSibling.classList.add("active");
+            } else {
+              e.target.nextElementSibling.classList.remove("active");
+            }
+          });
+        });
+      },
+      checkPin: function checkPin(createOrEdit) {
         var vm = this;
-        var pin = vm.$refs.bunkerPin.value;
-        var name = vm.$refs.bunkerName.value;
+        var pin = vm.pincode;
+        var name = createOrEdit === "edit" ? vm.editedVehicle.name : vm.$refs.bunkerName.value;
         if (!Boolean(pin)) {
           vm.messages.error = "Пинкод не задан";
           return;
@@ -6273,6 +6291,7 @@ if (document.getElementById("public-vehicles")) {
       reset: function reset() {
         var vm = this;
         vm.mayBeResponsiblePerson = null;
+        vm.mayBeResponsiblePerson = null;
         vm.popup = null;
         vm.mayBeGroupedVehicles = [];
       },
@@ -6290,17 +6309,77 @@ if (document.getElementById("public-vehicles")) {
         var vm = this;
         vm.mayBeResponsiblePerson = person;
         vm.popup = null;
-        console.log(person);
+        console.log("%c selectResponsiblePerson", "color: blue", (0,_functions__WEBPACK_IMPORTED_MODULE_1__.strip)(person));
       },
       submitCreate: function submitCreate() {
         this.$refs.formCreateVehicle.requestSubmit();
+      },
+      submitRfid: function submitRfid() {
+        var vm = this;
+        var formData = new FormData(vm.$refs.addRfid);
+        var postData = {};
+        var _iterator2 = _createForOfIteratorHelper(formData),
+          _step2;
+        try {
+          for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+            var _step2$value = _slicedToArray(_step2.value, 2),
+              key = _step2$value[0],
+              value = _step2$value[1];
+            postData[key] = value;
+          }
+        } catch (err) {
+          _iterator2.e(err);
+        } finally {
+          _iterator2.f();
+        }
+        console.log(postData);
+        vm.rfids.push(vm.postData);
+        // vm.$refs.addRfid?.reset();
+        vm.popup = null;
+      },
+      updateVehicle: function updateVehicle() {
+        var _vm$mayBeResponsibleP2;
+        var vm = this;
+        console.log("%c updateVehicle", "color: blue", (0,_functions__WEBPACK_IMPORTED_MODULE_1__.strip)(vm.editedVehicle));
+        var formData = new FormData(vm.$refs.editVehicleForm);
+        var postData = {};
+        var _iterator3 = _createForOfIteratorHelper(formData),
+          _step3;
+        try {
+          for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
+            var _step3$value = _slicedToArray(_step3.value, 2),
+              key = _step3$value[0],
+              value = _step3$value[1];
+            postData[key] = value;
+          }
+        } catch (err) {
+          _iterator3.e(err);
+        } finally {
+          _iterator3.f();
+        }
+        var sendData = {
+          user_id: vm.userId,
+          organisation_id: vm.organisationId,
+          employee_id: (_vm$mayBeResponsibleP2 = vm.mayBeResponsiblePerson) === null || _vm$mayBeResponsibleP2 === void 0 ? void 0 : _vm$mayBeResponsibleP2.id,
+          post_data: postData
+        };
+        axios.post("./".concat(vm.vehicleType, "/edit"), sendData).then(function (response) {
+          var _response$data3;
+          console.log("%c updateVehicle", "color:green", response);
+          vm.messages[response.data.type] = response === null || response === void 0 || (_response$data3 = response.data) === null || _response$data3 === void 0 ? void 0 : _response$data3.message;
+          vm.getVehicles();
+        })["catch"](function (e) {
+          console.log("%c updateVehicle error", "color: red", e.response);
+          vm.messages.error = e.response.data.message;
+        });
       },
       viewVehicle: function viewVehicle(item) {
         console.log("%c viewVehicle", "color: blue", (0,_functions__WEBPACK_IMPORTED_MODULE_1__.strip)(item));
         var vm = this;
         this.mode = "details";
-        vm.editedVehicle = item;
-      }
+        vm.editedVehicle = (0,_functions__WEBPACK_IMPORTED_MODULE_1__.strip)(item);
+      },
+      removeRfid: function removeRfid(rfid) {}
     }
   });
 }

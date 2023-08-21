@@ -25,6 +25,8 @@ class ListController extends Controller
                     $employee = $item->employee()->first();
                     $item['employee_name'] = $employee ? "$employee->last_name $employee->first_name $employee->middle_name " : '-';
                     $item['employee'] = $employee ;
+                    $item['type'] = 'bunker' ;
+                    $item['pin'] = $item->pincode()->first() ;
                     return $item;
                 }),
                 // 'tractors' => $organisation->tractors()->get(),

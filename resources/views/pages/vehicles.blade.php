@@ -54,11 +54,7 @@
                                                         <i class="fa fa-solid fa-trash"></i>
                                                     </button>
                                                 @endcan
-                                                @can('update', [App\Models\Bunker::class, $organisation_id])
-                                                    <button class='btn  p-1' @click.stop='editVehicle(item, true )'> <i
-                                                            class="fa fa-solid fa-pencil"></i>
-                                                    </button>
-                                                @endcan
+
                                             </th>
                                         </tr>
                                     </tbody>
@@ -73,36 +69,17 @@
                                     <h2 class="h4 m-0">
                                         @{{ vehicleName }} @{{ editedVehicle.name }}
                                     </h2>
-                                    <nav class="tabs mt-2">
-                                        <div class="row">
-                                            <ul>
-                                                <li>
-                                                    <button class="btn  btn-tab" :class="{ 'active': activeTab === 'info' }"
-                                                        @click="activeTab = 'info'" type='button'>Информация</button>
-                                                </li>
-                                                <li>
-                                                    <button class="btn btn-tab"
-                                                        :class="{ 'active': activeTab === 'activity' }"
-                                                        @click="activeTab = 'activity'" type='button'>Активность</button>
-                                                </li>
-                                                <li>
-                                                    <button class="btn btn-tab"
-                                                        :class="{ 'active': activeTab === 'settings' }"
-                                                        @click="activeTab = 'settings'" type='button'>Настройки</button>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </nav>
+                                    @include('pages.vehicles.view-tabs')
                                 </div>
 
-                                <div class="" v-if='activeTab=== "info"'>
-                                    <div class="row mt-2">
-                                        <div class="col-12 col-md-6 mt-2">
-                                            <h4 class="m-0 label">Модель</h4>
-                                            <p class="mt-1">@{{ editedVehicle.model }}</p>
-                                        </div>
-                                    </div>
-                                </div>
+                                @include('pages.vehicles.view-details')
+
+                                @include('pages.vehicles.view-activity')
+
+                                @can('update', [App\Models\Bunker::class, $organisation_id])
+                                    @include('pages.vehicles.view-settings')
+                                @endcan
+
                             </div>
                         </div>
 
@@ -119,6 +96,10 @@
 
         <Transition name="fade">
             @include('pages.vehicles.employees-popup')
+        </Transition>
+
+        <Transition name="fade">
+            @include('pages.vehicles.rfids-popup')
         </Transition>
     </div>
 @endsection

@@ -14,11 +14,13 @@ if (document.getElementById("public-vehicles")) {
             vehicleAddType: null,
             vehicleType: null, // bunkers | transporters | tractors | harvesters
             mayBeResponsiblePerson: null,
+            rfids: [],
             mayBeGroupedVehicles: [],
             popup: null, // employees | vehicles
             employees: [],
             employeeSearch: "",
             activeTab: "info",
+            pincode: null,
             vehicles: {
                 bunkers: [],
                 transporters: [],
@@ -107,40 +109,40 @@ if (document.getElementById("public-vehicles")) {
             vehiclesCurrent() {
                 return this.vehicles[this.vehicleType];
             },
+
+            rfidsComputed() {
+                return this.rfids;
+            },
         },
 
         watch: {
             mode(mode) {
                 console.log("mode:", mode);
                 const vm = this;
+                vm.reset();
 
                 if (mode === "create") {
                     vm.$nextTick(() => {
-                        const inputs = document.querySelectorAll(
-                            ".form-control-custom input"
-                        );
-
-                        inputs.forEach((el) => {
-                            el.addEventListener("input", (e) => {
-                                if (e.target.value) {
-                                    e.target.nextElementSibling.classList.add(
-                                        "active"
-                                    );
-                                } else {
-                                    e.target.nextElementSibling.classList.remove(
-                                        "active"
-                                    );
-                                }
-                            });
-                        });
+                        vm.enableInputs();
                     });
                 }
+            },
+
+            popup() {
+                const vm = this;
+                vm.$nextTick(() => {
+                    vm.enableInputs();
+                });
             },
 
             vehicleType(vehicleType) {
                 this.vehicleAddType = vehicleType;
                 const vm = this;
                 vm.reset();
+            },
+
+            mayBeResponsiblePerson(mayBeResponsiblePerson) {
+                console.log(mayBeResponsiblePerson);
             },
         },
 
@@ -150,7 +152,6 @@ if (document.getElementById("public-vehicles")) {
             vm.organisationId = vm.$refs.organisationId.value;
             vm.userId = vm.$refs.userId.value;
             vm.vehicleType = vm.$refs.vehicleType.value;
-
             vm.getEmployees();
             vm.getVehicles();
         },
@@ -162,10 +163,31 @@ if (document.getElementById("public-vehicles")) {
                 vm.vehicleType = type;
             },
 
-            checkPin() {
+            enableInputs() {
+                const inputs = document.querySelectorAll(
+                    ".form-control-custom input"
+                );
+
+                inputs.forEach((el) => {
+                    el.addEventListener("input", (e) => {
+                        if (e.target.value) {
+                            e.target.nextElementSibling.classList.add("active");
+                        } else {
+                            e.target.nextElementSibling.classList.remove(
+                                "active"
+                            );
+                        }
+                    });
+                });
+            },
+
+            checkPin(createOrEdit) {
                 const vm = this;
-                const pin = vm.$refs.bunkerPin.value;
-                const name = vm.$refs.bunkerName.value;
+                const pin = vm.pincode;
+                const name =
+                    createOrEdit === "edit"
+                        ? vm.editedVehicle.name
+                        : vm.$refs.bunkerName.value;
 
                 if (!Boolean(pin)) {
                     vm.messages.error = "Пинкод не задан";
@@ -294,6 +316,7 @@ if (document.getElementById("public-vehicles")) {
             reset() {
                 const vm = this;
                 vm.mayBeResponsiblePerson = null;
+                vm.mayBeResponsiblePerson = null;
                 vm.popup = null;
                 vm.mayBeGroupedVehicles = [];
             },
@@ -320,20 +343,86 @@ if (document.getElementById("public-vehicles")) {
                 const vm = this;
                 vm.mayBeResponsiblePerson = person;
                 vm.popup = null;
-
-                console.log(person);
+                console.log(
+                    "%c selectResponsiblePerson",
+                    "color: blue",
+                    strip(person)
+                );
             },
 
             submitCreate() {
                 this.$refs.formCreateVehicle.requestSubmit();
             },
 
+            submitRfid() {
+                const vm = this;
+
+                const formData = new FormData(vm.$refs.addRfid);
+                let postData = {};
+
+                for (const [key, value] of formData) {
+                    postData[key] = value;
+                }
+
+                console.log(postData);
+
+                vm.rfids.push(vm.postData);
+                // vm.$refs.addRfid?.reset();
+                vm.popup = null;
+            },
+
+            updateVehicle() {
+                const vm = this;
+                console.log(
+                    "%c updateVehicle",
+                    "color: blue",
+                    strip(vm.editedVehicle)
+                );
+
+                const formData = new FormData(vm.$refs.editVehicleForm);
+                let postData = {};
+
+                for (const [key, value] of formData) {
+                    postData[key] = value;
+                }
+
+                const sendData = {
+                    user_id: vm.userId,
+                    organisation_id: vm.organisationId,
+                    employee_id: vm.mayBeResponsiblePerson?.id,
+                    post_data: postData,
+                };
+
+                axios
+                    .post(`./${vm.vehicleType}/edit`, sendData)
+                    .then((response) => {
+                        console.log(
+                            "%c updateVehicle",
+                            "color:green",
+                            response
+                        );
+                        vm.messages[response.data.type] =
+                            response?.data?.message;
+                        vm.getVehicles();
+                    })
+                    .catch((e) => {
+                        console.log(
+                            "%c updateVehicle error",
+                            "color: red",
+                            e.response
+                        );
+                        vm.messages.error = e.response.data.message;
+                    });
+            },
+
             viewVehicle(item) {
                 console.log("%c viewVehicle", "color: blue", strip(item));
                 const vm = this;
                 this.mode = "details";
-                vm.editedVehicle = item;
+                vm.editedVehicle = strip(item);
             },
+
+            removeRfid(rfid) {},
         },
     });
 }
