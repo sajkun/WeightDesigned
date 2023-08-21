@@ -35,7 +35,7 @@ Route::group(['middleware' => 'auth'], function () {
     });
     Route::group(['namespace' => 'PublicArea\Vehicle', 'prefix' => 'vehicles'], function () {
         Route::get('/list', 'ListController')->name('public.vehicles.list');
-        Route::get('/', 'IndexController')->name('public.vehicle.index');
+        Route::get('/{type}', 'IndexController')->name('public.vehicle.index');
         Route::post('/store', 'StoreController')->name('public.vehicle.store');
         Route::post('/edit', 'PatchController')->name('public.vehicle.edit');
         Route::post('/delete', 'DestroyController')->name('public.vehicle.delete');

@@ -27,13 +27,13 @@ class PatchController extends Controller
             ]);
 
             // форматирование данных бункера
-            $new_bunker_data = $request->post_data;
-            $new_bunker_data['organisation_id'] = (int)$request->organisation_id;
+            $new_vehicle_data = $request->post_data;
+            $new_vehicle_data['organisation_id'] = (int)$request->organisation_id;
 
             // проверка уникальности имени бункера
-            $bunker_to_edit = Vehicle::find((int)$new_bunker_data['id']);
+            $vehicle_to_edit = Vehicle::find((int)$new_vehicle_data['id']);
 
-            if (!$bunker_to_edit) {
+            if (!$vehicle_to_edit) {
                 throw new \ErrorException('Не найдена запись редактируемой техники', 404);
             }
 
@@ -48,10 +48,10 @@ class PatchController extends Controller
 
             $pincode = null;
 
-            if (isset($new_bunker_data['pin'])) {
+            if (isset($new_vehicle_data['pin'])) {
                 $pincode = Pincode::where([
-                    'name' => $new_bunker_data['name'],
-                    'pin' => (int)$new_bunker_data['pin']
+                    'name' => $new_vehicle_data['name'],
+                    'pin' => (int)$new_vehicle_data['pin']
                 ])->first();
 
                 if (!$pincode) {
@@ -63,25 +63,25 @@ class PatchController extends Controller
                 };
             }
 
-            $add_message = !$pincode ? ' Для просмотра данных весовой системы вам потребуется ввести пин код' : '';
-            unset($new_bunker_data['pin'], $new_bunker_data['id']);
+            $add_message = !$pincode && $vehicle_to_edit['type'] === 'bunker' ? ' Для просмотра данных весовой системы вам потребуется ввести пин код' : '';
+            unset($new_vehicle_data['pin'], $new_vehicle_data['id']);
 
-            $bunker_to_edit->update((array)$new_bunker_data);
+            $vehicle_to_edit->update((array)$new_vehicle_data);
 
             if ($pincode) {
-                $bunker_to_edit->pincode()->save($pincode);
+                $vehicle_to_edit->pincode()->save($pincode);
             }
 
             if ($employee) {
-                $bunker_to_edit->employee()->associate($employee)->save();
+                $vehicle_to_edit->employee()->associate($employee)->save();
             } else {
-                $exists_employee = $bunker_to_edit->employee()->first();
-                $bunker_to_edit->employee()->dissociate($exists_employee)->save();
+                $exists_employee = $vehicle_to_edit->employee()->first();
+                $vehicle_to_edit->employee()->dissociate($exists_employee)->save();
             }
 
             return response()->json([
-                'bunker_to_edit' => $bunker_to_edit,
-                'new_bunker_data' => $new_bunker_data,
+                'vehicle_to_edit' => $vehicle_to_edit,
+                'new_vehicle_data' => $new_vehicle_data,
                 'type' => 'success',
                 'message' => 'Техника обновлена успешно.' . $add_message,
             ]);

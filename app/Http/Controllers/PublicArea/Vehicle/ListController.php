@@ -20,18 +20,32 @@ class ListController extends Controller
             $user = Auth::user();
             $organisation = Organisation::find($user->organisation_id);
 
+            $vehicles = $organisation->vehicles()->get()->map(function ($item) {
+                $employee = $item->employee()->first();
+                $item['employee_name'] = $employee ? "$employee->last_name $employee->first_name $employee->middle_name " : '-';
+                $item['employee'] = $employee ;
+                $item['pin'] = $item->pincode()->first() ;
+                return $item;
+            });
+
+            $bunkers = $vehicles->filter(function ($item) {
+                return $item['type'] === 'bunker';
+            });
+            $tractors = $vehicles->filter(function ($item) {
+                return $item['type'] === 'tractor';
+            });
+            $transporters = $vehicles->filter(function ($item) {
+                return $item['type'] === 'transporter';
+            });
+            $harvesters = $vehicles->filter(function ($item) {
+                return $item['type'] === 'harvester';
+            });
+
             return response()->json([
-                'bunkers' => $organisation->vehicles()->get()->map(function ($item) {
-                    $employee = $item->employee()->first();
-                    $item['employee_name'] = $employee ? "$employee->last_name $employee->first_name $employee->middle_name " : '-';
-                    $item['employee'] = $employee ;
-                    $item['type'] = 'bunker' ;
-                    $item['pin'] = $item->pincode()->first() ;
-                    return $item;
-                }),
-                // 'tractors' => $organisation->tractors()->get(),
-                // 'transporters' => $organisation->transporters()->get(),
-                // 'harvesters' => $organisation->harvesters()->get(),
+                'bunkers' => $bunkers->toArray(),
+                'tractors' => $tractors->toArray(),
+                'transporters' => $transporters->toArray(),
+                'harvesters' => $harvesters->toArray(),
             ]);
         } catch (\Exception  $e) {
             return response()->json([

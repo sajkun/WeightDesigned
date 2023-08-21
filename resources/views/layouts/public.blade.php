@@ -27,7 +27,7 @@
             <div class="row align-content-center">
                 <div class="flex-grow-0 logo align-self-center">
                     <a href="{{ route('public.index') }}" class="">
-                        <img src="./images/svg/logo-public.svg" alt="ООО Лилиани">
+                        <img src="/images/svg/logo-public.svg" alt="ООО Лилиани">
                     </a>
                 </div>
                 <div class="flex-grow-1 col align-self-center">
@@ -35,11 +35,18 @@
                         <div class="col flex-grow-0 align-self-center">
                             <ul class="main-menu">
                                 <li><a href="">Поля</a></li>
-                                <li><a href="{{ route('public.vehicle.index') }}">Техника</a>
+                                <li><a href="{{ route('public.vehicle.index', ['type' => 'bunker']) }}">Техника</a>
                                     <nav class="submenu">
                                         <ul class="submenu-list">
-                                            <li><a href="{{ route('public.vehicle.index') }}">
+                                            <li><a href="{{ route('public.vehicle.index', ['type' => 'bunker']) }}">
                                                     Бункеры&nbsp;перегрузчеки</a></li>
+                                            <li><a href="{{ route('public.vehicle.index', ['type' => 'tractor']) }}">
+                                                    Тракторы</a></li>
+                                            <li><a
+                                                    href="{{ route('public.vehicle.index', ['type' => 'transporter']) }}">
+                                                    Грузовики</a></li>
+                                            <li><a href="{{ route('public.vehicle.index', ['type' => 'harvester']) }}">
+                                                    Комбайны</a></li>
 
                                         </ul>
                                     </nav>

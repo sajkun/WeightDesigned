@@ -29,7 +29,7 @@ class DestroyController extends Controller
             $delete_bunker->delete();
             return response()->json([
                 'delete_bunker' => $delete_bunker['id'],
-                'message' => sprintf('Бункер %s удалён', $delete_bunker['name']),
+                'message' => sprintf('%s удалён', $delete_bunker['name']),
                 'type' => 'success'
             ]);
         } catch (\Exception  $e) {

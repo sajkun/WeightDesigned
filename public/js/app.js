@@ -6072,7 +6072,7 @@ if (document.getElementById("public-vehicles")) {
       // list | edit | create | details
       vehicleAddType: null,
       vehicleType: null,
-      // bunkers | transporters | tractors | harvesters
+      // bunker | transporter | tractor | harvester
       mayBeResponsiblePerson: null,
       rfids: [],
       mayBeGroupedVehicles: [],
@@ -6093,16 +6093,16 @@ if (document.getElementById("public-vehicles")) {
     computed: {
       vehicleTypesList: function vehicleTypesList() {
         return {
-          bunkers: {
+          bunker: {
             name: "Бункер перегрузчик"
           },
-          transporters: {
+          transporter: {
             name: "Грузовик"
           },
-          tractors: {
+          tractor: {
             name: "Трактор"
           },
-          harvesters: {
+          harvester: {
             name: "Комбайн"
           }
         };
@@ -6131,7 +6131,7 @@ if (document.getElementById("public-vehicles")) {
         return ["БП-16/20", "БП-22/28", "БП-22/28 габаритный", "БП-22/28 (8 колес)", "БП-22/31", "БП-22/31 хоппер", "БП-22/31 габаритный", "БП-22/31 8 колес", "БП-33/42 хоппер", "БП-33/42 8 колес", "БП-40/50"];
       },
       vehiclesCurrent: function vehiclesCurrent() {
-        return this.vehicles[this.vehicleType];
+        return this.vehicles["".concat(this.vehicleType, "s")];
       },
       rfidsComputed: function rfidsComputed() {
         console.log(this.rfids);
@@ -6148,6 +6148,21 @@ if (document.getElementById("public-vehicles")) {
             vm.enableInputs();
           });
         }
+      },
+      vehicleAddType: function vehicleAddType() {
+        var _vm$$refs$formCreateV;
+        var vm = this;
+        vm.reset();
+        (_vm$$refs$formCreateV = vm.$refs.formCreateVehicle) === null || _vm$$refs$formCreateV === void 0 ? void 0 : _vm$$refs$formCreateV.reset();
+        vm.$nextTick(function () {
+          vm.enableInputs();
+        });
+      },
+      activeTab: function activeTab() {
+        var vm = this;
+        vm.$nextTick(function () {
+          vm.enableInputs();
+        });
       },
       popup: function popup() {
         var vm = this;
@@ -6207,7 +6222,7 @@ if (document.getElementById("public-vehicles")) {
           vm.messages.error = "Пинкод должен быть из 5 символов";
           return;
         }
-        axios.post("./vehicles/pincode", {
+        axios.post("/vehicles/pincode", {
           user_id: vm.userId,
           name: name,
           pin: pin
@@ -6247,7 +6262,7 @@ if (document.getElementById("public-vehicles")) {
         };
         console.log("createVehicle: ", vm.vehicleType);
         console.log("createVehicle data: ", sendData);
-        axios.post("./vehicles/store", sendData).then(function (response) {
+        axios.post("/vehicles/store", sendData).then(function (response) {
           var _response$data;
           console.log("%c createVehicle response", "color:green", response);
           vm.messages[response.data.type] = response === null || response === void 0 || (_response$data = response.data) === null || _response$data === void 0 ? void 0 : _response$data.message;
@@ -6268,7 +6283,7 @@ if (document.getElementById("public-vehicles")) {
           organisation_id: vm.organisationId,
           delete_item: item
         };
-        axios.post("./vehicles/delete", sendData).then(function (response) {
+        axios.post("/vehicles/delete", sendData).then(function (response) {
           var _response$data2;
           console.log("%c deleteVehicle", "color:green", response);
           vm.messages[response.data.type] = response === null || response === void 0 || (_response$data2 = response.data) === null || _response$data2 === void 0 ? void 0 : _response$data2.message;
@@ -6283,7 +6298,7 @@ if (document.getElementById("public-vehicles")) {
         if (vm.$refs.organisationId < 0) {
           return;
         }
-        axios.post("./api/public/employees/list/" + vm.organisationId, {
+        axios.post("/api/public/employees/list/" + vm.organisationId, {
           user_id: vm.userId
         }).then(function (response) {
           vm.employees = response.data.employees;
@@ -6300,7 +6315,7 @@ if (document.getElementById("public-vehicles")) {
       },
       getVehicles: function getVehicles() {
         var vm = this;
-        axios.get("./vehicles/list").then(function (response) {
+        axios.get("/vehicles/list").then(function (response) {
           console.log("%c getVehicles", "color: green", response);
           vm.vehicles = response.data;
         })["catch"](function (e) {
@@ -6368,7 +6383,7 @@ if (document.getElementById("public-vehicles")) {
           post_data: postData,
           rfids: vm.rfids
         };
-        axios.post("./vehicles/edit", sendData).then(function (response) {
+        axios.post("/vehicles/edit", sendData).then(function (response) {
           var _response$data3;
           console.log("%c updateVehicle", "color:green", response);
           vm.messages[response.data.type] = response === null || response === void 0 || (_response$data3 = response.data) === null || _response$data3 === void 0 ? void 0 : _response$data3.message;

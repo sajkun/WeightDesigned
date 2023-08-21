@@ -28,7 +28,8 @@
             </p>
             <form method='POST' @submit.prevent='createVehicle' ref='formCreateVehicle'>
                 <input type="hidden" name='type' :value='vehicleAddType'>
-                <div class="mt-3 row" v-if='vehicleAddType !== "bunkers"'>
+                <div class="mt-3 row" v-if='vehicleAddType !== "bunker"'>
+                    <input type="hidden" name='pin' ref='bunkerPin' key='bunkerPinHidden' v-model='pincode'>
                     <div class="col-12 col-sm-6 ">
                         <div class="form-control-custom">
                             <input type="text" id='vehicleName' name='name' key='name1' autocomplete='off'
@@ -43,7 +44,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="mt-3 row" v-if='vehicleAddType === "bunkers"'>
+
+                <div class="mt-3 row" v-if='vehicleAddType === "bunker"'>
                     <div class="col-12 col-sm-6 ">
                         <div class="form-control-custom">
                             <input type="text" id='vehicleName' name='name' key='name2' autocomplete='off'

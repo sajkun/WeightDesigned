@@ -47,7 +47,6 @@ class StoreController extends Controller
             }
 
             $pincode = null;
-
             if ($may_be_vehicle['pin']) {
                 $pincode = Pincode::where([
                     'name' => $may_be_vehicle['name'],
@@ -63,7 +62,7 @@ class StoreController extends Controller
                 };
             }
 
-            $add_message = !$pincode ? ' Для просмотра данных весовой системы вам потребуется ввести пин код' : '';
+            $add_message = !$pincode && $may_be_vehicle['type'] === 'bunker' ? ' Для просмотра данных весовой системы вам потребуется ввести пин код' : '';
             unset($may_be_vehicle['pin']);
 
             $vehicle = Vehicle::create($may_be_vehicle);
@@ -77,7 +76,7 @@ class StoreController extends Controller
             }
 
             return response()->json([
-                'bunker' => $vehicle,
+                'vehicle' => $vehicle,
                 'type' => 'success',
                 'message' => 'Техника создана успешно.' . $add_message,
             ]);

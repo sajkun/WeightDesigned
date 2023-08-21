@@ -29,7 +29,8 @@
                         <div class='' :class="columnClass.tableClass">
                             <div class="d-lg-flex org-wrapper flex-column h-100">
                                 @can('create', [App\Models\Vehicle::class, $organisation_id])
-                                    <button class="btn w-100 btn-borders" type="button" @click='addVehicle("bunkers")'>Добавить
+                                    <button class="btn w-100 btn-borders" type="button"
+                                        @click='addVehicle("{{ $type }}")'>Добавить
                                         @{{ vehicleName }}</button>
                                 @endcan
                                 <table class="organisation mt-3">

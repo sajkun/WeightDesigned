@@ -12,7 +12,7 @@ if (document.getElementById("public-vehicles")) {
             userId: -1,
             mode: "list", // list | edit | create | details
             vehicleAddType: null,
-            vehicleType: null, // bunkers | transporters | tractors | harvesters
+            vehicleType: null, // bunker | transporter | tractor | harvester
             mayBeResponsiblePerson: null,
             rfids: [],
             mayBeGroupedVehicles: [],
@@ -33,16 +33,16 @@ if (document.getElementById("public-vehicles")) {
         computed: {
             vehicleTypesList() {
                 return {
-                    bunkers: {
+                    bunker: {
                         name: "Бункер перегрузчик",
                     },
-                    transporters: {
+                    transporter: {
                         name: "Грузовик",
                     },
-                    tractors: {
+                    tractor: {
                         name: "Трактор",
                     },
-                    harvesters: {
+                    harvester: {
                         name: "Комбайн",
                     },
                 };
@@ -107,7 +107,7 @@ if (document.getElementById("public-vehicles")) {
             },
 
             vehiclesCurrent() {
-                return this.vehicles[this.vehicleType];
+                return this.vehicles[`${this.vehicleType}s`];
             },
 
             rfidsComputed() {
@@ -127,6 +127,22 @@ if (document.getElementById("public-vehicles")) {
                         vm.enableInputs();
                     });
                 }
+            },
+
+            vehicleAddType() {
+                const vm = this;
+                vm.reset();
+                vm.$refs.formCreateVehicle?.reset();
+                vm.$nextTick(() => {
+                    vm.enableInputs();
+                });
+            },
+
+            activeTab() {
+                const vm = this;
+                vm.$nextTick(() => {
+                    vm.enableInputs();
+                });
             },
 
             popup() {
@@ -205,7 +221,7 @@ if (document.getElementById("public-vehicles")) {
                 }
 
                 axios
-                    .post("./vehicles/pincode", {
+                    .post("/vehicles/pincode", {
                         user_id: vm.userId,
                         name: name,
                         pin: pin,
@@ -241,7 +257,7 @@ if (document.getElementById("public-vehicles")) {
                 console.log("createVehicle data: ", sendData);
 
                 axios
-                    .post(`./vehicles/store`, sendData)
+                    .post(`/vehicles/store`, sendData)
                     .then((response) => {
                         console.log(
                             "%c createVehicle response",
@@ -277,7 +293,7 @@ if (document.getElementById("public-vehicles")) {
                 };
 
                 axios
-                    .post(`./vehicles/delete`, sendData)
+                    .post(`/vehicles/delete`, sendData)
                     .then((response) => {
                         console.log(
                             "%c deleteVehicle",
@@ -306,7 +322,7 @@ if (document.getElementById("public-vehicles")) {
                 }
 
                 axios
-                    .post("./api/public/employees/list/" + vm.organisationId, {
+                    .post("/api/public/employees/list/" + vm.organisationId, {
                         user_id: vm.userId,
                     })
                     .then((response) => {
@@ -328,7 +344,7 @@ if (document.getElementById("public-vehicles")) {
             getVehicles() {
                 const vm = this;
                 axios
-                    .get("./vehicles/list")
+                    .get("/vehicles/list")
                     .then((response) => {
                         console.log("%c getVehicles", "color: green", response);
                         vm.vehicles = response.data;
@@ -400,7 +416,7 @@ if (document.getElementById("public-vehicles")) {
                 };
 
                 axios
-                    .post(`./vehicles/edit`, sendData)
+                    .post(`/vehicles/edit`, sendData)
                     .then((response) => {
                         console.log(
                             "%c updateVehicle",
