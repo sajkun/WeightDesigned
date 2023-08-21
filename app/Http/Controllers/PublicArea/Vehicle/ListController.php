@@ -1,5 +1,5 @@
 <?php
-namespace App\Http\Controllers\PublicArea;
+namespace App\Http\Controllers\PublicArea\Vehicle;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -21,7 +21,7 @@ class ListController extends Controller
             $organisation = Organisation::find($user->organisation_id);
 
             return response()->json([
-                'bunkers' => $organisation->bunkers()->get()->map(function ($item) {
+                'bunkers' => $organisation->vehicles()->get()->map(function ($item) {
                     $employee = $item->employee()->first();
                     $item['employee_name'] = $employee ? "$employee->last_name $employee->first_name $employee->middle_name " : '-';
                     $item['employee'] = $employee ;

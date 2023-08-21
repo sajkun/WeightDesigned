@@ -1,10 +1,10 @@
 <?php
-namespace App\Http\Controllers\PublicArea\Bunker;
+namespace App\Http\Controllers\PublicArea\Vehicle;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\PublicController;
-use App\Models\Bunker;
+use App\Models\Vehicle;
 
 class IndexController extends PublicController
 {
@@ -16,7 +16,7 @@ class IndexController extends PublicController
      */
     public function __invoke(Request $request)
     {
-        $this->authorize('viewAny', [Bunker::class]);
+        $this->authorize('viewAny', [Vehicle::class]);
         $this->prepareData();
 
         return view('pages.vehicles', ['type' => 'bunkers']);

@@ -20,13 +20,13 @@ class Pincode extends Model
         return $this->pin !== $pin;
     }
 
-    public function bunker() :BelongsTo
+    public function vehicle() :BelongsTo
     {
-        return $this->belongsTo(Bunker::class, 'bunker_id');
+        return $this->belongsTo(Vehicle::class, 'vehicle_id');
     }
 
     public function checkIfRegistered()
     {
-        return !!count($this->bunker()->get());
+        return !!count($this->vehicle()->get());
     }
 }

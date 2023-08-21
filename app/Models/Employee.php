@@ -9,8 +9,8 @@ class Employee extends Model
     use HasFactory;
     protected $guarded = false;
 
-    public function bunkers()
+    public function vehicles()
     {
-        return $this->hasMany(Bunker::class, 'employee_id', 'id');
+        return $this->hasMany(Vehicle::class, 'employee_id', 'id');
     }
 }

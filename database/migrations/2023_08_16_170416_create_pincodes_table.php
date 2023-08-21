@@ -18,6 +18,8 @@ class CreatePincodesTable extends Migration
             $table->timestamps();
             $table->string('name')->nullable()->default('');
             $table->string('pin')->nullable()->default('');
+            $table->unsignedBigInteger('vehicle_id')->nullable();
+            $table->foreign('vehicle_id', 'pincode_vehicle_fk')->on('vehicles')->references('id')->onDelete('set null');
         });
     }
 

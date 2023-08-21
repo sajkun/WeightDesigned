@@ -2,7 +2,7 @@ import messages from "../mixins/messages";
 import { strip } from "./functions";
 
 if (document.getElementById("public-vehicles")) {
-    const appPublicBunkers = new Vue({
+    const appPublicVehicles = new Vue({
         el: "#public-vehicles",
 
         mixins: [messages],
@@ -111,6 +111,7 @@ if (document.getElementById("public-vehicles")) {
             },
 
             rfidsComputed() {
+                console.log(this.rfids);
                 return this.rfids;
             },
         },
@@ -204,13 +205,13 @@ if (document.getElementById("public-vehicles")) {
                 }
 
                 axios
-                    .post("./bunkers/pincode", {
+                    .post("./vehicles/pincode", {
                         user_id: vm.userId,
                         name: name,
                         pin: pin,
                     })
                     .then((response) => {
-                        console.log(JSON.parse(JSON.stringify(response)));
+                        console.log(strip(response));
                         vm.messages[response.data.type] = response.data.message;
                     })
                     .catch((e) => {
@@ -234,12 +235,13 @@ if (document.getElementById("public-vehicles")) {
                     organisation_id: vm.organisationId,
                     employee_id: vm.mayBeResponsiblePerson?.id,
                     post_data: postData,
+                    rfids: vm.rfids,
                 };
                 console.log("createVehicle: ", vm.vehicleType);
                 console.log("createVehicle data: ", sendData);
 
                 axios
-                    .post(`./${vm.vehicleAddType}/store`, sendData)
+                    .post(`./vehicles/store`, sendData)
                     .then((response) => {
                         console.log(
                             "%c createVehicle response",
@@ -266,6 +268,8 @@ if (document.getElementById("public-vehicles")) {
                 console.log("%c deleteVehicle", "color: blue", item);
                 const vm = this;
 
+                vm.mode = "list";
+
                 const sendData = {
                     user_id: vm.userId,
                     organisation_id: vm.organisationId,
@@ -273,7 +277,7 @@ if (document.getElementById("public-vehicles")) {
                 };
 
                 axios
-                    .post(`./${vm.vehicleType}/delete`, sendData)
+                    .post(`./vehicles/delete`, sendData)
                     .then((response) => {
                         console.log(
                             "%c deleteVehicle",
@@ -324,7 +328,7 @@ if (document.getElementById("public-vehicles")) {
             getVehicles() {
                 const vm = this;
                 axios
-                    .get("./vehicles")
+                    .get("./vehicles/list")
                     .then((response) => {
                         console.log("%c getVehicles", "color: green", response);
                         vm.vehicles = response.data;
@@ -366,7 +370,8 @@ if (document.getElementById("public-vehicles")) {
 
                 console.log(postData);
 
-                vm.rfids.push(vm.postData);
+                vm.rfids.push(postData);
+
                 // vm.$refs.addRfid?.reset();
                 vm.popup = null;
             },
@@ -391,10 +396,11 @@ if (document.getElementById("public-vehicles")) {
                     organisation_id: vm.organisationId,
                     employee_id: vm.mayBeResponsiblePerson?.id,
                     post_data: postData,
+                    rfids: vm.rfids,
                 };
 
                 axios
-                    .post(`./${vm.vehicleType}/edit`, sendData)
+                    .post(`./vehicles/edit`, sendData)
                     .then((response) => {
                         console.log(
                             "%c updateVehicle",
@@ -422,7 +428,16 @@ if (document.getElementById("public-vehicles")) {
                 vm.editedVehicle = strip(item);
             },
 
-            removeRfid(rfid) {},
+            removeRfid(rfid) {
+                const vm = this;
+                const index = Object.values(vm.rfids).findIndex((item) => {
+                    return (
+                        rfid.label === item.label && rfid.value === item.value
+                    );
+                });
+
+                vm.rfids.splice(index, 1);
+            },
         },
     });
 }

@@ -6062,7 +6062,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
 
 if (document.getElementById("public-vehicles")) {
-  var appPublicBunkers = new Vue({
+  var appPublicVehicles = new Vue({
     el: "#public-vehicles",
     mixins: [_mixins_messages__WEBPACK_IMPORTED_MODULE_0__["default"]],
     data: {
@@ -6134,6 +6134,7 @@ if (document.getElementById("public-vehicles")) {
         return this.vehicles[this.vehicleType];
       },
       rfidsComputed: function rfidsComputed() {
+        console.log(this.rfids);
         return this.rfids;
       }
     },
@@ -6206,12 +6207,12 @@ if (document.getElementById("public-vehicles")) {
           vm.messages.error = "Пинкод должен быть из 5 символов";
           return;
         }
-        axios.post("./bunkers/pincode", {
+        axios.post("./vehicles/pincode", {
           user_id: vm.userId,
           name: name,
           pin: pin
         }).then(function (response) {
-          console.log(JSON.parse(JSON.stringify(response)));
+          console.log((0,_functions__WEBPACK_IMPORTED_MODULE_1__.strip)(response));
           vm.messages[response.data.type] = response.data.message;
         })["catch"](function (e) {
           console.log(e.response);
@@ -6241,11 +6242,12 @@ if (document.getElementById("public-vehicles")) {
           user_id: vm.userId,
           organisation_id: vm.organisationId,
           employee_id: (_vm$mayBeResponsibleP = vm.mayBeResponsiblePerson) === null || _vm$mayBeResponsibleP === void 0 ? void 0 : _vm$mayBeResponsibleP.id,
-          post_data: postData
+          post_data: postData,
+          rfids: vm.rfids
         };
         console.log("createVehicle: ", vm.vehicleType);
         console.log("createVehicle data: ", sendData);
-        axios.post("./".concat(vm.vehicleAddType, "/store"), sendData).then(function (response) {
+        axios.post("./vehicles/store", sendData).then(function (response) {
           var _response$data;
           console.log("%c createVehicle response", "color:green", response);
           vm.messages[response.data.type] = response === null || response === void 0 || (_response$data = response.data) === null || _response$data === void 0 ? void 0 : _response$data.message;
@@ -6260,12 +6262,13 @@ if (document.getElementById("public-vehicles")) {
       deleteVehicle: function deleteVehicle(item) {
         console.log("%c deleteVehicle", "color: blue", item);
         var vm = this;
+        vm.mode = "list";
         var sendData = {
           user_id: vm.userId,
           organisation_id: vm.organisationId,
           delete_item: item
         };
-        axios.post("./".concat(vm.vehicleType, "/delete"), sendData).then(function (response) {
+        axios.post("./vehicles/delete", sendData).then(function (response) {
           var _response$data2;
           console.log("%c deleteVehicle", "color:green", response);
           vm.messages[response.data.type] = response === null || response === void 0 || (_response$data2 = response.data) === null || _response$data2 === void 0 ? void 0 : _response$data2.message;
@@ -6297,7 +6300,7 @@ if (document.getElementById("public-vehicles")) {
       },
       getVehicles: function getVehicles() {
         var vm = this;
-        axios.get("./vehicles").then(function (response) {
+        axios.get("./vehicles/list").then(function (response) {
           console.log("%c getVehicles", "color: green", response);
           vm.vehicles = response.data;
         })["catch"](function (e) {
@@ -6333,7 +6336,8 @@ if (document.getElementById("public-vehicles")) {
           _iterator2.f();
         }
         console.log(postData);
-        vm.rfids.push(vm.postData);
+        vm.rfids.push(postData);
+
         // vm.$refs.addRfid?.reset();
         vm.popup = null;
       },
@@ -6361,9 +6365,10 @@ if (document.getElementById("public-vehicles")) {
           user_id: vm.userId,
           organisation_id: vm.organisationId,
           employee_id: (_vm$mayBeResponsibleP2 = vm.mayBeResponsiblePerson) === null || _vm$mayBeResponsibleP2 === void 0 ? void 0 : _vm$mayBeResponsibleP2.id,
-          post_data: postData
+          post_data: postData,
+          rfids: vm.rfids
         };
-        axios.post("./".concat(vm.vehicleType, "/edit"), sendData).then(function (response) {
+        axios.post("./vehicles/edit", sendData).then(function (response) {
           var _response$data3;
           console.log("%c updateVehicle", "color:green", response);
           vm.messages[response.data.type] = response === null || response === void 0 || (_response$data3 = response.data) === null || _response$data3 === void 0 ? void 0 : _response$data3.message;
@@ -6379,7 +6384,13 @@ if (document.getElementById("public-vehicles")) {
         this.mode = "details";
         vm.editedVehicle = (0,_functions__WEBPACK_IMPORTED_MODULE_1__.strip)(item);
       },
-      removeRfid: function removeRfid(rfid) {}
+      removeRfid: function removeRfid(rfid) {
+        var vm = this;
+        var index = Object.values(vm.rfids).findIndex(function (item) {
+          return rfid.label === item.label && rfid.value === item.value;
+        });
+        vm.rfids.splice(index, 1);
+      }
     }
   });
 }

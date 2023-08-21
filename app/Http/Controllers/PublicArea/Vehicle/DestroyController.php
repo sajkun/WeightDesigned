@@ -1,10 +1,10 @@
 <?php
-namespace App\Http\Controllers\PublicArea\Bunker;
+namespace App\Http\Controllers\PublicArea\Vehicle;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Bunker;
+use App\Models\Vehicle;
 
 class DestroyController extends Controller
 {
@@ -23,9 +23,9 @@ class DestroyController extends Controller
                 'delete_item' => 'required',
             ]);
 
-            $this->authorize('delete', [Bunker::class, $request->organisation_id]);
+            $this->authorize('delete', [Vehicle::class, $request->organisation_id]);
 
-            $delete_bunker = Bunker::find($request->delete_item['id']);
+            $delete_bunker = Vehicle::find($request->delete_item['id']);
             $delete_bunker->delete();
             return response()->json([
                 'delete_bunker' => $delete_bunker['id'],

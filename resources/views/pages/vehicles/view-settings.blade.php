@@ -144,43 +144,40 @@
             данные RFID меток транспорта
         </p>
 
-        <div class="col-12" v-for='rfid, key in rfidsComputed'>
-            <div class="responsible">
-                <div class="row">
-                    <div class="col-6 align-self-center">
-                        <h3 class="responsible__title">Метка @{{ key + 1 }}</h3>
-                    </div>
+        <div class="row rfid-row">
 
-                    <div class="col-6 text-end">
-                        <button class="btn" type="button" @click='removeRfid(rfid)'>
-                            <svg width="26" height="26" viewBox="0 0 26 26" fill="none" aria-hidde='true'
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path d="M6.5 19.5L19.5 6.5M6.5 6.5L19.5 19.5" stroke="#F1898E" stroke-width="1.5"
-                                    stroke-linecap="round" stroke-linejoin="round" />
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-6 align-self-center">
-                        <h4 class="responsible__label ">Название</h4>
-                    </div>
-                    <div class="col-6 align-self-center">
-                        <h4 class="responsible__label">Данные RFID</h4>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-6">
-                        <p class="responsible__text">
-                            @{{ rfid.label }}
-                        </p>
-                    </div>
-                    <div class="col-6">
-                        <p class="responsible__text">@{{ rfid.value }}</p>
-                    </div>
-                </div>
-            </div> {{-- responsible --}}
+            <div class="col mt-2" v-for='rfid, key in rfidsComputed'>
+                <div class="responsible">
+                    <div class="row">
+                        <div class="col-6 align-self-center">
+                            <h3 class="responsible__title"> @{{ rfid.label }}</h3>
+                        </div>
 
+                        <div class="col-6 text-end">
+                            <button class="btn p-0" type="button" @click='removeRfid(rfid)'>
+                                <svg width="26" height="26" viewBox="0 0 26 26" fill="none"
+                                    aria-hidde='true' xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M6.5 19.5L19.5 6.5M6.5 6.5L19.5 19.5" stroke="#F1898E"
+                                        stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="row">
+
+                        <div class="col-12 align-self-center">
+                            <h4 class="responsible__label">Данные RFID</h4>
+                        </div>
+                    </div>
+                    <div class="row">
+
+                        <div class="col-12">
+                            <p class="responsible__text">@{{ rfid.value }}</p>
+                        </div>
+                    </div>
+                </div> {{-- responsible --}}
+
+            </div>
         </div>
 
         <button class="btn btn-borders w-100 mt-2" type="button" @click='popup="rfids"'>Добавить

@@ -1,7 +1,7 @@
 <?php
-namespace App\Http\Controllers\PublicArea\Bunker;
+namespace App\Http\Controllers\PublicArea\Vehicle;
 
-use App\Models\Bunker;
+use App\Models\Vehicle;
 use App\Models\Pincode;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;

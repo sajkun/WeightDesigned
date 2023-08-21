@@ -1,7 +1,7 @@
 <?php
-namespace App\Http\Controllers\PublicArea\Bunker;
+namespace App\Http\Controllers\PublicArea\Vehicle;
 
-use App\Models\Bunker;
+use App\Models\Vehicle;
 use App\Models\Pincode;
 use App\Models\Employee;
 use Illuminate\Http\Request;
@@ -19,7 +19,7 @@ class StoreController extends Controller
     public function __invoke(Request $request)
     {
         try {
-            $this->authorize('create', [Bunker::class, $request->organisation_id]);
+            $this->authorize('create', [Vehicle::class, $request->organisation_id]);
 
             $request->validate([
                 'user_id' => 'required',
@@ -28,13 +28,13 @@ class StoreController extends Controller
             ]);
 
             // форматирование данных бункера
-            $may_be_bunker = $request->post_data;
-            $may_be_bunker['organisation_id'] = (int)$request->organisation_id;
+            $may_be_vehicle = $request->post_data;
+            $may_be_vehicle['organisation_id'] = (int)$request->organisation_id;
 
             // проверка уникальности имени бункера
-            $exists_bunker = Bunker::where(['name' => $may_be_bunker['name']])->first();
+            $exists_vehicle = Vehicle::where(['name' => $may_be_vehicle['name']])->first();
 
-            if ($exists_bunker) {
+            if ($exists_vehicle) {
                 throw new \ErrorException('Техника с таким именем уже создана', 403);
             }
 
@@ -47,10 +47,11 @@ class StoreController extends Controller
             }
 
             $pincode = null;
-            if ($may_be_bunker['pin']) {
+
+            if ($may_be_vehicle['pin']) {
                 $pincode = Pincode::where([
-                    'name' => $may_be_bunker['name'],
-                    'pin' => (int)$may_be_bunker['pin']
+                    'name' => $may_be_vehicle['name'],
+                    'pin' => (int)$may_be_vehicle['pin']
                 ])->first();
 
                 if (!$pincode) {
@@ -63,20 +64,20 @@ class StoreController extends Controller
             }
 
             $add_message = !$pincode ? ' Для просмотра данных весовой системы вам потребуется ввести пин код' : '';
-            unset($may_be_bunker['pin']);
+            unset($may_be_vehicle['pin']);
 
-            $bunker = Bunker::create($may_be_bunker);
+            $vehicle = Vehicle::create($may_be_vehicle);
 
             if ($pincode) {
-                $bunker->pincode()->save($pincode);
+                $vehicle->pincode()->save($pincode);
             }
 
             if ($employee) {
-                $bunker->employee()->associate($employee)->save();
+                $vehicle->employee()->associate($employee)->save();
             }
 
             return response()->json([
-                'bunker' => $bunker,
+                'bunker' => $vehicle,
                 'type' => 'success',
                 'message' => 'Техника создана успешно.' . $add_message,
             ]);

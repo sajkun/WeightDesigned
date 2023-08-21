@@ -1,7 +1,7 @@
 <?php
-namespace App\Http\Controllers\PublicArea\Bunker;
+namespace App\Http\Controllers\PublicArea\Vehicle;
 
-use App\Models\Bunker;
+use App\Models\Vehicle;
 use App\Models\Pincode;
 use App\Models\Employee;
 use Illuminate\Http\Request;
@@ -18,7 +18,7 @@ class PatchController extends Controller
     public function __invoke(Request $request)
     {
         try {
-            $this->authorize('update', [Bunker::class, $request->organisation_id]);
+            $this->authorize('update', [Vehicle::class, $request->organisation_id]);
 
             $request->validate([
                 'user_id' => 'required',
@@ -31,7 +31,7 @@ class PatchController extends Controller
             $new_bunker_data['organisation_id'] = (int)$request->organisation_id;
 
             // проверка уникальности имени бункера
-            $bunker_to_edit = Bunker::find((int)$new_bunker_data['id']);
+            $bunker_to_edit = Vehicle::find((int)$new_bunker_data['id']);
 
             if (!$bunker_to_edit) {
                 throw new \ErrorException('Не найдена запись редактируемой техники', 404);

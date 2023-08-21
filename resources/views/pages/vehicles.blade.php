@@ -28,7 +28,7 @@
                     <div class="row h-100">
                         <div class='' :class="columnClass.tableClass">
                             <div class="d-lg-flex org-wrapper flex-column h-100">
-                                @can('create', [App\Models\Bunker::class, $organisation_id])
+                                @can('create', [App\Models\Vehicle::class, $organisation_id])
                                     <button class="btn w-100 btn-borders" type="button" @click='addVehicle("bunkers")'>Добавить
                                         @{{ vehicleName }}</button>
                                 @endcan
@@ -49,7 +49,7 @@
                                             <td>@{{ item.model }}</td>
                                             <td>@{{ item.employee_name }}</td>
                                             <th width='100' class='text-end'>
-                                                @can('delete', [App\Models\Bunker::class, $organisation_id])
+                                                @can('delete', [App\Models\Vehicle::class, $organisation_id])
                                                     <button class='btn p-1' @click.prevent.stop='deleteVehicle(item)'>
                                                         <i class="fa fa-solid fa-trash"></i>
                                                     </button>
@@ -76,7 +76,7 @@
 
                                 @include('pages.vehicles.view-activity')
 
-                                @can('update', [App\Models\Bunker::class, $organisation_id])
+                                @can('update', [App\Models\Vehicle::class, $organisation_id])
                                     @include('pages.vehicles.view-settings')
                                 @endcan
 
@@ -88,7 +88,7 @@
             </div>
 
             <div class="h-100 position-relative" v-if='mode=== "create"'>
-                @can('create', [App\Models\Bunker::class, $organisation_id])
+                @can('create', [App\Models\Vehicle::class, $organisation_id])
                     @include('pages.vehicles.create')
                 @endcan
             </div>

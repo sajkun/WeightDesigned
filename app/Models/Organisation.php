@@ -2,6 +2,7 @@
 namespace App\Models;
 
 use App\Models\User;
+use App\Models\Vehicle;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -21,23 +22,8 @@ class Organisation extends Model
         return $this->hasMany(Employee::class, 'organisation_id', 'id');
     }
 
-    public function tractors()
+    public function vehicles()
     {
-        return $this->hasMany(Tractor::class, 'organisation_id', 'id');
-    }
-
-    public function transporters()
-    {
-        return $this->hasMany(Transporter::class, 'organisation_id', 'id');
-    }
-
-    public function harvesters()
-    {
-        return $this->hasMany(Harvester::class, 'organisation_id', 'id');
-    }
-
-    public function bunkers()
-    {
-        return $this->hasMany(Bunker::class, 'organisation_id', 'id');
+        return $this->hasMany(Vehicle::class, 'organisation_id', 'id');
     }
 }

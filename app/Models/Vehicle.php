@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
-class Bunker extends Model
+class Vehicle extends Model
 {
     use HasFactory;
 
@@ -19,7 +19,7 @@ class Bunker extends Model
 
     public function pincode(): HasOne
     {
-        return $this->hasOne(Pincode::class, 'bunker_id');
+        return $this->hasOne(Pincode::class, 'vehicle_id');
     }
 
     public function employee():BelongsTo

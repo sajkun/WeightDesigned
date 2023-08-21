@@ -35,14 +35,12 @@
                         <div class="col flex-grow-0 align-self-center">
                             <ul class="main-menu">
                                 <li><a href="">Поля</a></li>
-                                <li><a href="javascript:void(0)">Техника</a>
+                                <li><a href="{{ route('public.vehicle.index') }}">Техника</a>
                                     <nav class="submenu">
                                         <ul class="submenu-list">
-                                            <li><a href="{{ route('public.bunker.index') }}">
+                                            <li><a href="{{ route('public.vehicle.index') }}">
                                                     Бункеры&nbsp;перегрузчеки</a></li>
-                                            <li><a href="{{ route('public.tractor.index') }}">Тракторы</a></li>
-                                            <li><a href="{{ route('public.harvester.index') }}">Комбайны</a></li>
-                                            <li><a href="{{ route('public.transporter.index') }}">Зерновозы</a></li>
+
                                         </ul>
                                     </nav>
                                 </li>

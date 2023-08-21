@@ -195,3 +195,7 @@
     background-color: var(--grey-light);
     margin: 0 calc(var(--bs-gutter-x) * (-0.5));
 }
+
+.rfid-row {
+    --bs-gutter-x: 0.25rem;
+}

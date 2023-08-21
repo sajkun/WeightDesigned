@@ -11065,6 +11065,10 @@ body {
   margin: 0 calc(var(--bs-gutter-x) * -0.5);
 }
 
+.rfid-row {
+  --bs-gutter-x: 0.25rem;
+}
+
 .btn-primary-alt {
   --bs-btn-color: var(--lightest);
   --bs-btn-bg: var(--green);
