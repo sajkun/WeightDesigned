@@ -31,12 +31,14 @@
                     <table class="organisation mt-3">
                         <tbody>
                             <tr>
-                                <th>ID</th>
+                                <th>№</th>
                                 <th>ФИО</th>
+                                <th>Телефон</th>
                                 <th>Профессия</th>
                                 <td></td>
                             </tr>
                             <tr v-for='person, key in employees' :key='"emp" + key' @click.stop='edit(person, false )'>
+                                <td>@{{ key + 1 }}</td>
                                 <td>@{{ person.first_name }} @{{ person.middle_name }} @{{ person.last_name }}</td>
                                 <td>@{{ person.phone }}</td>
                                 <td>@{{ person.specialisation }}</td>

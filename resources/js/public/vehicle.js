@@ -292,8 +292,8 @@ if (document.getElementById("public-vehicles")) {
                         );
                         vm.messages[response.data.type] =
                             response?.data?.message;
-                        // vm.$refs.formCreateVehicle?.reset();
-                        // vm.reset();
+                        vm.$refs.formCreateVehicle?.reset();
+                        vm.reset();
                         vm.getVehicles();
                     })
                     .catch((e) => {

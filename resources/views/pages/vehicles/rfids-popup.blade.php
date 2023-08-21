@@ -28,11 +28,7 @@
                     </p>
                 </div>
                 <div class="col text-end">
-                    <button class="btn p-0" type="button" @click='popup=null'><svg width="27" height="26"
-                            viewBox="0 0 27 26" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M7 19.5L20 6.5M7 6.5L20 19.5" stroke="currentColor" stroke-width="1.5"
-                                stroke-linecap="round" stroke-linejoin="round" />
-                        </svg>
+                    <button class="btn p-0 btn-close" type="button" @click='popup=null'>
                     </button>
                 </div>
             </div>

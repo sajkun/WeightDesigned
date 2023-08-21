@@ -33,14 +33,14 @@
                     <table class="organisation">
                         <tbody>
                             <tr>
-                                <th>ID</th>
+                                <th>№</th>
                                 <th>Логин</th>
                                 <th>ФИО</th>
                                 <th>Роль</th>
                             </tr>
 
                             <tr v-for='user, key in users' :key='"user" + key' @click='editUser(user)'>
-                                <td>@{{ user.id }}</td>
+                                <td>@{{ key + 1 }}</td>
                                 <td>@{{ user.login }}</td>
                                 <td>@{{ user.first_name }} @{{ user.middle_name }} @{{ user.last_name }}</td>
                                 <td>@{{ user.role_name }}</td>

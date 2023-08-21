@@ -6287,11 +6287,11 @@ if (document.getElementById("public-vehicles")) {
         console.log("createVehicle: ", vm.vehicleType);
         console.log("createVehicle data: ", sendData);
         axios.post("/vehicles/store", sendData).then(function (response) {
-          var _response$data2;
+          var _response$data2, _vm$$refs$formCreateV2;
           console.log("%c createVehicle response", "color:green", response);
           vm.messages[response.data.type] = response === null || response === void 0 || (_response$data2 = response.data) === null || _response$data2 === void 0 ? void 0 : _response$data2.message;
-          // vm.$refs.formCreateVehicle?.reset();
-          // vm.reset();
+          (_vm$$refs$formCreateV2 = vm.$refs.formCreateVehicle) === null || _vm$$refs$formCreateV2 === void 0 ? void 0 : _vm$$refs$formCreateV2.reset();
+          vm.reset();
           vm.getVehicles();
         })["catch"](function (e) {
           console.log("%c createVehicle error", "color: red", e.response);
