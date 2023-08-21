@@ -28,6 +28,11 @@ class Vehicle extends Model
         return $this->BelongsTo(Employee::class, 'employee_id', 'id');
     }
 
+    public function group():BelongsTo
+    {
+        return $this->BelongsTo(Group::class, 'group_id', 'id');
+    }
+
     public function rfids()
     {
         return $this->hasMany(Rfid::class, 'vehicle_id');
