@@ -1,10 +1,12 @@
 <?php
 namespace App\Models;
 
+use App\Models\Rfid;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Vehicle extends Model
 {
@@ -25,5 +27,10 @@ class Vehicle extends Model
     public function employee():BelongsTo
     {
         return $this->BelongsTo(Employee::class, 'employee_id', 'id');
+    }
+
+    public function rfids(): HasMany
+    {
+        return $this->hasMany(Rfid::class, 'vehicle_id');
     }
 }
