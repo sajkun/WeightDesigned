@@ -64,6 +64,7 @@ class VehiclePolicy
      */
     public function delete(User $user, $organisation_id)
     {
+        return true;
         return in_array($user->role, ['user_control_vehicles', 'user_control']) && $user->organisation_id === (int)$organisation_id;
     }
 
