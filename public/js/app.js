@@ -6220,7 +6220,7 @@ if (document.getElementById("public-vehicles")) {
         var vm = this;
         var vehicles = Object.values(vm.vehicles["".concat(vm.vehicleGroupType, "s")]);
         vehicles = vehicles.filter(function (el) {
-          return !el.group_id;
+          return !el.group_id || el.group_id === vm.editedVehicle.group_id;
         });
         vehicles = Boolean(vm.editedVehicle.id) ? vehicles.filter(function (item) {
           return item.id !== vm.editedVehicle.id;

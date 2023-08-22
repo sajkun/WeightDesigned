@@ -119,7 +119,10 @@ if (document.getElementById("public-vehicles")) {
                 );
 
                 vehicles = vehicles.filter((el) => {
-                    return !el.group_id;
+                    return (
+                        !el.group_id ||
+                        el.group_id === vm.editedVehicle.group_id
+                    );
                 });
 
                 vehicles = Boolean(vm.editedVehicle.id)
