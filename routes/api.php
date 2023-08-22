@@ -28,10 +28,3 @@ Route::group([
     Route::post('destroy', Api\DestroyUserController::class);
     Route::post('store', Api\StoreUserController::class);
 });
-
-Route::group([
-    'middleware' => 'api',
-    'prefix' => 'public/employees'
-], function ($router) {
-    Route::post('list/{organisation_id}', Api\GetEmployeesController::class);
-});

@@ -225,7 +225,7 @@
             </p>
 
             <div class="row rfid-row">
-                <div class="col mt-2" v-for='rfid, key in rfidsComputed'>
+                <div class="col-12 col-md-6 mt-2" v-for='rfid, key in rfidsComputed'>
                     <div class="responsible">
                         <div class="row">
                             <div class="col-6 align-self-center">

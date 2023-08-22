@@ -56,7 +56,6 @@
                         <th>Ответственный</th>
                         <th></th>
                     </tr>
-
                     <tr v-for='item, key in vehiclesGrouped' :key='"vehicklerow" + key'
                         @click='addVehicleToGroup(item)'>
                         <td>@{{ key }}</td>
@@ -69,11 +68,9 @@
                                     <i class="fa fa-solid fa-trash"></i>
                                 </button>
                             @endcan
-
                         </th>
                     </tr>
                 </tbody>
-
             </table>
         </div>
         <div class="mt-2 text-end">

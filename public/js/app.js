@@ -5719,12 +5719,14 @@ if (document.getElementById("public-employees")) {
         if (vm.$refs.organisationId < 0) {
           return;
         }
-        axios.post("./api/public/employees/list/" + vm.organisationId, {
+        axios.get("/employees/list/" + vm.organisationId, {
           user_id: vm.userId
         }).then(function (response) {
+          console.log("%c getEmployees", "color: green", response);
           vm.employees = response.data.employees;
         })["catch"](function (e) {
-          console.log(e);
+          console.log("%c getVehicles error", "color: red", e.response);
+          vm.messages.error = e.response.data.message;
         });
       },
       patchEmployee: function patchEmployee() {
@@ -6357,12 +6359,14 @@ if (document.getElementById("public-vehicles")) {
         if (vm.$refs.organisationId < 0) {
           return;
         }
-        axios.post("/api/public/employees/list/" + vm.organisationId, {
+        axios.get("/employees/list/" + vm.organisationId, {
           user_id: vm.userId
         }).then(function (response) {
+          console.log("%c getEmployees", "color: green", response);
           vm.employees = response.data.employees;
         })["catch"](function (e) {
-          console.log(e);
+          console.log("%c getVehicles error", "color: red", e.response);
+          vm.messages.error = e.response.data.message;
         });
       },
       reset: function reset() {

@@ -58,7 +58,9 @@
 
             </div>
         </div>
-
+        {{-- ---------------------------------- --}}
+        {{-- блок ответственного за технику --}}
+        {{-- ---------------------------------- --}}
         <div class="horisontal-separator my-4"></div>
         <p class="m-0"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"
                 xmlns="http://www.w3.org/2000/svg">
@@ -109,6 +111,10 @@
                 отвественного</button>
         </div>
         <div class="horisontal-separator my-4"></div>
+
+        {{-- ---------------------------------- --}}
+        {{-- блок сгруппированной техники --}}
+        {{-- ---------------------------------- --}}
         <p class="m-0"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"
                 xmlns="http://www.w3.org/2000/svg">
                 <path
@@ -157,6 +163,10 @@
             </div>
         </div>
         <div class="horisontal-separator my-4"></div>
+
+        {{-- ---------------------------------- --}}
+        {{-- блок rfid меток --}}
+        {{-- ---------------------------------- --}}
         <p class="m-0">
             <svg width="26" height="26" viewBox="0 0 26 26" fill="none"
                 xmlns="http://www.w3.org/2000/svg">
@@ -180,8 +190,8 @@
             данные RFID меток транспорта
         </p>
 
-        <div class="row rfid-row">
-            <div class="col mt-2" v-for='rfid, key in rfidsComputed'>
+        <div class="d-flex rfid-row">
+            <div class="mt-2 me-1 col-sm-6" v-for='rfid, key in rfidsComputed'>
                 <div class="responsible">
                     <div class="row">
                         <div class="col-6 align-self-center">
@@ -189,7 +199,7 @@
                         </div>
 
                         <div class="col-6 text-end">
-                            <button class="btn p-0 tbn-close" type="button" @click='removeRfid(rfid)'>
+                            <button class="btn p-0 btn-close" type="button" @click='removeRfid(rfid)'>
 
                             </button>
                         </div>
