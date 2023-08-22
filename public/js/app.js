@@ -5547,7 +5547,11 @@ __webpack_require__.r(__webpack_exports__);
 /*!******************************************!*\
   !*** ./resources/js/public/employees.js ***!
   \******************************************/
-/***/ (() => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _functions__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./functions */ "./resources/js/public/functions.js");
 
 if (document.getElementById("public-employees")) {
   var appPublicEmployees = new Vue({
@@ -5558,6 +5562,9 @@ if (document.getElementById("public-employees")) {
       editMode: false,
       showForm: false,
       employees: [],
+      popup: null,
+      vehicleGroupType: "bunker",
+      group: [],
       activeTab: "info",
       // info | activity | settings
       editedEmployee: {
@@ -5580,6 +5587,7 @@ if (document.getElementById("public-employees")) {
         success: null,
         confirm: null
       },
+      vehicles: [],
       validationMessages: {
         deleteEmployee: "Вы уверены, что хотите удалить сотрудника"
       }
@@ -5608,6 +5616,30 @@ if (document.getElementById("public-employees")) {
         var editClass = "col-12 col-lg-6 d-sm-none d-lg-block";
         var displayClass = "col-12 ";
         return this.editMode ? editClass : displayClass;
+      },
+      vehicleTypesList: function vehicleTypesList() {
+        return {
+          bunker: {
+            name: "Бункер перегрузчик"
+          },
+          transporter: {
+            name: "Грузовик"
+          },
+          tractor: {
+            name: "Трактор"
+          },
+          harvester: {
+            name: "Комбайн"
+          }
+        };
+      },
+      vehiclesGrouped: function vehiclesGrouped() {
+        var vm = this;
+        var vehicles = Object.values(vm.vehicles["".concat(vm.vehicleGroupType, "s")]);
+        vehicles = vehicles.filter(function (el) {
+          return !el.employee_id || el.employee_id !== vm.editedEmployee.id;
+        });
+        return vehicles;
       }
     },
     mounted: function mounted() {
@@ -5616,6 +5648,7 @@ if (document.getElementById("public-employees")) {
       vm.organisationId = vm.$refs.organisationId.value;
       vm.userId = vm.$refs.userId.value;
       vm.getEmployees();
+      vm.getVehicles();
       vm.$el.addEventListener("click", function (e) {
         if (e.target.type !== "button") {
           vm.clearMessages();
@@ -5623,6 +5656,24 @@ if (document.getElementById("public-employees")) {
       });
     },
     methods: {
+      applyGroup: function applyGroup() {
+        var vm = this;
+        vm.editedEmployee.vehicles = (0,_functions__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.group);
+        vm.popup = null;
+      },
+      addVehicleToGroup: function addVehicleToGroup(item) {
+        var vm = this;
+        var group = Object.values(vm.group);
+        var index = group.findIndex(function (el) {
+          return el.id === item.id;
+        });
+        if (index < 0) {
+          group.push(item);
+        } else {
+          group.splice(index, 1);
+        }
+        vm.group = (0,_functions__WEBPACK_IMPORTED_MODULE_0__.strip)(group);
+      },
       addEmployee: function addEmployee() {
         var vm = this;
         vm.editMode = true;
@@ -5692,6 +5743,16 @@ if (document.getElementById("public-employees")) {
         var date = new Date(dateString);
         return date.getFullYear();
       },
+      getVehicles: function getVehicles() {
+        var vm = this;
+        axios.get("/vehicles/list").then(function (response) {
+          console.log("%c getVehicles", "color: green", response);
+          vm.vehicles = response.data;
+        })["catch"](function (e) {
+          console.log("%c getVehicles error", "color: red", e.response);
+          vm.messages.error = e.response.data.message;
+        });
+      },
       deleteEmployeeCb: function deleteEmployeeCb(person) {
         var vm = this;
         axios.post("./employees/delete", {
@@ -5707,9 +5768,11 @@ if (document.getElementById("public-employees")) {
         });
       },
       edit: function edit(person, showForm) {
+        console.log("%c edit", "color:blue", person);
         var vm = this;
         vm.editMode = true;
-        vm.editedEmployee = JSON.parse(JSON.stringify(person));
+        vm.editedEmployee = (0,_functions__WEBPACK_IMPORTED_MODULE_0__.strip)(person);
+        vm.group = (0,_functions__WEBPACK_IMPORTED_MODULE_0__.strip)(person.vehicles);
         vm.$nextTick(function () {
           vm.showForm = Boolean(showForm);
         });
@@ -5719,7 +5782,7 @@ if (document.getElementById("public-employees")) {
         if (vm.$refs.organisationId < 0) {
           return;
         }
-        axios.get("/employees/list/" + vm.organisationId, {
+        axios.get("/employees/list", {
           user_id: vm.userId
         }).then(function (response) {
           console.log("%c getEmployees", "color: green", response);
@@ -5731,11 +5794,13 @@ if (document.getElementById("public-employees")) {
       },
       patchEmployee: function patchEmployee() {
         var vm = this;
-        axios.post("./employees/edit", {
+        var postData = {
           user_id: vm.userId,
           organisation_id: vm.organisationId,
           edited_employee: vm.editedEmployee
-        }).then(function (response) {
+        };
+        console.log("%c patchEmployee", "color:blue", postData);
+        axios.post("/employees/edit", postData).then(function (response) {
           console.log(response);
           vm.getEmployees();
         })["catch"](function (e) {
@@ -5745,7 +5810,7 @@ if (document.getElementById("public-employees")) {
       },
       storeEmployee: function storeEmployee() {
         var vm = this;
-        axios.post("./employees/store", {
+        axios.post("/employees/store", {
           user_id: vm.userId,
           organisation_id: vm.organisationId,
           edited_employee: vm.editedEmployee
@@ -5765,6 +5830,20 @@ if (document.getElementById("public-employees")) {
           vm.storeEmployee();
         } else {
           vm.patchEmployee();
+        }
+      },
+      removeFromGroup: function removeFromGroup(item, save) {
+        var vm = this;
+        var group = Object.values(vm.editedEmployee.vehicles);
+        var index = group.findIndex(function (el) {
+          return el.id === item.id;
+        });
+        if (index >= 0) {
+          group.splice(index, 1);
+          vm.group = group;
+          if (save) {
+            vm.editedEmployee.vehicles = group;
+          }
         }
       }
     }
@@ -6359,7 +6438,7 @@ if (document.getElementById("public-vehicles")) {
         if (vm.$refs.organisationId < 0) {
           return;
         }
-        axios.get("/employees/list/" + vm.organisationId, {
+        axios.get("/employees/list", {
           user_id: vm.userId
         }).then(function (response) {
           console.log("%c getEmployees", "color: green", response);

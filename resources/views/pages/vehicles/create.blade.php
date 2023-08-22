@@ -158,7 +158,7 @@
                 Сгруппированная техника
             </p>
 
-            <div class="row mt-3 rfid-row">
+            <div class="row mt-3 narrow-row">
                 <div class="col-12 col-md-6 mt-2" v-for='vehicle, key in mayBeGroupedVehicles' :key='"group" + key'>
                     <div class="responsible  h-100">
                         <div class="row">
@@ -224,7 +224,7 @@
                 RFID метки
             </p>
 
-            <div class="row rfid-row">
+            <div class="row narrow-row">
                 <div class="col-12 col-md-6 mt-2" v-for='rfid, key in rfidsComputed'>
                     <div class="responsible">
                         <div class="row">

@@ -1,3 +1,5 @@
+import { strip } from "./functions";
+
 if (document.getElementById("public-employees")) {
     const appPublicEmployees = new Vue({
         el: "#public-employees",
@@ -8,6 +10,9 @@ if (document.getElementById("public-employees")) {
             editMode: false,
             showForm: false,
             employees: [],
+            popup: null,
+            vehicleGroupType: "bunker",
+            group: [],
             activeTab: "info", // info | activity | settings
             editedEmployee: {
                 id: -1,
@@ -29,6 +34,8 @@ if (document.getElementById("public-employees")) {
                 success: null,
                 confirm: null,
             },
+
+            vehicles: [],
 
             validationMessages: {
                 deleteEmployee: "Вы уверены, что хотите удалить сотрудника",
@@ -63,6 +70,39 @@ if (document.getElementById("public-employees")) {
                 const displayClass = "col-12 ";
                 return this.editMode ? editClass : displayClass;
             },
+
+            vehicleTypesList() {
+                return {
+                    bunker: {
+                        name: "Бункер перегрузчик",
+                    },
+                    transporter: {
+                        name: "Грузовик",
+                    },
+                    tractor: {
+                        name: "Трактор",
+                    },
+                    harvester: {
+                        name: "Комбайн",
+                    },
+                };
+            },
+
+            vehiclesGrouped() {
+                const vm = this;
+                let vehicles = Object.values(
+                    vm.vehicles[`${vm.vehicleGroupType}s`]
+                );
+
+                vehicles = vehicles.filter((el) => {
+                    return (
+                        !el.employee_id ||
+                        el.employee_id !== vm.editedEmployee.id
+                    );
+                });
+
+                return vehicles;
+            },
         },
 
         mounted() {
@@ -71,6 +111,7 @@ if (document.getElementById("public-employees")) {
             vm.organisationId = vm.$refs.organisationId.value;
             vm.userId = vm.$refs.userId.value;
             vm.getEmployees();
+            vm.getVehicles();
 
             vm.$el.addEventListener("click", (e) => {
                 if (e.target.type !== "button") {
@@ -80,6 +121,28 @@ if (document.getElementById("public-employees")) {
         },
 
         methods: {
+            applyGroup() {
+                const vm = this;
+                vm.editedEmployee.vehicles = strip(vm.group);
+                vm.popup = null;
+            },
+
+            addVehicleToGroup(item) {
+                const vm = this;
+                let group = Object.values(vm.group);
+                const index = group.findIndex((el) => {
+                    return el.id === item.id;
+                });
+
+                if (index < 0) {
+                    group.push(item);
+                } else {
+                    group.splice(index, 1);
+                }
+
+                vm.group = strip(group);
+            },
+
             addEmployee() {
                 const vm = this;
                 vm.editMode = true;
@@ -191,8 +254,25 @@ if (document.getElementById("public-employees")) {
 
             getDate(dateString) {
                 const date = new Date(dateString);
-
                 return date.getFullYear();
+            },
+
+            getVehicles() {
+                const vm = this;
+                axios
+                    .get("/vehicles/list")
+                    .then((response) => {
+                        console.log("%c getVehicles", "color: green", response);
+                        vm.vehicles = response.data;
+                    })
+                    .catch((e) => {
+                        console.log(
+                            "%c getVehicles error",
+                            "color: red",
+                            e.response
+                        );
+                        vm.messages.error = e.response.data.message;
+                    });
             },
 
             deleteEmployeeCb(person) {
@@ -214,10 +294,11 @@ if (document.getElementById("public-employees")) {
             },
 
             edit(person, showForm) {
+                console.log("%c edit", "color:blue", person);
                 const vm = this;
                 vm.editMode = true;
-                vm.editedEmployee = JSON.parse(JSON.stringify(person));
-
+                vm.editedEmployee = strip(person);
+                vm.group = strip(person.vehicles);
                 vm.$nextTick(() => {
                     vm.showForm = Boolean(showForm);
                 });
@@ -230,7 +311,7 @@ if (document.getElementById("public-employees")) {
                     return;
                 }
                 axios
-                    .get("/employees/list/" + vm.organisationId, {
+                    .get("/employees/list", {
                         user_id: vm.userId,
                     })
                     .then((response) => {
@@ -253,12 +334,16 @@ if (document.getElementById("public-employees")) {
 
             patchEmployee() {
                 const vm = this;
+
+                const postData = {
+                    user_id: vm.userId,
+                    organisation_id: vm.organisationId,
+                    edited_employee: vm.editedEmployee,
+                };
+
+                console.log("%c patchEmployee", "color:blue", postData);
                 axios
-                    .post(`./employees/edit`, {
-                        user_id: vm.userId,
-                        organisation_id: vm.organisationId,
-                        edited_employee: vm.editedEmployee,
-                    })
+                    .post(`/employees/edit`, postData)
                     .then((response) => {
                         console.log(response);
                         vm.getEmployees();
@@ -272,7 +357,7 @@ if (document.getElementById("public-employees")) {
             storeEmployee() {
                 const vm = this;
                 axios
-                    .post(`./employees/store`, {
+                    .post(`/employees/store`, {
                         user_id: vm.userId,
                         organisation_id: vm.organisationId,
                         edited_employee: vm.editedEmployee,
@@ -295,6 +380,23 @@ if (document.getElementById("public-employees")) {
                     vm.storeEmployee();
                 } else {
                     vm.patchEmployee();
+                }
+            },
+
+            removeFromGroup(item, save) {
+                const vm = this;
+                const group = Object.values(vm.editedEmployee.vehicles);
+                const index = group.findIndex((el) => {
+                    return el.id === item.id;
+                });
+
+                if (index >= 0) {
+                    group.splice(index, 1);
+                    vm.group = group;
+
+                    if (save) {
+                        vm.editedEmployee.vehicles = group;
+                    }
                 }
             },
         },

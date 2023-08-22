@@ -3,14 +3,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Employee extends Model
 {
     use HasFactory;
     protected $guarded = false;
 
-    public function vehicles()
+    public function vehicles():HasMany
     {
-        return $this->hasMany(Vehicle::class, 'employee_id', 'id');
+        return $this->HasMany(Vehicle::class, 'employee_id', 'id');
     }
 }

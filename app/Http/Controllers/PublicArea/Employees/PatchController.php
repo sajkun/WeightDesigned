@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers\PublicArea\Employees;
 
+use App\Models\Vehicle;
 use App\Models\Employee;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -28,9 +29,32 @@ class PatchController extends Controller
 
             $edited_employee = $request->edited_employee;
             $new_edited_employee = Employee::find($edited_employee['id']);
+
+            $nex_vehicles_idx = array_map(function ($item) {
+                return $item['id'];
+            }, $edited_employee['vehicles']);
+
+            $new_edited_employee->vehicles()->get()->filter(
+                function ($item) use ($nex_vehicles_idx) {
+                    if (!in_array($item['id'], $nex_vehicles_idx)) {
+                        $item->update(['employee_id' => null]);
+                    }
+                    return $item['employee_id'];
+                }
+            );
+
+            foreach ($nex_vehicles_idx as $id) {
+                $vehicle = Vehicle::find($id);
+                $vehicle->update(['employee_id' => $new_edited_employee['id']]);
+            }
+
+            unset($edited_employee['vehicles']);
             $new_edited_employee->update((array)$edited_employee);
+            $new_edited_employee->save();
             return [
                 'edited_employee' => $edited_employee,
+                'nex_vehicles_idx' => $nex_vehicles_idx,
+                'vehicles' => $new_edited_employee->vehicles()->get(),
             ];
         } catch (\Exception  $e) {
             return response()->json([

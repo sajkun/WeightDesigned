@@ -48,11 +48,6 @@
                                             <i class="fa fa-solid fa-trash"></i>
                                         </button>
                                     @endcan
-                                    @can('update', [App\Models\Employee::class, $organisation_id])
-                                        <button class='btn' @click.stop='edit(person, true )'> <i
-                                                class="fa fa-solid fa-pencil"></i>
-                                        </button>
-                                    @endcan
                                 </td>
                             </tr>
                         </tbody>
@@ -151,49 +146,19 @@
                                 @{{ editedEmployee.middle_name }}
                                 @{{ editedEmployee.last_name }}
 
-                                <button class='btn' @click.stop='showForm = true'> <i
-                                        class="fa fa-solid fa-pencil"></i>
-                                </button>
+                                <button class='btn btn-close' @click.stop='editMode=false'> </button>
                             </h2>
-                            <nav class="tabs mt-2">
-                                <div class="row">
-                                    <ul>
-                                        <li>
-                                            <button class="btn  btn-tab" :class="{ 'active': activeTab === 'info' }"
-                                                @click="activeTab = 'info'" type='button'>Информация</button>
-                                        </li>
-                                        <li>
-                                            <button class="btn btn-tab" :class="{ 'active': activeTab === 'activity' }"
-                                                @click="activeTab = 'activity'" type='button'>Активность</button>
-                                        </li>
-                                        <li>
-                                            <button class="btn btn-tab" :class="{ 'active': activeTab === 'settings' }"
-                                                @click="activeTab = 'settings'" type='button'>Настройки</button>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </nav>
+                            @include('pages.employees.tabs')
                         </div>
+                        @include('pages.employees.view-info')
+                        @include('pages.employees.view-settings')
 
-                        <div class="" v-if='activeTab=== "info"'>
-                            <div class="row mt-2">
-                                <div class="col-12 col-md-6 mt-2">
-                                    <h4 class="m-0 label">Специальность</h4>
-                                    <p class="mt-1">@{{ editedEmployee.specialisation }}</p>
-                                </div>
-                                <div class="col-12 col-md-6 mt-2">
-                                    <h4 class="m-0 label">Работает</h4>
-                                    <p class="mt-1">с @{{ getDate(editedEmployee.created_at) }}</p>
-                                </div>
-                                <div class="col-12 col-md-6 mt-2 ">
-                                    <h4 class="m-0 label">Контактный телефон</h4>
-                                    <p class="mt-1">@{{ editedEmployee.phone }}</p>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </Transition>
         </div>
+        <Transition name="fade">
+            @include('pages.employees.vehicles-popup')
+        </Transition>
     </div>
 @endsection

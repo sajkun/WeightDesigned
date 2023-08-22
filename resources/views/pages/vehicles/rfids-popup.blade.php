@@ -37,7 +37,7 @@
             <div class="row">
                 <form ref='addRfid' @submit.prevent='submitRfid'>
                     <input type="hidden" :value='organisationId' name='organisation_id'>
-                    <div class="row rfid-row">
+                    <div class="row narrow-row">
                         <div class="col-12 col-md-6 mt-3">
                             <div class="form-control-custom">
                                 <input type="text" id='rfid-lable' required name='label'>

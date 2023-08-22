@@ -28,7 +28,7 @@ Route::group(['middleware' => 'auth'], function () {
     });
 
     Route::group(['namespace' => 'PublicArea\Employees', 'prefix' => 'employees'], function () {
-        Route::get('/list/{organisation_id}', 'ListController')->name('public.employee.list');
+        Route::get('/list', 'ListController')->name('public.employee.list');
 
         Route::get('/', 'IndexController')->name('public.employee.index');
         Route::post('/store', 'StoreController')->name('public.employee.store');

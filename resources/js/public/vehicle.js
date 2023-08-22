@@ -395,7 +395,7 @@ if (document.getElementById("public-vehicles")) {
                 }
 
                 axios
-                    .get("/employees/list/" + vm.organisationId, {
+                    .get("/employees/list", {
                         user_id: vm.userId,
                     })
                     .then((response) => {

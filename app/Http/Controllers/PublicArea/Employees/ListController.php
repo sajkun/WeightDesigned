@@ -15,11 +15,16 @@ class ListController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function __invoke(Request $request, $organisation_id)
+    public function __invoke(Request $request)
     {
         try {
-            $this->authorize('viewAny', [Employee::class, $organisation_id]);
-            $employees = Employee::where('organisation_id', $organisation_id)->get();
+            $user = Auth::user();
+            $organisation = Organisation::find($user->organisation_id);
+
+            $employees = $organisation->employees()->get()->map(function ($item) {
+                $item['vehicles'] = $item->vehicles()->get();
+                return $item;
+            });
             return response()->json([
                 'employees' => $employees,
             ], 200);
