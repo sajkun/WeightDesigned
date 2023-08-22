@@ -21,8 +21,10 @@
             </div>
             <div class="col-12 col-sm-6 mt-3" v-if='editedVehicle.type !== "bunker"'>
                 <div class="form-control-custom">
-                    <input type="text" id='vehicleModelEdit' name='model' key='modelEditInput' required>
-                    <label for="vehicleModelEdit" key='labelEditInout'>Модель</label>
+                    <input type="text" id='vehicleModelEdit' v-model='editedVehicle.model' name='model'
+                        key='modelEditInput' required>
+                    <label for="vehicleModelEdit" key='labelEditInout'
+                        :class='{ "active": editedVehicle.model }'>Модель</label>
                 </div>
             </div>
             <div class="col-12 col-sm-6 mt-3" v-if='editedVehicle.type=== "bunker"'>
@@ -115,6 +117,45 @@
             </svg>
             Сгруппированная техника
         </p>
+        <div class="row mt-3 rfid-row">
+            <div class="col-12 col-md-6 mt-2" v-for='vehicle, key in mayBeGroupedVehicles' :key='"group" + key'>
+                <div class="responsible h-100">
+                    <div class="row">
+                        <div class="col-6 align-self-center">
+                            <h3 class="responsible__title">Связанная техника</h3>
+                        </div>
+
+                        <div class="col-6 text-end">
+                            <button class="btn p-0 btn-close" :key='"delete" + key' type="button"
+                                @click='removeFromGroup(vehicle, true)'>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6 align-self-center">
+                            <h4 class="responsible__label ">Название</h4>
+                        </div>
+                        <div class="col-6 align-self-center">
+                            <h4 class="responsible__label">Модель</h4>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <p class="responsible__text">
+                                @{{ vehicle.name }}
+                            </p>
+                        </div>
+                        <div class="col-6">
+                            <p class="responsible__text">@{{ vehicle.model }}</p>
+                        </div>
+                    </div>
+                </div> {{-- responsible --}}
+            </div>
+            <div class="col mt-2">
+                <button class="btn btn-borders w-100 h-100" @click='popup="vehicles"' type="button">
+                    Сгруппировать</button>
+            </div>
+        </div>
         <div class="horisontal-separator my-4"></div>
         <p class="m-0">
             <svg width="26" height="26" viewBox="0 0 26 26" fill="none"

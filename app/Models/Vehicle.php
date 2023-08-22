@@ -2,6 +2,7 @@
 namespace App\Models;
 
 use App\Models\Rfid;
+use App\Models\Group;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;

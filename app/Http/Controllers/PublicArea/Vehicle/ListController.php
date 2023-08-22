@@ -1,9 +1,10 @@
 <?php
 namespace App\Http\Controllers\PublicArea\Vehicle;
 
+use App\Models\Group;
+use App\Models\Organisation;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\Organisation;
 use Illuminate\Support\Facades\Auth;
 
 class ListController extends Controller
@@ -21,11 +22,15 @@ class ListController extends Controller
             $organisation = Organisation::find($user->organisation_id);
 
             $vehicles = $organisation->vehicles()->get()->map(function ($item) {
+                $group = Group::find($item['group_id']);
                 $employee = $item->employee()->first();
                 $item['employee_name'] = $employee ? "$employee->last_name $employee->first_name $employee->middle_name " : '-';
                 $item['employee'] = $employee ;
                 $item['pin'] = $item->pincode()->first() ;
                 $item['rfids'] = $item->rfids()->get() ;
+                $item['group'] = $group ? $group->vehicles()->get()->filter(function ($el) use ($item) {
+                    return $el['id'] !== $item['id'];
+                }) : [];
                 return $item;
             });
 

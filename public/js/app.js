@@ -6082,12 +6082,14 @@ if (document.getElementById("public-vehicles")) {
       employeeSearch: "",
       activeTab: "info",
       pincode: null,
+      group: [],
       vehicles: {
         bunkers: [],
         transporters: [],
         tractors: [],
         harvesters: []
       },
+      vehicleGroupType: null,
       editedVehicle: {}
     },
     computed: {
@@ -6133,6 +6135,17 @@ if (document.getElementById("public-vehicles")) {
       vehiclesCurrent: function vehiclesCurrent() {
         return this.vehicles["".concat(this.vehicleType, "s")];
       },
+      vehiclesGrouped: function vehiclesGrouped() {
+        var vm = this;
+        var vehicles = Object.values(vm.vehicles["".concat(vm.vehicleGroupType, "s")]);
+        vehicles = vehicles.filter(function (el) {
+          return !el.group_id;
+        });
+        vehicles = Boolean(vm.editedVehicle.id) ? vehicles.filter(function (item) {
+          return item.id !== vm.editedVehicle.id;
+        }) : vehicles;
+        return vehicles;
+      },
       rfidsComputed: function rfidsComputed() {
         return this.rfids;
       }
@@ -6171,6 +6184,7 @@ if (document.getElementById("public-vehicles")) {
       },
       vehicleType: function vehicleType(_vehicleType) {
         this.vehicleAddType = _vehicleType;
+        this.vehicleGroupType = _vehicleType;
         var vm = this;
         vm.reset();
       }
@@ -6189,6 +6203,24 @@ if (document.getElementById("public-vehicles")) {
         var vm = this;
         vm.mode = "create";
         vm.vehicleType = type;
+      },
+      addVehicleToGroup: function addVehicleToGroup(item) {
+        var vm = this;
+        var group = Object.values(vm.group);
+        var index = group.findIndex(function (el) {
+          return el.id === item.id;
+        });
+        if (index < 0) {
+          group.push(item);
+        } else {
+          group.splice(index, 1);
+        }
+        vm.group = (0,_functions__WEBPACK_IMPORTED_MODULE_1__.strip)(group);
+      },
+      applyGroup: function applyGroup() {
+        var vm = this;
+        vm.mayBeGroupedVehicles = (0,_functions__WEBPACK_IMPORTED_MODULE_1__.strip)(vm.group);
+        vm.popup = null;
       },
       enableInputs: function enableInputs() {
         var inputs = document.querySelectorAll(".form-control-custom input");
@@ -6282,7 +6314,10 @@ if (document.getElementById("public-vehicles")) {
           organisation_id: vm.organisationId,
           employee_id: (_vm$mayBeResponsibleP = vm.mayBeResponsiblePerson) === null || _vm$mayBeResponsibleP === void 0 ? void 0 : _vm$mayBeResponsibleP.id,
           post_data: postData,
-          rfids: vm.rfids
+          rfids: vm.rfids,
+          group: Object.values(vm.mayBeGroupedVehicles).map(function (e) {
+            return e.id;
+          })
         };
         console.log("createVehicle: ", vm.vehicleType);
         console.log("createVehicle data: ", sendData);
@@ -6333,10 +6368,11 @@ if (document.getElementById("public-vehicles")) {
       reset: function reset() {
         var vm = this;
         vm.mayBeResponsiblePerson = null;
-        vm.mayBeResponsiblePerson = null;
         vm.popup = null;
+        vm.editedVehicle = {};
         vm.mayBeGroupedVehicles = [];
         vm.rfids = [];
+        vm.group = [];
       },
       getVehicles: function getVehicles() {
         var vm = this;
@@ -6406,7 +6442,10 @@ if (document.getElementById("public-vehicles")) {
           organisation_id: vm.organisationId,
           employee_id: (_vm$mayBeResponsibleP2 = vm.mayBeResponsiblePerson) === null || _vm$mayBeResponsibleP2 === void 0 ? void 0 : _vm$mayBeResponsibleP2.id,
           post_data: postData,
-          rfids: vm.rfids
+          rfids: vm.rfids,
+          group: Object.values(vm.mayBeGroupedVehicles).map(function (e) {
+            return e.id;
+          })
         };
         axios.post("/vehicles/edit", sendData).then(function (response) {
           var _response$data4;
@@ -6425,6 +6464,8 @@ if (document.getElementById("public-vehicles")) {
         vm.editedVehicle = (0,_functions__WEBPACK_IMPORTED_MODULE_1__.strip)(item);
         vm.mayBeResponsiblePerson = (0,_functions__WEBPACK_IMPORTED_MODULE_1__.strip)(item).employee;
         vm.rfids = (0,_functions__WEBPACK_IMPORTED_MODULE_1__.strip)(item).rfids;
+        vm.mayBeGroupedVehicles = (0,_functions__WEBPACK_IMPORTED_MODULE_1__.strip)(item).group;
+        vm.group = (0,_functions__WEBPACK_IMPORTED_MODULE_1__.strip)(item).group;
       },
       removeRfid: function removeRfid(rfid) {
         var vm = this;
@@ -6432,6 +6473,20 @@ if (document.getElementById("public-vehicles")) {
           return rfid.label === item.label && rfid.value === item.value;
         });
         vm.rfids.splice(index, 1);
+      },
+      removeFromGroup: function removeFromGroup(item, save) {
+        var vm = this;
+        var group = Object.values(vm.group);
+        var index = group.findIndex(function (el) {
+          return el.id === item.id;
+        });
+        if (index >= 0) {
+          group.splice(index, 1);
+          vm.group = group;
+        }
+        if (save) {
+          vm.mayBeGroupedVehicles = (0,_functions__WEBPACK_IMPORTED_MODULE_1__.strip)(vm.group);
+        }
       }
     }
   });

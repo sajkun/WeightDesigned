@@ -21,12 +21,14 @@ if (document.getElementById("public-vehicles")) {
             employeeSearch: "",
             activeTab: "info",
             pincode: null,
+            group: [],
             vehicles: {
                 bunkers: [],
                 transporters: [],
                 tractors: [],
                 harvesters: [],
             },
+            vehicleGroupType: null,
             editedVehicle: {},
         },
 
@@ -110,6 +112,25 @@ if (document.getElementById("public-vehicles")) {
                 return this.vehicles[`${this.vehicleType}s`];
             },
 
+            vehiclesGrouped() {
+                const vm = this;
+                let vehicles = Object.values(
+                    vm.vehicles[`${vm.vehicleGroupType}s`]
+                );
+
+                vehicles = vehicles.filter((el) => {
+                    return !el.group_id;
+                });
+
+                vehicles = Boolean(vm.editedVehicle.id)
+                    ? vehicles.filter((item) => {
+                          return item.id !== vm.editedVehicle.id;
+                      })
+                    : vehicles;
+
+                return vehicles;
+            },
+
             rfidsComputed() {
                 return this.rfids;
             },
@@ -153,6 +174,7 @@ if (document.getElementById("public-vehicles")) {
 
             vehicleType(vehicleType) {
                 this.vehicleAddType = vehicleType;
+                this.vehicleGroupType = vehicleType;
                 const vm = this;
                 vm.reset();
             },
@@ -173,6 +195,28 @@ if (document.getElementById("public-vehicles")) {
                 const vm = this;
                 vm.mode = "create";
                 vm.vehicleType = type;
+            },
+
+            addVehicleToGroup(item) {
+                const vm = this;
+                let group = Object.values(vm.group);
+                const index = group.findIndex((el) => {
+                    return el.id === item.id;
+                });
+
+                if (index < 0) {
+                    group.push(item);
+                } else {
+                    group.splice(index, 1);
+                }
+
+                vm.group = strip(group);
+            },
+
+            applyGroup() {
+                const vm = this;
+                vm.mayBeGroupedVehicles = strip(vm.group);
+                vm.popup = null;
             },
 
             enableInputs() {
@@ -278,6 +322,9 @@ if (document.getElementById("public-vehicles")) {
                     employee_id: vm.mayBeResponsiblePerson?.id,
                     post_data: postData,
                     rfids: vm.rfids,
+                    group: Object.values(vm.mayBeGroupedVehicles).map(
+                        (e) => e.id
+                    ),
                 };
                 console.log("createVehicle: ", vm.vehicleType);
                 console.log("createVehicle data: ", sendData);
@@ -362,10 +409,11 @@ if (document.getElementById("public-vehicles")) {
             reset() {
                 const vm = this;
                 vm.mayBeResponsiblePerson = null;
-                vm.mayBeResponsiblePerson = null;
                 vm.popup = null;
+                vm.editedVehicle = {};
                 vm.mayBeGroupedVehicles = [];
                 vm.rfids = [];
+                vm.group = [];
             },
 
             getVehicles() {
@@ -440,6 +488,9 @@ if (document.getElementById("public-vehicles")) {
                     employee_id: vm.mayBeResponsiblePerson?.id,
                     post_data: postData,
                     rfids: vm.rfids,
+                    group: Object.values(vm.mayBeGroupedVehicles).map(
+                        (e) => e.id
+                    ),
                 };
 
                 axios
@@ -471,6 +522,8 @@ if (document.getElementById("public-vehicles")) {
                 vm.editedVehicle = strip(item);
                 vm.mayBeResponsiblePerson = strip(item).employee;
                 vm.rfids = strip(item).rfids;
+                vm.mayBeGroupedVehicles = strip(item).group;
+                vm.group = strip(item).group;
             },
 
             removeRfid(rfid) {
@@ -482,6 +535,23 @@ if (document.getElementById("public-vehicles")) {
                 });
 
                 vm.rfids.splice(index, 1);
+            },
+
+            removeFromGroup(item, save) {
+                const vm = this;
+                const group = Object.values(vm.group);
+                const index = group.findIndex((el) => {
+                    return el.id === item.id;
+                });
+
+                if (index >= 0) {
+                    group.splice(index, 1);
+                    vm.group = group;
+                }
+
+                if (save) {
+                    vm.mayBeGroupedVehicles = strip(vm.group);
+                }
             },
         },
     });

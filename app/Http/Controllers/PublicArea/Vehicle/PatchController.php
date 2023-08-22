@@ -2,6 +2,7 @@
 namespace App\Http\Controllers\PublicArea\Vehicle;
 
 use App\Models\Rfid;
+use App\Models\Group;
 use App\Models\Pincode;
 use App\Models\Vehicle;
 use App\Models\Employee;
@@ -87,6 +88,32 @@ class PatchController extends Controller
             } else {
                 $exists_employee = $vehicle_to_edit->employee()->first();
                 $vehicle_to_edit->employee()->dissociate($exists_employee)->save();
+            }
+
+            if (isset($request->group) && count($request->group) > 0) {
+                $group = $vehicle_to_edit->group()->first();
+                $vehicles = Vehicle::whereIn('id', $request->group)->get();
+
+                if (!$group) {
+                    $group = Group::create();
+                    $vehicle_to_edit->group()->associate($group)->save();
+                } else {
+                    $vehicles_to_remove = $group->vehicles()->get()->filter(function ($el) use ($request, $vehicle_to_edit) {
+                        return !in_array($el['id'], $request->group) && $el['id'] != $vehicle_to_edit['id'];
+                    })->map(function ($el) {
+                        $el->update(['group_id' => null]);
+                        return $el;
+                    });
+                }
+
+                $group->vehicles()->saveMany($vehicles);
+            } else {
+                $group = $vehicle_to_edit->group()->first();
+
+                if ($group) {
+                    $group->vehicles()->update(['group_id' => null]);
+                    $group->delete();
+                }
             }
 
             return response()->json([

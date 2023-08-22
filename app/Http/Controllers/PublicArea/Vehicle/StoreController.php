@@ -7,6 +7,7 @@ use App\Models\Vehicle;
 use App\Models\Employee;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Group;
 use Illuminate\Support\Facades\Auth;
 
 class StoreController extends Controller
@@ -83,6 +84,13 @@ class StoreController extends Controller
                 }, $request->rfids);
 
                 Rfid::insert($rfids);
+            }
+
+            if (isset($request->group) && count($request->group) > 0) {
+                $group = Group::create();
+                $vehicles = Vehicle::whereIn('id', $request->group)->get();
+                $group->vehicles()->saveMany($vehicles);
+                $vehicle->group()->associate($group)->save();
             }
 
             return response()->json([

@@ -158,21 +158,17 @@
                 Сгруппированная техника
             </p>
 
-            <div class="row mt-3">
-                <div class="col-12 col-md-6" v-if='mayBeGroupedVehicles.length'>
-                    <div class="responsible" v-for='vehicle, key in mayBeGroupedVehicles' :key='"group" + key'>
+            <div class="row mt-3 rfid-row">
+                <div class="col-12 col-md-6 mt-2" v-for='vehicle, key in mayBeGroupedVehicles' :key='"group" + key'>
+                    <div class="responsible  h-100">
                         <div class="row">
                             <div class="col-6 align-self-center">
                                 <h3 class="responsible__title">Связанная техника</h3>
                             </div>
 
                             <div class="col-6 text-end">
-                                <button class="btn" type="button">
-                                    <svg width="26" height="26" viewBox="0 0 26 26" fill="none"
-                                        aria-hidde='true' xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M6.5 19.5L19.5 6.5M6.5 6.5L19.5 19.5" stroke="#F1898E"
-                                            stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                                    </svg>
+                                <button class="btn p-0 btn-close" :key='"delete" + key' type="button"
+                                    @click='removeFromGroup(vehicle, true)'>
                                 </button>
                             </div>
                         </div>
@@ -196,8 +192,8 @@
                         </div>
                     </div> {{-- responsible --}}
                 </div>
-                <div class="col">
-                    <button class="btn btn-borders w-100 h-100" type="button">
+                <div class="col mt-2">
+                    <button class="btn btn-borders w-100 h-100" @click='popup="vehicles"' type="button">
                         Сгруппировать</button>
                 </div>
             </div>

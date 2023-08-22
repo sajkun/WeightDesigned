@@ -111,5 +111,9 @@
         <Transition name="fade">
             @include('pages.vehicles.rfids-popup')
         </Transition>
+
+        <Transition name="fade">
+            @include('pages.vehicles.vehicles-popup')
+        </Transition>
     </div>
 @endsection
