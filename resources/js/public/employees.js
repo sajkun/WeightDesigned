@@ -97,7 +97,7 @@ if (document.getElementById("public-employees")) {
                 vehicles = vehicles.filter((el) => {
                     return (
                         !el.employee_id ||
-                        el.employee_id !== vm.editedEmployee.id
+                        el.employee_id === vm.editedEmployee.id
                     );
                 });
 
@@ -385,17 +385,17 @@ if (document.getElementById("public-employees")) {
 
             removeFromGroup(item, save) {
                 const vm = this;
-                const group = Object.values(vm.editedEmployee.vehicles);
+                const group = Object.values(vm.group);
                 const index = group.findIndex((el) => {
                     return el.id === item.id;
                 });
 
                 if (index >= 0) {
                     group.splice(index, 1);
-                    vm.group = group;
+                    vm.group = strip(group);
 
                     if (save) {
-                        vm.editedEmployee.vehicles = group;
+                        vm.editedEmployee.vehicles = strip(group);
                     }
                 }
             },

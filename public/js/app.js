@@ -5637,7 +5637,7 @@ if (document.getElementById("public-employees")) {
         var vm = this;
         var vehicles = Object.values(vm.vehicles["".concat(vm.vehicleGroupType, "s")]);
         vehicles = vehicles.filter(function (el) {
-          return !el.employee_id || el.employee_id !== vm.editedEmployee.id;
+          return !el.employee_id || el.employee_id === vm.editedEmployee.id;
         });
         return vehicles;
       }
@@ -5834,15 +5834,15 @@ if (document.getElementById("public-employees")) {
       },
       removeFromGroup: function removeFromGroup(item, save) {
         var vm = this;
-        var group = Object.values(vm.editedEmployee.vehicles);
+        var group = Object.values(vm.group);
         var index = group.findIndex(function (el) {
           return el.id === item.id;
         });
         if (index >= 0) {
           group.splice(index, 1);
-          vm.group = group;
+          vm.group = (0,_functions__WEBPACK_IMPORTED_MODULE_0__.strip)(group);
           if (save) {
-            vm.editedEmployee.vehicles = group;
+            vm.editedEmployee.vehicles = (0,_functions__WEBPACK_IMPORTED_MODULE_0__.strip)(group);
           }
         }
       }
