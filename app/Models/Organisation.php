@@ -3,6 +3,7 @@ namespace App\Models;
 
 use App\Models\User;
 use App\Models\Vehicle;
+use App\Models\Grassland;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -25,5 +26,10 @@ class Organisation extends Model
     public function vehicles()
     {
         return $this->hasMany(Vehicle::class, 'organisation_id', 'id');
+    }
+
+    public function grasslands()
+    {
+        return $this->hasMany(Grassland::class, 'organisation_id', 'id');
     }
 }

@@ -1,6 +1,6 @@
 <div class="popup-wrapper" v-if='popup === "rfids"'>
     <div class="popup p-2" style='max-width: 640px'>
-        <div class="popup__header pt-2">
+        <div class="popup__header ">
             <div class="row">
                 <div class="col-8">
                     <p class="m-0">

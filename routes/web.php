@@ -39,12 +39,19 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('/test', 'CheckController')->name('public.rfid.test');
     });
     Route::group(['namespace' => 'PublicArea\Vehicle', 'prefix' => 'vehicles'], function () {
-        Route::get('/list', 'ListController')->name('public.vehicles.list');
+        Route::get('/list', 'ListController')->name('public.vehicle.list');
         Route::get('/{type}', 'IndexController')->name('public.vehicle.index');
         Route::post('/store', 'StoreController')->name('public.vehicle.store');
         Route::post('/edit', 'PatchController')->name('public.vehicle.edit');
         Route::post('/delete', 'DestroyController')->name('public.vehicle.delete');
         Route::post('/pincode', 'CheckPinController')->name('public.vehicle.pincode');
+    });
+    Route::group(['namespace' => 'PublicArea\Grasslands', 'prefix' => 'grasslands'], function () {
+        Route::get('/list', 'ListController')->name('public.grassland.list');
+        Route::get('/', 'IndexController')->name('public.grassland.index');
+        Route::post('/store', 'StoreController')->name('public.grassland.store');
+        Route::post('/edit', 'PatchController')->name('public.grassland.edit');
+        // Route::post('/delete', 'DestroyController')->name('public.grassland.delete');
     });
 });
 

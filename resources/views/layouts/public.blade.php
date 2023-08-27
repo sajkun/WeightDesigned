@@ -34,7 +34,7 @@
                     <div class="row align-content-center ">
                         <div class="col flex-grow-0 align-self-center">
                             <ul class="main-menu">
-                                <li><a href="">Поля</a></li>
+                                <li><a href="{{ route('public.grassland.index') }}">Поля</a></li>
                                 <li><a href="{{ route('public.vehicle.index', ['type' => 'bunker']) }}">Техника</a>
                                     <nav class="submenu">
                                         <ul class="submenu-list">

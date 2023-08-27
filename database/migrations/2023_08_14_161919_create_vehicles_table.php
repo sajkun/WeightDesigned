@@ -23,7 +23,7 @@ class CreateVehiclesTable extends Migration
             $table->foreign('organisation_id', 'vehicle_organisation_fk')->on('organisations')->references('id');
 
             $table->unsignedBigInteger('employee_id')->nullable();
-            $table->index('organisation_id', 'vehicle_employee_idx');
+            $table->index('employee_id', 'vehicle_employee_idx');
             $table->foreign('employee_id', 'vehicle_employee_fk')->on('employees')->references('id')->onDelete('set null');
         });
     }
