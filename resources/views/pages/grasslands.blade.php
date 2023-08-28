@@ -31,7 +31,7 @@
                                             <td>@{{ key + 1 }}</td>
                                             <td>@{{ item.name }}</td>
                                             <td>@{{ item.size }} га</td>
-                                            <td></td>
+                                            <td>@{{ item.culture }} </td>
                                             <td class='text-end'>
                                                 @can('delete', [App\Models\Grassland::class, $organisation_id])
                                                     <button class='btn p-1' @click.prevent.stop='deleteGrassland(item)'>

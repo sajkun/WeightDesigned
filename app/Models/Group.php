@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Group extends Model
 {
     use HasFactory;
+    protected $guarded = false;
 
     public function vehicles() :HasMany
     {

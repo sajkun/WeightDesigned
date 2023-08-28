@@ -6299,8 +6299,9 @@ if (document.getElementById("public-grasslands")) {
           console.log("%c getGrasslands", "color: green", response);
           vm.grasslands = (0,_functions__WEBPACK_IMPORTED_MODULE_0__.strip)(response.data.grasslands);
         })["catch"](function (e) {
+          var _e$response;
           console.log("%c getGrasslands error", "color: red", e.response);
-          vm.messages.error = e.response.data.message;
+          vm.messages.error = (_e$response = e.response) === null || _e$response === void 0 || (_e$response = _e$response.data) === null || _e$response === void 0 ? void 0 : _e$response.message;
         });
       },
       parseShapeFile: function parseShapeFile(data) {
@@ -6345,17 +6346,20 @@ if (document.getElementById("public-grasslands")) {
         } finally {
           _iterator.f();
         }
+        postData.geo_json = postData.geo_json ? JSON.parse(postData.geo_json) : "";
         var sendData = {
           user_id: vm.userId,
           organisation_id: vm.organisationId,
-          post_data: postData
+          grassland_data: postData
         };
         console.log(sendData);
-        axios.get("/grasslands/store", sendData).then(function (response) {
-          console.log("%c getGrasslands", "color: green", response);
-          vm.grasslands = (0,_functions__WEBPACK_IMPORTED_MODULE_0__.strip)(response.data.grasslands);
+        axios.post("/grasslands/store", sendData).then(function (response) {
+          console.log("%c createGrassland", "color: green", response);
+          vm.messages[response.data.type] = response.data.message;
+        }).then(function () {
+          vm.getGrasslands();
         })["catch"](function (e) {
-          console.log("%c getGrasslands error", "color: red", e.response);
+          console.log("%c createGrassland error", "color: red", e.response);
           vm.messages.error = e.response.data.message;
         });
       }

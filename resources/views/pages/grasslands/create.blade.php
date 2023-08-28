@@ -48,7 +48,7 @@
                             </div>
                         </div>
                         <div class="text-end mt-2">
-                            <button class="btn btn-borders-grey" type='button' @click='mode="list"'>Отменить</button>
+                            <button class="btn btn-borders-grey" type='button' @click='mode="list"'>Закрыть</button>
                             <button class="btn btn-primary-alt" type='submit'>Сохранить</button>
                         </div>
                     </form>

@@ -17,8 +17,7 @@ class StoreController extends Controller
     public function __invoke(Request $request)
     {
         try {
-            $user = Auth::user();
-            $this->authorize('create', [Employee::class, $user->organisation_id]);
+            $this->authorize('create', [Employee::class, $request->organisation_id]);
 
             $request->validate([
                 'user_id' => 'required',

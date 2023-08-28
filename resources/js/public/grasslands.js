@@ -181,7 +181,7 @@ if (document.getElementById("public-grasslands")) {
                             "color: red",
                             e.response
                         );
-                        vm.messages.error = e.response.data.message;
+                        vm.messages.error = e.response?.data?.message;
                     });
             },
 
@@ -226,27 +226,34 @@ if (document.getElementById("public-grasslands")) {
                     postData[key] = value;
                 }
 
+                postData.geo_json = postData.geo_json
+                    ? JSON.parse(postData.geo_json)
+                    : "";
+
                 const sendData = {
                     user_id: vm.userId,
                     organisation_id: vm.organisationId,
-                    post_data: postData,
+                    grassland_data: postData,
                 };
 
                 console.log(sendData);
 
                 axios
-                    .get("/grasslands/store", sendData)
+                    .post("/grasslands/store", sendData)
                     .then((response) => {
                         console.log(
-                            "%c getGrasslands",
+                            "%c createGrassland",
                             "color: green",
                             response
                         );
-                        vm.grasslands = strip(response.data.grasslands);
+                        vm.messages[response.data.type] = response.data.message;
+                    })
+                    .then(() => {
+                        vm.getGrasslands();
                     })
                     .catch((e) => {
                         console.log(
-                            "%c getGrasslands error",
+                            "%c createGrassland error",
                             "color: red",
                             e.response
                         );
