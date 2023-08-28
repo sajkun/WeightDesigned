@@ -6,6 +6,7 @@ import {
 } from "./dbf";
 import messages from "../mixins/messages";
 import FileInputComponent from "../components/FileInputComponent";
+import toGeoJSON, { kml } from "../../../node_modules/@tmcw/togeojson";
 
 let grasslandMap;
 
@@ -204,8 +205,28 @@ if (document.getElementById("public-grasslands")) {
             parseShapeFile(data) {
                 const vm = this;
 
-                const ext = data.file.name.split(".")[1];
+                const ext = data.file.name.split(".").pop();
+                let getDom = (xml) =>
+                    new DOMParser().parseFromString(xml, "text/xml");
 
+                let getExtension = (fileName) => fileName.split(".").pop();
+
+                let getKmlDom = (kmzFile) => {
+                    var zip = new JSZip();
+                    return zip.loadAsync(kmzFile).then((zip) => {
+                        let kmlDom = null;
+                        zip.forEach((relPath, file) => {
+                            if (
+                                getExtension(relPath) === "kml" &&
+                                kmlDom === null
+                            ) {
+                                kmlDom = file.async("string").then(getDom);
+                            }
+                        });
+
+                        return kmlDom || Promise.reject("No kml file found");
+                    });
+                };
                 switch (ext) {
                     case "shp":
                         readBinaryShapeFile(data.file)
@@ -225,8 +246,37 @@ if (document.getElementById("public-grasslands")) {
                                 vm.drawGrassland(points, grasslandMap);
                             });
                         break;
+                    case "kml":
+                        const reader = new FileReader();
+
+                        let geoJsonObject;
+
+                        reader.addEventListener(
+                            "load",
+                            () => {
+                                geoJsonObject = kml(getDom(reader.result));
+                                console.log(geoJsonObject);
+                            },
+                            false
+                        );
+
+                        const text = reader.readAsText(data.file);
+                        break;
+                    case "kmz":
+                        let geoJson = getKmlDom(data.file).then((kmlDom) => {
+                            console.log(kmlDom);
+                            let geoJsonObject = kml(kmlDom);
+
+                            return JSON.stringify(geoJsonObject);
+                        });
+
+                        geoJson.then((gj) => {
+                            console.log(gj);
+                        });
+                        break;
+
                     default:
-                        vm.message.error = "Неверный тип файла";
+                        vm.messages.error = "Неверный тип файла";
                         break;
                 }
             },
