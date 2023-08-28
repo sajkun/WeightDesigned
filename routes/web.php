@@ -51,7 +51,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/', 'IndexController')->name('public.grassland.index');
         Route::post('/store', 'StoreController')->name('public.grassland.store');
         Route::post('/edit', 'PatchController')->name('public.grassland.edit');
-        // Route::post('/delete', 'DestroyController')->name('public.grassland.delete');
+        Route::post('/delete', 'DestroyController')->name('public.grassland.delete');
     });
 });
 

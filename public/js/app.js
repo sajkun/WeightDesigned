@@ -6243,7 +6243,20 @@ if (document.getElementById("public-grasslands")) {
         // Добавляем многоугольник на карту.
         map.geoObjects.add(grasslandGeoObject);
       },
-      deleteGrassland: function deleteGrassland() {},
+      deleteGrassland: function deleteGrassland(item) {
+        var vm = this;
+        axios.post("/grasslands/delete", {
+          user_id: vm.userId,
+          organisation_id: vm.organisationId,
+          delete_grassland_id: item.id
+        }).then(function (response) {
+          console.log(response);
+          vm.getGrasslands();
+        })["catch"](function (e) {
+          console.log(e.response);
+          vm.messages.error = "".concat(e.response.status, " ").concat(e.response.statusText, " : ").concat(e.response.data.message);
+        });
+      },
       enableInputs: function enableInputs() {
         var inputs = document.querySelectorAll(".form-control-custom input");
         inputs.forEach(function (el) {
@@ -6299,9 +6312,8 @@ if (document.getElementById("public-grasslands")) {
           console.log("%c getGrasslands", "color: green", response);
           vm.grasslands = (0,_functions__WEBPACK_IMPORTED_MODULE_0__.strip)(response.data.grasslands);
         })["catch"](function (e) {
-          var _e$response;
           console.log("%c getGrasslands error", "color: red", e.response);
-          vm.messages.error = (_e$response = e.response) === null || _e$response === void 0 || (_e$response = _e$response.data) === null || _e$response === void 0 ? void 0 : _e$response.message;
+          vm.messages.error = "".concat(e.response.status, " ").concat(e.response.statusText, " : ").concat(e.response.data.message);
         });
       },
       parseShapeFile: function parseShapeFile(data) {
@@ -6360,7 +6372,7 @@ if (document.getElementById("public-grasslands")) {
           vm.getGrasslands();
         })["catch"](function (e) {
           console.log("%c createGrassland error", "color: red", e.response);
-          vm.messages.error = e.response.data.message;
+          vm.messages.error = "".concat(e.response.status, " ").concat(e.response.statusText, " : ").concat(e.response.data.message);
         });
       }
     }

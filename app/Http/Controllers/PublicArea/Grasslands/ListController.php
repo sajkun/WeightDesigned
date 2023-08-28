@@ -24,7 +24,7 @@ class ListController extends Controller
             ]);
         } catch (\Exception  $e) {
             return response()->json([
-                'error' => $e->getMessage(),
+                'message' => $e->getMessage(),
             ], $e->getCode());
         }
     }

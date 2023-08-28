@@ -99,7 +99,23 @@ if (document.getElementById("public-grasslands")) {
                 map.geoObjects.add(grasslandGeoObject);
             },
 
-            deleteGrassland() {},
+            deleteGrassland(item) {
+                const vm = this;
+                axios
+                    .post(`/grasslands/delete`, {
+                        user_id: vm.userId,
+                        organisation_id: vm.organisationId,
+                        delete_grassland_id: item.id,
+                    })
+                    .then((response) => {
+                        console.log(response);
+                        vm.getGrasslands();
+                    })
+                    .catch((e) => {
+                        console.log(e.response);
+                        vm.messages.error = `${e.response.status} ${e.response.statusText} : ${e.response.data.message}`;
+                    });
+            },
 
             enableInputs() {
                 const inputs = document.querySelectorAll(
@@ -181,7 +197,7 @@ if (document.getElementById("public-grasslands")) {
                             "color: red",
                             e.response
                         );
-                        vm.messages.error = e.response?.data?.message;
+                        vm.messages.error = `${e.response.status} ${e.response.statusText} : ${e.response.data.message}`;
                     });
             },
 
@@ -257,7 +273,7 @@ if (document.getElementById("public-grasslands")) {
                             "color: red",
                             e.response
                         );
-                        vm.messages.error = e.response.data.message;
+                        vm.messages.error = `${e.response.status} ${e.response.statusText} : ${e.response.data.message}`;
                     });
             },
         },

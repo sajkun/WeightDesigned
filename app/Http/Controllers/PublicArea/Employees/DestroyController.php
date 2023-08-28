@@ -38,7 +38,7 @@ class DestroyController extends Controller
             }
 
             if ($delete_employee->organisation_id != $organisation_id) {
-                throw new \ErrorException('Попытка удалить пользователя другой сотрудника', 403);
+                throw new \ErrorException('Попытка удалить пользователя другой организации', 403);
             }
 
             $delete_employee->delete();
