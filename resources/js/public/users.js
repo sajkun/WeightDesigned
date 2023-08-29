@@ -163,7 +163,7 @@ if (document.getElementById("public-users")) {
                     edit_user: vm.editedUser,
                 };
 
-                vm.editEntity(postData, `/api/public/users/patch`);
+                vm.editEntity(postData, `/users/update`);
             },
 
             reset() {

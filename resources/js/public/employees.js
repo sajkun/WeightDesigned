@@ -343,7 +343,7 @@ if (document.getElementById("public-employees")) {
 
                 console.log("%c patchEmployee", "color:blue", postData);
                 axios
-                    .post(`/employees/edit`, postData)
+                    .post(`/employees/update`, postData)
                     .then((response) => {
                         console.log(response);
                         vm.getEmployees();

@@ -357,7 +357,7 @@ if (document.getElementById("public-grasslands")) {
                     grassland_data: grasslandData,
                 };
 
-                vm.editEntity(postData, "/grasslands/edit/");
+                vm.editEntity(postData, "/grasslands/update/");
             },
         },
     });

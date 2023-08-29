@@ -28,7 +28,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/', 'IndexController')->name('public.users.index');
         Route::get('/list', 'ListController')->name('public.user.list');
         Route::post('/store', 'StoreController')->name('public.user.store');
-        Route::post('/edit', 'PatchController')->name('public.user.edit');
+        Route::post('/update', 'PatchController')->name('public.user.edit');
         Route::post('/delete', 'DestroyController')->name('public.user.delete');
     });
 
@@ -36,7 +36,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/list', 'ListController')->name('public.employee.list');
         Route::get('/', 'IndexController')->name('public.employee.index');
         Route::post('/store', 'StoreController')->name('public.employee.store');
-        Route::post('/edit', 'PatchController')->name('public.employee.edit');
+        Route::post('/update', 'PatchController')->name('public.employee.edit');
         Route::post('/delete', 'DestroyController')->name('public.employee.delete');
     });
     Route::group(['namespace' => 'PublicArea\Rfid', 'prefix' => 'rfids'], function () {
@@ -46,7 +46,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/list', 'ListController')->name('public.vehicle.list');
         Route::get('/{type}', 'IndexController')->name('public.vehicle.index');
         Route::post('/store', 'StoreController')->name('public.vehicle.store');
-        Route::post('/edit', 'PatchController')->name('public.vehicle.edit');
+        Route::post('/update', 'PatchController')->name('public.vehicle.edit');
         Route::post('/delete', 'DestroyController')->name('public.vehicle.delete');
         Route::post('/pincode', 'CheckPinController')->name('public.vehicle.pincode');
     });
@@ -54,7 +54,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/list', 'ListController')->name('public.grassland.list');
         Route::get('/', 'IndexController')->name('public.grassland.index');
         Route::post('/store', 'StoreController')->name('public.grassland.store');
-        Route::post('/edit', 'PatchController')->name('public.grassland.edit');
+        Route::post('/update', 'PatchController')->name('public.grassland.edit');
         Route::post('/delete', 'DestroyController')->name('public.grassland.delete');
     });
 });
@@ -64,7 +64,7 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
     Route::group(['namespace' => 'User', 'prefix' => 'users'], function () {
         // Route::get('/', 'IndexController')->name('admin.user.index');
         // Route::get('/create', 'CreateController')->name('admin.user.create');
-        // Route::get('/{user}/edit', 'EditController')->name('admin.user.edit');
+        // Route::get('/{user}/update', 'EditController')->name('admin.user.edit');
         // Route::post('/store', 'StoreController')->name('admin.user.store');
         // Route::patch('/{user}', 'UpdateController')->name('admin.user.update');
         Route::delete('/{user}', 'DestroyController')->name('admin.user.destroy');
@@ -72,7 +72,7 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
 
     Route::group(['namespace' => 'Organisation', 'prefix' => 'organisations'], function () {
         // Route::get('/create', 'CreateController')->name('admin.organisation.create');
-        // Route::get('/{organisation}/edit', 'EditController')->name('admin.organisation.edit');
+        // Route::get('/{organisation}/update', 'EditController')->name('admin.organisation.edit');
         Route::post('/store', 'StoreController')->name('admin.organisation.store');
         // Route::patch('/{organisation}', 'UpdateController')->name('admin.organisation.update');
         Route::delete('/{organisation}', 'DestroyController')->name('admin.organisation.destroy');

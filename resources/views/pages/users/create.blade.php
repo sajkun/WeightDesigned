@@ -15,7 +15,6 @@
             <label for="first_name">Имя </label>
         </div>
 
-
         <div class="col-12 col-md-6  col-lg-4 mt-2 form-control-custom">
             <input type="text" autocomplete='off' :class='{ "active": editedUser.last_name }' id='last_name' required
                 v-model='editedUser.last_name'>

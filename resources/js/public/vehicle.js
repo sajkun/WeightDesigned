@@ -507,7 +507,7 @@ if (document.getElementById("public-vehicles")) {
                 };
 
                 axios
-                    .post(`/vehicles/edit`, sendData)
+                    .post(`/vehicles/update`, sendData)
                     .then((response) => {
                         console.log(
                             "%c updateVehicle",

@@ -6205,7 +6205,7 @@ if (document.getElementById("public-employees")) {
           edited_employee: vm.editedEmployee
         };
         console.log("%c patchEmployee", "color:blue", postData);
-        axios.post("/employees/edit", postData).then(function (response) {
+        axios.post("/employees/update", postData).then(function (response) {
           console.log(response);
           vm.getEmployees();
         })["catch"](function (e) {
@@ -6557,7 +6557,7 @@ if (document.getElementById("public-grasslands")) {
           organisation_id: vm.organisationId,
           grassland_data: grasslandData
         };
-        vm.editEntity(postData, "/grasslands/edit/");
+        vm.editEntity(postData, "/grasslands/update/");
       }
     }
   });
@@ -6731,7 +6731,7 @@ if (document.getElementById("public-users")) {
           organisation_id: vm.organisationId,
           edit_user: vm.editedUser
         };
-        vm.editEntity(postData, "/api/public/users/patch");
+        vm.editEntity(postData, "/users/update");
       },
       reset: function reset() {
         var vm = this;
@@ -7198,7 +7198,7 @@ if (document.getElementById("public-vehicles")) {
             return e.id;
           })
         };
-        axios.post("/vehicles/edit", sendData).then(function (response) {
+        axios.post("/vehicles/update", sendData).then(function (response) {
           var _response$data4;
           console.log("%c updateVehicle", "color:green", response);
           vm.messages[response.data.type] = response === null || response === void 0 || (_response$data4 = response.data) === null || _response$data4 === void 0 ? void 0 : _response$data4.message;

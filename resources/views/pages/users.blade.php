@@ -62,7 +62,7 @@
                         @include('pages.users.create')
                     </div>
 
-                    <div class="d-lg-flex flex-column org-wrapper h-100" v-if='!showForm'>
+                    <div class="d-lg-flex flex-column org-wrapper" v-if='!showForm'>
                         <div class="row">
                             <div class="col-8">
                                 <h2 class="h6 m-0 p-2">
