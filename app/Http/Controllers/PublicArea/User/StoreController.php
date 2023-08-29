@@ -61,6 +61,8 @@ class StoreController extends Controller
 
             return response()->json([
                 'new_user' => $new_user,
+                'message' => sprintf('Пользователь %s создан', $new_user->login),
+                'type' => 'success'
             ], 200);
         } catch (\Exception  $e) {
             return response()->json([

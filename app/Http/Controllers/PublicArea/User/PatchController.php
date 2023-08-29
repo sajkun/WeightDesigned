@@ -39,12 +39,15 @@ class PatchController extends Controller
             unset($new_data['login'],$new_data['password'], $new_data['id'], $new_data['created_at'], $new_data['created_at']);
 
             $patch_user->update($new_data);
+            $patch_user->save();
 
             return response()->json([
                 'user_id' => $user_id,
                 'user' => $user,
                 'patch_user' => $patch_user,
                 'new_data' => $new_data,
+                'message' => sprintf('Данные пользователя %s успешно изменены', $patch_user->login),
+                'type' => 'success'
             ], 200);
         } catch (\Exception  $e) {
             return response()->json([
