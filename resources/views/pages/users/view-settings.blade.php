@@ -14,7 +14,7 @@
                     <label for="last_name">Фамилия </label>
                 </div>
 
-                <div class="col-12 col-lg-4 col-md-6 mt-2 form-control-custom" :class='{ "d-none": editPassword }'>
+                <div class="col-12 col-lg-4  mt-2 form-control-custom" :class='{ "d-none": editPassword }'>
                     <input type="text" autocomplete='off' :class='{ "active": editedUser.middle_name }' id='middle_name'
                         v-model='editedUser.middle_name'>
                     <label for="middle_name">Отчество </label>

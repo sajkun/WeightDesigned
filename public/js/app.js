@@ -6583,8 +6583,12 @@ mobileMenuToggler === null || mobileMenuToggler === void 0 ? void 0 : mobileMenu
 /*!**************************************!*\
   !*** ./resources/js/public/users.js ***!
   \**************************************/
-/***/ (() => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _mixins_messages__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../mixins/messages */ "./resources/js/mixins/messages.js");
+/* harmony import */ var _mixins_crud__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../mixins/crud */ "./resources/js/mixins/crud.js");
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
@@ -6593,10 +6597,12 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
  * работа с пользователями публичной зоны
  */
 
+
 if (document.getElementById("public-users")) {
   var _editedUser;
   var appPublicUsers = new Vue({
     el: "#public-users",
+    mixins: [_mixins_messages__WEBPACK_IMPORTED_MODULE_0__["default"], _mixins_crud__WEBPACK_IMPORTED_MODULE_1__["default"]],
     data: {
       organisationId: -1,
       userId: -1,
@@ -6626,12 +6632,6 @@ if (document.getElementById("public-users")) {
       confirmAction: null,
       editMode: false,
       showForm: false,
-      messages: {
-        error: null,
-        info: null,
-        success: null,
-        confirm: null
-      },
       editPassword: false
     },
     mounted: function mounted() {
@@ -6640,6 +6640,9 @@ if (document.getElementById("public-users")) {
       vm.organisationId = vm.$refs.organisationId.value;
       vm.userId = vm.$refs.userId.value;
       vm.getUsers();
+      document.addEventListener("updateList", function () {
+        vm.getUsers();
+      });
       vm.$el.addEventListener("click", function (e) {
         if (e.target.type !== "button") {
           vm.clearMessages();
@@ -6671,20 +6674,6 @@ if (document.getElementById("public-users")) {
         this.showForm = true;
         this.editPassword = false;
       },
-      cancelConfirmActionCb: function cancelConfirmActionCb() {
-        document.dispatchEvent(new CustomEvent("cancelConfirmEvent"));
-      },
-      clearMessages: function clearMessages(confirm) {
-        this.messages = {
-          error: null,
-          info: null,
-          success: null,
-          confirm: this.messages.confirm
-        };
-        if (confirm) {
-          this.messages.confirm = null;
-        }
-      },
       clearUser: function clearUser() {
         var _this$editedUser;
         this.editedUser = (_this$editedUser = {
@@ -6698,35 +6687,54 @@ if (document.getElementById("public-users")) {
           role: null
         }, _defineProperty(_this$editedUser, "email", null), _defineProperty(_this$editedUser, "login", null), _defineProperty(_this$editedUser, "role", null), _this$editedUser);
       },
-      confirmActionCb: function confirmActionCb() {
-        document.dispatchEvent(new CustomEvent("submitConfirmEvent"));
-      },
       deleteUser: function deleteUser(user) {
         var vm = this;
-        var _handlerSubmit = null;
-        var _handlerCancel = null;
         vm.editMode = false;
-        _handlerSubmit = function handlerSubmit() {
+        var postData = {
+          user_id: vm.userId,
+          organisation_id: vm.organisationId,
+          delete_user_id: user.id,
+          name: user.login
+        };
+        vm.deleteEntity(postData, "/api/public/users/destroy");
+        return;
+        handlerSubmit = function (_handlerSubmit) {
+          function handlerSubmit() {
+            return _handlerSubmit.apply(this, arguments);
+          }
+          handlerSubmit.toString = function () {
+            return _handlerSubmit.toString();
+          };
+          return handlerSubmit;
+        }(function () {
           vm.deleteUserCb(user);
-          document.removeEventListener("submitConfirmEvent", _handlerSubmit, false);
+          document.removeEventListener("submitConfirmEvent", handlerSubmit, false);
           vm.$nextTick(function () {
             vm.clearMessages(true);
           });
-        };
-        _handlerCancel = function handlerCancel() {
-          document.removeEventListener("submitConfirmEvent", _handlerSubmit, false);
-          document.removeEventListener("cancelConfirmEvent", _handlerCancel, false);
+        });
+        handlerCancel = function (_handlerCancel) {
+          function handlerCancel() {
+            return _handlerCancel.apply(this, arguments);
+          }
+          handlerCancel.toString = function () {
+            return _handlerCancel.toString();
+          };
+          return handlerCancel;
+        }(function () {
+          document.removeEventListener("submitConfirmEvent", handlerSubmit, false);
+          document.removeEventListener("cancelConfirmEvent", handlerCancel, false);
           vm.$nextTick(function () {
             vm.clearMessages(true);
           });
-        };
+        });
         if (!vm.messages.confirm) {
-          document.addEventListener("submitConfirmEvent", _handlerSubmit);
-          document.addEventListener("cancelConfirmEvent", _handlerCancel);
+          document.addEventListener("submitConfirmEvent", handlerSubmit);
+          document.addEventListener("cancelConfirmEvent", handlerCancel);
           vm.messages.confirm = "".concat(vm.validationMessages.deleteUser, " ").concat(user.login, " ?");
         } else {
-          document.removeEventListener("confirmEvent", _handlerSubmit, false);
-          document.removeEventListener("submitConfirmEvent", _handlerCancel, false);
+          document.removeEventListener("confirmEvent", handlerSubmit, false);
+          document.removeEventListener("submitConfirmEvent", handlerCancel, false);
           vm.$nextTick(function () {
             vm.clearMessages(true);
           });

@@ -22,7 +22,7 @@
             <label for="last_name">Фамилия </label>
         </div>
 
-        <div class="col-12 col-md-6  col-lg-4 mt-2 form-control-custom">
+        <div class="col-12   col-lg-4 mt-2 form-control-custom">
             <input type="text" autocomplete='off' :class='{ "active": editedUser.middle_name }' id='middle_name'
                 v-model='editedUser.middle_name'>
             <label for="middle_name">Отчество </label>

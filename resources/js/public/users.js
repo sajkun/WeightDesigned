@@ -1,11 +1,13 @@
 /**
  * работа с пользователями публичной зоны
  */
+import messages from "../mixins/messages";
+import crud from "../mixins/crud";
 
 if (document.getElementById("public-users")) {
     const appPublicUsers = new Vue({
         el: "#public-users",
-
+        mixins: [messages, crud],
         data: {
             organisationId: -1,
             userId: -1,
@@ -38,12 +40,6 @@ if (document.getElementById("public-users")) {
             confirmAction: null,
             editMode: false,
             showForm: false,
-            messages: {
-                error: null,
-                info: null,
-                success: null,
-                confirm: null,
-            },
             editPassword: false,
         },
 
@@ -53,6 +49,10 @@ if (document.getElementById("public-users")) {
             vm.organisationId = vm.$refs.organisationId.value;
             vm.userId = vm.$refs.userId.value;
             vm.getUsers();
+
+            document.addEventListener("updateList", () => {
+                vm.getUsers();
+            });
 
             vm.$el.addEventListener("click", (e) => {
                 if (e.target.type !== "button") {
@@ -91,23 +91,6 @@ if (document.getElementById("public-users")) {
                 this.editPassword = false;
             },
 
-            cancelConfirmActionCb() {
-                document.dispatchEvent(new CustomEvent("cancelConfirmEvent"));
-            },
-
-            clearMessages(confirm) {
-                this.messages = {
-                    error: null,
-                    info: null,
-                    success: null,
-                    confirm: this.messages.confirm,
-                };
-
-                if (confirm) {
-                    this.messages.confirm = null;
-                }
-            },
-
             clearUser() {
                 this.editedUser = {
                     id: -1,
@@ -124,17 +107,20 @@ if (document.getElementById("public-users")) {
                 };
             },
 
-            confirmActionCb() {
-                document.dispatchEvent(new CustomEvent("submitConfirmEvent"));
-            },
-
             deleteUser(user) {
                 const vm = this;
 
-                let handlerSubmit = null;
-                let handlerCancel = null;
                 vm.editMode = false;
 
+                const postData = {
+                    user_id: vm.userId,
+                    organisation_id: vm.organisationId,
+                    delete_user_id: user.id,
+                    name: user.login,
+                };
+
+                vm.deleteEntity(postData, `/api/public/users/destroy`);
+                return;
                 handlerSubmit = () => {
                     vm.deleteUserCb(user);
                     document.removeEventListener(
