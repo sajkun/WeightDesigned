@@ -6602,6 +6602,7 @@ if (document.getElementById("public-users")) {
       userId: -1,
       users: [],
       roles: [],
+      activeTab: "info",
       editedUser: (_editedUser = {
         id: -1,
         email: null,
@@ -6624,6 +6625,7 @@ if (document.getElementById("public-users")) {
       },
       confirmAction: null,
       editMode: false,
+      showForm: false,
       messages: {
         error: null,
         info: null,
@@ -6651,10 +6653,22 @@ if (document.getElementById("public-users")) {
         return this.editMode ? editClass : displayClass;
       }
     },
+    watch: {
+      editForm: function editForm() {
+        this.reset();
+      },
+      editMode: function editMode() {
+        this.reset();
+      },
+      activeTab: function activeTab() {
+        this.reset();
+      }
+    },
     methods: {
       addUser: function addUser() {
         this.clearUser();
         this.editMode = true;
+        this.showForm = true;
         this.editPassword = false;
       },
       cancelConfirmActionCb: function cancelConfirmActionCb() {
@@ -6734,6 +6748,7 @@ if (document.getElementById("public-users")) {
       editUser: function editUser(user) {
         var vm = this;
         vm.editMode = true;
+        vm.showForm = false;
         vm.editPassword = false;
         vm.editedUser = JSON.parse(JSON.stringify(user));
       },
@@ -6770,6 +6785,14 @@ if (document.getElementById("public-users")) {
           console.log(e.response);
           vm.messages.error = "".concat(e.response.status, " ").concat(e.response.statusText, " : ").concat(e.response.data.message);
         });
+      },
+      reset: function reset() {
+        var vm = this;
+        vm.passwords = {
+          old: null,
+          "new": null
+        };
+        vm.editPassword = false;
       },
       storeUser: function storeUser() {
         var vm = this;

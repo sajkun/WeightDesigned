@@ -11,6 +11,7 @@ if (document.getElementById("public-users")) {
             userId: -1,
             users: [],
             roles: [],
+            activeTab: "info",
             editedUser: {
                 id: -1,
                 email: null,
@@ -36,6 +37,7 @@ if (document.getElementById("public-users")) {
             },
             confirmAction: null,
             editMode: false,
+            showForm: false,
             messages: {
                 error: null,
                 info: null,
@@ -67,10 +69,25 @@ if (document.getElementById("public-users")) {
             },
         },
 
+        watch: {
+            editForm() {
+                this.reset();
+            },
+
+            editMode() {
+                this.reset();
+            },
+
+            activeTab() {
+                this.reset();
+            },
+        },
+
         methods: {
             addUser() {
                 this.clearUser();
                 this.editMode = true;
+                this.showForm = true;
                 this.editPassword = false;
             },
 
@@ -200,6 +217,7 @@ if (document.getElementById("public-users")) {
             editUser(user) {
                 const vm = this;
                 vm.editMode = true;
+                vm.showForm = false;
                 vm.editPassword = false;
                 vm.editedUser = JSON.parse(JSON.stringify(user));
             },
@@ -246,6 +264,17 @@ if (document.getElementById("public-users")) {
                         console.log(e.response);
                         vm.messages.error = `${e.response.status} ${e.response.statusText} : ${e.response.data.message}`;
                     });
+            },
+
+            reset() {
+                const vm = this;
+
+                vm.passwords = {
+                    old: null,
+                    new: null,
+                };
+
+                vm.editPassword = false;
             },
 
             storeUser() {

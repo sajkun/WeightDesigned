@@ -53,23 +53,26 @@
                     <div class="row align-content-center ">
                         <div class="col flex-grow-0 align-self-center">
                             <ul class="main-menu" id='main-menu'>
-                                <li><a href="{{ route('public.grassland.index') }}">Поля</a></li>
-                                <li><a href="{{ route('public.vehicle.index', ['type' => 'bunker']) }}">Техника</a>
-                                    <nav class="submenu">
-                                        <ul class="submenu-list">
-                                            <li><a href="{{ route('public.vehicle.index', ['type' => 'bunker']) }}">
-                                                    Бункеры&nbsp;перегрузчеки</a></li>
-                                            <li><a href="{{ route('public.vehicle.index', ['type' => 'tractor']) }}">
-                                                    Тракторы</a></li>
-                                            <li><a
-                                                    href="{{ route('public.vehicle.index', ['type' => 'transporter']) }}">
-                                                    Грузовики</a></li>
-                                            <li><a href="{{ route('public.vehicle.index', ['type' => 'harvester']) }}">
-                                                    Комбайны</a></li>
-
-                                        </ul>
-                                    </nav>
-                                </li>
+                                @can('viewAny', [App\Models\Grassland::class, $organisation_id])
+                                    <li><a href="{{ route('public.grassland.index') }}">Поля</a></li>
+                                @endcan
+                                @can('viewAny', [App\Models\Vehicle::class, $organisation_id])
+                                    <li><a href="{{ route('public.vehicle.index', ['type' => 'bunker']) }}">Техника</a>
+                                        <nav class="submenu">
+                                            <ul class="submenu-list">
+                                                <li><a href="{{ route('public.vehicle.index', ['type' => 'bunker']) }}">
+                                                        Бункеры&nbsp;перегрузчеки</a></li>
+                                                <li><a href="{{ route('public.vehicle.index', ['type' => 'tractor']) }}">
+                                                        Тракторы</a></li>
+                                                <li><a
+                                                        href="{{ route('public.vehicle.index', ['type' => 'transporter']) }}">
+                                                        Грузовики</a></li>
+                                                <li><a href="{{ route('public.vehicle.index', ['type' => 'harvester']) }}">
+                                                        Комбайны</a></li>
+                                            </ul>
+                                        </nav>
+                                    </li>
+                                @endcan
                                 @can('viewAny', [App\Models\Employee::class, $organisation_id])
                                     <li><a href="{{ route('public.employee.index') }}">Сотрудники</a></li>
                                 @endcan
