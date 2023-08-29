@@ -3,8 +3,10 @@ import {
     readBinaryShapeFile,
     getShapeFileCenter,
     getPointsForGrassland,
+    getCenterByPoints,
 } from "./dbf";
 import messages from "../mixins/messages";
+import crud from "../mixins/crud";
 import FileInputComponent from "../components/FileInputComponent";
 import toGeoJSON, { kml } from "../../../node_modules/@tmcw/togeojson";
 
@@ -14,7 +16,7 @@ if (document.getElementById("public-grasslands")) {
     const appPublicGrasslands = new Vue({
         el: "#public-grasslands",
 
-        mixins: [messages],
+        mixins: [messages, crud],
 
         components: {
             file: FileInputComponent,
@@ -33,6 +35,10 @@ if (document.getElementById("public-grasslands")) {
             vm.organisationId = vm.$refs.organisationId.value;
             vm.userId = vm.$refs.userId.value;
             vm.getGrasslands();
+
+            document.addEventListener("updateList", () => {
+                vm.getGrasslands();
+            });
         },
 
         computed: {
@@ -61,6 +67,29 @@ if (document.getElementById("public-grasslands")) {
                     grasslandMap = vm.initMap("map-container");
                     vm.enableInputs();
                 });
+            },
+
+            createGrassland() {
+                const vm = this;
+                const formData = new FormData(vm.$refs.formCreateGrassland);
+
+                let grasslandData = {};
+
+                for (const [key, value] of formData) {
+                    grasslandData[key] = value;
+                }
+
+                grasslandData.geo_json = grasslandData.geo_json
+                    ? JSON.parse(grasslandData.geo_json)
+                    : "";
+
+                const postData = {
+                    user_id: vm.userId,
+                    organisation_id: vm.organisationId,
+                    grassland_data: grasslandData,
+                };
+
+                vm.createEntity(postData, "/grasslands/store");
             },
 
             drawGrassland(coordinates, map) {
@@ -100,22 +129,45 @@ if (document.getElementById("public-grasslands")) {
                 map.geoObjects.add(grasslandGeoObject);
             },
 
+            drawKmlShape(geoJsonObject) {
+                const vm = this;
+                const geometry = geoJsonObject?.features.pop()?.geometry;
+
+                if (!geometry) {
+                    vm.messages.error = `В файле не найдена разметка`;
+                    return;
+                }
+
+                const type = geometry?.type;
+
+                const allowedTypes = ["LineString", "Polygon"];
+
+                if (!type || allowedTypes.indexOf(type) < 0) {
+                    vm.messages.error = `Недопустимая геометрия разметки файла - (${type})`;
+                    return;
+                }
+                const points =
+                    type === "Polygon"
+                        ? geometry?.coordinates.shift()
+                        : geometry?.coordinates;
+
+                const center = getCenterByPoints(points);
+
+                vm.$refs.geo_json.value = JSON.stringify(points);
+                grasslandMap.setCenter(center);
+                grasslandMap.geoObjects.removeAll();
+                vm.drawGrassland(points, grasslandMap);
+            },
+
             deleteGrassland(item) {
                 const vm = this;
-                axios
-                    .post(`/grasslands/delete`, {
-                        user_id: vm.userId,
-                        organisation_id: vm.organisationId,
-                        delete_grassland_id: item.id,
-                    })
-                    .then((response) => {
-                        console.log(response);
-                        vm.getGrasslands();
-                    })
-                    .catch((e) => {
-                        console.log(e.response);
-                        vm.messages.error = `${e.response.status} ${e.response.statusText} : ${e.response.data.message}`;
-                    });
+                const postData = {
+                    user_id: vm.userId,
+                    organisation_id: vm.organisationId,
+                    delete_grassland_id: item.id,
+                    name: item.name,
+                };
+                vm.deleteEntity(postData, `/grasslands/delete`);
             },
 
             enableInputs() {
@@ -134,6 +186,33 @@ if (document.getElementById("public-grasslands")) {
                         }
                     });
                 });
+            },
+
+            getGrasslands() {
+                const vm = this;
+                if (vm.$refs.organisationId < 0) {
+                    return;
+                }
+                axios
+                    .get("/grasslands/list", {
+                        user_id: vm.userId,
+                    })
+                    .then((response) => {
+                        console.log(
+                            "%c getGrasslands",
+                            "color: green",
+                            response
+                        );
+                        vm.grasslands = strip(response.data.grasslands);
+                    })
+                    .catch((e) => {
+                        console.log(
+                            "%c getGrasslands error",
+                            "color: red",
+                            e.response
+                        );
+                        vm.messages.error = `${e.response.status} ${e.response.statusText} : ${e.response.data.message}`;
+                    });
             },
 
             initMap(selector) {
@@ -173,35 +252,6 @@ if (document.getElementById("public-grasslands")) {
                 return map;
             },
 
-            getGrasslands() {
-                const vm = this;
-
-                if (vm.$refs.organisationId < 0) {
-                    return;
-                }
-
-                axios
-                    .get("/grasslands/list", {
-                        user_id: vm.userId,
-                    })
-                    .then((response) => {
-                        console.log(
-                            "%c getGrasslands",
-                            "color: green",
-                            response
-                        );
-                        vm.grasslands = strip(response.data.grasslands);
-                    })
-                    .catch((e) => {
-                        console.log(
-                            "%c getGrasslands error",
-                            "color: red",
-                            e.response
-                        );
-                        vm.messages.error = `${e.response.status} ${e.response.statusText} : ${e.response.data.message}`;
-                    });
-            },
-
             parseShapeFile(data) {
                 const vm = this;
 
@@ -239,8 +289,7 @@ if (document.getElementById("public-grasslands")) {
                                 const center = getShapeFileCenter(shpData);
                                 const points = getPointsForGrassland(shpData);
                                 vm.$refs.geo_json.value =
-                                    JSON.stringify(shpData);
-                                // vm.formData.geo_json = shpData;
+                                    JSON.stringify(points);
                                 grasslandMap.setCenter(center);
                                 grasslandMap.geoObjects.removeAll();
                                 vm.drawGrassland(points, grasslandMap);
@@ -248,30 +297,27 @@ if (document.getElementById("public-grasslands")) {
                         break;
                     case "kml":
                         const reader = new FileReader();
-
                         let geoJsonObject;
-
                         reader.addEventListener(
                             "load",
                             () => {
-                                geoJsonObject = kml(getDom(reader.result));
-                                console.log(geoJsonObject);
+                                geoJsonObject = strip(
+                                    kml(getDom(reader.result))
+                                );
+                                vm.drawKmlShape(geoJsonObject);
                             },
                             false
                         );
-
-                        const text = reader.readAsText(data.file);
+                        reader.readAsText(data.file);
                         break;
                     case "kmz":
                         let geoJson = getKmlDom(data.file).then((kmlDom) => {
-                            console.log(kmlDom);
                             let geoJsonObject = kml(kmlDom);
-
-                            return JSON.stringify(geoJsonObject);
+                            return geoJsonObject;
                         });
 
                         geoJson.then((gj) => {
-                            console.log(gj);
+                            vm.drawKmlShape(gj);
                         });
                         break;
 
@@ -279,52 +325,6 @@ if (document.getElementById("public-grasslands")) {
                         vm.messages.error = "Неверный тип файла";
                         break;
                 }
-            },
-
-            createGrassland() {
-                console.log("storeGrassland");
-                const vm = this;
-                const formData = new FormData(vm.$refs.formCreateGrassland);
-
-                let postData = {};
-
-                for (const [key, value] of formData) {
-                    postData[key] = value;
-                }
-
-                postData.geo_json = postData.geo_json
-                    ? JSON.parse(postData.geo_json)
-                    : "";
-
-                const sendData = {
-                    user_id: vm.userId,
-                    organisation_id: vm.organisationId,
-                    grassland_data: postData,
-                };
-
-                console.log(sendData);
-
-                axios
-                    .post("/grasslands/store", sendData)
-                    .then((response) => {
-                        console.log(
-                            "%c createGrassland",
-                            "color: green",
-                            response
-                        );
-                        vm.messages[response.data.type] = response.data.message;
-                    })
-                    .then(() => {
-                        vm.getGrasslands();
-                    })
-                    .catch((e) => {
-                        console.log(
-                            "%c createGrassland error",
-                            "color: red",
-                            e.response
-                        );
-                        vm.messages.error = `${e.response.status} ${e.response.statusText} : ${e.response.data.message}`;
-                    });
             },
         },
     });

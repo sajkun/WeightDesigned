@@ -5584,6 +5584,82 @@ document.addEventListener("click", function (e) {
 
 /***/ }),
 
+/***/ "./resources/js/mixins/crud.js":
+/*!*************************************!*\
+  !*** ./resources/js/mixins/crud.js ***!
+  \*************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+var crud = {
+  methods: {
+    confirmActionCb: function confirmActionCb() {
+      document.dispatchEvent(new CustomEvent("submitConfirmEvent"));
+    },
+    cancelConfirmActionCb: function cancelConfirmActionCb() {
+      document.dispatchEvent(new CustomEvent("cancelConfirmEvent"));
+    },
+    createEntity: function createEntity(postData, url) {
+      var vm = this;
+      return axios.post(url, postData).then(function (response) {
+        console.log("%c createEntity", "color: green", response);
+        vm.messages[response.data.type] = response.data.message;
+      }).then(function () {
+        document.dispatchEvent(new CustomEvent("updateList"));
+      })["catch"](function (e) {
+        console.log("%c createEntity error", "color: red", e.response);
+        vm.messages.error = "".concat(e.response.status, " ").concat(e.response.statusText, " : ").concat(e.response.data.message);
+      });
+    },
+    deleteEntity: function deleteEntity(postData, url) {
+      var vm = this;
+      var _handlerSubmit = null;
+      var _handlerCancel = null;
+      _handlerSubmit = function handlerSubmit() {
+        vm.deleteEntityCb(postData, url);
+        document.removeEventListener("submitConfirmEvent", _handlerSubmit, false);
+        vm.$nextTick(function () {
+          document.dispatchEvent(new CustomEvent("updateList"));
+          vm.clearMessages(true);
+        });
+      };
+      _handlerCancel = function handlerCancel() {
+        document.removeEventListener("submitConfirmEvent", _handlerSubmit, false);
+        document.removeEventListener("cancelConfirmEvent", _handlerCancel, false);
+        vm.$nextTick(function () {
+          vm.clearMessages(true);
+        });
+      };
+      if (!vm.messages.confirm) {
+        document.addEventListener("submitConfirmEvent", _handlerSubmit);
+        document.addEventListener("cancelConfirmEvent", _handlerCancel);
+        vm.messages.confirm = "\u0412\u044B \u0443\u0432\u0435\u0440\u0435\u043D\u044B, \u0447\u0442\u043E \u0445\u043E\u0442\u0438\u0442\u0435 \u0443\u0434\u0430\u043B\u0438\u0442\u044C ".concat(postData === null || postData === void 0 ? void 0 : postData.name, "?");
+      } else {
+        document.removeEventListener("confirmEvent", _handlerSubmit, false);
+        document.removeEventListener("submitConfirmEvent", _handlerCancel, false);
+        vm.$nextTick(function () {
+          vm.clearMessages(true);
+        });
+      }
+    },
+    deleteEntityCb: function deleteEntityCb(postData, url) {
+      return axios.post(url, postData).then(function (response) {
+        console.log(response);
+      })["catch"](function (e) {
+        console.log(e.response);
+        vm.messages.error = "".concat(e.response.status, " ").concat(e.response.statusText, " : ").concat(e.response.data.message);
+      });
+    }
+  }
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (crud);
+
+/***/ }),
+
 /***/ "./resources/js/mixins/messages.js":
 /*!*****************************************!*\
   !*** ./resources/js/mixins/messages.js ***!
@@ -5640,6 +5716,7 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "getCenterByPoints": () => (/* binding */ getCenterByPoints),
 /* harmony export */   "getPointsForGrassland": () => (/* binding */ getPointsForGrassland),
 /* harmony export */   "getShapeFileCenter": () => (/* binding */ getShapeFileCenter),
 /* harmony export */   "readBinaryShapeFile": () => (/* binding */ readBinaryShapeFile),
@@ -5807,6 +5884,19 @@ var getShapeFileCenter = function getShapeFileCenter(shp) {
     return [45, 45];
   }
   return [(shp.minX + shp.maxX) / 2, (shp.minY + shp.maxY) / 2];
+};
+
+/** calculates the center of the map by array of points
+ *
+ * @param points - array of [float, float]
+ * @returns [float, float] - coordinates of the center of the map
+ */
+var getCenterByPoints = function getCenterByPoints(points) {
+  var initialValue = [0, 0];
+  var sumWithInitial = points.reduce(function (accumulator, currentValue) {
+    return [parseFloat(accumulator[0]) + parseFloat(currentValue[0]), parseFloat(accumulator[1]) + parseFloat(currentValue[1])];
+  }, initialValue);
+  return [sumWithInitial[0] / points.length, sumWithInitial[1] / points.length];
 };
 
 /** gets coordinates of the points of the grassland's bound by provided data
@@ -6168,9 +6258,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _functions__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./functions */ "./resources/js/public/functions.js");
 /* harmony import */ var _dbf__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./dbf */ "./resources/js/public/dbf.js");
 /* harmony import */ var _mixins_messages__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../mixins/messages */ "./resources/js/mixins/messages.js");
-/* harmony import */ var _components_FileInputComponent__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../components/FileInputComponent */ "./resources/js/components/FileInputComponent/index.js");
-/* harmony import */ var _node_modules_tmcw_togeojson__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../node_modules/@tmcw/togeojson */ "./node_modules/@tmcw/togeojson/dist/togeojson.umd.js");
-/* harmony import */ var _node_modules_tmcw_togeojson__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_node_modules_tmcw_togeojson__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _mixins_crud__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../mixins/crud */ "./resources/js/mixins/crud.js");
+/* harmony import */ var _components_FileInputComponent__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../components/FileInputComponent */ "./resources/js/components/FileInputComponent/index.js");
+/* harmony import */ var _node_modules_tmcw_togeojson__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../node_modules/@tmcw/togeojson */ "./node_modules/@tmcw/togeojson/dist/togeojson.umd.js");
+/* harmony import */ var _node_modules_tmcw_togeojson__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_node_modules_tmcw_togeojson__WEBPACK_IMPORTED_MODULE_5__);
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _iterableToArrayLimit(arr, i) { var _i = null == arr ? null : "undefined" != typeof Symbol && arr[Symbol.iterator] || arr["@@iterator"]; if (null != _i) { var _s, _e, _x, _r, _arr = [], _n = !0, _d = !1; try { if (_x = (_i = _i.call(arr)).next, 0 === i) { if (Object(_i) !== _i) return; _n = !1; } else for (; !(_n = (_s = _x.call(_i)).done) && (_arr.push(_s.value), _arr.length !== i); _n = !0); } catch (err) { _d = !0, _e = err; } finally { try { if (!_n && null != _i["return"] && (_r = _i["return"](), Object(_r) !== _r)) return; } finally { if (_d) throw _e; } } return _arr; } }
@@ -6183,13 +6274,14 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
 
 
+
 var grasslandMap;
 if (document.getElementById("public-grasslands")) {
   var appPublicGrasslands = new Vue({
     el: "#public-grasslands",
-    mixins: [_mixins_messages__WEBPACK_IMPORTED_MODULE_2__["default"]],
+    mixins: [_mixins_messages__WEBPACK_IMPORTED_MODULE_2__["default"], _mixins_crud__WEBPACK_IMPORTED_MODULE_3__["default"]],
     components: {
-      file: _components_FileInputComponent__WEBPACK_IMPORTED_MODULE_3__["default"]
+      file: _components_FileInputComponent__WEBPACK_IMPORTED_MODULE_4__["default"]
     },
     data: {
       organisationId: -1,
@@ -6203,6 +6295,9 @@ if (document.getElementById("public-grasslands")) {
       vm.organisationId = vm.$refs.organisationId.value;
       vm.userId = vm.$refs.userId.value;
       vm.getGrasslands();
+      document.addEventListener("updateList", function () {
+        vm.getGrasslands();
+      });
     },
     computed: {
       columnClass: function columnClass() {
@@ -6224,6 +6319,32 @@ if (document.getElementById("public-grasslands")) {
           grasslandMap = vm.initMap("map-container");
           vm.enableInputs();
         });
+      },
+      createGrassland: function createGrassland() {
+        var vm = this;
+        var formData = new FormData(vm.$refs.formCreateGrassland);
+        var grasslandData = {};
+        var _iterator = _createForOfIteratorHelper(formData),
+          _step;
+        try {
+          for (_iterator.s(); !(_step = _iterator.n()).done;) {
+            var _step$value = _slicedToArray(_step.value, 2),
+              key = _step$value[0],
+              value = _step$value[1];
+            grasslandData[key] = value;
+          }
+        } catch (err) {
+          _iterator.e(err);
+        } finally {
+          _iterator.f();
+        }
+        grasslandData.geo_json = grasslandData.geo_json ? JSON.parse(grasslandData.geo_json) : "";
+        var postData = {
+          user_id: vm.userId,
+          organisation_id: vm.organisationId,
+          grassland_data: grasslandData
+        };
+        vm.createEntity(postData, "/grasslands/store");
       },
       drawGrassland: function drawGrassland(coordinates, map) {
         var grasslandGeoObject = new ymaps.GeoObject({
@@ -6258,19 +6379,36 @@ if (document.getElementById("public-grasslands")) {
         // Добавляем многоугольник на карту.
         map.geoObjects.add(grasslandGeoObject);
       },
+      drawKmlShape: function drawKmlShape(geoJsonObject) {
+        var _geoJsonObject$featur;
+        var vm = this;
+        var geometry = geoJsonObject === null || geoJsonObject === void 0 || (_geoJsonObject$featur = geoJsonObject.features.pop()) === null || _geoJsonObject$featur === void 0 ? void 0 : _geoJsonObject$featur.geometry;
+        if (!geometry) {
+          vm.messages.error = "\u0412 \u0444\u0430\u0439\u043B\u0435 \u043D\u0435 \u043D\u0430\u0439\u0434\u0435\u043D\u0430 \u0440\u0430\u0437\u043C\u0435\u0442\u043A\u0430";
+          return;
+        }
+        var type = geometry === null || geometry === void 0 ? void 0 : geometry.type;
+        var allowedTypes = ["LineString", "Polygon"];
+        if (!type || allowedTypes.indexOf(type) < 0) {
+          vm.messages.error = "\u041D\u0435\u0434\u043E\u043F\u0443\u0441\u0442\u0438\u043C\u0430\u044F \u0433\u0435\u043E\u043C\u0435\u0442\u0440\u0438\u044F \u0440\u0430\u0437\u043C\u0435\u0442\u043A\u0438 \u0444\u0430\u0439\u043B\u0430 - (".concat(type, ")");
+          return;
+        }
+        var points = type === "Polygon" ? geometry === null || geometry === void 0 ? void 0 : geometry.coordinates.shift() : geometry === null || geometry === void 0 ? void 0 : geometry.coordinates;
+        var center = (0,_dbf__WEBPACK_IMPORTED_MODULE_1__.getCenterByPoints)(points);
+        vm.$refs.geo_json.value = JSON.stringify(points);
+        grasslandMap.setCenter(center);
+        grasslandMap.geoObjects.removeAll();
+        vm.drawGrassland(points, grasslandMap);
+      },
       deleteGrassland: function deleteGrassland(item) {
         var vm = this;
-        axios.post("/grasslands/delete", {
+        var postData = {
           user_id: vm.userId,
           organisation_id: vm.organisationId,
-          delete_grassland_id: item.id
-        }).then(function (response) {
-          console.log(response);
-          vm.getGrasslands();
-        })["catch"](function (e) {
-          console.log(e.response);
-          vm.messages.error = "".concat(e.response.status, " ").concat(e.response.statusText, " : ").concat(e.response.data.message);
-        });
+          delete_grassland_id: item.id,
+          name: item.name
+        };
+        vm.deleteEntity(postData, "/grasslands/delete");
       },
       enableInputs: function enableInputs() {
         var inputs = document.querySelectorAll(".form-control-custom input");
@@ -6282,6 +6420,21 @@ if (document.getElementById("public-grasslands")) {
               e.target.nextElementSibling.classList.remove("active");
             }
           });
+        });
+      },
+      getGrasslands: function getGrasslands() {
+        var vm = this;
+        if (vm.$refs.organisationId < 0) {
+          return;
+        }
+        axios.get("/grasslands/list", {
+          user_id: vm.userId
+        }).then(function (response) {
+          console.log("%c getGrasslands", "color: green", response);
+          vm.grasslands = (0,_functions__WEBPACK_IMPORTED_MODULE_0__.strip)(response.data.grasslands);
+        })["catch"](function (e) {
+          console.log("%c getGrasslands error", "color: red", e.response);
+          vm.messages.error = "".concat(e.response.status, " ").concat(e.response.statusText, " : ").concat(e.response.data.message);
         });
       },
       initMap: function initMap(selector) {
@@ -6316,21 +6469,6 @@ if (document.getElementById("public-grasslands")) {
 
         return map;
       },
-      getGrasslands: function getGrasslands() {
-        var vm = this;
-        if (vm.$refs.organisationId < 0) {
-          return;
-        }
-        axios.get("/grasslands/list", {
-          user_id: vm.userId
-        }).then(function (response) {
-          console.log("%c getGrasslands", "color: green", response);
-          vm.grasslands = (0,_functions__WEBPACK_IMPORTED_MODULE_0__.strip)(response.data.grasslands);
-        })["catch"](function (e) {
-          console.log("%c getGrasslands error", "color: red", e.response);
-          vm.messages.error = "".concat(e.response.status, " ").concat(e.response.statusText, " : ").concat(e.response.data.message);
-        });
-      },
       parseShapeFile: function parseShapeFile(data) {
         var vm = this;
         var ext = data.file.name.split(".").pop();
@@ -6360,8 +6498,7 @@ if (document.getElementById("public-grasslands")) {
               console.log(shpData);
               var center = (0,_dbf__WEBPACK_IMPORTED_MODULE_1__.getShapeFileCenter)(shpData);
               var points = (0,_dbf__WEBPACK_IMPORTED_MODULE_1__.getPointsForGrassland)(shpData);
-              vm.$refs.geo_json.value = JSON.stringify(shpData);
-              // vm.formData.geo_json = shpData;
+              vm.$refs.geo_json.value = JSON.stringify(points);
               grasslandMap.setCenter(center);
               grasslandMap.geoObjects.removeAll();
               vm.drawGrassland(points, grasslandMap);
@@ -6371,61 +6508,24 @@ if (document.getElementById("public-grasslands")) {
             var reader = new FileReader();
             var geoJsonObject;
             reader.addEventListener("load", function () {
-              geoJsonObject = (0,_node_modules_tmcw_togeojson__WEBPACK_IMPORTED_MODULE_4__.kml)(getDom(reader.result));
-              console.log(geoJsonObject);
+              geoJsonObject = (0,_functions__WEBPACK_IMPORTED_MODULE_0__.strip)((0,_node_modules_tmcw_togeojson__WEBPACK_IMPORTED_MODULE_5__.kml)(getDom(reader.result)));
+              vm.drawKmlShape(geoJsonObject);
             }, false);
-            var text = reader.readAsText(data.file);
+            reader.readAsText(data.file);
             break;
           case "kmz":
             var geoJson = getKmlDom(data.file).then(function (kmlDom) {
-              console.log(kmlDom);
-              var geoJsonObject = (0,_node_modules_tmcw_togeojson__WEBPACK_IMPORTED_MODULE_4__.kml)(kmlDom);
-              return JSON.stringify(geoJsonObject);
+              var geoJsonObject = (0,_node_modules_tmcw_togeojson__WEBPACK_IMPORTED_MODULE_5__.kml)(kmlDom);
+              return geoJsonObject;
             });
             geoJson.then(function (gj) {
-              console.log(gj);
+              vm.drawKmlShape(gj);
             });
             break;
           default:
             vm.messages.error = "Неверный тип файла";
             break;
         }
-      },
-      createGrassland: function createGrassland() {
-        console.log("storeGrassland");
-        var vm = this;
-        var formData = new FormData(vm.$refs.formCreateGrassland);
-        var postData = {};
-        var _iterator = _createForOfIteratorHelper(formData),
-          _step;
-        try {
-          for (_iterator.s(); !(_step = _iterator.n()).done;) {
-            var _step$value = _slicedToArray(_step.value, 2),
-              key = _step$value[0],
-              value = _step$value[1];
-            postData[key] = value;
-          }
-        } catch (err) {
-          _iterator.e(err);
-        } finally {
-          _iterator.f();
-        }
-        postData.geo_json = postData.geo_json ? JSON.parse(postData.geo_json) : "";
-        var sendData = {
-          user_id: vm.userId,
-          organisation_id: vm.organisationId,
-          grassland_data: postData
-        };
-        console.log(sendData);
-        axios.post("/grasslands/store", sendData).then(function (response) {
-          console.log("%c createGrassland", "color: green", response);
-          vm.messages[response.data.type] = response.data.message;
-        }).then(function () {
-          vm.getGrasslands();
-        })["catch"](function (e) {
-          console.log("%c createGrassland error", "color: red", e.response);
-          vm.messages.error = "".concat(e.response.status, " ").concat(e.response.statusText, " : ").concat(e.response.data.message);
-        });
       }
     }
   });

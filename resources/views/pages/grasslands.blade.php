@@ -5,6 +5,19 @@
         <input type="hidden" ref='organisationId' value='{{ $organisation_id }}'>
         <input type="hidden" ref='userId' value='{{ $user_id }}'>
         <Transition :key='"msg" + key' name="bounce" v-for='msg, key in messages'>
+            <div :class="key + '-message'" v-if='msg'>
+                @{{ msg }}
+
+                <div class="row" v-if='key==="confirm"'>
+                    <div class="col-12 col-md-6 mt-2"><button class="btn btn-borders-grey w-100"
+                            @click='cancelConfirmActionCb' type="button">Отмена</button>
+                    </div>
+                    <div class="col-12 col-md-6 mt-2"><button class="btn btn-borders w-100" type="button"
+                            @click='confirmActionCb'>Подтведить</button>
+                    </div>
+                </div>
+                <button class="btn btn-close" type='button' @click='clearMessages()' v-if="key!='confirm'"></button>
+            </div>
         </Transition>
 
         <Transition name="fade">

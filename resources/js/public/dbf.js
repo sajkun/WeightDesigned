@@ -146,6 +146,26 @@ export const getShapeFileCenter = function (shp) {
     return [(shp.minX + shp.maxX) / 2, (shp.minY + shp.maxY) / 2];
 };
 
+/** calculates the center of the map by array of points
+ *
+ * @param points - array of [float, float]
+ * @returns [float, float] - coordinates of the center of the map
+ */
+export const getCenterByPoints = (points) => {
+    const initialValue = [0, 0];
+    let sumWithInitial = points.reduce((accumulator, currentValue) => {
+        return [
+            parseFloat(accumulator[0]) + parseFloat(currentValue[0]),
+            parseFloat(accumulator[1]) + parseFloat(currentValue[1]),
+        ];
+    }, initialValue);
+
+    return [
+        sumWithInitial[0] / points.length,
+        sumWithInitial[1] / points.length,
+    ];
+};
+
 /** gets coordinates of the points of the grassland's bound by provided data
  *
  * @param {*} shp - object retrieved from the shape file
