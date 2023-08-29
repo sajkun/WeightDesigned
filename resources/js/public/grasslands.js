@@ -8,7 +8,7 @@ import {
 import messages from "../mixins/messages";
 import crud from "../mixins/crud";
 import FileInputComponent from "../components/FileInputComponent";
-import toGeoJSON, { kml } from "../../../node_modules/@tmcw/togeojson";
+import { kml } from "../../../node_modules/@tmcw/togeojson";
 
 let grasslandMap;
 
