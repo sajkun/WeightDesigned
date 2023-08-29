@@ -157,21 +157,13 @@ if (document.getElementById("public-users")) {
 
             patchUser() {
                 const vm = this;
-                axios
-                    .post(`./api/public/users/patch`, {
-                        user_id: vm.userId,
-                        organisation_id: vm.organisationId,
-                        edit_user: vm.editedUser,
-                    })
-                    .then((response) => {
-                        vm.editedUser = response.data.patch_user;
-                        vm.messages.success = "Успешно сохранен";
-                        vm.getUsers();
-                    })
-                    .catch((e) => {
-                        console.log(e.response);
-                        vm.messages.error = `${e.response.status} ${e.response.statusText} : ${e.response.data.message}`;
-                    });
+                const postData = {
+                    user_id: vm.userId,
+                    organisation_id: vm.organisationId,
+                    edit_user: vm.editedUser,
+                };
+
+                vm.editEntity(postData, `/api/public/users/patch`);
             },
 
             reset() {

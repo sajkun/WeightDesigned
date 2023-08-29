@@ -6726,18 +6726,12 @@ if (document.getElementById("public-users")) {
       },
       patchUser: function patchUser() {
         var vm = this;
-        axios.post("./api/public/users/patch", {
+        var postData = {
           user_id: vm.userId,
           organisation_id: vm.organisationId,
           edit_user: vm.editedUser
-        }).then(function (response) {
-          vm.editedUser = response.data.patch_user;
-          vm.messages.success = "Успешно сохранен";
-          vm.getUsers();
-        })["catch"](function (e) {
-          console.log(e.response);
-          vm.messages.error = "".concat(e.response.status, " ").concat(e.response.statusText, " : ").concat(e.response.data.message);
-        });
+        };
+        vm.editEntity(postData, "/api/public/users/patch");
       },
       reset: function reset() {
         var vm = this;
