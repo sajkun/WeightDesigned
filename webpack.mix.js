@@ -15,11 +15,4 @@ mix.js("resources/js/app.js", "public/js")
     .vue()
     .sass("resources/sass/app.scss", "public/css");
 
-mix.scripts(
-    [
-        "resources/js/jszip.min.js",
-        "resources/js/jszip-utils.js",
-        "public/js/app.js",
-    ],
-    "public/js/app.js"
-);
+mix.copyDirectory("resources/js/libs/", "public/js/libs");

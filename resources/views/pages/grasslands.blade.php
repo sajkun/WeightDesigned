@@ -40,7 +40,8 @@
                                             <th>Культура</th>
                                             <th></th>
                                         </tr>
-                                        <tr v-for='item, key in grasslands' :key='"grassland" + key'>
+                                        <tr v-for='item, key in grasslands' :key='"grassland" + key'
+                                            @click='viewGrassland(item)'>
                                             <td>@{{ key + 1 }}</td>
                                             <td>@{{ item.name }}</td>
                                             <td>@{{ item.size }} га</td>

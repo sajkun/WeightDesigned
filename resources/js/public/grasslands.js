@@ -326,6 +326,12 @@ if (document.getElementById("public-grasslands")) {
                         break;
                 }
             },
+
+            viewGrassland(frassland) {
+                const vm = this;
+                vm.mode = "edit";
+                console.log(grassland);
+            },
         },
     });
 }

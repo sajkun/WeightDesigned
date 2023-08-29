@@ -10,6 +10,12 @@
 
     <title>{{ config('app.name', 'Laravel') }}</title>
 
+    <script type="text/javascript" src="{{ asset('js/app.js') }}"></script>
+
+    @foreach ($jslibs as $url)
+        <script src="{{ asset($url) }}" defer></script>
+    @endforeach
+
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
 
