@@ -26,6 +26,10 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::group(['namespace' => 'PublicArea\User', 'prefix' => 'users'], function () {
         Route::get('/', 'IndexController')->name('public.users.index');
+        Route::get('/list', 'ListController')->name('public.user.list');
+        Route::post('/store', 'StoreController')->name('public.user.store');
+        Route::post('/edit', 'PatchController')->name('public.user.edit');
+        Route::post('/delete', 'DestroyController')->name('public.user.delete');
     });
 
     Route::group(['namespace' => 'PublicArea\Employee', 'prefix' => 'employees'], function () {

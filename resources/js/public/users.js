@@ -184,7 +184,11 @@ if (document.getElementById("public-users")) {
                     password: vm.passwords.new,
                 };
 
-                vm.createEntity(postData, `/api/public/users/store`);
+                vm.createEntity(postData, `/users/store`).then(() => {
+                    vm.$refs.createUserForm.reset();
+                    vm.clearUser();
+                    vm.reset();
+                });
             },
 
             submitPassword() {

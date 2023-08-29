@@ -6749,7 +6749,11 @@ if (document.getElementById("public-users")) {
           new_user: vm.editedUser,
           password: vm.passwords["new"]
         };
-        vm.createEntity(postData, "/api/public/users/store");
+        vm.createEntity(postData, "/users/store").then(function () {
+          vm.$refs.createUserForm.reset();
+          vm.clearUser();
+          vm.reset();
+        });
       },
       submitPassword: function submitPassword() {
         var vm = this;

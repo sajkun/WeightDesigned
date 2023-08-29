@@ -58,7 +58,7 @@
 
             <Transition name="bounce">
                 <div class="col-12 col-lg-6 p-3 org-details" v-show='editMode'>
-                    <div class="d-lg-flex flex-column org-wrapper p-3 h-100" v-if='showForm'>
+                    <div class="d-lg-flex flex-column org-wrapper p-3" v-if='showForm'>
                         @include('pages.users.create')
                     </div>
 
