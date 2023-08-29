@@ -1,5 +1,5 @@
 <?php
-namespace App\Http\Controllers\PublicArea\Employees;
+namespace App\Http\Controllers\PublicArea\Employee;
 
 use App\Models\Employee;
 use Illuminate\Http\Request;

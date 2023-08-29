@@ -1,7 +1,7 @@
 <?php
-namespace App\Http\Controllers\PublicArea\Employees;
+namespace App\Http\Controllers\PublicArea\User;
 
-use App\Models\Employee;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\PublicController;
@@ -16,8 +16,8 @@ class IndexController extends PublicController
      */
     public function __invoke(Request $request)
     {
-        $this->authorize('view', [Employee::class, Auth::user()->organisation_id]);
+        $this->authorize('viewAny', [User::class, Auth::user()->organisation_id]);
         $this->prepareData();
-        return view('pages.employees');
+        return view('pages.users');
     }
 }

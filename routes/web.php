@@ -23,13 +23,13 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('/', 'DashController');
     Route::post('/logout')->name('logout')->uses('Auth\LoginController@logout');
     Route::get('/', 'PublicArea\IndexController')->name('public.index');
-    Route::group(['namespace' => 'PublicArea\Users', 'prefix' => 'users'], function () {
+
+    Route::group(['namespace' => 'PublicArea\User', 'prefix' => 'users'], function () {
         Route::get('/', 'IndexController')->name('public.users.index');
     });
 
-    Route::group(['namespace' => 'PublicArea\Employees', 'prefix' => 'employees'], function () {
+    Route::group(['namespace' => 'PublicArea\Employee', 'prefix' => 'employees'], function () {
         Route::get('/list', 'ListController')->name('public.employee.list');
-
         Route::get('/', 'IndexController')->name('public.employee.index');
         Route::post('/store', 'StoreController')->name('public.employee.store');
         Route::post('/edit', 'PatchController')->name('public.employee.edit');
@@ -46,7 +46,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('/delete', 'DestroyController')->name('public.vehicle.delete');
         Route::post('/pincode', 'CheckPinController')->name('public.vehicle.pincode');
     });
-    Route::group(['namespace' => 'PublicArea\Grasslands', 'prefix' => 'grasslands'], function () {
+    Route::group(['namespace' => 'PublicArea\Grassland', 'prefix' => 'grasslands'], function () {
         Route::get('/list', 'ListController')->name('public.grassland.list');
         Route::get('/', 'IndexController')->name('public.grassland.index');
         Route::post('/store', 'StoreController')->name('public.grassland.store');

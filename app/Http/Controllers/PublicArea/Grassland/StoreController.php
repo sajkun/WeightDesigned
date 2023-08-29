@@ -1,5 +1,5 @@
 <?php
-namespace App\Http\Controllers\PublicArea\Grasslands;
+namespace App\Http\Controllers\PublicArea\Grassland;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;

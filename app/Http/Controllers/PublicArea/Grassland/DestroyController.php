@@ -1,5 +1,5 @@
 <?php
-namespace App\Http\Controllers\PublicArea\Grasslands;
+namespace App\Http\Controllers\PublicArea\Grassland;
 
 use App\Http\Controllers\Controller;
 use App\Models\Grassland;

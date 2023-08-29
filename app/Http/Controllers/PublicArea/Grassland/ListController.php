@@ -1,7 +1,6 @@
 <?php
-namespace App\Http\Controllers\PublicArea\Employees;
+namespace App\Http\Controllers\PublicArea\Grassland;
 
-use App\Models\Employee;
 use App\Models\Organisation;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -20,15 +19,10 @@ class ListController extends Controller
         try {
             $user = Auth::user();
             $organisation = Organisation::find($user->organisation_id);
-
-            $employees = $organisation->employees()->get()->map(function ($item) {
-                $item['vehicles'] = $item->vehicles()->get();
-                return $item;
-            });
-            return response()->json([
-                'employees' => $employees,
-            ], 200);
-        } catch (\Exception $e) {
+            return  response()->json([
+                'grasslands' => $organisation->grasslands()->get(),
+            ]);
+        } catch (\Exception  $e) {
             return response()->json([
                 'message' => $e->getMessage(),
             ], $e->getCode());

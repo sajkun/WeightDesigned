@@ -1,5 +1,5 @@
 <?php
-namespace App\Http\Controllers\PublicArea\Employees;
+namespace App\Http\Controllers\PublicArea\Employee;
 
 use App\Models\Vehicle;
 use App\Models\Employee;

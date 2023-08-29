@@ -1,7 +1,7 @@
 <?php
-namespace App\Http\Controllers\PublicArea\Users;
+namespace App\Http\Controllers\PublicArea\Grassland;
 
-use App\Models\User;
+use App\Models\Grassland;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\PublicController;
@@ -16,8 +16,8 @@ class IndexController extends PublicController
      */
     public function __invoke(Request $request)
     {
-        $this->authorize('viewAny', [User::class, Auth::user()->organisation_id]);
+        $this->authorize('view', [Grassland::class, Auth::user()->organisation_id]);
         $this->prepareData();
-        return view('pages.users');
+        return view('pages.grasslands');
     }
 }
