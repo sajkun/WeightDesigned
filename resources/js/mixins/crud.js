@@ -9,24 +9,9 @@ const crud = {
         },
 
         createEntity(postData, url) {
-            const vm = this;
-            return axios
-                .post(url, postData)
-                .then((response) => {
-                    console.log("%c createEntity", "color: green", response);
-                    vm.messages[response.data.type] = response.data.message;
-                })
-                .then(() => {
-                    document.dispatchEvent(new CustomEvent("updateList"));
-                })
-                .catch((e) => {
-                    console.log(
-                        "%c createEntity error",
-                        "color: red",
-                        e.response
-                    );
-                    vm.messages.error = `${e.response.status} ${e.response.statusText} : ${e.response.data.message}`;
-                });
+            return this.sendRequest(postData, url).then(
+                document.dispatchEvent(new CustomEvent("updateList"))
+            );
         },
 
         deleteEntity(postData, url) {
@@ -44,7 +29,6 @@ const crud = {
                 );
 
                 vm.$nextTick(() => {
-                    document.dispatchEvent(new CustomEvent("updateList"));
                     vm.clearMessages(true);
                 });
             };
@@ -93,9 +77,36 @@ const crud = {
         },
 
         deleteEntityCb(postData, url) {
+            return this.sendRequest(postData, url).then(
+                document.dispatchEvent(new CustomEvent("updateList"))
+            );
+        },
+
+        getFormData(form) {
+            const vm = this;
+            const formData = new FormData(form);
+
+            let data = {};
+
+            for (const [key, value] of formData) {
+                data[key] = value;
+            }
+
+            return data;
+        },
+
+        editEntity(postData, url) {
+            return this.sendRequest(postData, url).then(
+                document.dispatchEvent(new CustomEvent("updateList"))
+            );
+        },
+
+        sendRequest(postData, url) {
+            const vm = this;
             return axios
                 .post(url, postData)
                 .then((response) => {
+                    vm.messages[response.data.type] = response.data.message;
                     console.log(response);
                 })
                 .catch((e) => {

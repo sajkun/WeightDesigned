@@ -9,10 +9,6 @@ use Illuminate\Support\Facades\File;
 
 class PublicController extends Controller
 {
-    public function __construct(Request $request)
-    {
-    }
-
     public function prepareData()
     {
         $path = public_path('/js/libs');

@@ -7,7 +7,7 @@
             :name="name"
             :id="id"
             :accept="accept"
-            required
+            :required="required"
         />
         <input type="text" readonly :value="fileName" />
         <label :for="id" :class="{ active: labelActiveClass }"
@@ -18,12 +18,13 @@
 
 <script>
 export default {
-    props: ["_id", "_name", "_accept"],
+    props: ["_id", "_name", "_accept", "_required"],
     data() {
         return {
             name: this._name,
             id: this._id,
             accept: this._accept,
+            required: this._required,
             fileName: null,
         };
     },

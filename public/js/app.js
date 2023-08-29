@@ -5344,12 +5344,13 @@ __webpack_require__.r(__webpack_exports__);
 //
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  props: ["_id", "_name", "_accept"],
+  props: ["_id", "_name", "_accept", "_required"],
   data: function data() {
     return {
       name: this._name,
       id: this._id,
       accept: this._accept,
+      required: this._required,
       fileName: null
     };
   },
@@ -5595,6 +5596,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _iterableToArrayLimit(arr, i) { var _i = null == arr ? null : "undefined" != typeof Symbol && arr[Symbol.iterator] || arr["@@iterator"]; if (null != _i) { var _s, _e, _x, _r, _arr = [], _n = !0, _d = !1; try { if (_x = (_i = _i.call(arr)).next, 0 === i) { if (Object(_i) !== _i) return; _n = !1; } else for (; !(_n = (_s = _x.call(_i)).done) && (_arr.push(_s.value), _arr.length !== i); _n = !0); } catch (err) { _d = !0, _e = err; } finally { try { if (!_n && null != _i["return"] && (_r = _i["return"](), Object(_r) !== _r)) return; } finally { if (_d) throw _e; } } return _arr; } }
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e2) { throw _e2; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e3) { didErr = true; err = _e3; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
 var crud = {
   methods: {
     confirmActionCb: function confirmActionCb() {
@@ -5604,16 +5612,7 @@ var crud = {
       document.dispatchEvent(new CustomEvent("cancelConfirmEvent"));
     },
     createEntity: function createEntity(postData, url) {
-      var vm = this;
-      return axios.post(url, postData).then(function (response) {
-        console.log("%c createEntity", "color: green", response);
-        vm.messages[response.data.type] = response.data.message;
-      }).then(function () {
-        document.dispatchEvent(new CustomEvent("updateList"));
-      })["catch"](function (e) {
-        console.log("%c createEntity error", "color: red", e.response);
-        vm.messages.error = "".concat(e.response.status, " ").concat(e.response.statusText, " : ").concat(e.response.data.message);
-      });
+      return this.sendRequest(postData, url).then(document.dispatchEvent(new CustomEvent("updateList")));
     },
     deleteEntity: function deleteEntity(postData, url) {
       var vm = this;
@@ -5623,7 +5622,6 @@ var crud = {
         vm.deleteEntityCb(postData, url);
         document.removeEventListener("submitConfirmEvent", _handlerSubmit, false);
         vm.$nextTick(function () {
-          document.dispatchEvent(new CustomEvent("updateList"));
           vm.clearMessages(true);
         });
       };
@@ -5647,7 +5645,35 @@ var crud = {
       }
     },
     deleteEntityCb: function deleteEntityCb(postData, url) {
+      return this.sendRequest(postData, url).then(document.dispatchEvent(new CustomEvent("updateList")));
+    },
+    getFormData: function getFormData(form) {
+      var vm = this;
+      var formData = new FormData(form);
+      var data = {};
+      var _iterator = _createForOfIteratorHelper(formData),
+        _step;
+      try {
+        for (_iterator.s(); !(_step = _iterator.n()).done;) {
+          var _step$value = _slicedToArray(_step.value, 2),
+            key = _step$value[0],
+            value = _step$value[1];
+          data[key] = value;
+        }
+      } catch (err) {
+        _iterator.e(err);
+      } finally {
+        _iterator.f();
+      }
+      return data;
+    },
+    editEntity: function editEntity(postData, url) {
+      return this.sendRequest(postData, url).then(document.dispatchEvent(new CustomEvent("updateList")));
+    },
+    sendRequest: function sendRequest(postData, url) {
+      var vm = this;
       return axios.post(url, postData).then(function (response) {
+        vm.messages[response.data.type] = response.data.message;
         console.log(response);
       })["catch"](function (e) {
         console.log(e.response);
@@ -6262,13 +6288,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_FileInputComponent__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../components/FileInputComponent */ "./resources/js/components/FileInputComponent/index.js");
 /* harmony import */ var _node_modules_tmcw_togeojson__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../node_modules/@tmcw/togeojson */ "./node_modules/@tmcw/togeojson/dist/togeojson.umd.js");
 /* harmony import */ var _node_modules_tmcw_togeojson__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_node_modules_tmcw_togeojson__WEBPACK_IMPORTED_MODULE_5__);
-function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
-function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-function _iterableToArrayLimit(arr, i) { var _i = null == arr ? null : "undefined" != typeof Symbol && arr[Symbol.iterator] || arr["@@iterator"]; if (null != _i) { var _s, _e, _x, _r, _arr = [], _n = !0, _d = !1; try { if (_x = (_i = _i.call(arr)).next, 0 === i) { if (Object(_i) !== _i) return; _n = !1; } else for (; !(_n = (_s = _x.call(_i)).done) && (_arr.push(_s.value), _arr.length !== i); _n = !0); } catch (err) { _d = !0, _e = err; } finally { try { if (!_n && null != _i["return"] && (_r = _i["return"](), Object(_r) !== _r)) return; } finally { if (_d) throw _e; } } return _arr; } }
-function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
-function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e2) { throw _e2; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e3) { didErr = true; err = _e3; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
 
 
 
@@ -6287,7 +6306,8 @@ if (document.getElementById("public-grasslands")) {
       organisationId: -1,
       userId: -1,
       mode: "list",
-      grasslands: []
+      grasslands: [],
+      grassalndToEdit: {}
     },
     mounted: function mounted() {
       var vm = this;
@@ -6322,22 +6342,7 @@ if (document.getElementById("public-grasslands")) {
       },
       createGrassland: function createGrassland() {
         var vm = this;
-        var formData = new FormData(vm.$refs.formCreateGrassland);
-        var grasslandData = {};
-        var _iterator = _createForOfIteratorHelper(formData),
-          _step;
-        try {
-          for (_iterator.s(); !(_step = _iterator.n()).done;) {
-            var _step$value = _slicedToArray(_step.value, 2),
-              key = _step$value[0],
-              value = _step$value[1];
-            grasslandData[key] = value;
-          }
-        } catch (err) {
-          _iterator.e(err);
-        } finally {
-          _iterator.f();
-        }
+        var grasslandData = vm.getFormData(vm.$refs.formCreateGrassland);
         grasslandData.geo_json = grasslandData.geo_json ? JSON.parse(grasslandData.geo_json) : "";
         var postData = {
           user_id: vm.userId,
@@ -6346,7 +6351,15 @@ if (document.getElementById("public-grasslands")) {
         };
         vm.createEntity(postData, "/grasslands/store");
       },
-      drawGrassland: function drawGrassland(coordinates, map) {
+      drawGrassland: function drawGrassland(points) {
+        var vm = this;
+        var center = (0,_dbf__WEBPACK_IMPORTED_MODULE_1__.getCenterByPoints)(points);
+        vm.$refs.geo_json.value = JSON.stringify(points);
+        grasslandMap.setCenter(center);
+        grasslandMap.geoObjects.removeAll();
+        vm.drawGrasslandCb(points, grasslandMap);
+      },
+      drawGrasslandCb: function drawGrasslandCb(coordinates, map) {
         var grasslandGeoObject = new ymaps.GeoObject({
           // Описываем геометрию геообъекта.
           geometry: {
@@ -6394,11 +6407,7 @@ if (document.getElementById("public-grasslands")) {
           return;
         }
         var points = type === "Polygon" ? geometry === null || geometry === void 0 ? void 0 : geometry.coordinates.shift() : geometry === null || geometry === void 0 ? void 0 : geometry.coordinates;
-        var center = (0,_dbf__WEBPACK_IMPORTED_MODULE_1__.getCenterByPoints)(points);
-        vm.$refs.geo_json.value = JSON.stringify(points);
-        grasslandMap.setCenter(center);
-        grasslandMap.geoObjects.removeAll();
-        vm.drawGrassland(points, grasslandMap);
+        vm.drawGrassland(points);
       },
       deleteGrassland: function deleteGrassland(item) {
         var vm = this;
@@ -6438,7 +6447,6 @@ if (document.getElementById("public-grasslands")) {
         });
       },
       initMap: function initMap(selector) {
-        var vm = this;
         var map = new ymaps.Map(selector, {
           center: [45, 45],
           zoom: 13
@@ -6498,10 +6506,7 @@ if (document.getElementById("public-grasslands")) {
               console.log(shpData);
               var center = (0,_dbf__WEBPACK_IMPORTED_MODULE_1__.getShapeFileCenter)(shpData);
               var points = (0,_dbf__WEBPACK_IMPORTED_MODULE_1__.getPointsForGrassland)(shpData);
-              vm.$refs.geo_json.value = JSON.stringify(points);
-              grasslandMap.setCenter(center);
-              grasslandMap.geoObjects.removeAll();
-              vm.drawGrassland(points, grasslandMap);
+              vm.drawGrassland(points);
             });
             break;
           case "kml":
@@ -6527,10 +6532,28 @@ if (document.getElementById("public-grasslands")) {
             break;
         }
       },
-      viewGrassland: function viewGrassland(frassland) {
+      viewGrassland: function viewGrassland(grassland) {
+        console.log("%c viewGrassland", "color:blue", grassland);
         var vm = this;
+        var points = JSON.parse(grassland.geo_json);
         vm.mode = "edit";
-        console.log(grassland);
+        vm.grassalndToEdit = grassland;
+        vm.$nextTick(function () {
+          vm.enableInputs();
+          grasslandMap = vm.initMap("map-container");
+          vm.drawGrassland(points);
+        });
+      },
+      editGrassland: function editGrassland() {
+        var vm = this;
+        var grasslandData = vm.getFormData(vm.$refs.formEditGrassland);
+        grasslandData.geo_json = grasslandData.geo_json ? JSON.parse(grasslandData.geo_json) : "";
+        var postData = {
+          user_id: vm.userId,
+          organisation_id: vm.organisationId,
+          grassland_data: grasslandData
+        };
+        vm.editEntity(postData, "/grasslands/edit/");
       }
     }
   });
@@ -30415,7 +30438,7 @@ var render = function () {
         name: _vm.name,
         id: _vm.id,
         accept: _vm.accept,
-        required: "",
+        required: _vm.required,
       },
       on: { change: _vm.changeFile },
     }),

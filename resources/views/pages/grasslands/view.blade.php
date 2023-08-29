@@ -1,5 +1,5 @@
-<div class="p-3 d-flex flex-column h-100" v-if='mode==="create"'>
-    <h3 class="h6">Добавление поля</h3>
+<div class="p-3 d-flex flex-column h-100" v-if='mode==="edit"'>
+    <h3 class="h6">Редактирование поля @{{ grassalndToEdit.name }}</h3>
     <div class="row flex-grow-1 position-relative">
         <div class="col-12 col-md-6">
             <div class="org-wrapper">
@@ -14,22 +14,24 @@
                 </p>
 
                 <div class="mt-2">
-                    <form @submit.prevent='createGrassland' id="createGrassland" ref='formCreateGrassland'>
+                    <form @submit.prevent='editGrassland' id="editGrassland" ref='formEditGrassland'>
+                        <input type="hidden" name='id' v-model='grassalndToEdit.id'>
                         <div class="row narrow-row">
                             <div class="col-12 col-md-6 mt-2 form-control-custom">
-                                <input type="text" id='grasslandName' name='name' ref='grasslandName' required
-                                    key='grasslandName'>
-                                <label for="grasslandName">Название</label>
+                                <input type="text" v-model='grassalndToEdit.name' id='grasslandName' name='name'
+                                    ref='grasslandName' required key='grasslandName'>
+                                <label :class="{ 'active': grassalndToEdit.name }" for="grasslandName">Название</label>
                             </div>
                             <div class="col-12 col-md-6 mt-2  form-control-custom">
-                                <input type="text" id='grasslandSize' name='size' ref='grasslandSize' required
-                                    key='grasslandSize'>
-                                <label for="grasslandSize">Размер поля (га)</label>
+                                <input type="text" id='grasslandSize' name='size' v-model='grassalndToEdit.size'
+                                    ref='grasslandSize' required key='grasslandSize'>
+                                <label :class="{ 'active': grassalndToEdit.size }" for="grasslandSize">Размер поля
+                                    (га)</label>
                             </div>
 
                             <div class="col-12 col-md-6 mt-2  form-control-custom">
-                                <select id='grasslandCulture' name='culture' class='h-100' required
-                                    key='grasslandCulture'>
+                                <select id='grasslandCulture' name='culture' class='h-100'
+                                    v-model='grassalndToEdit.culture' required key='grasslandCulture'>
                                     <option disabled hidden selected>--выберите культуру--</option>
                                     <option v-for='culture,key in cultures' :key='"culture" + key'
                                         :value="culture">
@@ -41,7 +43,7 @@
 
                             <div class="col-12 col-md-6 mt-2  form-control-custom">
                                 <file v-on:changed='parseShapeFile' :_accept="'.shp, .kml, .kmz'" :_id="'grasslandFile'"
-                                    :ref="'grasslandFile'" :_required='true':key="'grasslandFile'">
+                                    :ref="'grasslandFile'" :key="'grasslandFile'">
                                     <span>Файл поля</span>
                                 </file>
                                 <input type="hidden" name='geo_json' ref='geo_json'>

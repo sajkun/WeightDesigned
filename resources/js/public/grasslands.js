@@ -27,6 +27,7 @@ if (document.getElementById("public-grasslands")) {
             userId: -1,
             mode: "list",
             grasslands: [],
+            grassalndToEdit: {},
         },
 
         mounted() {
@@ -71,13 +72,10 @@ if (document.getElementById("public-grasslands")) {
 
             createGrassland() {
                 const vm = this;
-                const formData = new FormData(vm.$refs.formCreateGrassland);
 
-                let grasslandData = {};
-
-                for (const [key, value] of formData) {
-                    grasslandData[key] = value;
-                }
+                let grasslandData = vm.getFormData(
+                    vm.$refs.formCreateGrassland
+                );
 
                 grasslandData.geo_json = grasslandData.geo_json
                     ? JSON.parse(grasslandData.geo_json)
@@ -92,7 +90,17 @@ if (document.getElementById("public-grasslands")) {
                 vm.createEntity(postData, "/grasslands/store");
             },
 
-            drawGrassland(coordinates, map) {
+            drawGrassland(points) {
+                const vm = this;
+                const center = getCenterByPoints(points);
+                vm.$refs.geo_json.value = JSON.stringify(points);
+
+                grasslandMap.setCenter(center);
+                grasslandMap.geoObjects.removeAll();
+                vm.drawGrasslandCb(points, grasslandMap);
+            },
+
+            drawGrasslandCb(coordinates, map) {
                 let grasslandGeoObject = new ymaps.GeoObject(
                     {
                         // Описываем геометрию геообъекта.
@@ -151,12 +159,7 @@ if (document.getElementById("public-grasslands")) {
                         ? geometry?.coordinates.shift()
                         : geometry?.coordinates;
 
-                const center = getCenterByPoints(points);
-
-                vm.$refs.geo_json.value = JSON.stringify(points);
-                grasslandMap.setCenter(center);
-                grasslandMap.geoObjects.removeAll();
-                vm.drawGrassland(points, grasslandMap);
+                vm.drawGrassland(points);
             },
 
             deleteGrassland(item) {
@@ -216,7 +219,6 @@ if (document.getElementById("public-grasslands")) {
             },
 
             initMap(selector) {
-                const vm = this;
                 let map = new ymaps.Map(
                     selector,
                     {
@@ -288,11 +290,7 @@ if (document.getElementById("public-grasslands")) {
                                 console.log(shpData);
                                 const center = getShapeFileCenter(shpData);
                                 const points = getPointsForGrassland(shpData);
-                                vm.$refs.geo_json.value =
-                                    JSON.stringify(points);
-                                grasslandMap.setCenter(center);
-                                grasslandMap.geoObjects.removeAll();
-                                vm.drawGrassland(points, grasslandMap);
+                                vm.drawGrassland(points);
                             });
                         break;
                     case "kml":
@@ -327,10 +325,36 @@ if (document.getElementById("public-grasslands")) {
                 }
             },
 
-            viewGrassland(frassland) {
+            viewGrassland(grassland) {
+                console.log("%c viewGrassland", "color:blue", grassland);
                 const vm = this;
+                const points = JSON.parse(grassland.geo_json);
                 vm.mode = "edit";
-                console.log(grassland);
+                vm.grassalndToEdit = grassland;
+
+                vm.$nextTick(() => {
+                    vm.enableInputs();
+                    grasslandMap = vm.initMap("map-container");
+                    vm.drawGrassland(points);
+                });
+            },
+
+            editGrassland() {
+                const vm = this;
+
+                let grasslandData = vm.getFormData(vm.$refs.formEditGrassland);
+
+                grasslandData.geo_json = grasslandData.geo_json
+                    ? JSON.parse(grasslandData.geo_json)
+                    : "";
+
+                const postData = {
+                    user_id: vm.userId,
+                    organisation_id: vm.organisationId,
+                    grassland_data: grasslandData,
+                };
+
+                vm.editEntity(postData, "/grasslands/edit/");
             },
         },
     });

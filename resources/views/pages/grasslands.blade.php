@@ -66,5 +66,9 @@
         @can('create', [App\Models\Grassland::class, $organisation_id])
             @include('pages.grasslands.create')
         @endcan
+
+        @can('viewAny', [App\Models\Grassland::class, $organisation_id])
+            @include('pages.grasslands.view')
+        @endcan
     </div>
 @endsection
