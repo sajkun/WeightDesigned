@@ -6697,61 +6697,6 @@ if (document.getElementById("public-users")) {
           name: user.login
         };
         vm.deleteEntity(postData, "/api/public/users/destroy");
-        return;
-        handlerSubmit = function (_handlerSubmit) {
-          function handlerSubmit() {
-            return _handlerSubmit.apply(this, arguments);
-          }
-          handlerSubmit.toString = function () {
-            return _handlerSubmit.toString();
-          };
-          return handlerSubmit;
-        }(function () {
-          vm.deleteUserCb(user);
-          document.removeEventListener("submitConfirmEvent", handlerSubmit, false);
-          vm.$nextTick(function () {
-            vm.clearMessages(true);
-          });
-        });
-        handlerCancel = function (_handlerCancel) {
-          function handlerCancel() {
-            return _handlerCancel.apply(this, arguments);
-          }
-          handlerCancel.toString = function () {
-            return _handlerCancel.toString();
-          };
-          return handlerCancel;
-        }(function () {
-          document.removeEventListener("submitConfirmEvent", handlerSubmit, false);
-          document.removeEventListener("cancelConfirmEvent", handlerCancel, false);
-          vm.$nextTick(function () {
-            vm.clearMessages(true);
-          });
-        });
-        if (!vm.messages.confirm) {
-          document.addEventListener("submitConfirmEvent", handlerSubmit);
-          document.addEventListener("cancelConfirmEvent", handlerCancel);
-          vm.messages.confirm = "".concat(vm.validationMessages.deleteUser, " ").concat(user.login, " ?");
-        } else {
-          document.removeEventListener("confirmEvent", handlerSubmit, false);
-          document.removeEventListener("submitConfirmEvent", handlerCancel, false);
-          vm.$nextTick(function () {
-            vm.clearMessages(true);
-          });
-        }
-      },
-      deleteUserCb: function deleteUserCb(user) {
-        console.log("deleteUserCb");
-        var vm = this;
-        axios.post("./api/public/users/destroy", {
-          user_id: vm.userId,
-          organisation_id: vm.organisationId,
-          delete_user_id: user.id
-        }).then(function (response) {
-          vm.getUsers();
-        })["catch"](function (e) {
-          vm.messages.error = "".concat(e.response.status, " ").concat(e.response.statusText, " : ").concat(e.response.data.message);
-        });
       },
       editUser: function editUser(user) {
         var vm = this;
