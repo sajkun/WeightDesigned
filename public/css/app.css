@@ -11319,6 +11319,7 @@ body.auth #app {
   background: linear-gradient(103.06deg, #007e3c 18.83%, #032422 100%);
   box-shadow: 6px 6px 6px rgba(33, 40, 41, 0.03);
   z-index: 100;
+  position: relative;
 }
 .public-header .row > .logo {
   width: -moz-max-content;
@@ -11326,22 +11327,51 @@ body.auth #app {
 }
 
 .main-menu {
-  padding: 0;
-  margin: 0;
-  display: flex;
-  align-content: center;
-}
-.main-menu .submenu {
-  position: absolute;
-  top: 100%;
-  background: #fff;
-  border-radius: 0.5rem;
-  transform: translateY(0.75rem) translateX(-1rem);
-  box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
-  padding: 0.5rem 0;
   visibility: hidden;
   opacity: 0;
-  transition: visibility 0.15s, opacity 0.15s;
+  position: absolute;
+  z-index: 10;
+  top: 100%;
+  left: 0;
+  right: 0;
+  display: block;
+  background-color: var(--lightest);
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.3);
+  transition: opacity 0.15s, visibility 0.15s;
+  padding: 0;
+  margin: 0;
+}
+.main-menu.shown {
+  visibility: visible;
+  opacity: 1;
+}
+@media (min-width: 768px) {
+  .main-menu {
+    visibility: initial;
+    opacity: initial;
+    box-shadow: initial;
+    background-color: transparent;
+    position: relative;
+    display: flex;
+    align-content: center;
+  }
+}
+.main-menu .submenu {
+  padding-left: 1rem;
+}
+@media (min-width: 768px) {
+  .main-menu .submenu {
+    position: absolute;
+    top: 100%;
+    background: #fff;
+    border-radius: 0.5rem;
+    transform: translateY(0.75rem) translateX(-1rem);
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+    padding: 0.5rem 0;
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0.15s, opacity 0.15s;
+  }
 }
 .main-menu .submenu ul {
   margin: 0;
@@ -11365,7 +11395,6 @@ body.auth #app {
   padding: 0;
   margin: 0;
   align-self: center;
-  padding: 0 0.5rem;
   position: relative;
 }
 .main-menu > li:hover .submenu {
@@ -11374,22 +11403,41 @@ body.auth #app {
 }
 .main-menu button {
   display: block;
+  color: var(--darkest);
+  padding: 0.5rem 1rem !important;
 }
 .main-menu button:hover {
   color: var(--link-color);
   text-decoration: underline;
 }
+@media (min-width: 768px) {
+  .main-menu button {
+    color: var(--link-color);
+    padding: 0 !important;
+  }
+}
 .main-menu a {
   display: block;
   text-decoration: none;
-  color: var(--link-color);
   transition: color 0.15s, -webkit-text-decoration 0.15s;
   transition: color 0.15s, text-decoration 0.15s;
   transition: color 0.15s, text-decoration 0.15s, -webkit-text-decoration 0.15s;
   text-decoration: none;
+  color: var(--darkest);
+  padding: 0.5rem 1rem;
+}
+@media (min-width: 768px) {
+  .main-menu a {
+    color: var(--link-color);
+  }
 }
 .main-menu a:hover {
   text-decoration: underline;
+}
+@media (min-width: 768px) {
+  .main-menu a {
+    padding: 0 0.5rem;
+  }
 }
 .main-menu .active a {
   color: var(--link-color-active);
@@ -11469,6 +11517,19 @@ body.auth #app {
   right: 0.5rem;
   z-index: 10;
   font-size: small;
+}
+
+#mobile-menu-toggle .open {
+  display: block;
+}
+#mobile-menu-toggle .close {
+  display: none;
+}
+#mobile-menu-toggle.active .open {
+  display: none;
+}
+#mobile-menu-toggle.active .close {
+  display: block;
 }
 
 /*!

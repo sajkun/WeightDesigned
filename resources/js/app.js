@@ -24,6 +24,7 @@ files
         Vue.component(key.split("/").pop().split(".")[0], files(key).default)
     );
 
+require("./public/ready");
 require("./public/users");
 require("./public/employees");
 require("./public/vehicle");

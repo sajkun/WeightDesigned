@@ -5400,6 +5400,7 @@ var files = __webpack_require__("./resources/js sync recursive \\.vue$/");
 files.keys().map(function (key) {
   return Vue.component(key.split("/").pop().split(".")[0], files(key)["default"]);
 });
+__webpack_require__(/*! ./public/ready */ "./resources/js/public/ready.js");
 __webpack_require__(/*! ./public/users */ "./resources/js/public/users.js");
 __webpack_require__(/*! ./public/employees */ "./resources/js/public/employees.js");
 __webpack_require__(/*! ./public/vehicle */ "./resources/js/public/vehicle.js");
@@ -6561,6 +6562,20 @@ if (document.getElementById("public-grasslands")) {
     }
   });
 }
+
+/***/ }),
+
+/***/ "./resources/js/public/ready.js":
+/*!**************************************!*\
+  !*** ./resources/js/public/ready.js ***!
+  \**************************************/
+/***/ (() => {
+
+var mobileMenuToggler = document.getElementById("mobile-menu-toggle");
+mobileMenuToggler === null || mobileMenuToggler === void 0 ? void 0 : mobileMenuToggler.addEventListener("click", function () {
+  document.getElementById("main-menu").classList.toggle("shown");
+  mobileMenuToggler.classList.toggle("active");
+});
 
 /***/ }),
 

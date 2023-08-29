@@ -31,6 +31,20 @@
         <div class="container-fluid">
             <div class="row align-content-center">
                 <div class="flex-grow-0 logo align-self-center">
+                    <button class="btn btn-link p-0 d-md-none" type='button' id='mobile-menu-toggle'>
+                        <svg width="24" height="20" class='open' viewBox="0 0 24 20" fill="none"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path d="M3.75 4.75H20.25M3.75 10H20.25M3.75 15.25H20.25" stroke="white" stroke-width="1.5"
+                                stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+
+                        <svg width="20" height="20" style='margin-right: 4px;' class='close' viewBox="0 0 26 26"
+                            fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M6.5 19.5L19.5 6.5M6.5 6.5L19.5 19.5" stroke="white" stroke-width="1.5"
+                                stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+
+                    </button>
                     <a href="{{ route('public.index') }}" class="">
                         <img src="/images/svg/logo-public.svg" alt="ООО Лилиани">
                     </a>
@@ -38,7 +52,7 @@
                 <div class="flex-grow-1 col align-self-center">
                     <div class="row align-content-center ">
                         <div class="col flex-grow-0 align-self-center">
-                            <ul class="main-menu">
+                            <ul class="main-menu" id='main-menu'>
                                 <li><a href="{{ route('public.grassland.index') }}">Поля</a></li>
                                 <li><a href="{{ route('public.vehicle.index', ['type' => 'bunker']) }}">Техника</a>
                                     <nav class="submenu">
