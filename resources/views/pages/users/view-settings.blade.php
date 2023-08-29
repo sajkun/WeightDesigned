@@ -1,6 +1,6 @@
 @can('update', [App\Models\User::class, $organisation_id])
     <div class="p-2" v-if='activeTab=== "settings"'>
-        <form @submit.prevent="submitForm" method='POST'>
+        <form @submit.prevent="patchUser" method='POST'>
             <div class="row">
                 <div class="col-12 col-lg-4 col-md-6 mt-2 form-control-custom" :class='{ "d-none": editPassword }'>
                     <input type="text" autocomplete='off' :class='{ "active": editedUser.first_name }' id='first_name'

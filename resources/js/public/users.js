@@ -168,44 +168,23 @@ if (document.getElementById("public-users")) {
 
             reset() {
                 const vm = this;
-
                 vm.passwords = {
                     old: null,
                     new: null,
                 };
-
                 vm.editPassword = false;
             },
 
             storeUser() {
                 const vm = this;
-                console.log();
-                axios
-                    .post(`./api/public/users/store`, {
-                        user_id: vm.userId,
-                        organisation_id: vm.organisationId,
-                        new_user: vm.editedUser,
-                        password: vm.passwords.new,
-                    })
-                    .then((response) => {
-                        console.log(response);
-                        vm.editedUser = response.data.new_user;
-                        vm.getUsers();
-                    })
-                    .catch((e) => {
-                        console.log(e.response);
-                        vm.messages.error = `${e.response.status} ${e.response.statusText} : ${e.response.data.message}`;
-                    });
-            },
+                const postData = {
+                    user_id: vm.userId,
+                    organisation_id: vm.organisationId,
+                    new_user: vm.editedUser,
+                    password: vm.passwords.new,
+                };
 
-            submitForm() {
-                const vm = this;
-                console.log(vm.editedUser.id);
-                if (vm.editedUser.id == -1) {
-                    vm.storeUser();
-                } else {
-                    vm.patchUser();
-                }
+                vm.createEntity(postData, `/api/public/users/store`);
             },
 
             submitPassword() {

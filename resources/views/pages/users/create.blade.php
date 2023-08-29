@@ -1,4 +1,4 @@
-<form @submit.prevent="submitForm" method='POST'>
+<form @submit.prevent="storeUser" method='POST'>
     <div class="row">
         <div class="col-12 mt-2">
             <div class="form-control-custom ">

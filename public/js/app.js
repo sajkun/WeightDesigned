@@ -6743,29 +6743,13 @@ if (document.getElementById("public-users")) {
       },
       storeUser: function storeUser() {
         var vm = this;
-        console.log();
-        axios.post("./api/public/users/store", {
+        var postData = {
           user_id: vm.userId,
           organisation_id: vm.organisationId,
           new_user: vm.editedUser,
           password: vm.passwords["new"]
-        }).then(function (response) {
-          console.log(response);
-          vm.editedUser = response.data.new_user;
-          vm.getUsers();
-        })["catch"](function (e) {
-          console.log(e.response);
-          vm.messages.error = "".concat(e.response.status, " ").concat(e.response.statusText, " : ").concat(e.response.data.message);
-        });
-      },
-      submitForm: function submitForm() {
-        var vm = this;
-        console.log(vm.editedUser.id);
-        if (vm.editedUser.id == -1) {
-          vm.storeUser();
-        } else {
-          vm.patchUser();
-        }
+        };
+        vm.createEntity(postData, "/api/public/users/store");
       },
       submitPassword: function submitPassword() {
         var vm = this;
