@@ -142,11 +142,9 @@ if (document.getElementById("public-users")) {
                     return;
                 }
                 axios
-                    .post("./api/public/users/list/" + vm.organisationId, {
-                        _token: token,
-                        user_id: vm.userId,
-                    })
+                    .get("/users/list")
                     .then((response) => {
+                        console.log(response);
                         vm.users = response.data.users;
                         vm.roles = response.data.roles;
                     })
@@ -208,7 +206,7 @@ if (document.getElementById("public-users")) {
                 }
 
                 axios
-                    .post(`./api/public/users/spw`, {
+                    .post(`./users/password`, {
                         user_id: vm.userId,
                         organisation_id: vm.organisationId,
                         edit_user_id: vm.editedUser.id,

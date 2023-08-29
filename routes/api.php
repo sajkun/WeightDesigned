@@ -17,14 +17,3 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-
-Route::group([
-    'middleware' => 'api',
-    'prefix' => 'public/users'
-], function ($router) {
-    Route::post('list/{organisation_id}', Api\GetUsersController::class);
-    Route::post('patch', Api\PatchUsersController::class);
-    Route::post('spw', Api\SetUserPasswordController::class);
-    Route::post('destroy', Api\DestroyUserController::class);
-    Route::post('store', Api\StoreUserController::class);
-});

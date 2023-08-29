@@ -30,6 +30,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('/store', 'StoreController')->name('public.user.store');
         Route::post('/update', 'PatchController')->name('public.user.edit');
         Route::post('/delete', 'DestroyController')->name('public.user.delete');
+        Route::post('/password', 'PasswordController')->name('public.user.chapwd');
     });
 
     Route::group(['namespace' => 'PublicArea\Employee', 'prefix' => 'employees'], function () {

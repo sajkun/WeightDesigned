@@ -6714,10 +6714,8 @@ if (document.getElementById("public-users")) {
         if (vm.$refs.organisationId < 0) {
           return;
         }
-        axios.post("./api/public/users/list/" + vm.organisationId, {
-          _token: token,
-          user_id: vm.userId
-        }).then(function (response) {
+        axios.get("/users/list").then(function (response) {
+          console.log(response);
           vm.users = response.data.users;
           vm.roles = response.data.roles;
         })["catch"](function (e) {
@@ -6769,7 +6767,7 @@ if (document.getElementById("public-users")) {
           vm.messages.error = vm.validationMessages.passwordMinimal;
           return;
         }
-        axios.post("./api/public/users/spw", {
+        axios.post("./users/password", {
           user_id: vm.userId,
           organisation_id: vm.organisationId,
           edit_user_id: vm.editedUser.id,

@@ -1,12 +1,12 @@
 <?php
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\PublicArea\User;
 
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 
-class SetUserPasswordController extends Controller
+class PasswordController extends Controller
 {
     /**
      * Handle the incoming request.
@@ -17,6 +17,8 @@ class SetUserPasswordController extends Controller
     public function __invoke(Request $request)
     {
         try {
+            $this->authorize('update', [User::class, (int)$request->organisation_id]);
+
             $request->validate([
                 'old_password' => 'required',
                 'new_password' => 'required',
