@@ -119,7 +119,7 @@ if (document.getElementById("public-users")) {
                     name: user.login,
                 };
 
-                vm.deleteEntity(postData, `/api/public/users/destroy`);
+                vm.deleteEntity(postData, `/users/delete`);
             },
 
             editUser(user) {

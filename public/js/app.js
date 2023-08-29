@@ -6696,7 +6696,7 @@ if (document.getElementById("public-users")) {
           delete_user_id: user.id,
           name: user.login
         };
-        vm.deleteEntity(postData, "/api/public/users/destroy");
+        vm.deleteEntity(postData, "/users/delete");
       },
       editUser: function editUser(user) {
         var vm = this;
