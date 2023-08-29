@@ -93,7 +93,10 @@ if (document.getElementById("public-grasslands")) {
             drawGrassland(points) {
                 const vm = this;
                 const center = getCenterByPoints(points);
-                vm.$refs.geo_json.value = JSON.stringify(points);
+
+                if (vm.$refs?.geo_json) {
+                    vm.$refs.geo_json.value = JSON.stringify(points);
+                }
 
                 grasslandMap.setCenter(center);
                 grasslandMap.geoObjects.removeAll();

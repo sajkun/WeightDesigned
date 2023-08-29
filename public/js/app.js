@@ -6352,9 +6352,12 @@ if (document.getElementById("public-grasslands")) {
         vm.createEntity(postData, "/grasslands/store");
       },
       drawGrassland: function drawGrassland(points) {
+        var _vm$$refs;
         var vm = this;
         var center = (0,_dbf__WEBPACK_IMPORTED_MODULE_1__.getCenterByPoints)(points);
-        vm.$refs.geo_json.value = JSON.stringify(points);
+        if ((_vm$$refs = vm.$refs) !== null && _vm$$refs !== void 0 && _vm$$refs.geo_json) {
+          vm.$refs.geo_json.value = JSON.stringify(points);
+        }
         grasslandMap.setCenter(center);
         grasslandMap.geoObjects.removeAll();
         vm.drawGrasslandCb(points, grasslandMap);
