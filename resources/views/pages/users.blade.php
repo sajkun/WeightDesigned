@@ -21,7 +21,6 @@
         <input type="hidden" ref='organisationId' value='{{ $organisation_id }}'>
         <input type="hidden" ref='userId' value='{{ $user_id }}'>
         <input type="hidden" ref="token" value="{{ csrf_token() }}" />
-        <the-form :_structure='addUserFormStructure'></the-form>
         <div class="row h-100 position-relative">
             <div class="p-3 align-self-start" :class='listClass'
                 :style="!editMode ? 'transition: width .15s ease .1s' : ''">
@@ -60,7 +59,7 @@
             <Transition name="bounce">
                 <div class="col-12 col-lg-6 p-3 org-details" v-show='editMode'>
                     <div class="d-lg-flex flex-column org-wrapper p-3" v-if='showForm'>
-                        @include('pages.users.create')
+                        <the-form ref='createUserForm' :_structure='addUserFormStructure' @submit='storeUser'></the-form>
                     </div>
 
                     <div class="d-lg-flex flex-column org-wrapper" v-if='!showForm'>

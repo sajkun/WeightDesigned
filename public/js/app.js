@@ -5526,10 +5526,11 @@ __webpack_require__.r(__webpack_exports__);
     submit: function submit() {
       var vm = this;
       var data = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.getFormData)(vm.$refs.form);
-      console.log("%c submitted form", "color: green", data);
-      vm.$emit("submit", {
-        data: data
-      });
+      console.log("%c Отправка данных формы", "color: green", data);
+      vm.$emit("submit", data);
+    },
+    reset: function reset() {
+      this.$refs.form.reset();
     }
   }
 });
@@ -6076,6 +6077,82 @@ var strip = function strip(data) {
 
 /***/ }),
 
+/***/ "./resources/js/mixins/addUserForm.js":
+/*!********************************************!*\
+  !*** ./resources/js/mixins/addUserForm.js ***!
+  \********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  computed: {
+    addUserFormStructure: function addUserFormStructure() {
+      return [{
+        id: "login-new-user",
+        name: "login",
+        label: "Имя учетной записи",
+        type: "text",
+        required: true,
+        "class": "mt-2"
+      }, {
+        id: "first_name-new-user",
+        name: "first_name",
+        label: "Имя",
+        type: "text",
+        required: true,
+        "class": "col-md-6 col-lg-4 mt-2 "
+      }, {
+        id: "last_name-new-user",
+        name: "last_name",
+        label: "Фамилия",
+        type: "text",
+        required: true,
+        "class": "col-md-6 col-lg-4 mt-2 "
+      }, {
+        id: "middle_name-new-user",
+        name: "middle_name",
+        label: "Отчество",
+        type: "text",
+        "class": "mt-2 col-lg-4  "
+      }, {
+        id: "email-new-user",
+        name: "email",
+        label: "E-mail",
+        type: "email",
+        required: true,
+        "class": " mt-2 "
+      }, {
+        id: "phone-new-user",
+        name: "phone",
+        label: "Телефон",
+        type: "text",
+        required: true,
+        "class": "mt-2 "
+      }, {
+        id: "password-new-user",
+        name: "password",
+        label: "Пароль",
+        type: "password",
+        "class": "mt-2 ",
+        mode: "generate"
+      }, {
+        id: "roles-new-user",
+        name: "role",
+        label: "Роль",
+        type: "select",
+        "class": "mt-2 ",
+        options: this.rolesList
+      }];
+    }
+  }
+});
+
+/***/ }),
+
 /***/ "./resources/js/mixins/crud.js":
 /*!*************************************!*\
   !*** ./resources/js/mixins/crud.js ***!
@@ -6165,10 +6242,12 @@ var crud = {
       var vm = this;
       return axios.post(url, postData).then(function (response) {
         vm.messages[response.data.type] = response.data.message;
-        console.log(response);
+        console.log("%c sendRequest success", "color:green", response);
+        return response;
       })["catch"](function (e) {
-        console.log(e.response);
+        console.log("%c sendRequest error", "color:red", e.response);
         vm.messages.error = "".concat(e.response.status, " ").concat(e.response.statusText, " : ").concat(e.response.data.message);
+        return e.response;
       });
     }
   }
@@ -7137,8 +7216,10 @@ mobileMenuToggler === null || mobileMenuToggler === void 0 ? void 0 : mobileMenu
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _mixins_messages__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../mixins/messages */ "./resources/js/mixins/messages.js");
 /* harmony import */ var _mixins_crud__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../mixins/crud */ "./resources/js/mixins/crud.js");
-/* harmony import */ var _components_InputComponent__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../components/InputComponent */ "./resources/js/components/InputComponent/index.js");
-/* harmony import */ var _components_FormComponent___WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./../components/FormComponent/ */ "./resources/js/components/FormComponent/index.js");
+/* harmony import */ var _misc_helpers__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../misc/helpers */ "./resources/js/misc/helpers.js");
+/* harmony import */ var _mixins_addUserForm__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../mixins/addUserForm */ "./resources/js/mixins/addUserForm.js");
+/* harmony import */ var _components_InputComponent__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../components/InputComponent */ "./resources/js/components/InputComponent/index.js");
+/* harmony import */ var _components_FormComponent___WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./../components/FormComponent/ */ "./resources/js/components/FormComponent/index.js");
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
@@ -7150,14 +7231,16 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
 
 
 
+
+
 if (document.getElementById("public-users")) {
   var _editedUser;
   var appPublicUsers = new Vue({
     el: "#public-users",
-    mixins: [_mixins_messages__WEBPACK_IMPORTED_MODULE_0__["default"], _mixins_crud__WEBPACK_IMPORTED_MODULE_1__["default"]],
+    mixins: [_mixins_messages__WEBPACK_IMPORTED_MODULE_0__["default"], _mixins_crud__WEBPACK_IMPORTED_MODULE_1__["default"], _mixins_addUserForm__WEBPACK_IMPORTED_MODULE_3__["default"]],
     components: {
-      Field: _components_InputComponent__WEBPACK_IMPORTED_MODULE_2__["default"],
-      TheForm: _components_FormComponent___WEBPACK_IMPORTED_MODULE_3__["default"]
+      Field: _components_InputComponent__WEBPACK_IMPORTED_MODULE_4__["default"],
+      TheForm: _components_FormComponent___WEBPACK_IMPORTED_MODULE_5__["default"]
     },
     data: {
       organisationId: -1,
@@ -7213,64 +7296,6 @@ if (document.getElementById("public-users")) {
       },
       rolesList: function rolesList() {
         return this.roles;
-      },
-      addUserFormStructure: function addUserFormStructure() {
-        return [{
-          id: "login-new-user",
-          name: "login",
-          label: "Имя учетной записи",
-          type: "text",
-          required: true,
-          "class": "mt-2"
-        }, {
-          id: "first_name-new-user",
-          name: "first_name",
-          label: "Имя",
-          type: "text",
-          required: true,
-          "class": "col-md-6 col-lg-4 mt-2 "
-        }, {
-          id: "last_name-new-user",
-          name: "last_name",
-          label: "Фамилия",
-          type: "text",
-          required: true,
-          "class": "col-md-6 col-lg-4 mt-2 "
-        }, {
-          id: "middle_name-new-user",
-          name: "middle_name",
-          label: "Отчество",
-          type: "text",
-          "class": "mt-2 col-lg-4  "
-        }, {
-          id: "email-new-user",
-          name: "email",
-          label: "E-mail",
-          type: "email",
-          required: true,
-          "class": " mt-2 "
-        }, {
-          id: "phone-new-user",
-          name: "phone",
-          label: "Телефон",
-          type: "text",
-          required: true,
-          "class": "mt-2 "
-        }, {
-          id: "password-new-user",
-          name: "password",
-          label: "Пароль",
-          type: "password",
-          "class": "mt-2 ",
-          mode: "generate"
-        }, {
-          id: "roles-new-user",
-          name: "roles",
-          label: "Роль",
-          type: "select",
-          "class": "mt-2 ",
-          options: this.rolesList
-        }];
       }
     },
     watch: {
@@ -7356,15 +7381,20 @@ if (document.getElementById("public-users")) {
         };
         vm.editPassword = false;
       },
-      storeUser: function storeUser() {
+      storeUser: function storeUser(data) {
         var vm = this;
+        var password = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_2__.strip)(data.password);
+        delete data.password;
         var postData = {
           user_id: vm.userId,
           organisation_id: vm.organisationId,
-          new_user: vm.editedUser,
-          password: vm.passwords["new"]
+          new_user: data,
+          password: password
         };
-        vm.createEntity(postData, "/users/store").then(function () {
+        vm.createEntity(postData, "/users/store").then(function (e) {
+          if (e.status != 200) {
+            return;
+          }
           vm.$refs.createUserForm.reset();
           vm.clearUser();
           vm.reset();

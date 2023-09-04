@@ -3,13 +3,15 @@
  */
 import messages from "../mixins/messages";
 import crud from "../mixins/crud";
+import { strip } from "../misc/helpers";
+import addUserForm from "../mixins/addUserForm";
 import InputComponent from "../components/InputComponent";
 import FormComponent from "./../components/FormComponent/";
 
 if (document.getElementById("public-users")) {
     const appPublicUsers = new Vue({
         el: "#public-users",
-        mixins: [messages, crud],
+        mixins: [messages, crud, addUserForm],
         components: {
             Field: InputComponent,
             TheForm: FormComponent,
@@ -76,74 +78,6 @@ if (document.getElementById("public-users")) {
 
             rolesList() {
                 return this.roles;
-            },
-
-            addUserFormStructure() {
-                return [
-                    {
-                        id: "login-new-user",
-                        name: "login",
-                        label: "Имя учетной записи",
-                        type: "text",
-                        required: true,
-                        class: "mt-2",
-                    },
-                    {
-                        id: "first_name-new-user",
-                        name: "first_name",
-                        label: "Имя",
-                        type: "text",
-                        required: true,
-                        class: "col-md-6 col-lg-4 mt-2 ",
-                    },
-                    {
-                        id: "last_name-new-user",
-                        name: "last_name",
-                        label: "Фамилия",
-                        type: "text",
-                        required: true,
-                        class: "col-md-6 col-lg-4 mt-2 ",
-                    },
-                    {
-                        id: "middle_name-new-user",
-                        name: "middle_name",
-                        label: "Отчество",
-                        type: "text",
-                        class: "mt-2 col-lg-4  ",
-                    },
-                    {
-                        id: "email-new-user",
-                        name: "email",
-                        label: "E-mail",
-                        type: "email",
-                        required: true,
-                        class: " mt-2 ",
-                    },
-                    {
-                        id: "phone-new-user",
-                        name: "phone",
-                        label: "Телефон",
-                        type: "text",
-                        required: true,
-                        class: "mt-2 ",
-                    },
-                    {
-                        id: "password-new-user",
-                        name: "password",
-                        label: "Пароль",
-                        type: "password",
-                        class: "mt-2 ",
-                        mode: "generate",
-                    },
-                    {
-                        id: "roles-new-user",
-                        name: "roles",
-                        label: "Роль",
-                        type: "select",
-                        class: "mt-2 ",
-                        options: this.rolesList,
-                    },
-                ];
             },
         },
 
@@ -251,16 +185,21 @@ if (document.getElementById("public-users")) {
                 vm.editPassword = false;
             },
 
-            storeUser() {
+            storeUser(data) {
                 const vm = this;
+                const password = strip(data.password);
+                delete data.password;
                 const postData = {
                     user_id: vm.userId,
                     organisation_id: vm.organisationId,
-                    new_user: vm.editedUser,
-                    password: vm.passwords.new,
+                    new_user: data,
+                    password: password,
                 };
 
-                vm.createEntity(postData, `/users/store`).then(() => {
+                vm.createEntity(postData, `/users/store`).then((e) => {
+                    if (e.status != 200) {
+                        return;
+                    }
                     vm.$refs.createUserForm.reset();
                     vm.clearUser();
                     vm.reset();

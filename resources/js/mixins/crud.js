@@ -107,11 +107,21 @@ const crud = {
                 .post(url, postData)
                 .then((response) => {
                     vm.messages[response.data.type] = response.data.message;
-                    console.log(response);
+                    console.log(
+                        "%c sendRequest success",
+                        "color:green",
+                        response
+                    );
+                    return response;
                 })
                 .catch((e) => {
-                    console.log(e.response);
+                    console.log(
+                        "%c sendRequest error",
+                        "color:red",
+                        e.response
+                    );
                     vm.messages.error = `${e.response.status} ${e.response.statusText} : ${e.response.data.message}`;
+                    return e.response;
                 });
         },
     },
