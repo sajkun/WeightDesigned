@@ -74,6 +74,10 @@ if (document.getElementById("public-users")) {
                 return this.editMode ? editClass : displayClass;
             },
 
+            rolesList() {
+                return this.roles;
+            },
+
             addUserFormStructure() {
                 return [
                     {
@@ -105,7 +109,7 @@ if (document.getElementById("public-users")) {
                         name: "middle_name",
                         label: "Отчество",
                         type: "text",
-                        class: "mt-2 ",
+                        class: "mt-2 col-lg-4  ",
                     },
                     {
                         id: "email-new-user",
@@ -130,6 +134,14 @@ if (document.getElementById("public-users")) {
                         type: "password",
                         class: "mt-2 ",
                         mode: "generate",
+                    },
+                    {
+                        id: "roles-new-user",
+                        name: "roles",
+                        label: "Роль",
+                        type: "select",
+                        class: "mt-2 ",
+                        options: this.rolesList,
                     },
                 ];
             },

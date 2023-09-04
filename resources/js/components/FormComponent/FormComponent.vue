@@ -38,6 +38,15 @@ export default {
             structure: this._structure,
         };
     },
+
+    watch: {
+        _structure: {
+            handler: function (val) {
+                this.structure = val;
+            },
+            deep: true,
+        },
+    },
     components: {
         Field: FieldComponent,
     },

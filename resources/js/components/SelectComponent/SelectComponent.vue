@@ -1,7 +1,6 @@
-:
 <template>
     <div class="form-control-custom">
-        <input
+        <select
             :type="type"
             :name="name"
             autocomplete="off"
@@ -11,8 +10,15 @@
             v-model="value"
             @change="change"
             @input="input"
-        />
-        <label :for="id">{{ label }}</label>
+        >
+            <option
+                v-for="(name, key) in options"
+                :key="'options' + key"
+                :value="key"
+            >
+                {{ name }}
+            </option>
+        </select>
     </div>
 </template>
 
@@ -31,13 +37,21 @@ export default {
             type: this._info?.type,
         };
     },
-
     watch: {
         _value(v) {
             this.value = v;
         },
     },
 
+    mounted() {
+        console.log(this._info);
+    },
+
+    computed: {
+        options() {
+            return this._info?.options ? this._info.options : [];
+        },
+    },
     methods: {},
 };
 </script>

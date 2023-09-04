@@ -14,17 +14,26 @@
             @input="input"
             v-if="mode === 'password'"
         ></Password>
+        <select-component
+            :_info="info"
+            :class="info.class ? info.class + ' col-12' : 'col-12'"
+            @change="change"
+            @input="input"
+            v-if="mode === 'select'"
+        ></select-component>
     </transition>
 </template>
 
 <script>
 import passevents from "../../mixins/passevents";
 import InputComponent from "../InputComponent";
+import SelectComponent from "../SelectComponent";
 import PasswordInputComponent from "../PasswordInputComponent";
 export default {
     mixins: [passevents],
     components: {
         InputComponent,
+        SelectComponent,
         Password: PasswordInputComponent,
     },
     props: ["_info"],
@@ -32,6 +41,15 @@ export default {
         return {
             info: this._info,
         };
+    },
+
+    watch: {
+        _info: {
+            handler: function (val) {
+                this.info = val;
+            },
+            deep: true,
+        },
     },
 
     computed: {
