@@ -9,7 +9,7 @@
             </div>
         </div>
 
-        <div class="col-12 col-md-6  col-lg-4 mt-2 form-control-custom">
+        <div class="col-12 col-md-6 col-lg-4 mt-2 form-control-custom">
             <input type="text" autocomplete='off' :class='{ "active": editedUser.first_name }' id='first_name'
                 required v-model='editedUser.first_name'>
             <label for="first_name">Имя </label>

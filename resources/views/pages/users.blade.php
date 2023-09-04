@@ -21,6 +21,7 @@
         <input type="hidden" ref='organisationId' value='{{ $organisation_id }}'>
         <input type="hidden" ref='userId' value='{{ $user_id }}'>
         <input type="hidden" ref="token" value="{{ csrf_token() }}" />
+        <the-form :_structure='addUserFormStructure'></the-form>
         <div class="row h-100 position-relative">
             <div class="p-3 align-self-start" :class='listClass'
                 :style="!editMode ? 'transition: width .15s ease .1s' : ''">
