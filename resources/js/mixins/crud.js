@@ -103,6 +103,7 @@ const crud = {
         },
 
         sendRequest(postData, url) {
+            console.log("%c sendRequest fire", "color:blue", url, postData);
             const vm = this;
             return axios
                 .post(url, postData)

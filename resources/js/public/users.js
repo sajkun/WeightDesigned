@@ -197,12 +197,11 @@ const appPublicUsers = {
             };
 
             vm.createEntity(postData, `/users/store`).then((e) => {
-                if (e.status != 200) {
-                    return;
+                if (e.status === 200) {
+                    vm.$refs.createUserForm.reset();
+                    vm.clearUser();
+                    vm.reset();
                 }
-                vm.$refs.createUserForm.reset();
-                vm.clearUser();
-                vm.reset();
             });
         },
 

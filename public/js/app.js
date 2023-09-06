@@ -15268,7 +15268,7 @@ __webpack_require__.r(__webpack_exports__);
       var vm = this;
       var data = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.getFormData)(vm.$refs.form);
       console.log("%c Отправка данных формы", "color: green", data);
-      vm.$emit("submit", data);
+      vm.$emit("exec-submit", data);
     },
     reset: function reset() {
       this.$refs.form.reset();
@@ -15948,6 +15948,7 @@ var crud = {
       return this.sendRequest(postData, url).then(document.dispatchEvent(new CustomEvent("updateList")));
     },
     sendRequest: function sendRequest(postData, url) {
+      console.log("%c sendRequest fire", "color:blue", url, postData);
       var vm = this;
       return axios.post(url, postData).then(function (response) {
         vm.messages[response.data.type] = response.data.message;
@@ -16259,12 +16260,11 @@ var appPublicUsers = {
         password: password
       };
       vm.createEntity(postData, "/users/store").then(function (e) {
-        if (e.status != 200) {
-          return;
+        if (e.status === 200) {
+          vm.$refs.createUserForm.reset();
+          vm.clearUser();
+          vm.reset();
         }
-        vm.$refs.createUserForm.reset();
-        vm.clearUser();
-        vm.reset();
       });
     },
     submitPassword: function submitPassword() {
