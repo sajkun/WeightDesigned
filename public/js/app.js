@@ -15382,14 +15382,13 @@ __webpack_require__.r(__webpack_exports__);
   mixins: [_mixins_inputEvents__WEBPACK_IMPORTED_MODULE_0__["default"]],
   props: ["_info", "_value"],
   data: function data() {
-    var _this$_info, _this$_info2, _this$_info3, _this$_info4, _this$_info5;
+    var _this$_info, _this$_info2, _this$_info3, _this$_info4;
     return {
       value: this._value,
       id: (_this$_info = this._info) === null || _this$_info === void 0 ? void 0 : _this$_info.id,
       name: (_this$_info2 = this._info) === null || _this$_info2 === void 0 ? void 0 : _this$_info2.name,
       required: (_this$_info3 = this._info) === null || _this$_info3 === void 0 ? void 0 : _this$_info3.required,
-      label: (_this$_info4 = this._info) === null || _this$_info4 === void 0 ? void 0 : _this$_info4.label,
-      type: (_this$_info5 = this._info) === null || _this$_info5 === void 0 ? void 0 : _this$_info5.type
+      label: (_this$_info4 = this._info) === null || _this$_info4 === void 0 ? void 0 : _this$_info4.label
     };
   },
   watch: {
@@ -15397,13 +15396,10 @@ __webpack_require__.r(__webpack_exports__);
       this.value = v;
     }
   },
-  mounted: function mounted() {
-    console.log(this._info);
-  },
   computed: {
     options: function options() {
-      var _this$_info6;
-      return (_this$_info6 = this._info) !== null && _this$_info6 !== void 0 && _this$_info6.options ? this._info.options : [];
+      var _this$_info5;
+      return (_this$_info5 = this._info) !== null && _this$_info5 !== void 0 && _this$_info5.options ? this._info.options : [];
     }
   },
   methods: {}
@@ -15600,11 +15596,10 @@ __webpack_require__.r(__webpack_exports__);
 var _hoisted_1 = {
   "class": "form-control-custom"
 };
-var _hoisted_2 = ["type", "name", "id", "required"];
+var _hoisted_2 = ["name", "id", "required"];
 var _hoisted_3 = ["value"];
 function render(_ctx, _cache, $props, $setup, $data, $options) {
   return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("select", {
-    type: $data.type,
     name: $data.name,
     autocomplete: "off",
     "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)({
@@ -15784,6 +15779,7 @@ var getFormData = function getFormData(form) {
   return data;
 };
 var strip = function strip(data) {
+  if (!Boolean(data)) return "";
   return JSON.parse(JSON.stringify(data));
 };
 

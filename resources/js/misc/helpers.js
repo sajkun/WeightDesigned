@@ -11,5 +11,6 @@ export const getFormData = (form) => {
 };
 
 export const strip = (data) => {
+    if (!Boolean(data)) return "";
     return JSON.parse(JSON.stringify(data));
 };

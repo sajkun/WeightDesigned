@@ -1,6 +1,6 @@
 {
     "/js/app.js": "/js/app.js",
-    "/css/app.css": "/css/app.css",
     "/js/libs/jszip-utils.js": "/js/libs/jszip-utils.js",
-    "/js/libs/jszip.min.js": "/js/libs/jszip.min.js"
+    "/js/libs/jszip.min.js": "/js/libs/jszip.min.js",
+    "/css/app.css": "/css/app.css"
 }
