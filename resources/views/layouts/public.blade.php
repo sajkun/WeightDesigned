@@ -80,21 +80,22 @@
                                 @can('viewAny', [App\Models\User::class, $organisation_id])
                                     <li><a href="{{ route('public.users.index') }}">Пользователи</a></li>
                                 @endcan
-                                <li>
-                                    <form id="logout-form" class='m-0' action="{{ route('logout') }}"
-                                        method="POST">
-                                        @csrf
-                                        <button class="btn btn-link-contrast p-0 bd-0 align-self-center"
-                                            type="Sudmit">Выйти</button>
-                                    </form>
-                                </li>
                             </ul>
                         </div>
-                        <div class="col flex-grow-1 text-end align-self-center">
-                            <a href='' title='Настройки' class="organisation-name">
-                                {{ $organisation }}
-                            </a>
-                            <i class="organisation-marker"></i>
+                        <div class="col flex-grow-1 align-self-center">
+                            <div class="d-flex w-100">
+                                <div class="flex-grow-1"></div>
+
+                                <form id="logout-form" class='m-0' action="{{ route('logout') }}" method="POST">
+                                    @csrf
+                                    <button class="btn btn-link-contrast p-0 bd-0 align-self-center"
+                                        type="Sudmit">Выйти</button>
+                                </form>
+                                <a href='' title='Настройки' class="organisation-name align-self-center ms-4">
+                                    {{ $organisation }}
+                                </a>
+                                <i class="organisation-marker align-self-center"></i>
+                            </div>
                         </div>
                     </div>
                 </div>
