@@ -1,6 +1,7 @@
-/**
- * работа с пользователями публичной зоны
- */
+/** * работа с пользователями публичной зоны */
+<template></template>
+
+<script>
 import messages from "../mixins/messages";
 import crud from "../mixins/crud";
 import { strip } from "../misc/helpers";
@@ -10,7 +11,6 @@ import FormComponent from "./../components/FormComponent/";
 const axios = require("axios");
 
 const appPublicUsers = {
-    el: "#public-users",
     mixins: [messages, crud, addUserForm],
     components: {
         Field: InputComponent,
@@ -53,6 +53,7 @@ const appPublicUsers = {
 
     mounted() {
         const vm = this;
+
         vm.$el.parentNode.classList.remove("d-none");
         vm.organisationId = vm.$refs.organisationId.value;
         vm.userId = vm.$refs.userId.value;
@@ -247,3 +248,4 @@ const appPublicUsers = {
 };
 
 export default appPublicUsers;
+</script>

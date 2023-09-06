@@ -68,7 +68,6 @@
                                 <h2 class="h6 m-0 p-2">
                                     @{{ roles[editedUser.role] }}
                                     @{{ editedUser.login }}
-
                                 </h2>
                             </div>
                             <div class="col-4 text-end">
