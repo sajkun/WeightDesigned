@@ -16677,7 +16677,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _formFields_editUser__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../formFields/editUser */ "./resources/js/formFields/editUser.js");
 /* harmony import */ var _components_InputComponent__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../components/InputComponent */ "./resources/js/components/InputComponent/index.js");
 /* harmony import */ var _components_FormComponent___WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./../components/FormComponent/ */ "./resources/js/components/FormComponent/index.js");
-var _editedUser;
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
@@ -16703,32 +16702,35 @@ var appPublicUsers = {
     TheForm: _components_FormComponent___WEBPACK_IMPORTED_MODULE_8__["default"],
     MessagesComponent: _components_MessagesComponent___WEBPACK_IMPORTED_MODULE_1__["default"]
   },
-  data: {
-    organisationId: -1,
-    userId: -1,
-    users: [],
-    roles: [],
-    activeTab: "info",
-    editedUser: (_editedUser = {
-      id: -1,
-      email: null,
-      first_name: null,
-      last_name: null,
-      middle_name: null,
-      phone: null,
-      organisation_id: null,
-      role: null
-    }, _defineProperty(_editedUser, "email", null), _defineProperty(_editedUser, "login", null), _editedUser),
-    validationMessages: {
-      inputOldPassword: "Введите пожалуйста старый пароль",
-      inputNewPassword: "Задайте  пожалуйста новый пароль",
-      passwordMinimal: "минимальная длина пароля 6 символов",
-      deleteUser: "Вы уверены, что хотите удалить пользователя"
-    },
-    confirmAction: null,
-    editMode: false,
-    showForm: false,
-    editPassword: false
+  data: function data() {
+    var _editedUser;
+    return {
+      organisationId: -1,
+      userId: -1,
+      users: [],
+      roles: [],
+      activeTab: "info",
+      editedUser: (_editedUser = {
+        id: -1,
+        email: null,
+        first_name: null,
+        last_name: null,
+        middle_name: null,
+        phone: null,
+        organisation_id: null,
+        role: null
+      }, _defineProperty(_editedUser, "email", null), _defineProperty(_editedUser, "login", null), _editedUser),
+      validationMessages: {
+        inputOldPassword: "Введите пожалуйста старый пароль",
+        inputNewPassword: "Задайте  пожалуйста новый пароль",
+        passwordMinimal: "минимальная длина пароля 6 символов",
+        deleteUser: "Вы уверены, что хотите удалить пользователя"
+      },
+      confirmAction: null,
+      editMode: false,
+      showForm: false,
+      editPassword: false
+    };
   },
   mounted: function mounted() {
     var vm = this;

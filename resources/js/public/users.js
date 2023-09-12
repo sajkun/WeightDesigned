@@ -20,36 +20,38 @@ const appPublicUsers = {
         TheForm: FormComponent,
         MessagesComponent,
     },
-    data: {
-        organisationId: -1,
-        userId: -1,
-        users: [],
-        roles: [],
-        activeTab: "info",
-        editedUser: {
-            id: -1,
-            email: null,
-            first_name: null,
-            last_name: null,
-            middle_name: null,
-            phone: null,
-            organisation_id: null,
-            role: null,
-            email: null,
-            login: null,
-        },
+    data() {
+        return {
+            organisationId: -1,
+            userId: -1,
+            users: [],
+            roles: [],
+            activeTab: "info",
+            editedUser: {
+                id: -1,
+                email: null,
+                first_name: null,
+                last_name: null,
+                middle_name: null,
+                phone: null,
+                organisation_id: null,
+                role: null,
+                email: null,
+                login: null,
+            },
 
-        validationMessages: {
-            inputOldPassword: "Введите пожалуйста старый пароль",
-            inputNewPassword: "Задайте  пожалуйста новый пароль",
-            passwordMinimal: "минимальная длина пароля 6 символов",
-            deleteUser: "Вы уверены, что хотите удалить пользователя",
-        },
+            validationMessages: {
+                inputOldPassword: "Введите пожалуйста старый пароль",
+                inputNewPassword: "Задайте  пожалуйста новый пароль",
+                passwordMinimal: "минимальная длина пароля 6 символов",
+                deleteUser: "Вы уверены, что хотите удалить пользователя",
+            },
 
-        confirmAction: null,
-        editMode: false,
-        showForm: false,
-        editPassword: false,
+            confirmAction: null,
+            editMode: false,
+            showForm: false,
+            editPassword: false,
+        };
     },
 
     mounted() {
