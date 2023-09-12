@@ -2,25 +2,11 @@
 
 @section('content')
     <div class="container-fluid d-none" id='public-users'>
-        <Transition :key='"msg" + key' name="bounce" v-for='msg, key in messages'>
-            <div :class="key + '-message'" v-if='msg'>
-                @{{ msg }}
-
-                <div class="row" v-if='key==="confirm"'>
-                    <div class="col-12 col-md-6 mt-2"><button class="btn btn-borders-grey w-100" @click='cancelConfirmActionCb'
-                            type="button">Отмена</button>
-                    </div>
-                    <div class="col-12 col-md-6 mt-2"><button class="btn btn-borders w-100" type="button"
-                            @click='confirmActionCb'>Подтведить</button>
-                    </div>
-                </div>
-                <button class="btn btn-close" type='button' @click='clearMessages()' v-if="key!='confirm'"></button>
-            </div>
-        </Transition>
+        <messages-component :_messages='messages' v-on:cancel-msg='cancelConfirmActionCb' v-on:confrim-msg='confirmActionCb'
+            v-on:clear-msg='clearMessages'></messages-component>
 
         <input type="hidden" ref='organisationId' value='{{ $organisation_id }}'>
         <input type="hidden" ref='userId' value='{{ $user_id }}'>
-        <input type="hidden" ref="token" value="{{ csrf_token() }}" />
         <div class="row h-100 position-relative">
             <div class="p-3 align-self-start" :class='listClass'
                 :style="!editMode ? 'transition: width .15s ease .1s' : ''">
@@ -38,7 +24,6 @@
                                 <th>ФИО</th>
                                 <th>Роль</th>
                             </tr>
-
                             <tr v-for='user, key in users' :key='"user" + key' @click='editUser(user)'>
                                 <td>@{{ key + 1 }}</td>
                                 <td>@{{ user.login }}</td>

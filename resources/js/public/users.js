@@ -2,6 +2,7 @@
  * работа с пользователями публичной зоны
  */
 import messages from "../mixins/messages";
+import MessagesComponent from "./../components/MessagesComponent/";
 import crud from "../mixins/crud";
 import { strip } from "../misc/helpers";
 import addUserForm from "../formFields/addUser";
@@ -17,6 +18,7 @@ const appPublicUsers = {
     components: {
         Field: InputComponent,
         TheForm: FormComponent,
+        MessagesComponent,
     },
     data: {
         organisationId: -1,
@@ -143,7 +145,6 @@ const appPublicUsers = {
 
         getUsers() {
             const vm = this;
-            const token = vm.$refs.token.value;
 
             if (vm.$refs.organisationId < 0) {
                 return;
@@ -151,12 +152,12 @@ const appPublicUsers = {
             axios
                 .get("/users/list")
                 .then((response) => {
-                    console.log(response);
+                    console.log("%c getUsers успех", "color:green", response);
                     vm.users = response.data.users;
                     vm.roles = response.data.roles;
                 })
                 .catch((e) => {
-                    console.log(e);
+                    console.log("%c getUsers ошибка", "color:red", e.response);
                 });
         },
 
@@ -203,7 +204,6 @@ const appPublicUsers = {
 
         showChangePassword() {
             this.editPassword = true;
-            console.log("test");
         },
 
         submitPassword(data) {
