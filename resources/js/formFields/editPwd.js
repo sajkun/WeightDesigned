@@ -5,7 +5,7 @@ export default {
                 {
                     id: "password-edit-user",
                     name: "oldPassword",
-                    label: "Пароль",
+                    label: "Старый Пароль",
                     type: "password",
                     class: "mt-2 ",
                     required: true,

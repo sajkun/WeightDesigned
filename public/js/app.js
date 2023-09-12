@@ -15958,7 +15958,7 @@ __webpack_require__.r(__webpack_exports__);
       return [{
         id: "password-edit-user",
         name: "oldPassword",
-        label: "Пароль",
+        label: "Старый Пароль",
         type: "password",
         "class": "mt-2 ",
         required: true,
