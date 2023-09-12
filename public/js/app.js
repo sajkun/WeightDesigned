@@ -15743,6 +15743,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
 /* harmony import */ var _public_users_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./public/users.js */ "./resources/js/public/users.js");
+/* harmony import */ var _public_employees_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./public/employees.js */ "./resources/js/public/employees.js");
 /**
  * First we will load all of this project's JavaScript dependencies which
  * includes Vue and other libraries. It is a great starting point when
@@ -15751,10 +15752,13 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
 if (document.getElementById("public-users")) {
   (0,vue__WEBPACK_IMPORTED_MODULE_0__.createApp)(_public_users_js__WEBPACK_IMPORTED_MODULE_1__["default"]).mount("#public-users");
 }
-// require("./public/employees");
+if (document.getElementById("public-employees")) {
+  (0,vue__WEBPACK_IMPORTED_MODULE_0__.createApp)(_public_employees_js__WEBPACK_IMPORTED_MODULE_2__["default"]).mount("#public-employees");
+}
 __webpack_require__(/*! ./public/ready */ "./resources/js/public/ready.js");
 // require("./public/vehicle");
 // require("./public/grasslands");
@@ -16305,6 +16309,337 @@ __webpack_require__.r(__webpack_exports__);
     }
   }
 });
+
+/***/ }),
+
+/***/ "./resources/js/public/employees.js":
+/*!******************************************!*\
+  !*** ./resources/js/public/employees.js ***!
+  \******************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _functions__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./functions */ "./resources/js/public/functions.js");
+
+var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+var appPublicEmployees = {
+  el: "#public-employees",
+  data: function data() {
+    return {
+      organisationId: -1,
+      userId: -1,
+      editMode: false,
+      showForm: false,
+      employees: [],
+      popup: null,
+      vehicleGroupType: "bunker",
+      group: [],
+      activeTab: "info",
+      // info | activity | settings
+      editedEmployee: {
+        id: -1,
+        first_name: null,
+        last_name: null,
+        middle_name: null,
+        phone: null,
+        organisation_id: null,
+        specialisation: null
+      },
+      specialisations: {
+        "Водитель Зерновоза": "Водитель Зерновоза",
+        "Водитель Комбайна": "Водитель Комбайна",
+        "Водитель Трактора": "Водитель Трактора"
+      },
+      messages: {
+        error: null,
+        info: null,
+        success: null,
+        confirm: null
+      },
+      vehicles: [],
+      validationMessages: {
+        deleteEmployee: "Вы уверены, что хотите удалить сотрудника"
+      }
+    };
+  },
+  watch: {
+    editMode: function editMode(_editMode) {
+      var vm = this;
+      if (!_editMode) {
+        vm.showForm = false;
+      }
+      if (_editMode && vm.editedEmployee.id < 0) {
+        vm.showForm = true;
+      }
+    },
+    "editedEmployee.id": function editedEmployeeId(val) {
+      var vm = this;
+      if (val < 0) {
+        vm.showForm = true;
+      } else {
+        vm.showForm = false;
+      }
+    }
+  },
+  computed: {
+    listClass: function listClass() {
+      var editClass = "col-12 col-lg-6 d-sm-none d-lg-block";
+      var displayClass = "col-12 ";
+      return this.editMode ? editClass : displayClass;
+    },
+    vehicleTypesList: function vehicleTypesList() {
+      return {
+        bunker: {
+          name: "Бункер перегрузчик"
+        },
+        transporter: {
+          name: "Грузовик"
+        },
+        tractor: {
+          name: "Трактор"
+        },
+        harvester: {
+          name: "Комбайн"
+        }
+      };
+    },
+    vehiclesGrouped: function vehiclesGrouped() {
+      var vm = this;
+      var vehicles = Object.values(vm.vehicles["".concat(vm.vehicleGroupType, "s")]);
+      vehicles = vehicles.filter(function (el) {
+        return !el.employee_id || el.employee_id === vm.editedEmployee.id;
+      });
+      return vehicles;
+    }
+  },
+  mounted: function mounted() {
+    var vm = this;
+    vm.$el.parentNode.classList.remove("d-none");
+    vm.organisationId = vm.$refs.organisationId.value;
+    vm.userId = vm.$refs.userId.value;
+    vm.getEmployees();
+    vm.getVehicles();
+    vm.$el.addEventListener("click", function (e) {
+      if (e.target.type !== "button") {
+        vm.clearMessages();
+      }
+    });
+  },
+  methods: {
+    applyGroup: function applyGroup() {
+      var vm = this;
+      vm.editedEmployee.vehicles = (0,_functions__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.group);
+      vm.popup = null;
+    },
+    addVehicleToGroup: function addVehicleToGroup(item) {
+      var vm = this;
+      var group = Object.values(vm.group);
+      var index = group.findIndex(function (el) {
+        return el.id === item.id;
+      });
+      if (index < 0) {
+        group.push(item);
+      } else {
+        group.splice(index, 1);
+      }
+      vm.group = (0,_functions__WEBPACK_IMPORTED_MODULE_0__.strip)(group);
+    },
+    addEmployee: function addEmployee() {
+      var vm = this;
+      vm.editMode = true;
+      vm.clearEmployee();
+    },
+    clearEmployee: function clearEmployee() {
+      var vm = this;
+      vm.editedEmployee = {
+        id: -1,
+        first_name: null,
+        last_name: null,
+        middle_name: null,
+        phone: null,
+        organisation_id: null,
+        specialisation: null
+      };
+    },
+    confirmActionCb: function confirmActionCb() {
+      document.dispatchEvent(new CustomEvent("submitConfirmEvent"));
+    },
+    cancelConfirmActionCb: function cancelConfirmActionCb() {
+      document.dispatchEvent(new CustomEvent("cancelConfirmEvent"));
+    },
+    clearMessages: function clearMessages(confirm) {
+      this.messages = {
+        error: null,
+        info: null,
+        success: null,
+        confirm: this.messages.confirm
+      };
+      if (confirm) {
+        this.messages.confirm = null;
+      }
+    },
+    deleteEmployee: function deleteEmployee(person) {
+      var vm = this;
+      var _handlerSubmit = null;
+      var _handlerCancel = null;
+      vm.editMode = false;
+      _handlerSubmit = function handlerSubmit() {
+        vm.deleteEmployeeCb(person);
+        document.removeEventListener("submitConfirmEvent", _handlerSubmit, false);
+        vm.$nextTick(function () {
+          vm.clearMessages(true);
+        });
+      };
+      _handlerCancel = function handlerCancel() {
+        document.removeEventListener("submitConfirmEvent", _handlerSubmit, false);
+        document.removeEventListener("cancelConfirmEvent", _handlerCancel, false);
+        vm.$nextTick(function () {
+          vm.clearMessages(true);
+        });
+      };
+      if (!vm.messages.confirm) {
+        document.addEventListener("submitConfirmEvent", _handlerSubmit);
+        document.addEventListener("cancelConfirmEvent", _handlerCancel);
+        vm.messages.confirm = "".concat(vm.validationMessages.deleteEmployee, " ").concat(person.last_name, " ?");
+      } else {
+        document.removeEventListener("confirmEvent", _handlerSubmit, false);
+        document.removeEventListener("submitConfirmEvent", _handlerCancel, false);
+        vm.$nextTick(function () {
+          vm.clearMessages(true);
+        });
+      }
+    },
+    getDate: function getDate(dateString) {
+      var date = new Date(dateString);
+      return date.getFullYear();
+    },
+    getVehicles: function getVehicles() {
+      var vm = this;
+      axios.get("/vehicles/list").then(function (response) {
+        console.log("%c getVehicles", "color: green", response);
+        vm.vehicles = response.data;
+      })["catch"](function (e) {
+        console.log("%c getVehicles error", "color: red", e.response);
+        vm.messages.error = e.response.data.message;
+      });
+    },
+    deleteEmployeeCb: function deleteEmployeeCb(person) {
+      var vm = this;
+      axios.post("./employees/delete", {
+        user_id: vm.userId,
+        organisation_id: vm.organisationId,
+        delete_employee_id: person.id
+      }).then(function (response) {
+        console.log(response);
+        vm.getEmployees();
+      })["catch"](function (e) {
+        console.log(e.response);
+        vm.messages.error = "".concat(e.response.status, " ").concat(e.response.statusText, " : ").concat(e.response.data.message);
+      });
+    },
+    edit: function edit(person, showForm) {
+      console.log("%c edit", "color:blue", person);
+      var vm = this;
+      vm.editMode = true;
+      vm.editedEmployee = (0,_functions__WEBPACK_IMPORTED_MODULE_0__.strip)(person);
+      vm.group = (0,_functions__WEBPACK_IMPORTED_MODULE_0__.strip)(person.vehicles);
+      vm.$nextTick(function () {
+        vm.showForm = Boolean(showForm);
+      });
+    },
+    getEmployees: function getEmployees() {
+      var vm = this;
+      if (vm.$refs.organisationId < 0) {
+        return;
+      }
+      axios.get("/employees/list", {
+        user_id: vm.userId
+      }).then(function (response) {
+        console.log("%c getEmployees", "color: green", response);
+        vm.employees = response.data.employees;
+      })["catch"](function (e) {
+        console.log("%c getVehicles error", "color: red", e.response);
+        vm.messages.error = e.response.data.message;
+      });
+    },
+    patchEmployee: function patchEmployee() {
+      var vm = this;
+      var postData = {
+        user_id: vm.userId,
+        organisation_id: vm.organisationId,
+        edited_employee: vm.editedEmployee
+      };
+      console.log("%c patchEmployee", "color:blue", postData);
+      axios.post("/employees/update", postData).then(function (response) {
+        console.log(response);
+        vm.getEmployees();
+      })["catch"](function (e) {
+        console.log(e.response);
+        vm.messages.error = "".concat(e.response.status, " ").concat(e.response.statusText, " : ").concat(e.response.data.message);
+      });
+    },
+    storeEmployee: function storeEmployee() {
+      var vm = this;
+      axios.post("/employees/store", {
+        user_id: vm.userId,
+        organisation_id: vm.organisationId,
+        edited_employee: vm.editedEmployee
+      }).then(function (response) {
+        console.log(response);
+        vm.getEmployees();
+        vm.clearEmployee();
+        vm.messages[response.data.type] = response.data.message;
+      })["catch"](function (e) {
+        console.log(e);
+        vm.messages.error = "".concat(e.response.status, " ").concat(e.response.statusText, " : ").concat(e.response.data.message);
+      });
+    },
+    submitForm: function submitForm() {
+      var vm = this;
+      if (vm.editedEmployee.id === -1) {
+        vm.storeEmployee();
+      } else {
+        vm.patchEmployee();
+      }
+    },
+    removeFromGroup: function removeFromGroup(item, save) {
+      var vm = this;
+      var group = Object.values(vm.group);
+      var index = group.findIndex(function (el) {
+        return el.id === item.id;
+      });
+      if (index >= 0) {
+        group.splice(index, 1);
+        vm.group = (0,_functions__WEBPACK_IMPORTED_MODULE_0__.strip)(group);
+        if (save) {
+          vm.editedEmployee.vehicles = (0,_functions__WEBPACK_IMPORTED_MODULE_0__.strip)(group);
+        }
+      }
+    }
+  }
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (appPublicEmployees);
+
+/***/ }),
+
+/***/ "./resources/js/public/functions.js":
+/*!******************************************!*\
+  !*** ./resources/js/public/functions.js ***!
+  \******************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   strip: () => (/* binding */ strip)
+/* harmony export */ });
+var strip = function strip(obj) {
+  return JSON.parse(JSON.stringify(obj));
+};
 
 /***/ }),
 

@@ -6,10 +6,14 @@
 
 import { createApp } from "vue";
 import appPublicUsers from "./public/users.js";
+import appPublicEmployees from "./public/employees.js";
+
 if (document.getElementById("public-users")) {
     createApp(appPublicUsers).mount("#public-users");
 }
-// require("./public/employees");
+if (document.getElementById("public-employees")) {
+    createApp(appPublicEmployees).mount("#public-employees");
+}
 require("./public/ready");
 // require("./public/vehicle");
 // require("./public/grasslands");
