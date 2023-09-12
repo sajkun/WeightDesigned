@@ -13842,3 +13842,7 @@ body.auth #app {
 #mobile-menu-toggle.active .close {
   display: block;
 }
+
+#app {
+  overflow: hidden;
+}

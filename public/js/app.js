@@ -15430,9 +15430,10 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
         key: 0,
         _info: $data.info,
         "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)($data.info["class"] ? $data.info["class"] + ' col-12' : 'col-12'),
+        _value: $data.info.value,
         onChange: _ctx.change,
         onInput: _ctx.input
-      }, null, 8 /* PROPS */, ["_info", "class", "onChange", "onInput"])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), $options.mode === 'password' ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_Password, {
+      }, null, 8 /* PROPS */, ["_info", "class", "_value", "onChange", "onInput"])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), $options.mode === 'password' ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_Password, {
         key: 1,
         _info: $data.info,
         "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)($data.info["class"] ? $data.info["class"] + ' col-12' : 'col-12'),
@@ -15441,10 +15442,11 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       }, null, 8 /* PROPS */, ["_info", "class", "onChange", "onInput"])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), $options.mode === 'select' ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_select_component, {
         key: 2,
         _info: $data.info,
+        _value: $data.info.value,
         "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)($data.info["class"] ? $data.info["class"] + ' col-12' : 'col-12'),
         onChange: _ctx.change,
         onInput: _ctx.input
-      }, null, 8 /* PROPS */, ["_info", "class", "onChange", "onInput"])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)];
+      }, null, 8 /* PROPS */, ["_info", "_value", "class", "onChange", "onInput"])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)];
     }),
     _: 1 /* STABLE */
   });
@@ -15478,7 +15480,7 @@ var _hoisted_4 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementV
   "class": "col-12 col-md-6 mt-2"
 }, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
   type: "submit",
-  "class": "w-100 mt-3 btn btn-primary-alt"
+  "class": "w-100 btn btn-primary-alt"
 }, " Сохранить ")], -1 /* HOISTED */);
 
 function render(_ctx, _cache, $props, $setup, $data, $options) {
@@ -15495,7 +15497,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     }, null, 8 /* PROPS */, ["_info"]);
   }), 128 /* KEYED_FRAGMENT */))]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderSlot)(_ctx.$slots, "default"), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
     type: "button",
-    "class": "w-100 mt-3 btn btn-borders-grey",
+    "class": "w-100 btn btn-borders-grey",
     onClick: _cache[0] || (_cache[0] = function () {
       return $options.cancel && $options.cancel.apply($options, arguments);
     })
@@ -15742,54 +15744,9 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./resources/js/misc/helpers.js":
-/*!**************************************!*\
-  !*** ./resources/js/misc/helpers.js ***!
-  \**************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   getFormData: () => (/* binding */ getFormData),
-/* harmony export */   strip: () => (/* binding */ strip)
-/* harmony export */ });
-function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
-function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
-function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
-function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
-var getFormData = function getFormData(form) {
-  var formData = new FormData(form);
-  var data = {};
-  var _iterator = _createForOfIteratorHelper(formData),
-    _step;
-  try {
-    for (_iterator.s(); !(_step = _iterator.n()).done;) {
-      var _step$value = _slicedToArray(_step.value, 2),
-        key = _step$value[0],
-        value = _step$value[1];
-      data[key] = value;
-    }
-  } catch (err) {
-    _iterator.e(err);
-  } finally {
-    _iterator.f();
-  }
-  return data;
-};
-var strip = function strip(data) {
-  if (!Boolean(data)) return "";
-  return JSON.parse(JSON.stringify(data));
-};
-
-/***/ }),
-
-/***/ "./resources/js/mixins/addUserForm.js":
+/***/ "./resources/js/formFields/addUser.js":
 /*!********************************************!*\
-  !*** ./resources/js/mixins/addUserForm.js ***!
+  !*** ./resources/js/formFields/addUser.js ***!
   \********************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -15848,18 +15805,177 @@ __webpack_require__.r(__webpack_exports__);
         label: "Пароль",
         type: "password",
         "class": "mt-2 ",
-        mode: "generate"
+        mode: "generate",
+        required: true
       }, {
         id: "roles-new-user",
         name: "role",
         label: "Роль",
         type: "select",
         "class": "mt-2 ",
+        required: true,
         options: this.rolesList
       }];
     }
   }
 });
+
+/***/ }),
+
+/***/ "./resources/js/formFields/editPwd.js":
+/*!********************************************!*\
+  !*** ./resources/js/formFields/editPwd.js ***!
+  \********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  computed: {
+    editPasswordFormStructure: function editPasswordFormStructure() {
+      return [{
+        id: "password-edit-user",
+        name: "oldPassword",
+        label: "Пароль",
+        type: "password",
+        "class": "mt-2 ",
+        required: true,
+        mode: "password"
+      }, {
+        id: "password-edit-user-confirm",
+        name: "newPassword",
+        label: "Новый Пароль",
+        type: "password",
+        "class": "mt-2 ",
+        mode: "generate",
+        required: true
+      }];
+    }
+  }
+});
+
+/***/ }),
+
+/***/ "./resources/js/formFields/editUser.js":
+/*!*********************************************!*\
+  !*** ./resources/js/formFields/editUser.js ***!
+  \*********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _misc_helpers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../misc/helpers */ "./resources/js/misc/helpers.js");
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  computed: {
+    editUserFormStructure: function editUserFormStructure() {
+      var vm = this;
+      var structure = [{
+        id: "first_name-new-user",
+        name: "first_name",
+        label: "Имя",
+        type: "text",
+        required: true,
+        "class": "col-md-6 col-lg-4 mt-2 "
+      }, {
+        id: "last_name-new-user",
+        name: "last_name",
+        label: "Фамилия",
+        type: "text",
+        required: true,
+        "class": "col-md-6 col-lg-4 mt-2 "
+      }, {
+        id: "middle_name-new-user",
+        name: "middle_name",
+        label: "Отчество",
+        type: "text",
+        "class": "mt-2 col-lg-4  "
+      }, {
+        id: "email-new-user",
+        name: "email",
+        label: "E-mail",
+        type: "email",
+        required: true,
+        "class": "col-md-6 mt-2 "
+      }, {
+        id: "phone-new-user",
+        name: "phone",
+        label: "Телефон",
+        type: "text",
+        required: true,
+        "class": "col-md-6 mt-2 "
+      }];
+      var rolesField = {
+        id: "roles-new-user",
+        name: "role",
+        label: "Роль",
+        type: "select",
+        "class": "mt-2 ",
+        options: this.rolesList
+      };
+      if (parseInt(vm.editedUser.id) !== parseInt(vm.userId)) {
+        structure.push(rolesField);
+      }
+      var userData = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.editedUser);
+      structure.map(function (f) {
+        f.value = userData[f.name];
+        return f;
+      });
+      return structure;
+    }
+  }
+});
+
+/***/ }),
+
+/***/ "./resources/js/misc/helpers.js":
+/*!**************************************!*\
+  !*** ./resources/js/misc/helpers.js ***!
+  \**************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   getFormData: () => (/* binding */ getFormData),
+/* harmony export */   strip: () => (/* binding */ strip)
+/* harmony export */ });
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
+var getFormData = function getFormData(form) {
+  var formData = new FormData(form);
+  var data = {};
+  var _iterator = _createForOfIteratorHelper(formData),
+    _step;
+  try {
+    for (_iterator.s(); !(_step = _iterator.n()).done;) {
+      var _step$value = _slicedToArray(_step.value, 2),
+        key = _step$value[0],
+        value = _step$value[1];
+      data[key] = value;
+    }
+  } catch (err) {
+    _iterator.e(err);
+  } finally {
+    _iterator.f();
+  }
+  return data;
+};
+var strip = function strip(data) {
+  if (!Boolean(data)) return "";
+  return JSON.parse(JSON.stringify(data));
+};
 
 /***/ }),
 
@@ -16101,9 +16217,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _mixins_messages__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../mixins/messages */ "./resources/js/mixins/messages.js");
 /* harmony import */ var _mixins_crud__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../mixins/crud */ "./resources/js/mixins/crud.js");
 /* harmony import */ var _misc_helpers__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../misc/helpers */ "./resources/js/misc/helpers.js");
-/* harmony import */ var _mixins_addUserForm__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../mixins/addUserForm */ "./resources/js/mixins/addUserForm.js");
-/* harmony import */ var _components_InputComponent__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../components/InputComponent */ "./resources/js/components/InputComponent/index.js");
-/* harmony import */ var _components_FormComponent___WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./../components/FormComponent/ */ "./resources/js/components/FormComponent/index.js");
+/* harmony import */ var _formFields_addUser__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../formFields/addUser */ "./resources/js/formFields/addUser.js");
+/* harmony import */ var _formFields_editPwd__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../formFields/editPwd */ "./resources/js/formFields/editPwd.js");
+/* harmony import */ var _formFields_editUser__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../formFields/editUser */ "./resources/js/formFields/editUser.js");
+/* harmony import */ var _components_InputComponent__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../components/InputComponent */ "./resources/js/components/InputComponent/index.js");
+/* harmony import */ var _components_FormComponent___WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./../components/FormComponent/ */ "./resources/js/components/FormComponent/index.js");
 var _editedUser;
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
@@ -16118,13 +16236,15 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
 
 
 
+
+
 var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 var appPublicUsers = {
   el: "#public-users",
-  mixins: [_mixins_messages__WEBPACK_IMPORTED_MODULE_0__["default"], _mixins_crud__WEBPACK_IMPORTED_MODULE_1__["default"], _mixins_addUserForm__WEBPACK_IMPORTED_MODULE_3__["default"]],
+  mixins: [_mixins_messages__WEBPACK_IMPORTED_MODULE_0__["default"], _mixins_crud__WEBPACK_IMPORTED_MODULE_1__["default"], _formFields_addUser__WEBPACK_IMPORTED_MODULE_3__["default"], _formFields_editUser__WEBPACK_IMPORTED_MODULE_5__["default"], _formFields_editPwd__WEBPACK_IMPORTED_MODULE_4__["default"]],
   components: {
-    Field: _components_InputComponent__WEBPACK_IMPORTED_MODULE_4__["default"],
-    TheForm: _components_FormComponent___WEBPACK_IMPORTED_MODULE_5__["default"]
+    Field: _components_InputComponent__WEBPACK_IMPORTED_MODULE_6__["default"],
+    TheForm: _components_FormComponent___WEBPACK_IMPORTED_MODULE_7__["default"]
   },
   data: {
     organisationId: -1,
@@ -16147,10 +16267,6 @@ var appPublicUsers = {
       inputNewPassword: "Задайте  пожалуйста новый пароль",
       passwordMinimal: "минимальная длина пароля 6 символов",
       deleteUser: "Вы уверены, что хотите удалить пользователя"
-    },
-    passwords: {
-      old: null,
-      "new": null
     },
     confirmAction: null,
     editMode: false,
@@ -16231,9 +16347,6 @@ var appPublicUsers = {
       vm.editPassword = false;
       vm.editedUser = JSON.parse(JSON.stringify(user));
     },
-    generatePassword: function generatePassword() {
-      this.passwords["new"] = Math.random().toString(36).slice(-12);
-    },
     getUsers: function getUsers() {
       var vm = this;
       var token = vm.$refs.token.value;
@@ -16248,8 +16361,11 @@ var appPublicUsers = {
         console.log(e);
       });
     },
-    patchUser: function patchUser() {
+    patchUser: function patchUser(data) {
       var vm = this;
+      for (var key in data) {
+        vm.editedUser[key] = data[key];
+      }
       var postData = {
         user_id: vm.userId,
         organisation_id: vm.organisationId,
@@ -16259,10 +16375,6 @@ var appPublicUsers = {
     },
     reset: function reset() {
       var vm = this;
-      vm.passwords = {
-        old: null,
-        "new": null
-      };
       vm.editPassword = false;
     },
     storeUser: function storeUser(data) {
@@ -16283,17 +16395,21 @@ var appPublicUsers = {
         }
       });
     },
-    submitPassword: function submitPassword() {
+    showChangePassword: function showChangePassword() {
+      this.editPassword = true;
+      console.log("test");
+    },
+    submitPassword: function submitPassword(data) {
       var vm = this;
-      if (!vm.passwords.old) {
+      if (!data.oldPassword) {
         vm.messages.error = vm.validationMessages.inputOldPassword;
         return;
       }
-      if (!vm.passwords["new"]) {
+      if (!data.newPassword) {
         vm.messages.error = vm.validationMessages.inputNewPassword;
         return;
       }
-      if (vm.passwords["new"].length < 6) {
+      if (data.newPassword.length < 6) {
         vm.messages.error = vm.validationMessages.passwordMinimal;
         return;
       }
@@ -16301,12 +16417,10 @@ var appPublicUsers = {
         user_id: vm.userId,
         organisation_id: vm.organisationId,
         edit_user_id: vm.editedUser.id,
-        new_password: vm.passwords["new"],
-        old_password: vm.passwords.old
+        new_password: data.newPassword,
+        old_password: data.oldPassword
       }).then(function (response) {
         console.log(response);
-        vm.passwords["new"] = null;
-        vm.passwords.old = null;
         vm.editPassword = false;
         vm.messages.success = response.data.message ? response.data.message : "Пароль успешно изменен";
       })["catch"](function (e) {

@@ -4,14 +4,16 @@
 import messages from "../mixins/messages";
 import crud from "../mixins/crud";
 import { strip } from "../misc/helpers";
-import addUserForm from "../mixins/addUserForm";
+import addUserForm from "../formFields/addUser";
+import editPasswordForm from "../formFields/editPwd";
+import editUserForm from "../formFields/editUser";
 import InputComponent from "../components/InputComponent";
 import FormComponent from "./../components/FormComponent/";
 const axios = require("axios");
 
 const appPublicUsers = {
     el: "#public-users",
-    mixins: [messages, crud, addUserForm],
+    mixins: [messages, crud, addUserForm, editUserForm, editPasswordForm],
     components: {
         Field: InputComponent,
         TheForm: FormComponent,
@@ -41,10 +43,7 @@ const appPublicUsers = {
             passwordMinimal: "минимальная длина пароля 6 символов",
             deleteUser: "Вы уверены, что хотите удалить пользователя",
         },
-        passwords: {
-            old: null,
-            new: null,
-        },
+
         confirmAction: null,
         editMode: false,
         showForm: false,
@@ -142,10 +141,6 @@ const appPublicUsers = {
             vm.editedUser = JSON.parse(JSON.stringify(user));
         },
 
-        generatePassword() {
-            this.passwords.new = Math.random().toString(36).slice(-12);
-        },
-
         getUsers() {
             const vm = this;
             const token = vm.$refs.token.value;
@@ -165,8 +160,13 @@ const appPublicUsers = {
                 });
         },
 
-        patchUser() {
+        patchUser(data) {
             const vm = this;
+
+            for (let key in data) {
+                vm.editedUser[key] = data[key];
+            }
+
             const postData = {
                 user_id: vm.userId,
                 organisation_id: vm.organisationId,
@@ -178,10 +178,6 @@ const appPublicUsers = {
 
         reset() {
             const vm = this;
-            vm.passwords = {
-                old: null,
-                new: null,
-            };
             vm.editPassword = false;
         },
 
@@ -205,18 +201,24 @@ const appPublicUsers = {
             });
         },
 
-        submitPassword() {
+        showChangePassword() {
+            this.editPassword = true;
+            console.log("test");
+        },
+
+        submitPassword(data) {
             const vm = this;
-            if (!vm.passwords.old) {
+
+            if (!data.oldPassword) {
                 vm.messages.error = vm.validationMessages.inputOldPassword;
                 return;
             }
 
-            if (!vm.passwords.new) {
+            if (!data.newPassword) {
                 vm.messages.error = vm.validationMessages.inputNewPassword;
                 return;
             }
-            if (vm.passwords.new.length < 6) {
+            if (data.newPassword.length < 6) {
                 vm.messages.error = vm.validationMessages.passwordMinimal;
                 return;
             }
@@ -226,13 +228,11 @@ const appPublicUsers = {
                     user_id: vm.userId,
                     organisation_id: vm.organisationId,
                     edit_user_id: vm.editedUser.id,
-                    new_password: vm.passwords.new,
-                    old_password: vm.passwords.old,
+                    new_password: data.newPassword,
+                    old_password: data.oldPassword,
                 })
                 .then((response) => {
                     console.log(response);
-                    vm.passwords.new = null;
-                    vm.passwords.old = null;
                     vm.editPassword = false;
                     vm.messages.success = response.data.message
                         ? response.data.message

@@ -1,15 +1,10 @@
+import { strip } from "../misc/helpers";
+
 export default {
     computed: {
-        addUserFormStructure() {
-            return [
-                {
-                    id: "login-new-user",
-                    name: "login",
-                    label: "Имя учетной записи",
-                    type: "text",
-                    required: true,
-                    class: "mt-2",
-                },
+        editUserFormStructure() {
+            const vm = this;
+            let structure = [
                 {
                     id: "first_name-new-user",
                     name: "first_name",
@@ -39,7 +34,7 @@ export default {
                     label: "E-mail",
                     type: "email",
                     required: true,
-                    class: " mt-2 ",
+                    class: "col-md-6 mt-2 ",
                 },
                 {
                     id: "phone-new-user",
@@ -47,25 +42,30 @@ export default {
                     label: "Телефон",
                     type: "text",
                     required: true,
-                    class: "mt-2 ",
-                },
-                {
-                    id: "password-new-user",
-                    name: "password",
-                    label: "Пароль",
-                    type: "password",
-                    class: "mt-2 ",
-                    mode: "generate",
-                },
-                {
-                    id: "roles-new-user",
-                    name: "role",
-                    label: "Роль",
-                    type: "select",
-                    class: "mt-2 ",
-                    options: this.rolesList,
+                    class: "col-md-6 mt-2 ",
                 },
             ];
+
+            let rolesField = {
+                id: "roles-new-user",
+                name: "role",
+                label: "Роль",
+                type: "select",
+                class: "mt-2 ",
+                options: this.rolesList,
+            };
+
+            if (parseInt(vm.editedUser.id) !== parseInt(vm.userId)) {
+                structure.push(rolesField);
+            }
+
+            const userData = strip(vm.editedUser);
+            structure.map((f) => {
+                f.value = userData[f.name];
+                return f;
+            });
+
+            return structure;
         },
     },
 };
