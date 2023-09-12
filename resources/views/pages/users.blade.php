@@ -59,8 +59,8 @@
             <Transition name="bounce">
                 <div class="col-12 col-lg-6 p-3 org-details" v-show='editMode'>
                     <div class="d-lg-flex flex-column org-wrapper p-3" v-if='showForm'>
-                        <the-form ref='createUserForm' :_structure='addUserFormStructure'
-                            @exec-submit='storeUser'></the-form>
+                        <the-form ref='createUserForm' :_structure='addUserFormStructure' @exec-submit='storeUser'>
+                        </the-form>
                     </div>
 
                     <div class="d-lg-flex flex-column org-wrapper" v-if='!showForm'>

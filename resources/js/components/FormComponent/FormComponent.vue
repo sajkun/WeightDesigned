@@ -7,6 +7,7 @@
                 :_info="data"
             ></Field>
         </div>
+        <slot></slot>
         <div class="row">
             <div class="col-12 col-md-6 mt-2">
                 <button

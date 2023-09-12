@@ -9,8 +9,7 @@ import appPublicUsers from "./public/users.js";
 if (document.getElementById("public-users")) {
     createApp(appPublicUsers).mount("#public-users");
 }
-// require("./public/ready");
-// require("./public/users");
 // require("./public/employees");
+require("./public/ready");
 // require("./public/vehicle");
 // require("./public/grasslands");

@@ -15493,7 +15493,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       key: 'input' + key,
       _info: data
     }, null, 8 /* PROPS */, ["_info"]);
-  }), 128 /* KEYED_FRAGMENT */))]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+  }), 128 /* KEYED_FRAGMENT */))]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderSlot)(_ctx.$slots, "default"), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
     type: "button",
     "class": "w-100 mt-3 btn btn-borders-grey",
     onClick: _cache[0] || (_cache[0] = function () {
@@ -15598,6 +15598,7 @@ var _hoisted_1 = {
 };
 var _hoisted_2 = ["name", "id", "required"];
 var _hoisted_3 = ["value"];
+var _hoisted_4 = ["for"];
 function render(_ctx, _cache, $props, $setup, $data, $options) {
   return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("select", {
     name: $data.name,
@@ -15621,7 +15622,9 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       key: 'options' + key,
       value: key
     }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(name), 9 /* TEXT, PROPS */, _hoisted_3);
-  }), 128 /* KEYED_FRAGMENT */))], 42 /* CLASS, PROPS, HYDRATE_EVENTS */, _hoisted_2), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelSelect, $data.value]])]);
+  }), 128 /* KEYED_FRAGMENT */))], 42 /* CLASS, PROPS, HYDRATE_EVENTS */, _hoisted_2), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelSelect, $data.value]]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", {
+    "for": $data.id
+  }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.label), 9 /* TEXT, PROPS */, _hoisted_4)]);
 }
 
 /***/ }),
@@ -15647,9 +15650,8 @@ __webpack_require__.r(__webpack_exports__);
 if (document.getElementById("public-users")) {
   (0,vue__WEBPACK_IMPORTED_MODULE_0__.createApp)(_public_users_js__WEBPACK_IMPORTED_MODULE_1__["default"]).mount("#public-users");
 }
-// require("./public/ready");
-// require("./public/users");
 // require("./public/employees");
+__webpack_require__(/*! ./public/ready */ "./resources/js/public/ready.js");
 // require("./public/vehicle");
 // require("./public/grasslands");
 
@@ -16067,6 +16069,20 @@ __webpack_require__.r(__webpack_exports__);
       this.$emit("input", data);
     }
   }
+});
+
+/***/ }),
+
+/***/ "./resources/js/public/ready.js":
+/*!**************************************!*\
+  !*** ./resources/js/public/ready.js ***!
+  \**************************************/
+/***/ (() => {
+
+var mobileMenuToggler = document.getElementById("mobile-menu-toggle");
+mobileMenuToggler === null || mobileMenuToggler === void 0 ? void 0 : mobileMenuToggler.addEventListener("click", function () {
+  document.getElementById("main-menu").classList.toggle("shown");
+  mobileMenuToggler.classList.toggle("active");
 });
 
 /***/ }),

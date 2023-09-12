@@ -18,6 +18,8 @@
                 {{ name }}
             </option>
         </select>
+
+        <label :for="id">{{ label }}</label>
     </div>
 </template>
 
