@@ -24,8 +24,9 @@
                                 @csrf
                                 <div>
                                     <div class="form-control-custom">
-                                        <input id="login" type="text" class="@error('login') is-invalid @enderror"
-                                            name="login" value="{{ old('login') }}" required autocomplete="off"
+                                        <input id="login" type="text" minlength="5"
+                                            class="@error('login') is-invalid @enderror" name="login"
+                                            value="{{ old('login') }}" required autocomplete="off"
                                             pattern='[A-Za-zА-Яа-яЁё0-9]{5,}' autofocus>
                                         <label for="login"
                                             class="@if (old('login')) active @endif">Логин</label>
@@ -83,7 +84,7 @@
 
                                 <div class="mt-3">
                                     <div class="form-control-custom">
-                                        <input id="tax-number" type="text" pattern='[0-9]{8,}'
+                                        <input id="tax-number" type="text" minlength="8" pattern='[0-9]{8,}'
                                             class="@error('tax_number') is-invalid @enderror" name="tax_number"
                                             value="{{ old('tax_number') }}" required autocomplete="tax-number" autofocus>
 
@@ -105,14 +106,12 @@
                                     <div class="form-control-custom">
                                         <input id="password" type="password"
                                             class="@error('password') is-invalid @enderror" name="password" required
-                                            autocomplete="off" pattern="[\S]{8,}">
+                                            autocomplete="off" minlength="8">
 
                                         <label for="password">Пароль</label>
                                     </div>
                                     <i class='form-control-comment'>
                                         Минимум 8 символов</i>
-
-
                                     @error('password')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
