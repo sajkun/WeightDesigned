@@ -15759,6 +15759,7 @@ if (document.getElementById("public-users")) {
 if (document.getElementById("public-employees")) {
   (0,vue__WEBPACK_IMPORTED_MODULE_0__.createApp)(_public_employees_js__WEBPACK_IMPORTED_MODULE_2__["default"]).mount("#public-employees");
 }
+__webpack_require__(/*! ./dadata */ "./resources/js/dadata.js");
 __webpack_require__(/*! ./public/ready */ "./resources/js/public/ready.js");
 // require("./public/vehicle");
 // require("./public/grasslands");
@@ -15864,6 +15865,128 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _SelectComponent_vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./SelectComponent.vue */ "./resources/js/components/SelectComponent/SelectComponent.vue");
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_SelectComponent_vue__WEBPACK_IMPORTED_MODULE_0__["default"]);
+
+/***/ }),
+
+/***/ "./resources/js/dadata.js":
+/*!********************************!*\
+  !*** ./resources/js/dadata.js ***!
+  \********************************/
+/***/ (() => {
+
+/**
+ * отправка запроса в дадата при регистрации
+ *
+ */
+console.log("test");
+var nameInput = document.getElementById("organisation-name");
+var taxInput = document.getElementById("tax-number");
+var isFetching = false;
+["input"].forEach(function (eventName) {
+  nameInput === null || nameInput === void 0 || nameInput.addEventListener(eventName, function (e) {
+    if (!e.target.value) {
+      return;
+    }
+    if (e.target.value.length < 3) {
+      var _document$querySelect;
+      (_document$querySelect = document.querySelector(".dropdown-container")) === null || _document$querySelect === void 0 || _document$querySelect.remove();
+      return;
+    }
+    if (isFetching) {
+      return;
+    }
+    checkQuery(e.target.value, "#dropdown-place-name");
+  });
+  taxInput === null || taxInput === void 0 || taxInput.addEventListener(eventName, function (e) {
+    if (!e.target.value) {
+      return;
+    }
+    if (e.target.value.length < 3) {
+      var _document$querySelect2;
+      (_document$querySelect2 = document.querySelector(".dropdown-container")) === null || _document$querySelect2 === void 0 || _document$querySelect2.remove();
+      return;
+    }
+    if (isFetching) {
+      return;
+    }
+    checkQuery(e.target.value, "#dropdown-place-tax");
+  });
+});
+function checkQuery(query, selector) {
+  isFetching = true;
+  var url = "https://suggestions.dadata.ru/suggestions/api/4_1/rs/suggest/party";
+  var token = "83ff13189cdfe8176a112ab02dcde133ca20ea84";
+  var options = {
+    method: "POST",
+    mode: "cors",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+      Authorization: "Token " + token
+    },
+    body: JSON.stringify({
+      query: query
+    })
+  };
+  fetch(url, options).then(function (response) {
+    return response.text();
+  }).then(function (result) {
+    isFetching = false;
+    showSuggestions(selector, JSON.parse(result));
+  })["catch"](function (error) {
+    console.log("error", error);
+    isFetching = false;
+  });
+}
+function applyOrganisation(e) {
+  var _document$querySelect3;
+  nameInput.value = e.target.closest("button").dataset.name;
+  taxInput.value = e.target.closest("button").dataset.taxnumber;
+  nameInput.classList.add("active");
+  taxInput.classList.add("active");
+  (_document$querySelect3 = document.querySelector(".dropdown-container")) === null || _document$querySelect3 === void 0 || _document$querySelect3.remove();
+}
+function showSuggestions(selector, data) {
+  var neighbor = document.querySelectorAll(selector);
+  if (!neighbor) {
+    return;
+  }
+  if (data.suggestions.length === 0) {
+    var _document$querySelect4;
+    (_document$querySelect4 = document.querySelector(".dropdown-container")) === null || _document$querySelect4 === void 0 || _document$querySelect4.remove();
+    return;
+  }
+  neighbor.forEach(function (htmlNode) {
+    var mayBeDropdown = htmlNode.nextElementSibling;
+    if (mayBeDropdown !== null && mayBeDropdown !== void 0 && mayBeDropdown.classList.contains("dropdown-container")) {
+      mayBeDropdown.remove();
+    }
+  });
+  var dropdownWrapper = document.getElementById("dropdownWrapper");
+  var dropdown = dropdownWrapper.content.cloneNode(true);
+  var buttonTemplate = document.getElementById("dropdownItem");
+  neighbor.forEach(function (htmlNode) {
+    data.suggestions.forEach(function (d) {
+      var button = buttonTemplate.content.cloneNode(true);
+      button.firstElementChild.querySelector("span").innerText = d.value;
+      button.firstElementChild.querySelector("span").after(" \u0418\u041D\u041D: ".concat(d.data.inn));
+      button.firstElementChild.dataset.name = d.value;
+      button.firstElementChild.dataset.taxnumber = d.data.inn;
+      button.firstElementChild.addEventListener("click", applyOrganisation);
+      dropdown.firstElementChild.firstElementChild.append(button);
+    });
+    htmlNode.after(dropdown);
+  });
+}
+document.addEventListener("click", function (e) {
+  var _e$target$closest;
+  if (!((_e$target$closest = e.target.closest(".dropdown")) !== null && _e$target$closest !== void 0 && _e$target$closest.length)) {
+    var _document$querySelect5;
+    (_document$querySelect5 = document.querySelectorAll(".dropdown")) === null || _document$querySelect5 === void 0 || _document$querySelect5.forEach(function (el) {
+      el.remove();
+    });
+  }
+});
 
 /***/ }),
 
@@ -16650,10 +16773,25 @@ var strip = function strip(obj) {
 /***/ (() => {
 
 var mobileMenuToggler = document.getElementById("mobile-menu-toggle");
-mobileMenuToggler === null || mobileMenuToggler === void 0 ? void 0 : mobileMenuToggler.addEventListener("click", function () {
+mobileMenuToggler === null || mobileMenuToggler === void 0 || mobileMenuToggler.addEventListener("click", function () {
   document.getElementById("main-menu").classList.toggle("shown");
   mobileMenuToggler.classList.toggle("active");
 });
+var formFields = document.querySelectorAll(".form-auth .form-control-custom input");
+formFields === null || formFields === void 0 || formFields.forEach(function (el) {
+  el.addEventListener("focus", function (event) {
+    event.target.closest(".form-control-custom").classList.add("active");
+  });
+  el.addEventListener("input", function (event) {
+    event.target.closest(".form-control-custom").classList.add("active");
+  });
+  el.addEventListener("blur", function (event) {
+    event.target.closest(".form-control-custom").classList.remove("active");
+  });
+});
+function generatePassword() {
+  console.log("generatePassword");
+}
 
 /***/ }),
 

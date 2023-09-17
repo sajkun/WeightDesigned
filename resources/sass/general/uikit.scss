@@ -64,6 +64,15 @@
         }
     }
 }
+.form-control-comment {
+    display: none;
+    font-size: 0.75rem;
+    color: var(--blue-medium);
+
+    .active + & {
+        display: block;
+    }
+}
 
 .dropdown-container {
     position: relative;
@@ -100,7 +109,7 @@
         text-align: left;
         padding: 0.25rem 1rem;
         font-size: 0.75rem;
-        color: var(--grey-light);
+        color: var(--grey-medium);
         transition: background-color 0.15s;
 
         span {

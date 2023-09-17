@@ -2,6 +2,7 @@
  * отправка запроса в дадата при регистрации
  *
  */
+console.log("test");
 
 const nameInput = document.getElementById("organisation-name");
 const taxInput = document.getElementById("tax-number");
@@ -21,6 +22,7 @@ let isFetching = false;
         if (isFetching) {
             return;
         }
+
         checkQuery(e.target.value, "#dropdown-place-name");
     });
 

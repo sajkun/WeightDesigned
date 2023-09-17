@@ -14,6 +14,7 @@ if (document.getElementById("public-users")) {
 if (document.getElementById("public-employees")) {
     createApp(appPublicEmployees).mount("#public-employees");
 }
+require("./dadata");
 require("./public/ready");
 // require("./public/vehicle");
 // require("./public/grasslands");
