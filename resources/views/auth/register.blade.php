@@ -113,10 +113,13 @@
                                             class="@error('password') is-invalid @enderror" name="password" required
                                             autocomplete="off" minlength="8">
 
-                                        <label for="password">Пароль</label>
+                                        <label for="password">Пароль<span class="password-strength">: <span
+                                                    id='passwordStrength'></span></span></span></label>
                                     </div>
+
                                     <i class='form-control-comment'>
-                                        <span>Минимум 8 символов</span></i>
+                                        <span>Минимум 8 символов</i>
+
                                     @error('password')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>

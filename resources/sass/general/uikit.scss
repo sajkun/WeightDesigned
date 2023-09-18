@@ -215,3 +215,30 @@
 .narrow-row {
     --bs-gutter-x: 0.25rem;
 }
+
+.password-strength {
+    display: none;
+    font-size: 0.75rem;
+
+    &.weak,
+    &.neutral,
+    &.strong {
+        display: inline;
+    }
+
+    &.weak {
+        #passwordStrength {
+            color: var(--red);
+        }
+    }
+    &.neutral {
+        #passwordStrength {
+            color: var(--yellow);
+        }
+    }
+    &.strong {
+        #passwordStrength {
+            color: var(--green);
+        }
+    }
+}

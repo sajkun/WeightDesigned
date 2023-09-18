@@ -8,7 +8,11 @@ const formFields = document.querySelectorAll(
     ".form-auth .form-control-custom input"
 );
 
-// сохранение в переменную события разворачивания элемента
+/**
+ * сохранение в переменную события разворачивания элемента
+ *
+ * @param {HTMLElement} el - HTML элеент содержащий комментарий
+ */
 const triggerExpand = (el) => {
     document.dispatchEvent(
         new CustomEvent("expandElement", {
@@ -17,12 +21,20 @@ const triggerExpand = (el) => {
     );
 };
 
-// проверка на наличие елемента или соответсвующего класса
+/**
+ * проверка на наличие елемента или соответсвующего класса
+ *
+ * @param {HTMLElement} el - HTML элеент содержащий комментарий
+ */
 const checkTarget = (el) => {
     return el && el.classList.contains("form-control-comment");
 };
 
-// сохранение в переменную события свёртывания
+/**
+ *сохранение в переменную события свёртывания
+ *
+ * @param {HTMLElement} el - HTML элеент содержащий комментарий
+ */
 const triggerCollapse = (el) => {
     document.dispatchEvent(
         new CustomEvent("collapseElement", {
@@ -31,6 +43,9 @@ const triggerCollapse = (el) => {
     );
 };
 
+/**
+ * Скрытие всех отображенных комментариев
+ */
 const clearComments = () => {
     formFields?.forEach((input) => {
         const target = input.closest(".form-control-custom").nextElementSibling;

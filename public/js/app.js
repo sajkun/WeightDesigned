@@ -15745,17 +15745,19 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _public_users_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./public/users.js */ "./resources/js/public/users.js");
 /* harmony import */ var _public_employees_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./public/employees.js */ "./resources/js/public/employees.js");
 /**
- * First we will load all of this project's JavaScript dependencies which
- * includes Vue and other libraries. It is a great starting point when
- * building robust, powerful web applications using Vue and Laravel.
+ * Основной файл, собирающий весь скрипт приложения
  */
 
 
 
 
+
+// инициализация приложения пользователей для публичной зоны
 if (document.getElementById("public-users")) {
   (0,vue__WEBPACK_IMPORTED_MODULE_0__.createApp)(_public_users_js__WEBPACK_IMPORTED_MODULE_1__["default"]).mount("#public-users");
 }
+
+// инициализация приложения сотрудников для публичной зоны
 if (document.getElementById("public-employees")) {
   (0,vue__WEBPACK_IMPORTED_MODULE_0__.createApp)(_public_employees_js__WEBPACK_IMPORTED_MODULE_2__["default"]).mount("#public-employees");
 }
@@ -16324,6 +16326,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _functions__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./functions */ "./resources/js/public/functions.js");
+/**
+ * Приложение отвечающее за внешний вид и отправку
+ * запросов CRUD раздела "Сотрудники"
+ */
 
 var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 var appPublicEmployees = {
@@ -16653,6 +16659,7 @@ var strip = function strip(obj) {
 __webpack_require__(/*! ./../ready/dadata */ "./resources/js/ready/dadata.js");
 __webpack_require__(/*! ./../ready/mobileMenu */ "./resources/js/ready/mobileMenu.js");
 __webpack_require__(/*! ./../ready/formFields */ "./resources/js/ready/formFields.js");
+__webpack_require__(/*! ./../ready/passwordStrength */ "./resources/js/ready/passwordStrength.js");
 
 /***/ }),
 
@@ -17049,7 +17056,11 @@ document.addEventListener("click", function (e) {
 // перечень полей, если есть
 var formFields = document.querySelectorAll(".form-auth .form-control-custom input");
 
-// сохранение в переменную события разворачивания элемента
+/**
+ * сохранение в переменную события разворачивания элемента
+ *
+ * @param {HTMLElement} el - HTML элеент содержащий комментарий
+ */
 var triggerExpand = function triggerExpand(el) {
   document.dispatchEvent(new CustomEvent("expandElement", {
     detail: {
@@ -17058,12 +17069,20 @@ var triggerExpand = function triggerExpand(el) {
   }));
 };
 
-// проверка на наличие елемента или соответсвующего класса
+/**
+ * проверка на наличие елемента или соответсвующего класса
+ *
+ * @param {HTMLElement} el - HTML элеент содержащий комментарий
+ */
 var checkTarget = function checkTarget(el) {
   return el && el.classList.contains("form-control-comment");
 };
 
-// сохранение в переменную события свёртывания
+/**
+ *сохранение в переменную события свёртывания
+ *
+ * @param {HTMLElement} el - HTML элеент содержащий комментарий
+ */
 var triggerCollapse = function triggerCollapse(el) {
   document.dispatchEvent(new CustomEvent("collapseElement", {
     detail: {
@@ -17071,6 +17090,10 @@ var triggerCollapse = function triggerCollapse(el) {
     }
   }));
 };
+
+/**
+ * Скрытие всех отображенных комментариев
+ */
 var clearComments = function clearComments() {
   formFields === null || formFields === void 0 || formFields.forEach(function (input) {
     var target = input.closest(".form-control-custom").nextElementSibling;
@@ -17122,6 +17145,69 @@ var mobileMenuToggler = document.getElementById("mobile-menu-toggle");
 mobileMenuToggler === null || mobileMenuToggler === void 0 ? void 0 : mobileMenuToggler.addEventListener("click", function () {
   document.getElementById("main-menu").classList.toggle("shown");
   mobileMenuToggler.classList.toggle("active");
+});
+
+/***/ }),
+
+/***/ "./resources/js/ready/passwordStrength.js":
+/*!************************************************!*\
+  !*** ./resources/js/ready/passwordStrength.js ***!
+  \************************************************/
+/***/ (() => {
+
+/**
+ * Проверка надежности пароля
+ */
+
+var detectPasswordStrength = function detectPasswordStrength(password) {
+  var s_letters = "qwertyuiopasdfghjklzxcvbnm"; // Буквы в нижнем регистре
+  var b_letters = "QWERTYUIOPLKJHGFDSAZXCVBNM"; // Буквы в верхнем регистре
+  var digits = "0123456789"; // Цифры
+  var specials = "!@#$%^&*()_-+=|/.,:;[]{}"; // Спецсимволы
+  var is_s = false; // Есть ли в пароле буквы в нижнем регистре
+  var is_b = false; // Есть ли в пароле буквы в верхнем регистре
+  var is_d = false; // Есть ли в пароле цифры
+  var is_sp = false; // Есть ли в пароле спецсимволы
+  for (var i = 0; i < password.length; i++) {
+    /* Проверяем каждый символ пароля на принадлежность к тому или иному типу */
+    if (!is_s && s_letters.indexOf(password[i]) != -1) is_s = true;else if (!is_b && b_letters.indexOf(password[i]) != -1) is_b = true;else if (!is_d && digits.indexOf(password[i]) != -1) is_d = true;else if (!is_sp && specials.indexOf(password[i]) != -1) is_sp = true;
+  }
+  var rating = 0;
+  var text = "";
+  if (is_s) rating++; // Если в пароле есть символы в нижнем регистре, то увеличиваем рейтинг сложности
+  if (is_b) rating++; // Если в пароле есть символы в верхнем регистре, то увеличиваем рейтинг сложности
+  if (is_d) rating++; // Если в пароле есть цифры, то увеличиваем рейтинг сложности
+  if (is_sp) rating++; // Если в пароле есть спецсимволы, то увеличиваем рейтинг сложности
+  /* Далее идёт анализ длины пароля и полученного рейтинга, и на основании этого готовится текстовое описание сложности пароля */
+  if (password.length < 6 && rating < 3) text = "Простой";else if (password.length < 6 && rating >= 3) text = "Средний";else if (password.length >= 8 && rating < 3) text = "Средний";else if (password.length >= 8 && rating >= 3) text = "Сложный";else if (password.length >= 6 && rating == 1) text = "Простой";else if (password.length >= 6 && rating > 1 && rating < 4) text = "Средний";else if (password.length >= 6 && rating == 4) text = "Сложный";
+  return text; // Форму не отправляем
+};
+
+var passwordField = document.getElementById("password");
+passwordField === null || passwordField === void 0 ? void 0 : passwordField.addEventListener("input", function (e) {
+  var password = e.target.value;
+  var strength = detectPasswordStrength(password);
+  var className;
+  switch (strength) {
+    case "Простой":
+      className = "weak";
+      break;
+    case "Средний":
+      className = "neutral";
+      break;
+    case "Сложный":
+      className = "strong";
+      break;
+  }
+  var strengthHTML = document.getElementById("passwordStrength");
+  var wrapper = strengthHTML.closest(".password-strength");
+  ["weak", "neutral", "strong"].forEach(function (name) {
+    wrapper.classList.remove(name);
+  });
+  strengthHTML.innerText = strength.toLowerCase();
+  if (password.length > 0) {
+    wrapper.classList.add(className);
+  }
 });
 
 /***/ }),

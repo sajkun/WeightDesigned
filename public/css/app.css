@@ -13395,6 +13395,23 @@ body {
   --bs-gutter-x: 0.25rem;
 }
 
+.password-strength {
+  display: none;
+  font-size: 0.75rem;
+}
+.password-strength.weak, .password-strength.neutral, .password-strength.strong {
+  display: inline;
+}
+.password-strength.weak #passwordStrength {
+  color: var(--red);
+}
+.password-strength.neutral #passwordStrength {
+  color: var(--yellow);
+}
+.password-strength.strong #passwordStrength {
+  color: var(--green);
+}
+
 .btn-primary-alt {
   --bs-btn-color: var(--lightest);
   --bs-btn-bg: var(--green);

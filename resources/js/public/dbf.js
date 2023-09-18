@@ -1,3 +1,7 @@
+/**
+ * Работа с SHP файлами
+ */
+
 const SHP = {
     NULL: 0,
     POINT: 1,

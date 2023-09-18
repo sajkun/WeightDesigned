@@ -1,3 +1,7 @@
+/**
+ * Приложение отвечающее за внешний вид и отправку
+ * запросов CRUD раздела "Сотрудники"
+ */
 import { strip } from "./functions";
 const axios = require("axios");
 const appPublicEmployees = {
