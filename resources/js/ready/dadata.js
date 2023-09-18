@@ -2,12 +2,12 @@
  * отправка запроса в дадата при регистрации
  *
  */
-console.log("test");
 
 const nameInput = document.getElementById("organisation-name");
 const taxInput = document.getElementById("tax-number");
 let isFetching = false;
 
+//инициализация события при вводе в поле ИНН или имя организации
 ["input"].forEach((eventName) => {
     nameInput?.addEventListener(eventName, (e) => {
         if (!e.target.value) {
@@ -43,6 +43,12 @@ let isFetching = false;
     });
 });
 
+/**
+ * отправка запроса в dadata.ru и отображение полученного результата
+ *
+ * @param {String} query - текст из поля ввода, что ищем часть ИНН или наименования
+ * @param {String} selector - HTML селектор соседа, предшествующего выпадающему списку перечня организаций
+ */
 function checkQuery(query, selector) {
     isFetching = true;
     var url =
@@ -72,6 +78,11 @@ function checkQuery(query, selector) {
         });
 }
 
+/**
+ * обработка выбора из выпадающего списка организаций
+ *
+ * @param {Event} e
+ */
 function applyOrganisation(e) {
     nameInput.value = e.target.closest("button").dataset.name;
     taxInput.value = e.target.closest("button").dataset.taxnumber;
@@ -81,6 +92,12 @@ function applyOrganisation(e) {
     document.querySelector(".dropdown-container")?.remove();
 }
 
+/**
+ * показывает список организаций на основе данных поля ввода
+ * @param {string} selector - HTML селектор соседа, предшествующего выпадающему списку перечня организаций
+ * @param {Object} data - объект содержащий перечень организаций
+ * @returns
+ */
 function showSuggestions(selector, data) {
     const neighbor = document.querySelectorAll(selector);
 
@@ -125,6 +142,7 @@ function showSuggestions(selector, data) {
     });
 }
 
+// обработчик клика вне выпадающего списка
 document.addEventListener("click", (e) => {
     if (!e.target.closest(".dropdown")?.length) {
         document.querySelectorAll(".dropdown")?.forEach((el) => {
