@@ -31,7 +31,10 @@
                                         <label for="login"
                                             class="@if (old('login')) active @endif">Логин</label>
                                     </div>
-                                    <i class='form-control-comment'>Минимум 5 символов, допустимы только буквы и цифры</i>
+                                    <i class='form-control-comment'>
+                                        <span>Минимум 5 символов, допустимы только буквы и цифры
+                                            цифры</span>
+                                    </i>
                                     @error('login')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
@@ -48,8 +51,10 @@
                                         <label for="email"
                                             class="@if (old('email')) active @endif">E-mail</label>
                                     </div>
-                                    <i class='form-control-comment'>Формат электронной почты должен быть в виде:
-                                        name@domain.abc</i>
+                                    <i class='form-control-comment'><span>
+                                            Формат электронной почты должен быть в виде:
+                                            name@domain.abc
+                                        </span></i>
 
                                     @error('email')
                                         <span class="invalid-feedback" role="alert">
@@ -72,7 +77,6 @@
 
                                         <div id="dropdown-place-name"></div>
                                     </div>
-                                    <i class='form-control-comment'></i>
 
                                     @error('organisation_name')
                                         <span class="invalid-feedback" role="alert">
@@ -93,7 +97,8 @@
 
                                         <div id="dropdown-place-tax"></div>
                                     </div>
-                                    <i class='form-control-comment'>Минимум 8 символов, допустимы только цифры</i>
+                                    <i class='form-control-comment'><span>Минимум 8 символов, допустимы только
+                                            цифры</span></i>
 
                                     @error('tax_number')
                                         <span class="invalid-feedback" role="alert">
@@ -111,7 +116,7 @@
                                         <label for="password">Пароль</label>
                                     </div>
                                     <i class='form-control-comment'>
-                                        Минимум 8 символов</i>
+                                        <span>Минимум 8 символов</span></i>
                                     @error('password')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>

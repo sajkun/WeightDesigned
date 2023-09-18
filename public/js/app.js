@@ -16770,28 +16770,10 @@ var strip = function strip(obj) {
 /*!**************************************!*\
   !*** ./resources/js/public/ready.js ***!
   \**************************************/
-/***/ (() => {
+/***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
 
-var mobileMenuToggler = document.getElementById("mobile-menu-toggle");
-mobileMenuToggler === null || mobileMenuToggler === void 0 || mobileMenuToggler.addEventListener("click", function () {
-  document.getElementById("main-menu").classList.toggle("shown");
-  mobileMenuToggler.classList.toggle("active");
-});
-var formFields = document.querySelectorAll(".form-auth .form-control-custom input");
-formFields === null || formFields === void 0 || formFields.forEach(function (el) {
-  el.addEventListener("focus", function (event) {
-    event.target.closest(".form-control-custom").classList.add("active");
-  });
-  el.addEventListener("input", function (event) {
-    event.target.closest(".form-control-custom").classList.add("active");
-  });
-  el.addEventListener("blur", function (event) {
-    event.target.closest(".form-control-custom").classList.remove("active");
-  });
-});
-function generatePassword() {
-  console.log("generatePassword");
-}
+__webpack_require__(/*! ./../ready/mobileMenu */ "./resources/js/ready/mobileMenu.js");
+__webpack_require__(/*! ./../ready/formFields */ "./resources/js/ready/formFields.js");
 
 /***/ }),
 
@@ -17025,6 +17007,97 @@ var appPublicUsers = {
   }
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (appPublicUsers);
+
+/***/ }),
+
+/***/ "./resources/js/ready/formFields.js":
+/*!******************************************!*\
+  !*** ./resources/js/ready/formFields.js ***!
+  \******************************************/
+/***/ (() => {
+
+/**
+ * Отображение подсказок к полям ввода
+ * в форме регистрации
+ */
+
+// перечень полей, если есть
+var formFields = document.querySelectorAll(".form-auth .form-control-custom input");
+
+// сохранение в переменную события разворачивания элемента
+var triggerExpand = function triggerExpand(el) {
+  document.dispatchEvent(new CustomEvent("expandElement", {
+    detail: {
+      target: el
+    }
+  }));
+};
+
+// проверка на наличие елемента или соответсвующего класса
+var checkTarget = function checkTarget(el) {
+  return el && el.classList.contains("form-control-comment");
+};
+
+// сохранение в переменную события свёртывания
+var triggerCollapse = function triggerCollapse(el) {
+  document.dispatchEvent(new CustomEvent("collapseElement", {
+    detail: {
+      target: el
+    }
+  }));
+};
+var clearComments = function clearComments() {
+  formFields === null || formFields === void 0 || formFields.forEach(function (input) {
+    var target = input.closest(".form-control-custom").nextElementSibling;
+    if (!checkTarget(target)) {
+      return;
+    }
+    target.style.height = 0;
+    target.classList.remove("active");
+  });
+};
+
+//добавление событий к каждому найденному элементу
+formFields === null || formFields === void 0 || formFields.forEach(function (el) {
+  // обработка события фокусировки и ввода в поле
+  ["input", "focus"].forEach(function (eventName) {
+    el.addEventListener(eventName, function (event) {
+      var target = event.target.closest(".form-control-custom").nextElementSibling;
+      clearComments();
+      if (!checkTarget(target)) return;
+      triggerExpand(target);
+    });
+  });
+});
+
+// обаботчик события разворачивания элемента
+document.addEventListener("expandElement", function (event) {
+  var el = event.detail.target;
+  var height = el.children[0].offsetHeight;
+  el.style.height = "".concat(height, "px");
+  el.classList.add("active");
+});
+
+/***/ }),
+
+/***/ "./resources/js/ready/mobileMenu.js":
+/*!******************************************!*\
+  !*** ./resources/js/ready/mobileMenu.js ***!
+  \******************************************/
+/***/ (() => {
+
+/**
+ * Смена режима отображения мобильного меню
+ */
+
+// HTML элемент переключающий мобильное меню
+var mobileMenuToggler = document.getElementById("mobile-menu-toggle");
+
+// обработчик события мобильного меню
+mobileMenuToggler === null || mobileMenuToggler === void 0 ? void 0 : mobileMenuToggler.addEventListener("click", function () {
+  document.getElementById("main-menu").classList.toggle("shown");
+  mobileMenuToggler.classList.toggle("active");
+});
 
 /***/ }),
 

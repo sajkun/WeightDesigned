@@ -11,7 +11,7 @@
         background: var(--lightest) fff;
         border: 1px solid var(--grey-light);
         border-radius: 0.5em;
-        transition: border-color 0.15s, color 0.15s, outline 0.3s;
+        transition: border-color var(--fast), color var(--fast), outline 0.3s;
         outline: 2px solid transparent;
 
         &:hover {
@@ -37,7 +37,8 @@
         font-size: 1rem;
         color: var(--grey);
         transform: translateY(-50%);
-        transition: left 0.15s, transform 0.15s, font-size 0.15s, color 0.15s;
+        transition: left var(--fast), transform var(--fast),
+            font-size var(--fast), color var(--fast);
         z-index: 5;
 
         &.active {
@@ -64,13 +65,19 @@
         }
     }
 }
-.form-control-comment {
-    display: none;
-    font-size: 0.75rem;
-    color: var(--blue-medium);
 
-    .active + & {
-        display: block;
+.form-control-comment {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--blue);
+    height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: height var(--fast), opacity var(--fast);
+
+    &.active {
+        overflow: visible;
+        opacity: 1;
     }
 }
 
@@ -110,7 +117,7 @@
         padding: 0.25rem 1rem;
         font-size: 0.75rem;
         color: var(--grey-medium);
-        transition: background-color 0.15s;
+        transition: background-color var(--fast);
 
         span {
             color: #000;
@@ -171,7 +178,7 @@
     padding: 0.5rem 1rem;
     background-color: var(--grey-ultralight);
     border-radius: 0.5rem;
-    transition: border-color 0.15s, background-color 0.15s;
+    transition: border-color var(--fast), background-color var(--fast);
     outline: 0;
 
     &:focus {

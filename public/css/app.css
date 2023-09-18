@@ -2340,6 +2340,7 @@ body {
   --link-color: #fff;
   --link-color-active: var(--grey);
   --contrast: #fff;
+  --fast: 0.15s;
 }
 
 /*!
@@ -13205,7 +13206,7 @@ body {
   background: var(--lightest) fff;
   border: 1px solid var(--grey-light);
   border-radius: 0.5em;
-  transition: border-color 0.15s, color 0.15s, outline 0.3s;
+  transition: border-color var(--fast), color var(--fast), outline 0.3s;
   outline: 2px solid transparent;
 }
 .form-control-custom select:hover,
@@ -13237,7 +13238,7 @@ body {
   font-size: 1rem;
   color: var(--grey);
   transform: translateY(-50%);
-  transition: left 0.15s, transform 0.15s, font-size 0.15s, color 0.15s;
+  transition: left var(--fast), transform var(--fast), font-size var(--fast), color var(--fast);
   z-index: 5;
 }
 .form-control-custom label.active {
@@ -13259,12 +13260,17 @@ body {
 }
 
 .form-control-comment {
-  display: none;
-  font-size: 0.75rem;
-  color: var(--blue-medium);
-}
-.active + .form-control-comment {
   display: block;
+  font-size: 0.75rem;
+  color: var(--blue);
+  height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: height var(--fast), opacity var(--fast);
+}
+.form-control-comment.active {
+  overflow: visible;
+  opacity: 1;
 }
 
 .dropdown-container {
@@ -13300,7 +13306,7 @@ body {
   padding: 0.25rem 1rem;
   font-size: 0.75rem;
   color: var(--grey-medium);
-  transition: background-color 0.15s;
+  transition: background-color var(--fast);
 }
 .dropdown-container .btn-list-imitation span {
   color: #000;
@@ -13354,7 +13360,7 @@ body {
   padding: 0.5rem 1rem;
   background-color: var(--grey-ultralight);
   border-radius: 0.5rem;
-  transition: border-color 0.15s, background-color 0.15s;
+  transition: border-color var(--fast), background-color var(--fast);
   outline: 0;
 }
 .search-field:focus {
@@ -13657,7 +13663,7 @@ body.auth #app {
   display: block;
   background-color: var(--lightest);
   box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.3);
-  transition: opacity 0.15s, visibility 0.15s;
+  transition: opacity var(--fast), visibility var(--fast);
   padding: 0;
   margin: 0;
 }
@@ -13690,7 +13696,7 @@ body.auth #app {
     padding: 0.5rem 0;
     visibility: hidden;
     opacity: 0;
-    transition: visibility 0.15s, opacity 0.15s;
+    transition: visibility var(--fast), opacity var(--fast);
   }
 }
 .main-menu .submenu ul {
@@ -13739,9 +13745,9 @@ body.auth #app {
 .main-menu a {
   display: block;
   text-decoration: none;
-  transition: color 0.15s, -webkit-text-decoration 0.15s;
-  transition: color 0.15s, text-decoration 0.15s;
-  transition: color 0.15s, text-decoration 0.15s, -webkit-text-decoration 0.15s;
+  transition: color var(--fast), -webkit-text-decoration var(--fast);
+  transition: color var(--fast), text-decoration var(--fast);
+  transition: color var(--fast), text-decoration var(--fast), -webkit-text-decoration var(--fast);
   text-decoration: none;
   color: var(--darkest);
   padding: 0.5rem 1rem;

@@ -22,7 +22,7 @@
     display: block;
     background-color: var(--lightest);
     box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.3);
-    transition: opacity 0.15s, visibility 0.15s;
+    transition: opacity var(--fast), visibility var(--fast);
 
     &.shown {
         visibility: visible;
@@ -55,7 +55,7 @@
             padding: 0.5rem 0;
             visibility: hidden;
             opacity: 0;
-            transition: visibility 0.15s, opacity 0.15s;
+            transition: visibility var(--fast), opacity var(--fast);
         }
 
         ul {
@@ -115,7 +115,7 @@
     a {
         display: block;
         text-decoration: none;
-        transition: color 0.15s, text-decoration 0.15s;
+        transition: color var(--fast), text-decoration var(--fast);
         text-decoration: none;
         color: var(--darkest);
 
