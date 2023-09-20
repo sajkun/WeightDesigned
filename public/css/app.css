@@ -13116,7 +13116,7 @@ textarea.form-control-lg {
 
 table.organisation {
   width: 100%;
-  font-size: 14px;
+  font-size: 0.75rem;
 }
 table.organisation th {
   color: #aab3cb;
@@ -13133,6 +13133,52 @@ table.organisation tr:not(:first-child) {
 }
 table.organisation tr:hover:not(:first-child):not(.no-hover) {
   outline: 2px solid #007e3c;
+}
+@media (max-width: 640px) {
+  table.organisation th {
+    display: none;
+  }
+  table.organisation tr {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  table.organisation td {
+    width: 100%;
+    min-width: 100%;
+    flex-basis: 100%;
+    padding: 0.25rem 0.25rem;
+    padding-left: 2rem;
+  }
+  table.organisation td:before {
+    content: attr(title);
+    display: block;
+    font-size: 0.75rem;
+    color: var(--grey);
+    margin-bottom: 0rem;
+  }
+  table.organisation td:first-child {
+    width: 2rem;
+    min-width: 2rem;
+    flex-basis: 2rem;
+    padding-left: 0.25rem;
+  }
+  table.organisation td:last-child {
+    width: 2rem;
+    min-width: 2rem;
+    flex-basis: 2rem;
+    padding-left: 0;
+  }
+  table.organisation td:nth-child(2) {
+    padding-left: 0;
+    width: calc(100% - 2rem);
+    min-width: calc(100% - 2rem);
+    flex-basis: calc(100% - 2rem);
+  }
+  table.organisation td:nth-last-child(2) {
+    width: calc(100% - 2rem);
+    min-width: calc(100% - 2rem);
+    flex-basis: calc(100% - 2rem);
+  }
 }
 
 .org-wrapper {

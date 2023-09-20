@@ -4,21 +4,8 @@
     <div class="container-fluid d-none" id='public-employees'>
         <input type="hidden" ref='organisationId' value='{{ $organisation_id }}'>
         <input type="hidden" ref='userId' value='{{ $user_id }}'>
-        <Transition :key='"msg" + key' name="bounce" v-for='msg, key in messages'>
-            <div :class="key + '-message'" v-if='msg'>
-                @{{ msg }}
-
-                <div class="row" v-if='key==="confirm"'>
-                    <div class="col-12 col-md-6 mt-2"><button class="btn btn-borders-grey w-100"
-                            @click='cancelConfirmActionCb' type="button">Отмена</button>
-                    </div>
-                    <div class="col-12 col-md-6 mt-2"><button class="btn btn-borders w-100" type="button"
-                            @click='confirmActionCb'>Подтведить</button>
-                    </div>
-                </div>
-                <button class="btn btn-close" type='button' @click='clearMessages()' v-if="key!='confirm'"></button>
-            </div>
-        </Transition>
+        <messages-component :_messages='messages' v-on:cancel-msg='cancelConfirmActionCb' v-on:confrim-msg='confirmActionCb'
+            v-on:clear-msg='clearMessages'></messages-component>
         <div class="row h-100 position-relative">
             <div class="p-3 align-self-start" :class='listClass'
                 :style="!editMode ? 'transition: width .15s ease .1s' : ''">
@@ -39,9 +26,9 @@
                             </tr>
                             <tr v-for='person, key in employees' :key='"emp" + key' @click.stop='edit(person, false )'>
                                 <td>@{{ key + 1 }}</td>
-                                <td>@{{ person.first_name }} @{{ person.middle_name }} @{{ person.last_name }}</td>
-                                <td>@{{ person.phone }}</td>
-                                <td>@{{ person.specialisation }}</td>
+                                <td title='ФИО'>@{{ person.first_name }} @{{ person.middle_name }} @{{ person.last_name }}</td>
+                                <td title='Телефон'>@{{ person.phone }}</td>
+                                <td title='Профессия'>@{{ person.specialisation }}</td>
                                 <td class='text-end'>
                                     @can('delete', [App\Models\Employee::class, $organisation_id])
                                         <button class='btn' @click.prevent.stop='deleteEmployee(person)'>
@@ -135,8 +122,7 @@
                                 xmlns="http://www.w3.org/2000/svg">
                                 <path
                                     d="M5 5V8.81818M5 5H8.81818M5 5L9.45455 9.45455M5 19V15.1818M5 19H8.81818M5 19L9.45455 14.5455M19 5L15.1818 5M19 5V8.81818M19 5L14.5455 9.45455M19 19H15.1818M19 19V15.1818M19 19L14.5455 14.5455"
-                                    stroke="#007E3C" stroke-width="1.5" stroke-linecap="round"
-                                    stroke-linejoin="round" />
+                                    stroke="#007E3C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                             </svg>
 
                         </button>

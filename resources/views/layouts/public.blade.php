@@ -91,10 +91,11 @@
                                     <button class="btn btn-link-contrast p-0 bd-0 align-self-center"
                                         type="Sudmit">Выйти</button>
                                 </form>
-                                <a href='' title='Настройки' class="organisation-name align-self-center ms-4">
+                                <a href='' title='Настройки'
+                                    class="organisation-name align-self-center ms-4 d-none d-md-inline">
                                     {{ $organisation }}
                                 </a>
-                                <i class="organisation-marker align-self-center"></i>
+                                <i class="organisation-marker align-self-center d-none d-md-inline"></i>
                             </div>
                         </div>
                     </div>

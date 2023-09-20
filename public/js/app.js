@@ -16350,10 +16350,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _functions__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./functions */ "./resources/js/public/functions.js");
+/* harmony import */ var _mixins_messages__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../mixins/messages */ "./resources/js/mixins/messages.js");
 /**
  * Приложение отвечающее за внешний вид и отправку
  * запросов CRUD раздела "Сотрудники"
  */
+
 
 var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 var appPublicEmployees = {

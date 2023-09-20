@@ -26,9 +26,9 @@
                             </tr>
                             <tr v-for='user, key in users' :key='"user" + key' @click='editUser(user)'>
                                 <td>@{{ key + 1 }}</td>
-                                <td>@{{ user.login }}</td>
-                                <td>@{{ user.first_name }} @{{ user.middle_name }} @{{ user.last_name }}</td>
-                                <td>@{{ user.role_name }}</td>
+                                <td title='Логин'>@{{ user.login }}</td>
+                                <td title='ФИО'>@{{ user.first_name }} @{{ user.middle_name }} @{{ user.last_name }}</td>
+                                <td title='Роль'>@{{ user.role_name }}</td>
                                 <td class='text-end'>
                                     @can('delete', [App\Models\User::class, $organisation_id])
                                         <button class='btn' @click.prevent.stop='deleteUser(user)'>
