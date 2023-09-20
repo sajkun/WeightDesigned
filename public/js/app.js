@@ -15750,9 +15750,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
 /* harmony import */ var _public_users_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./public/users.js */ "./resources/js/public/users.js");
 /* harmony import */ var _public_employees_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./public/employees.js */ "./resources/js/public/employees.js");
+/* harmony import */ var _public_vehicle_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./public/vehicle.js */ "./resources/js/public/vehicle.js");
 /**
  * Основной файл, собирающий весь скрипт приложения
  */
+
 
 
 
@@ -15766,6 +15768,11 @@ if (document.getElementById("public-users")) {
 // инициализация приложения сотрудников для публичной зоны
 if (document.getElementById("public-employees")) {
   (0,vue__WEBPACK_IMPORTED_MODULE_0__.createApp)(_public_employees_js__WEBPACK_IMPORTED_MODULE_2__["default"]).mount("#public-employees");
+}
+
+// инициализация приложения техники для публичной зоны
+if (document.getElementById("public-vehicles")) {
+  (0,vue__WEBPACK_IMPORTED_MODULE_0__.createApp)(_public_vehicle_js__WEBPACK_IMPORTED_MODULE_3__["default"]).mount("#public-vehicles");
 }
 __webpack_require__(/*! ./public/ready */ "./resources/js/public/ready.js");
 // require("./public/vehicle");
@@ -16987,6 +16994,465 @@ var appPublicUsers = {
   }
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (appPublicUsers);
+
+/***/ }),
+
+/***/ "./resources/js/public/vehicle.js":
+/*!****************************************!*\
+  !*** ./resources/js/public/vehicle.js ***!
+  \****************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _mixins_messages__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../mixins/messages */ "./resources/js/mixins/messages.js");
+/* harmony import */ var _misc_helpers__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./../misc/helpers */ "./resources/js/misc/helpers.js");
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
+
+
+var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+var appPublicVehicles = {
+  el: "#public-vehicles",
+  mixins: [_mixins_messages__WEBPACK_IMPORTED_MODULE_0__["default"]],
+  data: function data() {
+    return {
+      organisationId: -1,
+      userId: -1,
+      mode: "list",
+      // list | edit | create | details
+      vehicleAddType: null,
+      vehicleType: null,
+      // bunker | transporter | tractor | harvester
+      mayBeResponsiblePerson: null,
+      rfids: [],
+      mayBeGroupedVehicles: [],
+      popup: null,
+      // employees | vehicles
+      employees: [],
+      employeeSearch: "",
+      activeTab: "info",
+      pincode: null,
+      group: [],
+      vehicles: {
+        bunkers: [],
+        transporters: [],
+        tractors: [],
+        harvesters: []
+      },
+      vehicleGroupType: null,
+      editedVehicle: {}
+    };
+  },
+  computed: {
+    vehicleTypesList: function vehicleTypesList() {
+      return {
+        bunker: {
+          name: "Бункер перегрузчик"
+        },
+        transporter: {
+          name: "Грузовик"
+        },
+        tractor: {
+          name: "Трактор"
+        },
+        harvester: {
+          name: "Комбайн"
+        }
+      };
+    },
+    vehicleName: function vehicleName() {
+      var _this$vehicleTypesLis;
+      return (_this$vehicleTypesLis = this.vehicleTypesList[this.vehicleType]) === null || _this$vehicleTypesLis === void 0 ? void 0 : _this$vehicleTypesLis.name;
+    },
+    columnClass: function columnClass() {
+      var vm = this;
+      var tableClass = vm.mode === "details" ? "col-12 col-md-6 d-none d-md-block" : "col-12";
+      return {
+        tableClass: tableClass
+      };
+    },
+    employeesList: function employeesList() {
+      var vm = this;
+      if (vm.employeeSearch.length < 3) {
+        return vm.employees;
+      }
+      return vm.employees.filter(function (e) {
+        return e.first_name.toLowerCase().search(vm.employeeSearch.toLowerCase()) >= 0 || e.last_name.toLowerCase().search(vm.employeeSearch.toLowerCase()) >= 0 || e.middle_name.toLowerCase().search(vm.employeeSearch.toLowerCase()) >= 0 || e.phone.toLowerCase().search(vm.employeeSearch.toLowerCase()) >= 0 || e.specialisation.toLowerCase().search(vm.employeeSearch.toLowerCase()) >= 0;
+      });
+    },
+    bunkerModels: function bunkerModels() {
+      return ["БП-16/20", "БП-22/28", "БП-22/28 габаритный", "БП-22/28 (8 колес)", "БП-22/31", "БП-22/31 хоппер", "БП-22/31 габаритный", "БП-22/31 8 колес", "БП-33/42 хоппер", "БП-33/42 8 колес", "БП-40/50"];
+    },
+    vehiclesCurrent: function vehiclesCurrent() {
+      return this.vehicles["".concat(this.vehicleType, "s")];
+    },
+    vehiclesGrouped: function vehiclesGrouped() {
+      var vm = this;
+      var vehicles = Object.values(vm.vehicles["".concat(vm.vehicleGroupType, "s")]);
+      vehicles = vehicles.filter(function (el) {
+        return !el.group_id || el.group_id === vm.editedVehicle.group_id;
+      });
+      vehicles = Boolean(vm.editedVehicle.id) ? vehicles.filter(function (item) {
+        return item.id !== vm.editedVehicle.id;
+      }) : vehicles;
+      return vehicles;
+    },
+    rfidsComputed: function rfidsComputed() {
+      return this.rfids;
+    }
+  },
+  watch: {
+    mode: function mode(_mode) {
+      console.log("mode:", _mode);
+      var vm = this;
+      if (_mode === "create") {
+        vm.reset();
+        vm.$nextTick(function () {
+          vm.enableInputs();
+        });
+      }
+    },
+    vehicleAddType: function vehicleAddType() {
+      var _vm$$refs$formCreateV;
+      var vm = this;
+      vm.reset();
+      (_vm$$refs$formCreateV = vm.$refs.formCreateVehicle) === null || _vm$$refs$formCreateV === void 0 || _vm$$refs$formCreateV.reset();
+      vm.$nextTick(function () {
+        vm.enableInputs();
+      });
+    },
+    activeTab: function activeTab() {
+      var vm = this;
+      vm.$nextTick(function () {
+        vm.enableInputs();
+      });
+    },
+    popup: function popup() {
+      var vm = this;
+      vm.$nextTick(function () {
+        vm.enableInputs();
+      });
+    },
+    vehicleType: function vehicleType(_vehicleType) {
+      this.vehicleAddType = _vehicleType;
+      this.vehicleGroupType = _vehicleType;
+      var vm = this;
+      vm.reset();
+    }
+  },
+  mounted: function mounted() {
+    var vm = this;
+    vm.$el.parentNode.classList.remove("d-none");
+    vm.organisationId = vm.$refs.organisationId.value;
+    vm.userId = vm.$refs.userId.value;
+    vm.vehicleType = vm.$refs.vehicleType.value;
+    vm.getEmployees();
+    vm.getVehicles();
+  },
+  methods: {
+    addVehicle: function addVehicle(type) {
+      var vm = this;
+      vm.mode = "create";
+      vm.vehicleType = type;
+    },
+    addVehicleToGroup: function addVehicleToGroup(item) {
+      var vm = this;
+      var group = Object.values(vm.group);
+      var index = group.findIndex(function (el) {
+        return el.id === item.id;
+      });
+      if (index < 0) {
+        group.push(item);
+      } else {
+        group.splice(index, 1);
+      }
+      vm.group = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.strip)(group);
+    },
+    applyGroup: function applyGroup() {
+      var vm = this;
+      vm.mayBeGroupedVehicles = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.strip)(vm.group);
+      vm.popup = null;
+    },
+    enableInputs: function enableInputs() {
+      var inputs = document.querySelectorAll(".form-control-custom input");
+      inputs.forEach(function (el) {
+        el.addEventListener("input", function (e) {
+          if (e.target.value) {
+            e.target.nextElementSibling.classList.add("active");
+          } else {
+            e.target.nextElementSibling.classList.remove("active");
+          }
+        });
+      });
+    },
+    checkPin: function checkPin(createOrEdit) {
+      var vm = this;
+      var pin = vm.pincode;
+      var name = createOrEdit === "edit" ? vm.editedVehicle.name : vm.$refs.bunkerName.value;
+      if (!Boolean(pin)) {
+        vm.messages.error = "Пинкод не задан";
+        return;
+      }
+      if (!Boolean(name)) {
+        vm.messages.error = "Имя техники не задано";
+        return;
+      }
+      if (pin.length !== 5) {
+        vm.messages.error = "Пинкод должен быть из 5 символов";
+        return;
+      }
+      axios.post("/vehicles/pincode", {
+        user_id: vm.userId,
+        name: name,
+        pin: pin
+      }).then(function (response) {
+        console.log((0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.strip)(response));
+        vm.messages[response.data.type] = response.data.message;
+      })["catch"](function (e) {
+        console.log(e.response);
+        vm.messages.error = e.response.data.message;
+      });
+    },
+    checkRfid: function checkRfid() {
+      var vm = this;
+      var formData = new FormData(vm.$refs.addRfid);
+      var postData = {};
+      var _iterator = _createForOfIteratorHelper(formData),
+        _step;
+      try {
+        for (_iterator.s(); !(_step = _iterator.n()).done;) {
+          var _step$value = _slicedToArray(_step.value, 2),
+            key = _step$value[0],
+            value = _step$value[1];
+          postData[key] = value;
+        }
+      } catch (err) {
+        _iterator.e(err);
+      } finally {
+        _iterator.f();
+      }
+      postData["organisation_id"] = vm.organisation_id;
+      axios.post("/rfids/test", postData).then(function (response) {
+        var _response$data;
+        console.log("%c checkRfid response", "color:green", response);
+        vm.messages[response.data.type] = response === null || response === void 0 || (_response$data = response.data) === null || _response$data === void 0 ? void 0 : _response$data.message;
+      })["catch"](function (e) {
+        console.log("%c checkRfid error", "color: red", e.response);
+        vm.messages.error = e.response.data.message;
+      });
+    },
+    createVehicle: function createVehicle() {
+      var _vm$mayBeResponsibleP;
+      var vm = this;
+      var formData = new FormData(vm.$refs.formCreateVehicle);
+      var postData = {};
+      var _iterator2 = _createForOfIteratorHelper(formData),
+        _step2;
+      try {
+        for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+          var _step2$value = _slicedToArray(_step2.value, 2),
+            key = _step2$value[0],
+            value = _step2$value[1];
+          postData[key] = value;
+        }
+      } catch (err) {
+        _iterator2.e(err);
+      } finally {
+        _iterator2.f();
+      }
+      var sendData = {
+        user_id: vm.userId,
+        organisation_id: vm.organisationId,
+        employee_id: (_vm$mayBeResponsibleP = vm.mayBeResponsiblePerson) === null || _vm$mayBeResponsibleP === void 0 ? void 0 : _vm$mayBeResponsibleP.id,
+        post_data: postData,
+        rfids: vm.rfids,
+        group: Object.values(vm.mayBeGroupedVehicles).map(function (e) {
+          return e.id;
+        })
+      };
+      console.log("createVehicle: ", vm.vehicleType);
+      console.log("createVehicle data: ", sendData);
+      axios.post("/vehicles/store", sendData).then(function (response) {
+        var _response$data2, _vm$$refs$formCreateV2;
+        console.log("%c createVehicle response", "color:green", response);
+        vm.messages[response.data.type] = response === null || response === void 0 || (_response$data2 = response.data) === null || _response$data2 === void 0 ? void 0 : _response$data2.message;
+        (_vm$$refs$formCreateV2 = vm.$refs.formCreateVehicle) === null || _vm$$refs$formCreateV2 === void 0 || _vm$$refs$formCreateV2.reset();
+        vm.reset();
+        vm.getVehicles();
+      })["catch"](function (e) {
+        console.log("%c createVehicle error", "color: red", e.response);
+        vm.messages.error = e.response.data.message;
+      });
+    },
+    deleteVehicle: function deleteVehicle(item) {
+      console.log("%c deleteVehicle", "color: blue", item);
+      var vm = this;
+      vm.mode = "list";
+      var sendData = {
+        user_id: vm.userId,
+        organisation_id: vm.organisationId,
+        delete_item: item
+      };
+      axios.post("/vehicles/delete", sendData).then(function (response) {
+        var _response$data3;
+        console.log("%c deleteVehicle", "color:green", response);
+        vm.messages[response.data.type] = response === null || response === void 0 || (_response$data3 = response.data) === null || _response$data3 === void 0 ? void 0 : _response$data3.message;
+        vm.getVehicles();
+      })["catch"](function (e) {
+        console.log("%c deleteVehicle error", "color: red", e.response);
+        vm.messages.error = e.response.data.message;
+      });
+    },
+    getEmployees: function getEmployees() {
+      var vm = this;
+      if (vm.$refs.organisationId < 0) {
+        return;
+      }
+      axios.get("/employees/list", {
+        user_id: vm.userId
+      }).then(function (response) {
+        console.log("%c getEmployees", "color: green", response);
+        vm.employees = response.data.employees;
+      })["catch"](function (e) {
+        console.log("%c getVehicles error", "color: red", e.response);
+        vm.messages.error = e.response.data.message;
+      });
+    },
+    reset: function reset() {
+      var vm = this;
+      vm.mayBeResponsiblePerson = null;
+      vm.popup = null;
+      vm.editedVehicle = {};
+      vm.mayBeGroupedVehicles = [];
+      vm.rfids = [];
+      vm.group = [];
+    },
+    getVehicles: function getVehicles() {
+      var vm = this;
+      axios.get("/vehicles/list").then(function (response) {
+        console.log("%c getVehicles", "color: green", response);
+        vm.vehicles = response.data;
+      })["catch"](function (e) {
+        console.log("%c getVehicles error", "color: red", e.response);
+        vm.messages.error = e.response.data.message;
+      });
+    },
+    selectResponsiblePerson: function selectResponsiblePerson(person) {
+      var vm = this;
+      vm.mayBeResponsiblePerson = person;
+      vm.popup = null;
+      console.log("%c selectResponsiblePerson", "color: blue", (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.strip)(person));
+    },
+    submitCreate: function submitCreate() {
+      this.$refs.formCreateVehicle.requestSubmit();
+    },
+    submitRfid: function submitRfid() {
+      var vm = this;
+      var formData = new FormData(vm.$refs.addRfid);
+      var postData = {};
+      var _iterator3 = _createForOfIteratorHelper(formData),
+        _step3;
+      try {
+        for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
+          var _step3$value = _slicedToArray(_step3.value, 2),
+            key = _step3$value[0],
+            value = _step3$value[1];
+          postData[key] = value;
+        }
+      } catch (err) {
+        _iterator3.e(err);
+      } finally {
+        _iterator3.f();
+      }
+      console.log(postData);
+      vm.rfids.push(postData);
+
+      // vm.$refs.addRfid?.reset();
+      vm.popup = null;
+    },
+    updateVehicle: function updateVehicle() {
+      var _vm$mayBeResponsibleP2;
+      var vm = this;
+      console.log("%c updateVehicle", "color: blue", (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.strip)(vm.editedVehicle));
+      var formData = new FormData(vm.$refs.editVehicleForm);
+      var postData = {};
+      var _iterator4 = _createForOfIteratorHelper(formData),
+        _step4;
+      try {
+        for (_iterator4.s(); !(_step4 = _iterator4.n()).done;) {
+          var _step4$value = _slicedToArray(_step4.value, 2),
+            key = _step4$value[0],
+            value = _step4$value[1];
+          postData[key] = value;
+        }
+      } catch (err) {
+        _iterator4.e(err);
+      } finally {
+        _iterator4.f();
+      }
+      var sendData = {
+        user_id: vm.userId,
+        organisation_id: vm.organisationId,
+        employee_id: (_vm$mayBeResponsibleP2 = vm.mayBeResponsiblePerson) === null || _vm$mayBeResponsibleP2 === void 0 ? void 0 : _vm$mayBeResponsibleP2.id,
+        post_data: postData,
+        rfids: vm.rfids,
+        group: Object.values(vm.mayBeGroupedVehicles).map(function (e) {
+          return e.id;
+        })
+      };
+      axios.post("/vehicles/update", sendData).then(function (response) {
+        var _response$data4;
+        console.log("%c updateVehicle", "color:green", response);
+        vm.messages[response.data.type] = response === null || response === void 0 || (_response$data4 = response.data) === null || _response$data4 === void 0 ? void 0 : _response$data4.message;
+        vm.getVehicles();
+      })["catch"](function (e) {
+        console.log("%c updateVehicle error", "color: red", e.response);
+        vm.messages.error = e.response.data.message;
+      });
+    },
+    viewVehicle: function viewVehicle(item) {
+      console.log("%c viewVehicle", "color: blue", (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.strip)(item));
+      var vm = this;
+      this.mode = "details";
+      vm.editedVehicle = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.strip)(item);
+      vm.mayBeResponsiblePerson = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.strip)(item).employee;
+      vm.rfids = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.strip)(item).rfids;
+      vm.mayBeGroupedVehicles = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.strip)(item).group;
+      vm.group = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.strip)(item).group;
+    },
+    removeRfid: function removeRfid(rfid) {
+      var vm = this;
+      var index = Object.values(vm.rfids).findIndex(function (item) {
+        return rfid.label === item.label && rfid.value === item.value;
+      });
+      vm.rfids.splice(index, 1);
+    },
+    removeFromGroup: function removeFromGroup(item, save) {
+      var vm = this;
+      var group = Object.values(vm.group);
+      var index = group.findIndex(function (el) {
+        return el.id === item.id;
+      });
+      if (index >= 0) {
+        group.splice(index, 1);
+        vm.group = group;
+      }
+      if (save) {
+        vm.mayBeGroupedVehicles = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.strip)(vm.group);
+      }
+    }
+  }
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (appPublicVehicles);
 
 /***/ }),
 
