@@ -12,6 +12,8 @@ export default {
                     type: "text",
                     required: true,
                     class: "col-md-6 col-lg-4 mt-2 ",
+                    pattern: "[А-Яа-я]{1,}",
+                    title: "Допустимы только русские буквы",
                 },
                 {
                     id: "last_name-new-user",
@@ -20,6 +22,8 @@ export default {
                     type: "text",
                     required: true,
                     class: "col-md-6 col-lg-4 mt-2 ",
+                    pattern: "[А-Яа-я]{1,}",
+                    title: "Допустимы только русские буквы",
                 },
                 {
                     id: "middle_name-new-user",
@@ -27,6 +31,8 @@ export default {
                     label: "Отчество",
                     type: "text",
                     class: "mt-2 col-lg-4  ",
+                    pattern: "[А-Яа-я]{1,}",
+                    title: "Допустимы только русские буквы",
                 },
                 {
                     id: "email-new-user",
@@ -37,12 +43,15 @@ export default {
                     class: "col-md-6 mt-2 ",
                 },
                 {
+                    title: "Допустимы цифры, (, ), +, -",
                     id: "phone-new-user",
                     name: "phone",
                     label: "Телефон",
                     type: "text",
                     required: true,
                     class: "col-md-6 mt-2 ",
+                    minlength: 6,
+                    pattern: "[+]{0,1}[0-9\\-\\(\\)]{1,}",
                 },
             ];
 

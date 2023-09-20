@@ -15295,14 +15295,17 @@ __webpack_require__.r(__webpack_exports__);
   mixins: [_mixins_inputEvents__WEBPACK_IMPORTED_MODULE_0__["default"]],
   props: ["_info", "_value"],
   data: function data() {
-    var _this$_info, _this$_info2, _this$_info3, _this$_info4, _this$_info5;
+    var _this$_info, _this$_info2, _this$_info3, _this$_info4, _this$_info5, _this$_info6, _this$_info7, _this$_info8;
     return {
       value: this._value,
       id: (_this$_info = this._info) === null || _this$_info === void 0 ? void 0 : _this$_info.id,
       name: (_this$_info2 = this._info) === null || _this$_info2 === void 0 ? void 0 : _this$_info2.name,
       required: (_this$_info3 = this._info) === null || _this$_info3 === void 0 ? void 0 : _this$_info3.required,
       label: (_this$_info4 = this._info) === null || _this$_info4 === void 0 ? void 0 : _this$_info4.label,
-      type: (_this$_info5 = this._info) === null || _this$_info5 === void 0 ? void 0 : _this$_info5.type
+      type: (_this$_info5 = this._info) === null || _this$_info5 === void 0 ? void 0 : _this$_info5.type,
+      pattern: (_this$_info6 = this._info) === null || _this$_info6 === void 0 ? void 0 : _this$_info6.pattern,
+      minlength: (_this$_info7 = this._info) === null || _this$_info7 === void 0 ? void 0 : _this$_info7.minlength,
+      title: (_this$_info8 = this._info) === null || _this$_info8 === void 0 ? void 0 : _this$_info8.title
     };
   },
   watch: {
@@ -15560,11 +15563,14 @@ __webpack_require__.r(__webpack_exports__);
 var _hoisted_1 = {
   "class": "form-control-custom"
 };
-var _hoisted_2 = ["type", "name", "id", "required"];
+var _hoisted_2 = ["minlength", "pattern", "type", "title", "name", "id", "required"];
 var _hoisted_3 = ["for"];
 function render(_ctx, _cache, $props, $setup, $data, $options) {
   return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
+    minlength: $data.minlength,
+    pattern: $data.pattern,
     type: $data.type,
+    title: $data.title,
     name: $data.name,
     autocomplete: "off",
     "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)({
@@ -15889,27 +15895,34 @@ __webpack_require__.r(__webpack_exports__);
         label: "Имя учетной записи",
         type: "text",
         required: true,
-        "class": "mt-2"
+        "class": "mt-2",
+        minlength: 5
       }, {
         id: "first_name-new-user",
         name: "first_name",
         label: "Имя",
         type: "text",
         required: true,
-        "class": "col-md-6 col-lg-4 mt-2 "
+        "class": "col-md-6 col-lg-4 mt-2 ",
+        pattern: "[А-Яа-я]{1,}",
+        title: "Допустимы только русские буквы"
       }, {
         id: "last_name-new-user",
         name: "last_name",
         label: "Фамилия",
         type: "text",
         required: true,
-        "class": "col-md-6 col-lg-4 mt-2 "
+        "class": "col-md-6 col-lg-4 mt-2 ",
+        pattern: "[А-Яа-я]{1,}",
+        title: "Допустимы только русские буквы"
       }, {
         id: "middle_name-new-user",
         name: "middle_name",
         label: "Отчество",
         type: "text",
-        "class": "mt-2 col-lg-4  "
+        "class": "mt-2 col-lg-4  ",
+        pattern: "[А-Яа-я]{1,}",
+        title: "Допустимы только русские буквы"
       }, {
         id: "email-new-user",
         name: "email",
@@ -15923,7 +15936,9 @@ __webpack_require__.r(__webpack_exports__);
         label: "Телефон",
         type: "text",
         required: true,
-        "class": "mt-2 "
+        "class": "mt-2 ",
+        minlength: 6,
+        pattern: "[+]{0,1}[0-9\\-\\(\\)]{1,}"
       }, {
         id: "password-new-user",
         name: "password",
@@ -16007,20 +16022,26 @@ __webpack_require__.r(__webpack_exports__);
         label: "Имя",
         type: "text",
         required: true,
-        "class": "col-md-6 col-lg-4 mt-2 "
+        "class": "col-md-6 col-lg-4 mt-2 ",
+        pattern: "[А-Яа-я]{1,}",
+        title: "Допустимы только русские буквы"
       }, {
         id: "last_name-new-user",
         name: "last_name",
         label: "Фамилия",
         type: "text",
         required: true,
-        "class": "col-md-6 col-lg-4 mt-2 "
+        "class": "col-md-6 col-lg-4 mt-2 ",
+        pattern: "[А-Яа-я]{1,}",
+        title: "Допустимы только русские буквы"
       }, {
         id: "middle_name-new-user",
         name: "middle_name",
         label: "Отчество",
         type: "text",
-        "class": "mt-2 col-lg-4  "
+        "class": "mt-2 col-lg-4  ",
+        pattern: "[А-Яа-я]{1,}",
+        title: "Допустимы только русские буквы"
       }, {
         id: "email-new-user",
         name: "email",
@@ -16029,12 +16050,15 @@ __webpack_require__.r(__webpack_exports__);
         required: true,
         "class": "col-md-6 mt-2 "
       }, {
+        title: "Допустимы цифры, (, ), +, -",
         id: "phone-new-user",
         name: "phone",
         label: "Телефон",
         type: "text",
         required: true,
-        "class": "col-md-6 mt-2 "
+        "class": "col-md-6 mt-2 ",
+        minlength: 6,
+        pattern: "[+]{0,1}[0-9\\-\\(\\)]{1,}"
       }];
       var rolesField = {
         id: "roles-new-user",
