@@ -27,9 +27,6 @@ class StoreController extends Controller
 
             $edited_employee = $request->edited_employee;
             $edited_employee['organisation_id'] = $request->organisation_id;
-
-            unset($edited_employee['id']);
-
             $edited_employee = Employee::create($edited_employee);
 
             return response()->json([

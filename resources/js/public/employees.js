@@ -2,12 +2,27 @@
  * Приложение отвечающее за внешний вид и отправку
  * запросов CRUD раздела "Сотрудники"
  */
-import { strip } from "./functions";
+import { strip } from "./../misc/helpers";
 import messages from "../mixins/messages";
+import MessagesComponent from "./../components/MessagesComponent/";
+import InputComponent from "../components/InputComponent";
+import FieldComponent from "../components/FieldComponent";
+import FormComponent from "./../components/FormComponent/";
+import crud from "../mixins/crud";
+import addEmployeeForm from "../formFields/employees/add";
+import editEmployeeForm from "../formFields/employees/edit";
+
 const axios = require("axios");
 const appPublicEmployees = {
     el: "#public-employees",
 
+    mixins: [messages, crud, addEmployeeForm, editEmployeeForm],
+    components: {
+        FieldComponent,
+        Field: InputComponent,
+        TheForm: FormComponent,
+        MessagesComponent,
+    },
     data() {
         return {
             organisationId: -1,
@@ -33,12 +48,6 @@ const appPublicEmployees = {
                 "Водитель Комбайна": "Водитель Комбайна",
                 "Водитель Трактора": "Водитель Трактора",
             },
-            messages: {
-                error: null,
-                info: null,
-                success: null,
-                confirm: null,
-            },
 
             vehicles: [],
 
@@ -60,14 +69,14 @@ const appPublicEmployees = {
             }
         },
 
-        "editedEmployee.id"(val) {
-            const vm = this;
-            if (val < 0) {
-                vm.showForm = true;
-            } else {
-                vm.showForm = false;
-            }
-        },
+        // "editedEmployee.id"(val) {
+        //     const vm = this;
+        //     if (val < 0) {
+        //         vm.showForm = true;
+        //     } else {
+        //         vm.showForm = false;
+        //     }
+        // },
     },
 
     computed: {
@@ -118,10 +127,9 @@ const appPublicEmployees = {
         vm.getEmployees();
         vm.getVehicles();
 
-        vm.$el.addEventListener("click", (e) => {
-            if (e.target.type !== "button") {
-                vm.clearMessages();
-            }
+        document.addEventListener("updateList", () => {
+            vm.getEmployees();
+            vm.getVehicles();
         });
     },
 
@@ -167,129 +175,22 @@ const appPublicEmployees = {
             };
         },
 
-        confirmActionCb() {
-            document.dispatchEvent(new CustomEvent("submitConfirmEvent"));
-        },
-
-        cancelConfirmActionCb() {
-            document.dispatchEvent(new CustomEvent("cancelConfirmEvent"));
-        },
-
-        clearMessages(confirm) {
-            this.messages = {
-                error: null,
-                info: null,
-                success: null,
-                confirm: this.messages.confirm,
-            };
-
-            if (confirm) {
-                this.messages.confirm = null;
-            }
-        },
-
         deleteEmployee(person) {
             const vm = this;
 
-            let handlerSubmit = null;
-            let handlerCancel = null;
-            vm.editMode = false;
-
-            handlerSubmit = () => {
-                vm.deleteEmployeeCb(person);
-                document.removeEventListener(
-                    "submitConfirmEvent",
-                    handlerSubmit,
-                    false
-                );
-
-                vm.$nextTick(() => {
-                    vm.clearMessages(true);
-                });
+            const postData = {
+                user_id: vm.userId,
+                organisation_id: vm.organisationId,
+                delete_employee_id: person.id,
+                name: `${person.specialisation} ${person.last_name}`,
             };
 
-            handlerCancel = () => {
-                document.removeEventListener(
-                    "submitConfirmEvent",
-                    handlerSubmit,
-                    false
-                );
-
-                document.removeEventListener(
-                    "cancelConfirmEvent",
-                    handlerCancel,
-                    false
-                );
-
-                vm.$nextTick(() => {
-                    vm.clearMessages(true);
-                });
-            };
-
-            if (!vm.messages.confirm) {
-                document.addEventListener("submitConfirmEvent", handlerSubmit);
-
-                document.addEventListener("cancelConfirmEvent", handlerCancel);
-
-                vm.messages.confirm = `${vm.validationMessages.deleteEmployee} ${person.last_name} ?`;
-            } else {
-                document.removeEventListener(
-                    "confirmEvent",
-                    handlerSubmit,
-                    false
-                );
-
-                document.removeEventListener(
-                    "submitConfirmEvent",
-                    handlerCancel,
-                    false
-                );
-
-                vm.$nextTick(() => {
-                    vm.clearMessages(true);
-                });
-            }
+            vm.deleteEntity(postData, `./employees/delete`);
         },
 
         getDate(dateString) {
             const date = new Date(dateString);
             return date.getFullYear();
-        },
-
-        getVehicles() {
-            const vm = this;
-            axios
-                .get("/vehicles/list")
-                .then((response) => {
-                    console.log("%c getVehicles", "color: green", response);
-                    vm.vehicles = response.data;
-                })
-                .catch((e) => {
-                    console.log(
-                        "%c getVehicles error",
-                        "color: red",
-                        e.response
-                    );
-                    vm.messages.error = e.response.data.message;
-                });
-        },
-
-        deleteEmployeeCb(person) {
-            const vm = this;
-            axios
-                .post(`./employees/delete`, {
-                    user_id: vm.userId,
-                    organisation_id: vm.organisationId,
-                    delete_employee_id: person.id,
-                })
-                .then((response) => {
-                    console.log(response);
-                    vm.getEmployees();
-                })
-                .catch((e) => {
-                    console.log(e.response);
-                    vm.messages.error = `${e.response.status} ${e.response.statusText} : ${e.response.data.message}`;
-                });
         },
 
         edit(person, showForm) {
@@ -327,8 +228,32 @@ const appPublicEmployees = {
                 });
         },
 
+        getVehicles() {
+            const vm = this;
+            axios
+                .get("/vehicles/list")
+                .then((response) => {
+                    console.log("%c getVehicles", "color: green", response);
+                    vm.vehicles = response.data;
+                })
+                .catch((e) => {
+                    console.log(
+                        "%c getVehicles error",
+                        "color: red",
+                        e.response
+                    );
+                    vm.messages.error = e.response.data.message;
+                });
+        },
+
         patchEmployee() {
             const vm = this;
+            const form = vm.$refs.submitFormEdit;
+            const data = vm.getFormData(form);
+
+            for (const key in data) {
+                vm.editedEmployee[key] = data[key];
+            }
 
             const postData = {
                 user_id: vm.userId,
@@ -336,46 +261,24 @@ const appPublicEmployees = {
                 edited_employee: vm.editedEmployee,
             };
 
-            console.log("%c patchEmployee", "color:blue", postData);
-            axios
-                .post(`/employees/update`, postData)
-                .then((response) => {
-                    console.log(response);
-                    vm.getEmployees();
-                })
-                .catch((e) => {
-                    console.log(e.response);
-                    vm.messages.error = `${e.response.status} ${e.response.statusText} : ${e.response.data.message}`;
-                });
+            vm.editEntity(postData, `/employees/update`);
         },
 
-        storeEmployee() {
+        storeEmployee(data) {
             const vm = this;
-            axios
-                .post(`/employees/store`, {
-                    user_id: vm.userId,
-                    organisation_id: vm.organisationId,
-                    edited_employee: vm.editedEmployee,
-                })
-                .then((response) => {
-                    console.log(response);
-                    vm.getEmployees();
+
+            const postData = {
+                user_id: vm.userId,
+                organisation_id: vm.organisationId,
+                edited_employee: data,
+            };
+
+            vm.createEntity(postData, `/employees/store`).then((e) => {
+                if (e.status === 200) {
+                    vm.$refs.createEmployeeForm.reset();
                     vm.clearEmployee();
-                    vm.messages[response.data.type] = response.data.message;
-                })
-                .catch((e) => {
-                    console.log(e);
-                    vm.messages.error = `${e.response.status} ${e.response.statusText} : ${e.response.data.message}`;
-                });
-        },
-
-        submitForm() {
-            const vm = this;
-            if (vm.editedEmployee.id === -1) {
-                vm.storeEmployee();
-            } else {
-                vm.patchEmployee();
-            }
+                }
+            });
         },
 
         removeFromGroup(item, save) {

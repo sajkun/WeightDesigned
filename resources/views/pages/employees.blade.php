@@ -4,8 +4,10 @@
     <div class="container-fluid d-none" id='public-employees'>
         <input type="hidden" ref='organisationId' value='{{ $organisation_id }}'>
         <input type="hidden" ref='userId' value='{{ $user_id }}'>
-        <messages-component :_messages='messages' v-on:cancel-msg='cancelConfirmActionCb' v-on:confrim-msg='confirmActionCb'
+
+        <messages-component :_messages='messages' v-on:cancel-msg='cancelConfirmActionCb' v-on:confirm-msg='confirmActionCb'
             v-on:clear-msg='clearMessages'></messages-component>
+
         <div class="row h-100 position-relative">
             <div class="p-3 align-self-start" :class='listClass'
                 :style="!editMode ? 'transition: width .15s ease .1s' : ''">
@@ -44,79 +46,16 @@
 
             <Transition name="bounce">
                 <div class="col-12 col-lg-6 p-3 org-details" v-show='editMode'>
-                    <div class="d-lg-flex flex-column org-wrapper h-100" v-if='showForm'>
-                        <form @submit.prevent="submitForm" method='POST'>
-                            <div class="row">
-                                <div class="col-12 mt-2 col-lg-6 form-control-custom ">
-                                    <div class="form-control-custom ">
-                                        <input type="text" autocomplete='off'
-                                            :class='{ "active": editedEmployee.first_name }' id='first_name' required
-                                            v-model='editedEmployee.first_name'>
+                    <div class="d-lg-flex flex-column org-wrapper  p-4" v-if='showForm'>
 
-                                        <label for="first_name">Имя </label>
-                                    </div>
-                                </div>
-                                <div class="col-12 mt-2  col-lg-6">
-                                    <div class="form-control-custom ">
-                                        <input type="text" autocomplete='off'
-                                            :class='{ "active": editedEmployee.middle_name }' id='middle_name'
-                                            v-model='editedEmployee.middle_name'>
+                        <h3 class="h4">Добавить нового сотрудника</h3>
 
-                                        <label for="middle_name">Отчество </label>
-                                    </div>
-                                </div>
-                                <div class="col-12 mt-2">
-                                    <div class="form-control-custom ">
-                                        <input type="text" autocomplete='off'
-                                            :class='{ "active": editedEmployee.last_name }' id='last_name' required
-                                            v-model='editedEmployee.last_name'>
+                        <the-form ref='createEmployeeForm' :_structure='addEmployeeFormStructure'
+                            @exec-submit='storeEmployee' @cancel='showForm=false; editMode=false'>
+                        </the-form>
 
-                                        <label for="last_name">Фамилия </label>
-                                    </div>
-                                </div>
-                                <div class="col-12 mt-2">
-                                    <div class="form-control-custom ">
-
-                                        <input type="text" autocomplete='off' :class='{ "active": editedEmployee.phone }'
-                                            id='phone' required v-model='editedEmployee.phone'>
-                                        <label for="phone">Телефон</label>
-                                    </div>
-                                </div>
-                                <div class="col-12 mt-2">
-                                    <div class="form-control-custom ">
-                                        <select id='specialisation' required
-                                            :class='{ "active": editedEmployee.specialisation }'v-model='editedEmployee.specialisation'>
-                                            <option v-for='name, key in specialisations' :key='"specialisation" + key'
-                                                :value="key" :selected=' key === editedEmployee.specialisation'>
-                                                @{{ name }} </option>
-                                        </select>
-
-                                        <label for="specialisation">Профессия</label>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row">
-
-                                <div class="col-12 col-md-6">
-                                    <button type='button' @click='editMode=false' v-if="editedEmployee.id < 0"
-                                        class='w-100 mt-3 btn btn-borders-grey'>
-                                        Отмена
-                                    </button>
-                                    <button type='button' @click='showForm=false' v-if="editedEmployee.id >= 0"
-                                        class='w-100 mt-3 btn btn-borders-grey'>
-                                        Отмена
-                                    </button>
-                                </div>
-                                <div class="col-12 col-md-6">
-                                    <button type='submit' class='w-100 mt-3 btn  btn-primary-alt'>
-                                        Сохранить
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
                     </div>
-                    <div class="d-lg-flex flex-column org-wrapper h-100" v-if='!showForm'>
+                    <div class="d-lg-flex flex-column org-wrapper p-4" v-if='!showForm'>
                         <button class="btn toggle-expand">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
                                 xmlns="http://www.w3.org/2000/svg">

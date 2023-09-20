@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="container-fluid d-none" id='public-users'>
-        <messages-component :_messages='messages' v-on:cancel-msg='cancelConfirmActionCb' v-on:confrim-msg='confirmActionCb'
+        <messages-component :_messages='messages' v-on:cancel-msg='cancelConfirmActionCb' v-on:confirm-msg='confirmActionCb'
             v-on:clear-msg='clearMessages'></messages-component>
 
         <input type="hidden" ref='organisationId' value='{{ $organisation_id }}'>
@@ -66,8 +66,6 @@
                         @include('pages.users.view-info')
                         @include('pages.users.view-settings')
                     </div>
-
-
                 </div>
             </Transition>
 

@@ -8,53 +8,13 @@
         </svg>
         Информация о сотруднике
     </p>
+
+
     <form @submit.prevent="patchEmployee" ref='submitFormEdit' method='POST'>
         <input type="hidden" name='id' v-model='editedEmployee.id'>
         <div class="row narrow-row">
-            <div class="col-12 mt-2 col-lg-6 form-control-custom ">
-                <div class="form-control-custom ">
-                    <input type="text" autocomplete='off' :class='{ "active": editedEmployee.first_name }'
-                        name='first_name' id='first_name' required v-model='editedEmployee.first_name'>
-
-                    <label for="first_name">Имя </label>
-                </div>
-            </div>
-            <div class="col-12 mt-2  col-lg-6">
-                <div class="form-control-custom ">
-                    <input type="text" autocomplete='off' :class='{ "active": editedEmployee.middle_name }'
-                        name='middle_name' id='middle_name' v-model='editedEmployee.middle_name'>
-                    <label for="middle_name">Отчество </label>
-                </div>
-            </div>
-            <div class="col-12 mt-2">
-                <div class="form-control-custom ">
-                    <input type="text" autocomplete='off' :class='{ "active": editedEmployee.last_name }'
-                        id='last_name' name='last_name' required v-model='editedEmployee.last_name'>
-
-                    <label for="last_name">Фамилия </label>
-                </div>
-            </div>
-            <div class="col-12 mt-2">
-                <div class="form-control-custom ">
-
-                    <input type="text" autocomplete='off' :class='{ "active": editedEmployee.phone }' id='phone'
-                        required v-model='editedEmployee.phone' name='phone'>
-                    <label for="phone">Телефон</label>
-                </div>
-            </div>
-            <div class="col-12 mt-2">
-                <div class="form-control-custom ">
-                    <select id='specialisation' required
-                        :class='{ "active": editedEmployee.specialisation }'v-model='editedEmployee.specialisation'
-                        name='specialisation'>
-                        <option v-for='name, key in specialisations' :key='"specialisation" + key'
-                            :value="key" :selected=' key === editedEmployee.specialisation'>
-                            @{{ name }} </option>
-                    </select>
-
-                    <label for="specialisation">Профессия</label>
-                </div>
-            </div>
+            <field-component v-for='data, key in editEmployeeFormStructure' :_info='data'
+                :key='"ff" + key'></field-component>
         </div>
 
         <div class="horisontal-separator my-4"></div>

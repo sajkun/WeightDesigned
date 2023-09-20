@@ -16083,6 +16083,143 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/formFields/employees/add.js":
+/*!**************************************************!*\
+  !*** ./resources/js/formFields/employees/add.js ***!
+  \**************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  computed: {
+    addEmployeeFormStructure: function addEmployeeFormStructure() {
+      return [{
+        id: "first_name-new-employee",
+        name: "first_name",
+        label: "Имя",
+        type: "text",
+        required: true,
+        "class": "col-md-6 col-lg-4 mt-2 ",
+        pattern: "[А-Яа-я]{1,}",
+        title: "Допустимы только русские буквы"
+      }, {
+        id: "last_name-new-employee",
+        name: "last_name",
+        label: "Фамилия",
+        type: "text",
+        required: true,
+        "class": "col-md-6 col-lg-4 mt-2 ",
+        pattern: "[А-Яа-я]{1,}",
+        title: "Допустимы только русские буквы"
+      }, {
+        id: "middle_name-new-employee",
+        name: "middle_name",
+        label: "Отчество",
+        type: "text",
+        "class": "mt-2 col-lg-4  ",
+        pattern: "[А-Яа-я]{1,}",
+        title: "Допустимы только русские буквы"
+      }, {
+        id: "phone-new-employee",
+        name: "phone",
+        label: "Телефон",
+        type: "text",
+        required: true,
+        "class": "mt-2 ",
+        minlength: 6,
+        pattern: "[+]{0,1}[0-9\\-\\(\\)]{1,}"
+      }, {
+        id: "specialisation-new-employee",
+        name: "specialisation",
+        label: "Роль",
+        type: "select",
+        "class": "mt-2 ",
+        required: true,
+        options: this.specialisations
+      }];
+    }
+  }
+});
+
+/***/ }),
+
+/***/ "./resources/js/formFields/employees/edit.js":
+/*!***************************************************!*\
+  !*** ./resources/js/formFields/employees/edit.js ***!
+  \***************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _misc_helpers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../misc/helpers */ "./resources/js/misc/helpers.js");
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  computed: {
+    editEmployeeFormStructure: function editEmployeeFormStructure() {
+      var vm = this;
+      var structure = [{
+        id: "first_name-new-employee",
+        name: "first_name",
+        label: "Имя",
+        type: "text",
+        required: true,
+        "class": "col-md-6 col-lg-4 mt-2 ",
+        pattern: "[А-Яа-я]{1,}",
+        title: "Допустимы только русские буквы"
+      }, {
+        id: "last_name-new-employee",
+        name: "last_name",
+        label: "Фамилия",
+        type: "text",
+        required: true,
+        "class": "col-md-6 col-lg-4 mt-2 ",
+        pattern: "[А-Яа-я]{1,}",
+        title: "Допустимы только русские буквы"
+      }, {
+        id: "middle_name-new-employee",
+        name: "middle_name",
+        label: "Отчество",
+        type: "text",
+        "class": "mt-2 col-lg-4  ",
+        pattern: "[А-Яа-я]{1,}",
+        title: "Допустимы только русские буквы"
+      }, {
+        id: "phone-new-employee",
+        name: "phone",
+        label: "Телефон",
+        type: "text",
+        required: true,
+        "class": "mt-2 ",
+        minlength: 6,
+        pattern: "[+]{0,1}[0-9\\-\\(\\)]{1,}"
+      }, {
+        id: "specialisation-new-employee",
+        name: "specialisation",
+        label: "Роль",
+        type: "select",
+        "class": "mt-2 ",
+        required: true,
+        options: this.specialisations
+      }];
+      var employeeData = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.editedEmployee);
+      structure.map(function (f) {
+        f.value = employeeData[f.name];
+        return f;
+      });
+      return structure;
+    }
+  }
+});
+
+/***/ }),
+
 /***/ "./resources/js/misc/helpers.js":
 /*!**************************************!*\
   !*** ./resources/js/misc/helpers.js ***!
@@ -16192,7 +16329,6 @@ var crud = {
       return this.sendRequest(postData, url).then(document.dispatchEvent(new CustomEvent("updateList")));
     },
     getFormData: function getFormData(form) {
-      var vm = this;
       var formData = new FormData(form);
       var data = {};
       var _iterator = _createForOfIteratorHelper(formData),
@@ -16349,17 +16485,38 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _functions__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./functions */ "./resources/js/public/functions.js");
+/* harmony import */ var _misc_helpers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./../misc/helpers */ "./resources/js/misc/helpers.js");
 /* harmony import */ var _mixins_messages__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../mixins/messages */ "./resources/js/mixins/messages.js");
+/* harmony import */ var _components_MessagesComponent___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./../components/MessagesComponent/ */ "./resources/js/components/MessagesComponent/index.js");
+/* harmony import */ var _components_InputComponent__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../components/InputComponent */ "./resources/js/components/InputComponent/index.js");
+/* harmony import */ var _components_FieldComponent__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../components/FieldComponent */ "./resources/js/components/FieldComponent/index.js");
+/* harmony import */ var _components_FormComponent___WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./../components/FormComponent/ */ "./resources/js/components/FormComponent/index.js");
+/* harmony import */ var _mixins_crud__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../mixins/crud */ "./resources/js/mixins/crud.js");
+/* harmony import */ var _formFields_employees_add__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../formFields/employees/add */ "./resources/js/formFields/employees/add.js");
+/* harmony import */ var _formFields_employees_edit__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../formFields/employees/edit */ "./resources/js/formFields/employees/edit.js");
 /**
  * Приложение отвечающее за внешний вид и отправку
  * запросов CRUD раздела "Сотрудники"
  */
 
 
+
+
+
+
+
+
+
 var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 var appPublicEmployees = {
   el: "#public-employees",
+  mixins: [_mixins_messages__WEBPACK_IMPORTED_MODULE_1__["default"], _mixins_crud__WEBPACK_IMPORTED_MODULE_6__["default"], _formFields_employees_add__WEBPACK_IMPORTED_MODULE_7__["default"], _formFields_employees_edit__WEBPACK_IMPORTED_MODULE_8__["default"]],
+  components: {
+    FieldComponent: _components_FieldComponent__WEBPACK_IMPORTED_MODULE_4__["default"],
+    Field: _components_InputComponent__WEBPACK_IMPORTED_MODULE_3__["default"],
+    TheForm: _components_FormComponent___WEBPACK_IMPORTED_MODULE_5__["default"],
+    MessagesComponent: _components_MessagesComponent___WEBPACK_IMPORTED_MODULE_2__["default"]
+  },
   data: function data() {
     return {
       organisationId: -1,
@@ -16386,12 +16543,6 @@ var appPublicEmployees = {
         "Водитель Комбайна": "Водитель Комбайна",
         "Водитель Трактора": "Водитель Трактора"
       },
-      messages: {
-        error: null,
-        info: null,
-        success: null,
-        confirm: null
-      },
       vehicles: [],
       validationMessages: {
         deleteEmployee: "Вы уверены, что хотите удалить сотрудника"
@@ -16407,15 +16558,14 @@ var appPublicEmployees = {
       if (_editMode && vm.editedEmployee.id < 0) {
         vm.showForm = true;
       }
-    },
-    "editedEmployee.id": function editedEmployeeId(val) {
-      var vm = this;
-      if (val < 0) {
-        vm.showForm = true;
-      } else {
-        vm.showForm = false;
-      }
-    }
+    } // "editedEmployee.id"(val) {
+    //     const vm = this;
+    //     if (val < 0) {
+    //         vm.showForm = true;
+    //     } else {
+    //         vm.showForm = false;
+    //     }
+    // },
   },
   computed: {
     listClass: function listClass() {
@@ -16455,16 +16605,15 @@ var appPublicEmployees = {
     vm.userId = vm.$refs.userId.value;
     vm.getEmployees();
     vm.getVehicles();
-    vm.$el.addEventListener("click", function (e) {
-      if (e.target.type !== "button") {
-        vm.clearMessages();
-      }
+    document.addEventListener("updateList", function () {
+      vm.getEmployees();
+      vm.getVehicles();
     });
   },
   methods: {
     applyGroup: function applyGroup() {
       var vm = this;
-      vm.editedEmployee.vehicles = (0,_functions__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.group);
+      vm.editedEmployee.vehicles = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.group);
       vm.popup = null;
     },
     addVehicleToGroup: function addVehicleToGroup(item) {
@@ -16478,7 +16627,7 @@ var appPublicEmployees = {
       } else {
         group.splice(index, 1);
       }
-      vm.group = (0,_functions__WEBPACK_IMPORTED_MODULE_0__.strip)(group);
+      vm.group = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(group);
     },
     addEmployee: function addEmployee() {
       var vm = this;
@@ -16497,88 +16646,26 @@ var appPublicEmployees = {
         specialisation: null
       };
     },
-    confirmActionCb: function confirmActionCb() {
-      document.dispatchEvent(new CustomEvent("submitConfirmEvent"));
-    },
-    cancelConfirmActionCb: function cancelConfirmActionCb() {
-      document.dispatchEvent(new CustomEvent("cancelConfirmEvent"));
-    },
-    clearMessages: function clearMessages(confirm) {
-      this.messages = {
-        error: null,
-        info: null,
-        success: null,
-        confirm: this.messages.confirm
-      };
-      if (confirm) {
-        this.messages.confirm = null;
-      }
-    },
     deleteEmployee: function deleteEmployee(person) {
       var vm = this;
-      var _handlerSubmit = null;
-      var _handlerCancel = null;
-      vm.editMode = false;
-      _handlerSubmit = function handlerSubmit() {
-        vm.deleteEmployeeCb(person);
-        document.removeEventListener("submitConfirmEvent", _handlerSubmit, false);
-        vm.$nextTick(function () {
-          vm.clearMessages(true);
-        });
+      var postData = {
+        user_id: vm.userId,
+        organisation_id: vm.organisationId,
+        delete_employee_id: person.id,
+        name: "".concat(person.specialisation, " ").concat(person.last_name)
       };
-      _handlerCancel = function handlerCancel() {
-        document.removeEventListener("submitConfirmEvent", _handlerSubmit, false);
-        document.removeEventListener("cancelConfirmEvent", _handlerCancel, false);
-        vm.$nextTick(function () {
-          vm.clearMessages(true);
-        });
-      };
-      if (!vm.messages.confirm) {
-        document.addEventListener("submitConfirmEvent", _handlerSubmit);
-        document.addEventListener("cancelConfirmEvent", _handlerCancel);
-        vm.messages.confirm = "".concat(vm.validationMessages.deleteEmployee, " ").concat(person.last_name, " ?");
-      } else {
-        document.removeEventListener("confirmEvent", _handlerSubmit, false);
-        document.removeEventListener("submitConfirmEvent", _handlerCancel, false);
-        vm.$nextTick(function () {
-          vm.clearMessages(true);
-        });
-      }
+      vm.deleteEntity(postData, "./employees/delete");
     },
     getDate: function getDate(dateString) {
       var date = new Date(dateString);
       return date.getFullYear();
     },
-    getVehicles: function getVehicles() {
-      var vm = this;
-      axios.get("/vehicles/list").then(function (response) {
-        console.log("%c getVehicles", "color: green", response);
-        vm.vehicles = response.data;
-      })["catch"](function (e) {
-        console.log("%c getVehicles error", "color: red", e.response);
-        vm.messages.error = e.response.data.message;
-      });
-    },
-    deleteEmployeeCb: function deleteEmployeeCb(person) {
-      var vm = this;
-      axios.post("./employees/delete", {
-        user_id: vm.userId,
-        organisation_id: vm.organisationId,
-        delete_employee_id: person.id
-      }).then(function (response) {
-        console.log(response);
-        vm.getEmployees();
-      })["catch"](function (e) {
-        console.log(e.response);
-        vm.messages.error = "".concat(e.response.status, " ").concat(e.response.statusText, " : ").concat(e.response.data.message);
-      });
-    },
     edit: function edit(person, showForm) {
       console.log("%c edit", "color:blue", person);
       var vm = this;
       vm.editMode = true;
-      vm.editedEmployee = (0,_functions__WEBPACK_IMPORTED_MODULE_0__.strip)(person);
-      vm.group = (0,_functions__WEBPACK_IMPORTED_MODULE_0__.strip)(person.vehicles);
+      vm.editedEmployee = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(person);
+      vm.group = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(person.vehicles);
       vm.$nextTick(function () {
         vm.showForm = Boolean(showForm);
       });
@@ -16598,45 +16685,43 @@ var appPublicEmployees = {
         vm.messages.error = e.response.data.message;
       });
     },
+    getVehicles: function getVehicles() {
+      var vm = this;
+      axios.get("/vehicles/list").then(function (response) {
+        console.log("%c getVehicles", "color: green", response);
+        vm.vehicles = response.data;
+      })["catch"](function (e) {
+        console.log("%c getVehicles error", "color: red", e.response);
+        vm.messages.error = e.response.data.message;
+      });
+    },
     patchEmployee: function patchEmployee() {
       var vm = this;
+      var form = vm.$refs.submitFormEdit;
+      var data = vm.getFormData(form);
+      for (var key in data) {
+        vm.editedEmployee[key] = data[key];
+      }
       var postData = {
         user_id: vm.userId,
         organisation_id: vm.organisationId,
         edited_employee: vm.editedEmployee
       };
-      console.log("%c patchEmployee", "color:blue", postData);
-      axios.post("/employees/update", postData).then(function (response) {
-        console.log(response);
-        vm.getEmployees();
-      })["catch"](function (e) {
-        console.log(e.response);
-        vm.messages.error = "".concat(e.response.status, " ").concat(e.response.statusText, " : ").concat(e.response.data.message);
-      });
+      vm.editEntity(postData, "/employees/update");
     },
-    storeEmployee: function storeEmployee() {
+    storeEmployee: function storeEmployee(data) {
       var vm = this;
-      axios.post("/employees/store", {
+      var postData = {
         user_id: vm.userId,
         organisation_id: vm.organisationId,
-        edited_employee: vm.editedEmployee
-      }).then(function (response) {
-        console.log(response);
-        vm.getEmployees();
-        vm.clearEmployee();
-        vm.messages[response.data.type] = response.data.message;
-      })["catch"](function (e) {
-        console.log(e);
-        vm.messages.error = "".concat(e.response.status, " ").concat(e.response.statusText, " : ").concat(e.response.data.message);
+        edited_employee: data
+      };
+      vm.createEntity(postData, "/employees/store").then(function (e) {
+        if (e.status === 200) {
+          vm.$refs.createEmployeeForm.reset();
+          vm.clearEmployee();
+        }
       });
-    },
-    submitForm: function submitForm() {
-      var vm = this;
-      if (vm.editedEmployee.id === -1) {
-        vm.storeEmployee();
-      } else {
-        vm.patchEmployee();
-      }
     },
     removeFromGroup: function removeFromGroup(item, save) {
       var vm = this;
@@ -16646,32 +16731,15 @@ var appPublicEmployees = {
       });
       if (index >= 0) {
         group.splice(index, 1);
-        vm.group = (0,_functions__WEBPACK_IMPORTED_MODULE_0__.strip)(group);
+        vm.group = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(group);
         if (save) {
-          vm.editedEmployee.vehicles = (0,_functions__WEBPACK_IMPORTED_MODULE_0__.strip)(group);
+          vm.editedEmployee.vehicles = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(group);
         }
       }
     }
   }
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (appPublicEmployees);
-
-/***/ }),
-
-/***/ "./resources/js/public/functions.js":
-/*!******************************************!*\
-  !*** ./resources/js/public/functions.js ***!
-  \******************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   strip: () => (/* binding */ strip)
-/* harmony export */ });
-var strip = function strip(obj) {
-  return JSON.parse(JSON.stringify(obj));
-};
 
 /***/ }),
 

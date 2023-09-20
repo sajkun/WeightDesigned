@@ -84,7 +84,6 @@ const crud = {
         },
 
         getFormData(form) {
-            const vm = this;
             const formData = new FormData(form);
 
             let data = {};
