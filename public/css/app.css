@@ -13259,6 +13259,22 @@ body {
   border-color: var(--grey-light) !important;
 }
 
+.show-password {
+  position: absolute;
+  z-index: 10;
+  right: 0;
+  top: -10px;
+  bottom: -10px;
+  margin: auto;
+  font-size: 1.25rem;
+  color: var(--grey-medium);
+  border: 0;
+}
+.show-password.toggled {
+  transform: scale(1.2, 1.2);
+  color: var(--green);
+}
+
 .form-control-comment {
   display: block;
   font-size: 0.75rem;
@@ -13410,6 +13426,19 @@ body {
 }
 .password-strength.strong #passwordStrength {
   color: var(--green);
+}
+
+.alert {
+  margin-left: auto;
+  margin-right: auto;
+  width: -moz-fit-content;
+  width: fit-content;
+}
+.alert ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  font-size: 1rem;
 }
 
 .btn-primary-alt {

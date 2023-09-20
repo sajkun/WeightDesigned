@@ -35,8 +35,10 @@ const detectPasswordStrength = (password) => {
     return text; // Форму не отправляем
 };
 
+// поле ввода пароля
 const passwordField = document.getElementById("password");
 
+// инициализация события на ввод пароля
 passwordField?.addEventListener("input", (e) => {
     const password = e.target.value;
     const strength = detectPasswordStrength(password);
@@ -54,6 +56,8 @@ passwordField?.addEventListener("input", (e) => {
             break;
     }
     const strengthHTML = document.getElementById("passwordStrength");
+
+    if (!strengthHTML) return;
     const wrapper = strengthHTML.closest(".password-strength");
 
     ["weak", "neutral", "strong"].forEach((name) => {
@@ -65,4 +69,20 @@ passwordField?.addEventListener("input", (e) => {
     if (password.length > 0) {
         wrapper.classList.add(className);
     }
+});
+
+// кнопка сменя режима пароля
+const passwordModeSwitcher = document.getElementById("show-password");
+
+// отображения значения в поле пароля
+passwordModeSwitcher?.addEventListener("click", () => {
+    passwordModeSwitcher.classList.toggle("toggled");
+    const passwordInputs = document.querySelectorAll("[data-mode]");
+    passwordInputs.forEach((el) => {
+        const type = el.dataset.mode;
+        const newType = type === "password" ? "text" : "password";
+
+        el.setAttribute("type", newType);
+        el.setAttribute("data-mode", newType);
+    });
 });

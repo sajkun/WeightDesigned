@@ -17183,8 +17183,11 @@ var detectPasswordStrength = function detectPasswordStrength(password) {
   return text; // Форму не отправляем
 };
 
+// поле ввода пароля
 var passwordField = document.getElementById("password");
-passwordField === null || passwordField === void 0 ? void 0 : passwordField.addEventListener("input", function (e) {
+
+// инициализация события на ввод пароля
+passwordField === null || passwordField === void 0 || passwordField.addEventListener("input", function (e) {
   var password = e.target.value;
   var strength = detectPasswordStrength(password);
   var className;
@@ -17200,6 +17203,7 @@ passwordField === null || passwordField === void 0 ? void 0 : passwordField.addE
       break;
   }
   var strengthHTML = document.getElementById("passwordStrength");
+  if (!strengthHTML) return;
   var wrapper = strengthHTML.closest(".password-strength");
   ["weak", "neutral", "strong"].forEach(function (name) {
     wrapper.classList.remove(name);
@@ -17208,6 +17212,21 @@ passwordField === null || passwordField === void 0 ? void 0 : passwordField.addE
   if (password.length > 0) {
     wrapper.classList.add(className);
   }
+});
+
+// кнопка сменя режима пароля
+var passwordModeSwitcher = document.getElementById("show-password");
+
+// отображения значения в поле пароля
+passwordModeSwitcher === null || passwordModeSwitcher === void 0 ? void 0 : passwordModeSwitcher.addEventListener("click", function () {
+  passwordModeSwitcher.classList.toggle("toggled");
+  var passwordInputs = document.querySelectorAll("[data-mode]");
+  passwordInputs.forEach(function (el) {
+    var type = el.dataset.mode;
+    var newType = type === "password" ? "text" : "password";
+    el.setAttribute("type", newType);
+    el.setAttribute("data-mode", newType);
+  });
 });
 
 /***/ }),

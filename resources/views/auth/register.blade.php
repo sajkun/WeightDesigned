@@ -109,12 +109,15 @@
 
                                 <div class="mt-3">
                                     <div class="form-control-custom">
-                                        <input id="password" type="password"
+                                        <input id="password" type="password" data-mode='password'
                                             class="@error('password') is-invalid @enderror" name="password" required
                                             autocomplete="off" minlength="8">
 
                                         <label for="password">Пароль<span class="password-strength">: <span
                                                     id='passwordStrength'></span></span></span></label>
+
+                                        <button type='button' id='show-password' class="show-password btn p-2"><i
+                                                class="fa fa-eye"></i></button>
                                     </div>
 
                                     <i class='form-control-comment'>
@@ -129,7 +132,7 @@
 
                                 <div class="form-control-custom  mt-2">
                                     <input id="password-confirm" type="password" class="" name="password_confirmation"
-                                        required autocomplete="off">
+                                        data-mode='password' required autocomplete="off">
                                     <label for="password-confirm">Подтверждение
                                         пароля</label>
                                 </div>
