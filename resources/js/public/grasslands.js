@@ -1,4 +1,4 @@
-import { strip } from "./../misc/helpers";
+import { strip, clog, getFormData } from "./../misc/helpers";
 
 import {
     readBinaryShapeFile,
@@ -200,15 +200,11 @@ const appPublicGrasslands = {
                     user_id: vm.userId,
                 })
                 .then((response) => {
-                    console.log("%c getGrasslands", "color: green", response);
+                    clog("%c getGrasslands", "color: green", response);
                     vm.grasslands = strip(response.data.grasslands);
                 })
                 .catch((e) => {
-                    console.log(
-                        "%c getGrasslands error",
-                        "color: red",
-                        e.response
-                    );
+                    clog("%c getGrasslands error", "color: red", e.response);
                     vm.messages.error = `${e.response.status} ${e.response.statusText} : ${e.response.data.message}`;
                 });
         },
@@ -282,7 +278,7 @@ const appPublicGrasslands = {
                         })
 
                         .then((shpData) => {
-                            console.log(shpData);
+                            clog(shpData);
                             const center = getShapeFileCenter(shpData);
                             const points = getPointsForGrassland(shpData);
                             vm.drawGrassland(points);
@@ -319,7 +315,7 @@ const appPublicGrasslands = {
         },
 
         viewGrassland(grassland) {
-            console.log("%c viewGrassland", "color:blue", grassland);
+            clog("%c viewGrassland", "color:blue", grassland);
             const vm = this;
             const points = JSON.parse(grassland.geo_json);
             vm.mode = "edit";
@@ -335,7 +331,7 @@ const appPublicGrasslands = {
         editGrassland() {
             const vm = this;
 
-            let grasslandData = vm.getFormData(vm.$refs.formEditGrassland);
+            let grasslandData = getFormData(vm.$refs.formEditGrassland);
 
             grasslandData.geo_json = grasslandData.geo_json
                 ? JSON.parse(grasslandData.geo_json)

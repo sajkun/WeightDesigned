@@ -1,5 +1,5 @@
 import messages from "../mixins/messages";
-import { strip } from "./../misc/helpers";
+import { strip, clog } from "./../misc/helpers";
 
 const axios = require("axios");
 const appPublicVehicles = {
@@ -142,7 +142,7 @@ const appPublicVehicles = {
 
     watch: {
         mode(mode) {
-            console.log("mode:", mode);
+            clog("mode:", mode);
             const vm = this;
 
             if (mode === "create") {
@@ -268,11 +268,11 @@ const appPublicVehicles = {
                     pin: pin,
                 })
                 .then((response) => {
-                    console.log(strip(response));
+                    clog(strip(response));
                     vm.messages[response.data.type] = response.data.message;
                 })
                 .catch((e) => {
-                    console.log(e.response);
+                    clog(e.response);
                     vm.messages.error = e.response.data.message;
                 });
         },
@@ -290,15 +290,11 @@ const appPublicVehicles = {
             axios
                 .post(`/rfids/test`, postData)
                 .then((response) => {
-                    console.log(
-                        "%c checkRfid response",
-                        "color:green",
-                        response
-                    );
+                    clog("%c checkRfid response", "color:green", response);
                     vm.messages[response.data.type] = response?.data?.message;
                 })
                 .catch((e) => {
-                    console.log("%c checkRfid error", "color: red", e.response);
+                    clog("%c checkRfid error", "color: red", e.response);
                     vm.messages.error = e.response.data.message;
                 });
         },
@@ -321,34 +317,26 @@ const appPublicVehicles = {
                 rfids: vm.rfids,
                 group: Object.values(vm.mayBeGroupedVehicles).map((e) => e.id),
             };
-            console.log("createVehicle: ", vm.vehicleType);
-            console.log("createVehicle data: ", sendData);
+            clog("createVehicle: ", vm.vehicleType);
+            clog("createVehicle data: ", sendData);
 
             axios
                 .post(`/vehicles/store`, sendData)
                 .then((response) => {
-                    console.log(
-                        "%c createVehicle response",
-                        "color:green",
-                        response
-                    );
+                    clog("%c createVehicle response", "color:green", response);
                     vm.messages[response.data.type] = response?.data?.message;
                     vm.$refs.formCreateVehicle?.reset();
                     vm.reset();
                     vm.getVehicles();
                 })
                 .catch((e) => {
-                    console.log(
-                        "%c createVehicle error",
-                        "color: red",
-                        e.response
-                    );
+                    clog("%c createVehicle error", "color: red", e.response);
                     vm.messages.error = e.response.data.message;
                 });
         },
 
         deleteVehicle(item) {
-            console.log("%c deleteVehicle", "color: blue", item);
+            clog("%c deleteVehicle", "color: blue", item);
             const vm = this;
 
             vm.mode = "list";
@@ -362,16 +350,12 @@ const appPublicVehicles = {
             axios
                 .post(`/vehicles/delete`, sendData)
                 .then((response) => {
-                    console.log("%c deleteVehicle", "color:green", response);
+                    clog("%c deleteVehicle", "color:green", response);
                     vm.messages[response.data.type] = response?.data?.message;
                     vm.getVehicles();
                 })
                 .catch((e) => {
-                    console.log(
-                        "%c deleteVehicle error",
-                        "color: red",
-                        e.response
-                    );
+                    clog("%c deleteVehicle error", "color: red", e.response);
                     vm.messages.error = e.response.data.message;
                 });
         },
@@ -388,15 +372,11 @@ const appPublicVehicles = {
                     user_id: vm.userId,
                 })
                 .then((response) => {
-                    console.log("%c getEmployees", "color: green", response);
+                    clog("%c getEmployees", "color: green", response);
                     vm.employees = response.data.employees;
                 })
                 .catch((e) => {
-                    console.log(
-                        "%c getVehicles error",
-                        "color: red",
-                        e.response
-                    );
+                    clog("%c getVehicles error", "color: red", e.response);
                     vm.messages.error = e.response.data.message;
                 });
         },
@@ -416,15 +396,11 @@ const appPublicVehicles = {
             axios
                 .get("/vehicles/list")
                 .then((response) => {
-                    console.log("%c getVehicles", "color: green", response);
+                    clog("%c getVehicles", "color: green", response);
                     vm.vehicles = response.data;
                 })
                 .catch((e) => {
-                    console.log(
-                        "%c getVehicles error",
-                        "color: red",
-                        e.response
-                    );
+                    clog("%c getVehicles error", "color: red", e.response);
                     vm.messages.error = e.response.data.message;
                 });
         },
@@ -433,11 +409,7 @@ const appPublicVehicles = {
             const vm = this;
             vm.mayBeResponsiblePerson = person;
             vm.popup = null;
-            console.log(
-                "%c selectResponsiblePerson",
-                "color: blue",
-                strip(person)
-            );
+            clog("%c selectResponsiblePerson", "color: blue", strip(person));
         },
 
         submitCreate() {
@@ -454,7 +426,7 @@ const appPublicVehicles = {
                 postData[key] = value;
             }
 
-            console.log(postData);
+            clog(postData);
 
             vm.rfids.push(postData);
 
@@ -464,11 +436,7 @@ const appPublicVehicles = {
 
         updateVehicle() {
             const vm = this;
-            console.log(
-                "%c updateVehicle",
-                "color: blue",
-                strip(vm.editedVehicle)
-            );
+            clog("%c updateVehicle", "color: blue", strip(vm.editedVehicle));
 
             const formData = new FormData(vm.$refs.editVehicleForm);
             let postData = {};
@@ -489,22 +457,18 @@ const appPublicVehicles = {
             axios
                 .post(`/vehicles/update`, sendData)
                 .then((response) => {
-                    console.log("%c updateVehicle", "color:green", response);
+                    clog("%c updateVehicle", "color:green", response);
                     vm.messages[response.data.type] = response?.data?.message;
                     vm.getVehicles();
                 })
                 .catch((e) => {
-                    console.log(
-                        "%c updateVehicle error",
-                        "color: red",
-                        e.response
-                    );
+                    clog("%c updateVehicle error", "color: red", e.response);
                     vm.messages.error = e.response.data.message;
                 });
         },
 
         viewVehicle(item) {
-            console.log("%c viewVehicle", "color: blue", strip(item));
+            clog("%c viewVehicle", "color: blue", strip(item));
             const vm = this;
             this.mode = "details";
             vm.editedVehicle = strip(item);

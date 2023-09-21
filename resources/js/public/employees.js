@@ -2,7 +2,7 @@
  * Приложение отвечающее за внешний вид и отправку
  * запросов CRUD раздела "Сотрудники"
  */
-import { strip } from "./../misc/helpers";
+import { strip, clog, getFormData } from "./../misc/helpers";
 import messages from "../mixins/messages";
 import MessagesComponent from "./../components/MessagesComponent/";
 import InputComponent from "../components/InputComponent";
@@ -68,20 +68,11 @@ const appPublicEmployees = {
                 vm.showForm = true;
             }
         },
-
-        // "editedEmployee.id"(val) {
-        //     const vm = this;
-        //     if (val < 0) {
-        //         vm.showForm = true;
-        //     } else {
-        //         vm.showForm = false;
-        //     }
-        // },
     },
 
     computed: {
         listClass() {
-            const editClass = "col-12 col-lg-6 d-sm-none d-lg-block";
+            const editClass = "col-12 col-lg-6 d-none d-lg-block";
             const displayClass = "col-12 ";
             return this.editMode ? editClass : displayClass;
         },
@@ -159,6 +150,7 @@ const appPublicEmployees = {
         addEmployee() {
             const vm = this;
             vm.editMode = true;
+            vm.showForm = true;
             vm.clearEmployee();
         },
 
@@ -194,7 +186,7 @@ const appPublicEmployees = {
         },
 
         edit(person, showForm) {
-            console.log("%c edit", "color:blue", person);
+            clog("%c edit", "color:blue", person);
             const vm = this;
             vm.editMode = true;
             vm.editedEmployee = strip(person);
@@ -215,15 +207,11 @@ const appPublicEmployees = {
                     user_id: vm.userId,
                 })
                 .then((response) => {
-                    console.log("%c getEmployees", "color: green", response);
+                    clog("%c getEmployees", "color: green", response);
                     vm.employees = response.data.employees;
                 })
                 .catch((e) => {
-                    console.log(
-                        "%c getVehicles error",
-                        "color: red",
-                        e.response
-                    );
+                    clog("%c getVehicles error", "color: red", e.response);
                     vm.messages.error = e.response.data.message;
                 });
         },
@@ -233,15 +221,11 @@ const appPublicEmployees = {
             axios
                 .get("/vehicles/list")
                 .then((response) => {
-                    console.log("%c getVehicles", "color: green", response);
+                    clog("%c getVehicles", "color: green", response);
                     vm.vehicles = response.data;
                 })
                 .catch((e) => {
-                    console.log(
-                        "%c getVehicles error",
-                        "color: red",
-                        e.response
-                    );
+                    clog("%c getVehicles error", "color: red", e.response);
                     vm.messages.error = e.response.data.message;
                 });
         },
@@ -249,7 +233,7 @@ const appPublicEmployees = {
         patchEmployee() {
             const vm = this;
             const form = vm.$refs.submitFormEdit;
-            const data = vm.getFormData(form);
+            const data = getFormData(form);
 
             for (const key in data) {
                 vm.editedEmployee[key] = data[key];

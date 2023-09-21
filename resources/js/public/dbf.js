@@ -119,7 +119,7 @@ export const readShape = function (arrayBuffer, src) {
         try {
             record.shape = parseShape(dv, idx, record.length);
         } catch (e) {
-            console.log(e, record);
+            clog(e, record);
         }
         idx += record.length * 2;
         o.records.push(record);

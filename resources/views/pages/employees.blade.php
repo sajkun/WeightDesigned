@@ -47,32 +47,27 @@
             <Transition name="bounce">
                 <div class="col-12 col-lg-6 p-3 org-details" v-show='editMode'>
                     <div class="d-lg-flex flex-column org-wrapper  p-4" v-if='showForm'>
-
                         <h3 class="h4">Добавить нового сотрудника</h3>
-
                         <the-form ref='createEmployeeForm' :_structure='addEmployeeFormStructure'
                             @exec-submit='storeEmployee' @cancel='showForm=false; editMode=false'>
                         </the-form>
 
                     </div>
                     <div class="d-lg-flex flex-column org-wrapper p-4" v-if='!showForm'>
-                        <button class="btn toggle-expand">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path
-                                    d="M5 5V8.81818M5 5H8.81818M5 5L9.45455 9.45455M5 19V15.1818M5 19H8.81818M5 19L9.45455 14.5455M19 5L15.1818 5M19 5V8.81818M19 5L14.5455 9.45455M19 19H15.1818M19 19V15.1818M19 19L14.5455 14.5455"
-                                    stroke="#007E3C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                            </svg>
-
-                        </button>
                         <div class="row">
-                            <h2 class="h4 m-0">
-                                @{{ editedEmployee.first_name }}
-                                @{{ editedEmployee.middle_name }}
-                                @{{ editedEmployee.last_name }}
+                            <div class="col">
 
+                                <h2 class="h4 m-0">
+                                    @{{ editedEmployee.first_name }}
+                                    @{{ editedEmployee.middle_name }}
+                                    @{{ editedEmployee.last_name }}
+                                </h2>
+                            </div>
+                            <div class="col text-end">
                                 <button class='btn btn-close' @click.stop='editMode=false'> </button>
-                            </h2>
+                            </div>
+                        </div>
+                        <div class="row">
                             @include('pages.employees.tabs')
                         </div>
                         @include('pages.employees.view-info')

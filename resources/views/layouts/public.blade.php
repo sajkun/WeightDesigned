@@ -61,7 +61,7 @@
                                         <nav class="submenu">
                                             <ul class="submenu-list">
                                                 <li><a href="{{ route('public.vehicle.index', ['type' => 'bunker']) }}">
-                                                        Бункеры&nbsp;перегрузчеки</a></li>
+                                                        Бункеры&nbsp;перегрузчики</a></li>
                                                 <li><a href="{{ route('public.vehicle.index', ['type' => 'tractor']) }}">
                                                         Тракторы</a></li>
                                                 <li><a

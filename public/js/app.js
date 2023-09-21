@@ -15319,7 +15319,7 @@ __webpack_require__.r(__webpack_exports__);
     submit: function submit() {
       var vm = this;
       var data = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.getFormData)(vm.$refs.form);
-      console.log("%c Отправка данных формы", "color: green", data);
+      clog("%c Отправка данных формы", "color: green", data);
       vm.$emit("exec-submit", data);
     },
     reset: function reset() {
@@ -16359,6 +16359,7 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   clog: () => (/* binding */ clog),
 /* harmony export */   getFormData: () => (/* binding */ getFormData),
 /* harmony export */   strip: () => (/* binding */ strip)
 /* harmony export */ });
@@ -16369,6 +16370,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
+var debug = true;
 var getFormData = function getFormData(form) {
   var formData = new FormData(form);
   var data = {};
@@ -16392,6 +16394,12 @@ var strip = function strip(data) {
   if (!Boolean(data)) return "";
   return JSON.parse(JSON.stringify(data));
 };
+var clog = function clog() {
+  var _console;
+  var show = Boolean(debug);
+  if (!show) return;
+  (_console = console).log.apply(_console, arguments);
+};
 
 /***/ }),
 
@@ -16406,13 +16414,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
-function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
-function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
-function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
 var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 var crud = {
   methods: {
@@ -16458,37 +16459,18 @@ var crud = {
     deleteEntityCb: function deleteEntityCb(postData, url) {
       return this.sendRequest(postData, url).then(document.dispatchEvent(new CustomEvent("updateList")));
     },
-    getFormData: function getFormData(form) {
-      var formData = new FormData(form);
-      var data = {};
-      var _iterator = _createForOfIteratorHelper(formData),
-        _step;
-      try {
-        for (_iterator.s(); !(_step = _iterator.n()).done;) {
-          var _step$value = _slicedToArray(_step.value, 2),
-            key = _step$value[0],
-            value = _step$value[1];
-          data[key] = value;
-        }
-      } catch (err) {
-        _iterator.e(err);
-      } finally {
-        _iterator.f();
-      }
-      return data;
-    },
     editEntity: function editEntity(postData, url) {
       return this.sendRequest(postData, url).then(document.dispatchEvent(new CustomEvent("updateList")));
     },
     sendRequest: function sendRequest(postData, url) {
-      console.log("%c sendRequest fire", "color:blue", url, postData);
+      clog("%c sendRequest fire", "color:blue", url, postData);
       var vm = this;
       return axios.post(url, postData).then(function (response) {
         vm.messages[response.data.type] = response.data.message;
-        console.log("%c sendRequest success", "color:green", response);
+        clog("%c sendRequest success", "color:green", response);
         return response;
       })["catch"](function (e) {
-        console.log("%c sendRequest error", "color:red", e.response);
+        clog("%c sendRequest error", "color:red", e.response);
         vm.messages.error = "".concat(e.response.status, " ").concat(e.response.statusText, " : ").concat(e.response.data.message);
         return e.response;
       });
@@ -16739,7 +16721,7 @@ var readShape = function readShape(arrayBuffer, src) {
     try {
       record.shape = parseShape(dv, idx, record.length);
     } catch (e) {
-      console.log(e, record);
+      clog(e, record);
     }
     idx += record.length * 2;
     o.records.push(record);
@@ -16906,18 +16888,11 @@ var appPublicEmployees = {
       if (_editMode && vm.editedEmployee.id < 0) {
         vm.showForm = true;
       }
-    } // "editedEmployee.id"(val) {
-    //     const vm = this;
-    //     if (val < 0) {
-    //         vm.showForm = true;
-    //     } else {
-    //         vm.showForm = false;
-    //     }
-    // },
+    }
   },
   computed: {
     listClass: function listClass() {
-      var editClass = "col-12 col-lg-6 d-sm-none d-lg-block";
+      var editClass = "col-12 col-lg-6 d-none d-lg-block";
       var displayClass = "col-12 ";
       return this.editMode ? editClass : displayClass;
     },
@@ -16980,6 +16955,7 @@ var appPublicEmployees = {
     addEmployee: function addEmployee() {
       var vm = this;
       vm.editMode = true;
+      vm.showForm = true;
       vm.clearEmployee();
     },
     clearEmployee: function clearEmployee() {
@@ -17009,7 +16985,7 @@ var appPublicEmployees = {
       return date.getFullYear();
     },
     edit: function edit(person, showForm) {
-      console.log("%c edit", "color:blue", person);
+      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c edit", "color:blue", person);
       var vm = this;
       vm.editMode = true;
       vm.editedEmployee = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(person);
@@ -17026,27 +17002,27 @@ var appPublicEmployees = {
       axios.get("/employees/list", {
         user_id: vm.userId
       }).then(function (response) {
-        console.log("%c getEmployees", "color: green", response);
+        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c getEmployees", "color: green", response);
         vm.employees = response.data.employees;
       })["catch"](function (e) {
-        console.log("%c getVehicles error", "color: red", e.response);
+        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c getVehicles error", "color: red", e.response);
         vm.messages.error = e.response.data.message;
       });
     },
     getVehicles: function getVehicles() {
       var vm = this;
       axios.get("/vehicles/list").then(function (response) {
-        console.log("%c getVehicles", "color: green", response);
+        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c getVehicles", "color: green", response);
         vm.vehicles = response.data;
       })["catch"](function (e) {
-        console.log("%c getVehicles error", "color: red", e.response);
+        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c getVehicles error", "color: red", e.response);
         vm.messages.error = e.response.data.message;
       });
     },
     patchEmployee: function patchEmployee() {
       var vm = this;
       var form = vm.$refs.submitFormEdit;
-      var data = vm.getFormData(form);
+      var data = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.getFormData)(form);
       for (var key in data) {
         vm.editedEmployee[key] = data[key];
       }
@@ -17263,10 +17239,10 @@ var appPublicGrasslands = {
       axios.get("/grasslands/list", {
         user_id: vm.userId
       }).then(function (response) {
-        console.log("%c getGrasslands", "color: green", response);
+        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c getGrasslands", "color: green", response);
         vm.grasslands = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(response.data.grasslands);
       })["catch"](function (e) {
-        console.log("%c getGrasslands error", "color: red", e.response);
+        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c getGrasslands error", "color: red", e.response);
         vm.messages.error = "".concat(e.response.status, " ").concat(e.response.statusText, " : ").concat(e.response.data.message);
       });
     },
@@ -17327,7 +17303,7 @@ var appPublicGrasslands = {
           (0,_dbf__WEBPACK_IMPORTED_MODULE_1__.readBinaryShapeFile)(data.file)["catch"](function (error) {
             console.error("Error reading file:", error);
           }).then(function (shpData) {
-            console.log(shpData);
+            (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)(shpData);
             var center = (0,_dbf__WEBPACK_IMPORTED_MODULE_1__.getShapeFileCenter)(shpData);
             var points = (0,_dbf__WEBPACK_IMPORTED_MODULE_1__.getPointsForGrassland)(shpData);
             vm.drawGrassland(points);
@@ -17357,7 +17333,7 @@ var appPublicGrasslands = {
       }
     },
     viewGrassland: function viewGrassland(grassland) {
-      console.log("%c viewGrassland", "color:blue", grassland);
+      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c viewGrassland", "color:blue", grassland);
       var vm = this;
       var points = JSON.parse(grassland.geo_json);
       vm.mode = "edit";
@@ -17370,7 +17346,7 @@ var appPublicGrasslands = {
     },
     editGrassland: function editGrassland() {
       var vm = this;
-      var grasslandData = vm.getFormData(vm.$refs.formEditGrassland);
+      var grasslandData = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.getFormData)(vm.$refs.formEditGrassland);
       grasslandData.geo_json = grasslandData.geo_json ? JSON.parse(grasslandData.geo_json) : "";
       var postData = {
         user_id: vm.userId,
@@ -17554,11 +17530,11 @@ var appPublicUsers = {
         return;
       }
       axios.get("/users/list").then(function (response) {
-        console.log("%c getUsers успех", "color:green", response);
+        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_3__.clog)("%c getUsers успех", "color:green", response);
         vm.users = response.data.users;
         vm.roles = response.data.roles;
       })["catch"](function (e) {
-        console.log("%c getUsers ошибка", "color:red", e.response);
+        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_3__.clog)("%c getUsers ошибка", "color:red", e.response);
       });
     },
     patchUser: function patchUser(data) {
@@ -17619,7 +17595,7 @@ var appPublicUsers = {
         new_password: data.newPassword,
         old_password: data.oldPassword
       }).then(function (response) {
-        console.log(response);
+        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_3__.clog)(response);
         vm.editPassword = false;
         vm.messages.success = response.data.message ? response.data.message : "Пароль успешно изменен";
       })["catch"](function (e) {
@@ -17747,7 +17723,7 @@ var appPublicVehicles = {
   },
   watch: {
     mode: function mode(_mode) {
-      console.log("mode:", _mode);
+      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.clog)("mode:", _mode);
       var vm = this;
       if (_mode === "create") {
         vm.reset();
@@ -17850,10 +17826,10 @@ var appPublicVehicles = {
         name: name,
         pin: pin
       }).then(function (response) {
-        console.log((0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.strip)(response));
+        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.clog)((0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.strip)(response));
         vm.messages[response.data.type] = response.data.message;
       })["catch"](function (e) {
-        console.log(e.response);
+        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.clog)(e.response);
         vm.messages.error = e.response.data.message;
       });
     },
@@ -17878,10 +17854,10 @@ var appPublicVehicles = {
       postData["organisation_id"] = vm.organisation_id;
       axios.post("/rfids/test", postData).then(function (response) {
         var _response$data;
-        console.log("%c checkRfid response", "color:green", response);
+        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.clog)("%c checkRfid response", "color:green", response);
         vm.messages[response.data.type] = response === null || response === void 0 || (_response$data = response.data) === null || _response$data === void 0 ? void 0 : _response$data.message;
       })["catch"](function (e) {
-        console.log("%c checkRfid error", "color: red", e.response);
+        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.clog)("%c checkRfid error", "color: red", e.response);
         vm.messages.error = e.response.data.message;
       });
     },
@@ -17914,22 +17890,22 @@ var appPublicVehicles = {
           return e.id;
         })
       };
-      console.log("createVehicle: ", vm.vehicleType);
-      console.log("createVehicle data: ", sendData);
+      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.clog)("createVehicle: ", vm.vehicleType);
+      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.clog)("createVehicle data: ", sendData);
       axios.post("/vehicles/store", sendData).then(function (response) {
         var _response$data2, _vm$$refs$formCreateV2;
-        console.log("%c createVehicle response", "color:green", response);
+        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.clog)("%c createVehicle response", "color:green", response);
         vm.messages[response.data.type] = response === null || response === void 0 || (_response$data2 = response.data) === null || _response$data2 === void 0 ? void 0 : _response$data2.message;
         (_vm$$refs$formCreateV2 = vm.$refs.formCreateVehicle) === null || _vm$$refs$formCreateV2 === void 0 || _vm$$refs$formCreateV2.reset();
         vm.reset();
         vm.getVehicles();
       })["catch"](function (e) {
-        console.log("%c createVehicle error", "color: red", e.response);
+        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.clog)("%c createVehicle error", "color: red", e.response);
         vm.messages.error = e.response.data.message;
       });
     },
     deleteVehicle: function deleteVehicle(item) {
-      console.log("%c deleteVehicle", "color: blue", item);
+      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.clog)("%c deleteVehicle", "color: blue", item);
       var vm = this;
       vm.mode = "list";
       var sendData = {
@@ -17939,11 +17915,11 @@ var appPublicVehicles = {
       };
       axios.post("/vehicles/delete", sendData).then(function (response) {
         var _response$data3;
-        console.log("%c deleteVehicle", "color:green", response);
+        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.clog)("%c deleteVehicle", "color:green", response);
         vm.messages[response.data.type] = response === null || response === void 0 || (_response$data3 = response.data) === null || _response$data3 === void 0 ? void 0 : _response$data3.message;
         vm.getVehicles();
       })["catch"](function (e) {
-        console.log("%c deleteVehicle error", "color: red", e.response);
+        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.clog)("%c deleteVehicle error", "color: red", e.response);
         vm.messages.error = e.response.data.message;
       });
     },
@@ -17955,10 +17931,10 @@ var appPublicVehicles = {
       axios.get("/employees/list", {
         user_id: vm.userId
       }).then(function (response) {
-        console.log("%c getEmployees", "color: green", response);
+        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.clog)("%c getEmployees", "color: green", response);
         vm.employees = response.data.employees;
       })["catch"](function (e) {
-        console.log("%c getVehicles error", "color: red", e.response);
+        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.clog)("%c getVehicles error", "color: red", e.response);
         vm.messages.error = e.response.data.message;
       });
     },
@@ -17974,10 +17950,10 @@ var appPublicVehicles = {
     getVehicles: function getVehicles() {
       var vm = this;
       axios.get("/vehicles/list").then(function (response) {
-        console.log("%c getVehicles", "color: green", response);
+        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.clog)("%c getVehicles", "color: green", response);
         vm.vehicles = response.data;
       })["catch"](function (e) {
-        console.log("%c getVehicles error", "color: red", e.response);
+        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.clog)("%c getVehicles error", "color: red", e.response);
         vm.messages.error = e.response.data.message;
       });
     },
@@ -17985,7 +17961,7 @@ var appPublicVehicles = {
       var vm = this;
       vm.mayBeResponsiblePerson = person;
       vm.popup = null;
-      console.log("%c selectResponsiblePerson", "color: blue", (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.strip)(person));
+      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.clog)("%c selectResponsiblePerson", "color: blue", (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.strip)(person));
     },
     submitCreate: function submitCreate() {
       this.$refs.formCreateVehicle.requestSubmit();
@@ -18008,7 +17984,7 @@ var appPublicVehicles = {
       } finally {
         _iterator3.f();
       }
-      console.log(postData);
+      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.clog)(postData);
       vm.rfids.push(postData);
 
       // vm.$refs.addRfid?.reset();
@@ -18017,7 +17993,7 @@ var appPublicVehicles = {
     updateVehicle: function updateVehicle() {
       var _vm$mayBeResponsibleP2;
       var vm = this;
-      console.log("%c updateVehicle", "color: blue", (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.strip)(vm.editedVehicle));
+      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.clog)("%c updateVehicle", "color: blue", (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.strip)(vm.editedVehicle));
       var formData = new FormData(vm.$refs.editVehicleForm);
       var postData = {};
       var _iterator4 = _createForOfIteratorHelper(formData),
@@ -18046,16 +18022,16 @@ var appPublicVehicles = {
       };
       axios.post("/vehicles/update", sendData).then(function (response) {
         var _response$data4;
-        console.log("%c updateVehicle", "color:green", response);
+        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.clog)("%c updateVehicle", "color:green", response);
         vm.messages[response.data.type] = response === null || response === void 0 || (_response$data4 = response.data) === null || _response$data4 === void 0 ? void 0 : _response$data4.message;
         vm.getVehicles();
       })["catch"](function (e) {
-        console.log("%c updateVehicle error", "color: red", e.response);
+        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.clog)("%c updateVehicle error", "color: red", e.response);
         vm.messages.error = e.response.data.message;
       });
     },
     viewVehicle: function viewVehicle(item) {
-      console.log("%c viewVehicle", "color: blue", (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.strip)(item));
+      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.clog)("%c viewVehicle", "color: blue", (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.strip)(item));
       var vm = this;
       this.mode = "details";
       vm.editedVehicle = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.strip)(item);
@@ -18443,7 +18419,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.relative[data-v-51e9b158] {\n    position: relative;\n}\n.file[data-v-51e9b158] {\n    opacity: 0;\n    cursor: pointer;\n    z-index: 10;\n    position: absolute;\n    top: 0;\n    bottom: 0;\n    left: 0;\n    right: 0;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.relative[data-v-51e9b158] {\r\n    position: relative;\n}\n.file[data-v-51e9b158] {\r\n    opacity: 0;\r\n    cursor: pointer;\r\n    z-index: 10;\r\n    position: absolute;\r\n    top: 0;\r\n    bottom: 0;\r\n    left: 0;\r\n    right: 0;\n}\r\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -25854,7 +25830,7 @@ function genPropsAccessExp(name) {
 /***/ ((module) => {
 
 "use strict";
-module.exports = JSON.parse('{"_args":[["axios@0.21.4","C:\\\\0091_liliani\\\\weight3"]],"_development":true,"_from":"axios@0.21.4","_id":"axios@0.21.4","_inBundle":false,"_integrity":"sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg==","_location":"/axios","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"axios@0.21.4","name":"axios","escapedName":"axios","rawSpec":"0.21.4","saveSpec":null,"fetchSpec":"0.21.4"},"_requiredBy":["#DEV:/"],"_resolved":"https://registry.npmjs.org/axios/-/axios-0.21.4.tgz","_spec":"0.21.4","_where":"C:\\\\0091_liliani\\\\weight3","author":{"name":"Matt Zabriskie"},"browser":{"./lib/adapters/http.js":"./lib/adapters/xhr.js"},"bugs":{"url":"https://github.com/axios/axios/issues"},"bundlesize":[{"path":"./dist/axios.min.js","threshold":"5kB"}],"dependencies":{"follow-redirects":"^1.14.0"},"description":"Promise based HTTP client for the browser and node.js","devDependencies":{"coveralls":"^3.0.0","es6-promise":"^4.2.4","grunt":"^1.3.0","grunt-banner":"^0.6.0","grunt-cli":"^1.2.0","grunt-contrib-clean":"^1.1.0","grunt-contrib-watch":"^1.0.0","grunt-eslint":"^23.0.0","grunt-karma":"^4.0.0","grunt-mocha-test":"^0.13.3","grunt-ts":"^6.0.0-beta.19","grunt-webpack":"^4.0.2","istanbul-instrumenter-loader":"^1.0.0","jasmine-core":"^2.4.1","karma":"^6.3.2","karma-chrome-launcher":"^3.1.0","karma-firefox-launcher":"^2.1.0","karma-jasmine":"^1.1.1","karma-jasmine-ajax":"^0.1.13","karma-safari-launcher":"^1.0.0","karma-sauce-launcher":"^4.3.6","karma-sinon":"^1.0.5","karma-sourcemap-loader":"^0.3.8","karma-webpack":"^4.0.2","load-grunt-tasks":"^3.5.2","minimist":"^1.2.0","mocha":"^8.2.1","sinon":"^4.5.0","terser-webpack-plugin":"^4.2.3","typescript":"^4.0.5","url-search-params":"^0.10.0","webpack":"^4.44.2","webpack-dev-server":"^3.11.0"},"homepage":"https://axios-http.com","jsdelivr":"dist/axios.min.js","keywords":["xhr","http","ajax","promise","node"],"license":"MIT","main":"index.js","name":"axios","repository":{"type":"git","url":"git+https://github.com/axios/axios.git"},"scripts":{"build":"NODE_ENV=production grunt build","coveralls":"cat coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js","examples":"node ./examples/server.js","fix":"eslint --fix lib/**/*.js","postversion":"git push && git push --tags","preversion":"npm test","start":"node ./sandbox/server.js","test":"grunt test","version":"npm run build && grunt version && git add -A dist && git add CHANGELOG.md bower.json package.json"},"typings":"./index.d.ts","unpkg":"dist/axios.min.js","version":"0.21.4"}');
+module.exports = JSON.parse('{"_args":[["axios@0.21.4","D:\\\\009-1 Liliani\\\\WeightDesigned"]],"_development":true,"_from":"axios@0.21.4","_id":"axios@0.21.4","_inBundle":false,"_integrity":"sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg==","_location":"/axios","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"axios@0.21.4","name":"axios","escapedName":"axios","rawSpec":"0.21.4","saveSpec":null,"fetchSpec":"0.21.4"},"_requiredBy":["#DEV:/"],"_resolved":"https://registry.npmjs.org/axios/-/axios-0.21.4.tgz","_spec":"0.21.4","_where":"D:\\\\009-1 Liliani\\\\WeightDesigned","author":{"name":"Matt Zabriskie"},"browser":{"./lib/adapters/http.js":"./lib/adapters/xhr.js"},"bugs":{"url":"https://github.com/axios/axios/issues"},"bundlesize":[{"path":"./dist/axios.min.js","threshold":"5kB"}],"dependencies":{"follow-redirects":"^1.14.0"},"description":"Promise based HTTP client for the browser and node.js","devDependencies":{"coveralls":"^3.0.0","es6-promise":"^4.2.4","grunt":"^1.3.0","grunt-banner":"^0.6.0","grunt-cli":"^1.2.0","grunt-contrib-clean":"^1.1.0","grunt-contrib-watch":"^1.0.0","grunt-eslint":"^23.0.0","grunt-karma":"^4.0.0","grunt-mocha-test":"^0.13.3","grunt-ts":"^6.0.0-beta.19","grunt-webpack":"^4.0.2","istanbul-instrumenter-loader":"^1.0.0","jasmine-core":"^2.4.1","karma":"^6.3.2","karma-chrome-launcher":"^3.1.0","karma-firefox-launcher":"^2.1.0","karma-jasmine":"^1.1.1","karma-jasmine-ajax":"^0.1.13","karma-safari-launcher":"^1.0.0","karma-sauce-launcher":"^4.3.6","karma-sinon":"^1.0.5","karma-sourcemap-loader":"^0.3.8","karma-webpack":"^4.0.2","load-grunt-tasks":"^3.5.2","minimist":"^1.2.0","mocha":"^8.2.1","sinon":"^4.5.0","terser-webpack-plugin":"^4.2.3","typescript":"^4.0.5","url-search-params":"^0.10.0","webpack":"^4.44.2","webpack-dev-server":"^3.11.0"},"homepage":"https://axios-http.com","jsdelivr":"dist/axios.min.js","keywords":["xhr","http","ajax","promise","node"],"license":"MIT","main":"index.js","name":"axios","repository":{"type":"git","url":"git+https://github.com/axios/axios.git"},"scripts":{"build":"NODE_ENV=production grunt build","coveralls":"cat coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js","examples":"node ./examples/server.js","fix":"eslint --fix lib/**/*.js","postversion":"git push && git push --tags","preversion":"npm test","start":"node ./sandbox/server.js","test":"grunt test","version":"npm run build && grunt version && git add -A dist && git add CHANGELOG.md bower.json package.json"},"typings":"./index.d.ts","unpkg":"dist/axios.min.js","version":"0.21.4"}');
 
 /***/ })
 

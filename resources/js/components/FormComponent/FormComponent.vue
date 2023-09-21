@@ -58,7 +58,7 @@ export default {
         submit() {
             const vm = this;
             const data = getFormData(vm.$refs.form);
-            console.log("%c Отправка данных формы", "color: green", data);
+            clog("%c Отправка данных формы", "color: green", data);
             vm.$emit("exec-submit", data);
         },
 

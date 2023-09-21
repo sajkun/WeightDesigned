@@ -4,7 +4,7 @@
 import messages from "../mixins/messages";
 import MessagesComponent from "./../components/MessagesComponent/";
 import crud from "../mixins/crud";
-import { strip } from "../misc/helpers";
+import { strip, clog } from "../misc/helpers";
 import addUserForm from "../formFields/addUser";
 import editPasswordForm from "../formFields/editPwd";
 import editUserForm from "../formFields/editUser";
@@ -154,12 +154,12 @@ const appPublicUsers = {
             axios
                 .get("/users/list")
                 .then((response) => {
-                    console.log("%c getUsers успех", "color:green", response);
+                    clog("%c getUsers успех", "color:green", response);
                     vm.users = response.data.users;
                     vm.roles = response.data.roles;
                 })
                 .catch((e) => {
-                    console.log("%c getUsers ошибка", "color:red", e.response);
+                    clog("%c getUsers ошибка", "color:red", e.response);
                 });
         },
 
@@ -234,7 +234,7 @@ const appPublicUsers = {
                     old_password: data.oldPassword,
                 })
                 .then((response) => {
-                    console.log(response);
+                    clog(response);
                     vm.editPassword = false;
                     vm.messages.success = response.data.message
                         ? response.data.message

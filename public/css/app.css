@@ -13193,7 +13193,7 @@ table.organisation tr:hover:not(:first-child):not(.no-hover) {
   .org-details {
     top: 0;
     left: 0;
-    z-index: 100;
+    z-index: 5;
   }
 }
 .org-details.org-ditails-hidden {

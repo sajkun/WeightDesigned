@@ -53,7 +53,6 @@
                                                     <i class="fa fa-solid fa-trash"></i>
                                                 </button>
                                             @endcan
-
                                         </th>
                                     </tr>
                                 </tbody>

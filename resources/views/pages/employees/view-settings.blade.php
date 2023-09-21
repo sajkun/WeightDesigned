@@ -68,11 +68,13 @@
         </div>
 
         <div class="row mt-3">
-            <div class="col-12 text-end">
-                <button type='button' class=' btn  btn-borders-grey' @click='editMode=false'>
-                    Закрыть
+            <div class="col-6">
+                <button type='button' class=' btn w-100 btn-borders-grey' @click='activeTab="info"'>
+                    Отмена
                 </button>
-                <button type='submit' class=' btn ms-1  btn-primary-alt'>
+            </div>
+            <div class="col-6">
+                <button type='submit' class='w-100 btn ms-1  btn-primary-alt'>
                     Сохранить
                 </button>
             </div>
