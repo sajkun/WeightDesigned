@@ -19,15 +19,14 @@ class CreateBvsDataTable extends Migration
             $table->string('from')->nullable();
             $table->string('to')->nullable();
             $table->integer('rfid_status')->nullable();
-            $table->integer('ammount_in_bunker')->nullable();
-            $table->integer('ammount_transfered')->nullable();
+            $table->integer('amount_in_bunker')->nullable();
+            $table->integer('amount_transfered')->nullable();
             $table->dateTime('operation_time')->nullable();
             $table->string('accelerometer')->nullable();
             $table->boolean('has_check')->nullable();
             $table->string('error')->nullable();
             $table->json('coordinates')->nullable();
             $table->timestamps();
-
         });
     }
 
