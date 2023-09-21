@@ -1,7 +1,6 @@
 <template>
     <div class="form-control-custom">
         <select
-            :type="type"
             :name="name"
             autocomplete="off"
             :class="{ active: value }"
@@ -19,6 +18,8 @@
                 {{ name }}
             </option>
         </select>
+
+        <label :for="id">{{ label }}</label>
     </div>
 </template>
 
@@ -34,17 +35,12 @@ export default {
             name: this._info?.name,
             required: this._info?.required,
             label: this._info?.label,
-            type: this._info?.type,
         };
     },
     watch: {
         _value(v) {
             this.value = v;
         },
-    },
-
-    mounted() {
-        console.log(this._info);
     },
 
     computed: {

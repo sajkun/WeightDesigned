@@ -15,7 +15,7 @@
             <div class="row justify-content-center">
                 <div class="col-md-12">
                     <div class="text-center">
-                        <img src="./images/svg/logo-auth.svg" alt="">
+                        <img src="{{ URL::to('/') }}/images/svg/logo-auth.svg" alt="">
                     </div>
                     <div class="form-auth mt-2">
                         <div class="form-auth__header "><b>Регистрация учётной записи</b></div>

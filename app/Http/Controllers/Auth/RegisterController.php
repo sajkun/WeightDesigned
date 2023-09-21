@@ -60,8 +60,14 @@ class RegisterController extends Controller
      */
     protected function validator(array $data)
     {
-        $organisation = new Organisation();
+        $organisation = Organisation::where('tax_number', $data['tax_number'])->first();
 
+        if ($organisation) {
+            $error = \Illuminate\Validation\ValidationException::withMessages([
+                'message' => "$organisation->name уже зарегистирована",
+            ]);
+            throw $error;
+        }
         return Validator::make($data, [
             'login' => ['required', 'string', 'max:255', 'unique:users'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],

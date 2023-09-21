@@ -1,3 +1,4 @@
+const axios = require("axios");
 const crud = {
     methods: {
         confirmActionCb() {
@@ -82,19 +83,6 @@ const crud = {
             );
         },
 
-        getFormData(form) {
-            const vm = this;
-            const formData = new FormData(form);
-
-            let data = {};
-
-            for (const [key, value] of formData) {
-                data[key] = value;
-            }
-
-            return data;
-        },
-
         editEntity(postData, url) {
             return this.sendRequest(postData, url).then(
                 document.dispatchEvent(new CustomEvent("updateList"))
@@ -102,24 +90,17 @@ const crud = {
         },
 
         sendRequest(postData, url) {
+            clog("%c sendRequest fire", "color:blue", url, postData);
             const vm = this;
             return axios
                 .post(url, postData)
                 .then((response) => {
                     vm.messages[response.data.type] = response.data.message;
-                    console.log(
-                        "%c sendRequest success",
-                        "color:green",
-                        response
-                    );
+                    clog("%c sendRequest success", "color:green", response);
                     return response;
                 })
                 .catch((e) => {
-                    console.log(
-                        "%c sendRequest error",
-                        "color:red",
-                        e.response
-                    );
+                    clog("%c sendRequest error", "color:red", e.response);
                     vm.messages.error = `${e.response.status} ${e.response.statusText} : ${e.response.data.message}`;
                     return e.response;
                 });

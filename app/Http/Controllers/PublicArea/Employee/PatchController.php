@@ -55,6 +55,9 @@ class PatchController extends Controller
                 'edited_employee' => $edited_employee,
                 'nex_vehicles_idx' => $nex_vehicles_idx,
                 'vehicles' => $new_edited_employee->vehicles()->get(),
+
+                'type' => 'success',
+                'message' => $new_edited_employee->specialisation . ' ' . $new_edited_employee->last_name . ' изменен'
             ];
         } catch (\Exception  $e) {
             return response()->json([

@@ -20,89 +20,85 @@
                 <button class="btn btn-close" type='button' @click='clearMessages()' v-if="key!='confirm'"></button>
             </div>
         </Transition>
+        <div class="row h-100 position-relative" v-if='mode === "list" || mode === "details" '>
+            <div class="p-3 align-self-start">
 
-        <Transition name="fade">
-            <div class="row h-100 position-relative" v-if='mode === "list" || mode === "details" '>
-                <div class="p-3 align-self-start">
+                <div class="row h-100">
+                    <div class='' :class="columnClass.tableClass">
+                        <div class="d-lg-flex org-wrapper flex-column h-100">
+                            @can('create', [App\Models\Vehicle::class, $organisation_id])
+                                <button class="btn w-100 btn-borders" type="button"
+                                    @click='addVehicle("{{ $type }}")'>Добавить
+                                    @{{ vehicleName }}</button>
+                            @endcan
+                            <table class="organisation mt-3">
+                                <tbody>
+                                    <tr>
+                                        <th>№</th>
+                                        <th>Название</th>
+                                        <th>Модель</th>
+                                        <th>Ответственный</th>
+                                        <th></th>
+                                    </tr>
 
-                    <div class="row h-100">
-                        <div class='' :class="columnClass.tableClass">
-                            <div class="d-lg-flex org-wrapper flex-column h-100">
-                                @can('create', [App\Models\Vehicle::class, $organisation_id])
-                                    <button class="btn w-100 btn-borders" type="button"
-                                        @click='addVehicle("{{ $type }}")'>Добавить
-                                        @{{ vehicleName }}</button>
-                                @endcan
-                                <table class="organisation mt-3">
-                                    <tbody>
-                                        <tr>
-                                            <th>№</th>
-                                            <th>Название</th>
-                                            <th>Модель</th>
-                                            <th>Ответственный</th>
-                                            <th></th>
-                                        </tr>
+                                    <tr v-for='item, key in vehiclesCurrent' :key='"vehicklerow" + key'
+                                        @click='viewVehicle(item)'>
+                                        <td>@{{ key }}</td>
+                                        <td>@{{ item.name }}</td>
+                                        <td>@{{ item.model }}</td>
+                                        <td>@{{ item.employee_name }}</td>
+                                        <th width='100' class='text-end'>
+                                            @can('delete', [App\Models\Vehicle::class, $organisation_id])
+                                                <button class='btn p-1' @click.prevent.stop='deleteVehicle(item)'>
+                                                    <i class="fa fa-solid fa-trash"></i>
+                                                </button>
+                                            @endcan
+                                        </th>
+                                    </tr>
+                                </tbody>
 
-                                        <tr v-for='item, key in vehiclesCurrent' :key='"vehicklerow" + key'
-                                            @click='viewVehicle(item)'>
-                                            <td>@{{ key }}</td>
-                                            <td>@{{ item.name }}</td>
-                                            <td>@{{ item.model }}</td>
-                                            <td>@{{ item.employee_name }}</td>
-                                            <th width='100' class='text-end'>
-                                                @can('delete', [App\Models\Vehicle::class, $organisation_id])
-                                                    <button class='btn p-1' @click.prevent.stop='deleteVehicle(item)'>
-                                                        <i class="fa fa-solid fa-trash"></i>
-                                                    </button>
-                                                @endcan
-
-                                            </th>
-                                        </tr>
-                                    </tbody>
-
-                                </table>
-                            </div>
+                            </table>
                         </div>
-
-                        <div class="col-12 col-md-6" v-if='mode === "details" '>
-                            <div class="org-wrapper">
-                                <div class="row ">
-                                    <div class="col-10">
-                                        <h2 class="h4 m-0">
-                                            @{{ vehicleName }} @{{ editedVehicle.name }}
-                                        </h2>
-                                    </div>
-                                    <div class="col text-end">
-                                        <button class="btn p-0  btn-close" type='button' @click='mode="list"'>
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    @include('pages.vehicles.view-tabs')
-                                </div>
-
-                                @include('pages.vehicles.view-details')
-
-                                @include('pages.vehicles.view-activity')
-
-                                @can('update', [App\Models\Vehicle::class, $organisation_id])
-                                    @include('pages.vehicles.view-settings')
-                                @endcan
-
-                            </div>
-                        </div>
-
                     </div>
+
+                    <div class="col-12 col-md-6" v-if='mode === "details" '>
+                        <div class="org-wrapper">
+                            <div class="row ">
+                                <div class="col-10">
+                                    <h2 class="h4 m-0">
+                                        @{{ vehicleName }} @{{ editedVehicle.name }}
+                                    </h2>
+                                </div>
+                                <div class="col text-end">
+                                    <button class="btn p-0  btn-close" type='button' @click='mode="list"'>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                @include('pages.vehicles.view-tabs')
+                            </div>
+
+                            @include('pages.vehicles.view-details')
+
+                            @include('pages.vehicles.view-activity')
+
+                            @can('update', [App\Models\Vehicle::class, $organisation_id])
+                                @include('pages.vehicles.view-settings')
+                            @endcan
+
+                        </div>
+                    </div>
+
                 </div>
             </div>
+        </div>
 
-            <div class="h-100 position-relative" v-if='mode=== "create"'>
-                @can('create', [App\Models\Vehicle::class, $organisation_id])
-                    @include('pages.vehicles.create')
-                @endcan
-            </div>
-        </Transition>
+        <div class="h-100 position-relative" v-if='mode=== "create"'>
+            @can('create', [App\Models\Vehicle::class, $organisation_id])
+                @include('pages.vehicles.create')
+            @endcan
+        </div>
 
         <Transition name="fade">
             @include('pages.vehicles.employees-popup')

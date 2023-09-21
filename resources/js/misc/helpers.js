@@ -1,3 +1,5 @@
+var debug = true;
+
 export const getFormData = (form) => {
     const formData = new FormData(form);
 
@@ -11,5 +13,12 @@ export const getFormData = (form) => {
 };
 
 export const strip = (data) => {
+    if (!Boolean(data)) return "";
     return JSON.parse(JSON.stringify(data));
+};
+
+export const clog = (...data) => {
+    const show = Boolean(debug);
+    if (!show) return;
+    console.log(...data);
 };

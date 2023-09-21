@@ -7,18 +7,19 @@
                 :_info="data"
             ></Field>
         </div>
+        <slot></slot>
         <div class="row">
             <div class="col-12 col-md-6 mt-2">
                 <button
                     type="button"
-                    class="w-100 mt-3 btn btn-borders-grey"
+                    class="w-100 btn btn-borders-grey"
                     @click="cancel"
                 >
                     Отмена
                 </button>
             </div>
             <div class="col-12 col-md-6 mt-2">
-                <button type="submit" class="w-100 mt-3 btn btn-primary-alt">
+                <button type="submit" class="w-100 btn btn-primary-alt">
                     Сохранить
                 </button>
             </div>
@@ -57,8 +58,8 @@ export default {
         submit() {
             const vm = this;
             const data = getFormData(vm.$refs.form);
-            console.log("%c Отправка данных формы", "color: green", data);
-            vm.$emit("submit", data);
+            clog("%c Отправка данных формы", "color: green", data);
+            vm.$emit("exec-submit", data);
         },
 
         reset() {

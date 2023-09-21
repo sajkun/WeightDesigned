@@ -1,6 +1,5 @@
-const mobileMenuToggler = document.getElementById("mobile-menu-toggle");
-
-mobileMenuToggler?.addEventListener("click", () => {
-    document.getElementById("main-menu").classList.toggle("shown");
-    mobileMenuToggler.classList.toggle("active");
-});
+//скрипты, которые будут задействованы сразу после загрузки страницы
+require("./../ready/dadata");
+require("./../ready/mobileMenu");
+require("./../ready/formFields");
+require("./../ready/passwordStrength");

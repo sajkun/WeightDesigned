@@ -9,6 +9,7 @@ export default {
                     type: "text",
                     required: true,
                     class: "mt-2",
+                    minlength: 5,
                 },
                 {
                     id: "first_name-new-user",
@@ -17,6 +18,8 @@ export default {
                     type: "text",
                     required: true,
                     class: "col-md-6 col-lg-4 mt-2 ",
+                    pattern: "[А-Яа-я]{1,}",
+                    title: "Допустимы только русские буквы",
                 },
                 {
                     id: "last_name-new-user",
@@ -25,6 +28,8 @@ export default {
                     type: "text",
                     required: true,
                     class: "col-md-6 col-lg-4 mt-2 ",
+                    pattern: "[А-Яа-я]{1,}",
+                    title: "Допустимы только русские буквы",
                 },
                 {
                     id: "middle_name-new-user",
@@ -32,6 +37,8 @@ export default {
                     label: "Отчество",
                     type: "text",
                     class: "mt-2 col-lg-4  ",
+                    pattern: "[А-Яа-я]{1,}",
+                    title: "Допустимы только русские буквы",
                 },
                 {
                     id: "email-new-user",
@@ -48,6 +55,8 @@ export default {
                     type: "text",
                     required: true,
                     class: "mt-2 ",
+                    minlength: 6,
+                    pattern: "[+]{0,1}[0-9\\-\\(\\)]{1,}",
                 },
                 {
                     id: "password-new-user",
@@ -56,6 +65,7 @@ export default {
                     type: "password",
                     class: "mt-2 ",
                     mode: "generate",
+                    required: true,
                 },
                 {
                     id: "roles-new-user",
@@ -63,6 +73,7 @@ export default {
                     label: "Роль",
                     type: "select",
                     class: "mt-2 ",
+                    required: true,
                     options: this.rolesList,
                 },
             ];

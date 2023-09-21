@@ -24,14 +24,17 @@
                                 @csrf
                                 <div>
                                     <div class="form-control-custom">
-
-                                        <input id="login" type="text" class="@error('login') is-invalid @enderror"
-                                            name="login" value="{{ old('login') }}" required autocomplete="login"
-                                            autofocus>
+                                        <input id="login" type="text" minlength="5"
+                                            class="@error('login') is-invalid @enderror" name="login"
+                                            value="{{ old('login') }}" required autocomplete="off"
+                                            pattern='[A-Za-zА-Яа-яЁё0-9]{5,}' autofocus>
                                         <label for="login"
                                             class="@if (old('login')) active @endif">Логин</label>
-
                                     </div>
+                                    <i class='form-control-comment'>
+                                        <span>Минимум 5 символов, допустимы только буквы и цифры
+                                            цифры</span>
+                                    </i>
                                     @error('login')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
@@ -42,11 +45,16 @@
                                 <div class="mt-3">
                                     <div class="form-control-custom ">
                                         <input id="email" type="email" class="@error('email') is-invalid @enderror"
-                                            name="email" value="{{ old('email') }}" required autocomplete="email">
+                                            pattern='[a-z0-9]+@[a-z]+\.[a-z]{2,3}' name="email"
+                                            value="{{ old('email') }}" required autocomplete="off">
 
                                         <label for="email"
                                             class="@if (old('email')) active @endif">E-mail</label>
                                     </div>
+                                    <i class='form-control-comment'><span>
+                                            Формат электронной почты должен быть в виде:
+                                            name@domain.abc
+                                        </span></i>
 
                                     @error('email')
                                         <span class="invalid-feedback" role="alert">
@@ -80,7 +88,7 @@
 
                                 <div class="mt-3">
                                     <div class="form-control-custom">
-                                        <input id="tax-number" type="text"
+                                        <input id="tax-number" type="text" minlength="8" pattern='[0-9]{8,}'
                                             class="@error('tax_number') is-invalid @enderror" name="tax_number"
                                             value="{{ old('tax_number') }}" required autocomplete="tax-number" autofocus>
 
@@ -89,6 +97,8 @@
 
                                         <div id="dropdown-place-tax"></div>
                                     </div>
+                                    <i class='form-control-comment'><span>Минимум 8 символов, допустимы только
+                                            цифры</span></i>
 
                                     @error('tax_number')
                                         <span class="invalid-feedback" role="alert">
@@ -99,12 +109,19 @@
 
                                 <div class="mt-3">
                                     <div class="form-control-custom">
-                                        <input id="password" type="password"
+                                        <input id="password" type="password" data-mode='password'
                                             class="@error('password') is-invalid @enderror" name="password" required
-                                            autocomplete="off">
+                                            autocomplete="off" minlength="8">
 
-                                        <label for="password">Пароль</label>
+                                        <label for="password">Пароль<span class="password-strength">: <span
+                                                    id='passwordStrength'></span></span></span></label>
+
+                                        <button type='button' id='show-password' class="show-password btn p-2"><i
+                                                class="fa fa-eye"></i></button>
                                     </div>
+
+                                    <i class='form-control-comment'>
+                                        <span>Минимум 8 символов</i>
 
                                     @error('password')
                                         <span class="invalid-feedback" role="alert">
@@ -113,13 +130,12 @@
                                     @enderror
                                 </div>
 
-                                <div class="form-control-custom  mt-3">
+                                <div class="form-control-custom  mt-2">
                                     <input id="password-confirm" type="password" class="" name="password_confirmation"
-                                        required autocomplete="off">
+                                        data-mode='password' required autocomplete="off">
                                     <label for="password-confirm">Подтверждение
                                         пароля</label>
                                 </div>
-
 
                                 <div class="mt-4 form-auth__comment">
                                     <p class="m-0">

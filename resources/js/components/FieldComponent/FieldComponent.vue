@@ -1,8 +1,9 @@
 <template>
-    <transition>
+    <TransitionGroup>
         <input-component
             :_info="info"
             :class="info.class ? info.class + ' col-12' : 'col-12'"
+            :_value="info.value"
             @change="change"
             @input="input"
             v-if="mode === 'input'"
@@ -16,12 +17,13 @@
         ></Password>
         <select-component
             :_info="info"
+            :_value="info.value"
             :class="info.class ? info.class + ' col-12' : 'col-12'"
             @change="change"
             @input="input"
             v-if="mode === 'select'"
         ></select-component>
-    </transition>
+    </TransitionGroup>
 </template>
 
 <script>

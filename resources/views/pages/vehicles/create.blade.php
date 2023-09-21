@@ -262,7 +262,7 @@
 
         <div class="mt-2 text-end">
             <button class="btn btn-borders-grey" @click='mode="list"' type='button'>Закрыть</button>
-            <button class="btn btn-primary-alt" type='button' @click='submitCreate'>Сохранить</button>
+            <button class="btn btn-primary-alt ms-2" type='button' @click='submitCreate'>Сохранить</button>
         </div>
     </div>
 </div>

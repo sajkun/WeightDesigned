@@ -42,11 +42,12 @@ class DestroyController extends Controller
             }
 
             $delete_employee->delete();
-            $delete_employee = '';
             return response()->json([
                 'user' => $user,
                 'organisation_id' => $organisation_id,
                 'delete_employee' => $delete_employee,
+                'message' => $delete_employee->specialisation . ' ' . $delete_employee->last_name . ' удален',
+                'type' => 'success'
             ], 200);
         } catch (\Exception  $e) {
             return response()->json([

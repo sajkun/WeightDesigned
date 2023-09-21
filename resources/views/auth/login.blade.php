@@ -23,7 +23,6 @@
                         <div class="form-auth__body mt-3">
                             <form method="POST" action="{{ route('login') }}">
                                 @csrf
-
                                 <div>
                                     <div class="form-control-custom">
 
@@ -44,7 +43,7 @@
 
                                 <div class="form-control-custom mt-3">
                                     <input id="password" type="password" class="@error('password') is-invalid @enderror"
-                                        name="password" required autocomplete="current-password">
+                                        name="password" required data-mode='password' autocomplete="current-password">
 
                                     <label for="password">Пароль</label>
 
@@ -53,6 +52,8 @@
                                             <strong>{{ $message }}</strong>
                                         </span>
                                     @enderror
+                                    <button type='button' id='show-password' class="show-password btn p-2"><i
+                                            class="fa fa-eye"></i></button>
                                 </div>
 
 

@@ -11,7 +11,7 @@
         background: var(--lightest) fff;
         border: 1px solid var(--grey-light);
         border-radius: 0.5em;
-        transition: border-color 0.15s, color 0.15s, outline 0.3s;
+        transition: border-color var(--fast), color var(--fast), outline 0.3s;
         outline: 2px solid transparent;
 
         &:hover {
@@ -37,7 +37,8 @@
         font-size: 1rem;
         color: var(--grey);
         transform: translateY(-50%);
-        transition: left 0.15s, transform 0.15s, font-size 0.15s, color 0.15s;
+        transition: left var(--fast), transform var(--fast),
+            font-size var(--fast), color var(--fast);
         z-index: 5;
 
         &.active {
@@ -62,6 +63,38 @@
             color: var(--grey-light) !important;
             border-color: var(--grey-light) !important;
         }
+    }
+}
+
+.show-password {
+    position: absolute;
+    z-index: 10;
+    right: 0;
+    top: -10px;
+    bottom: -10px;
+    margin: auto;
+    font-size: 1.25rem;
+    color: var(--grey-medium);
+    border: 0;
+
+    &.toggled {
+        transform: scale(1.2, 1.2);
+        color: var(--green);
+    }
+}
+
+.form-control-comment {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--blue);
+    height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: height var(--fast), opacity var(--fast);
+
+    &.active {
+        overflow: visible;
+        opacity: 1;
     }
 }
 
@@ -100,8 +133,8 @@
         text-align: left;
         padding: 0.25rem 1rem;
         font-size: 0.75rem;
-        color: var(--grey-light);
-        transition: background-color 0.15s;
+        color: var(--grey-medium);
+        transition: background-color var(--fast);
 
         span {
             color: #000;
@@ -162,7 +195,7 @@
     padding: 0.5rem 1rem;
     background-color: var(--grey-ultralight);
     border-radius: 0.5rem;
-    transition: border-color 0.15s, background-color 0.15s;
+    transition: border-color var(--fast), background-color var(--fast);
     outline: 0;
 
     &:focus {
@@ -198,4 +231,44 @@
 
 .narrow-row {
     --bs-gutter-x: 0.25rem;
+}
+
+.password-strength {
+    display: none;
+    font-size: 0.75rem;
+
+    &.weak,
+    &.neutral,
+    &.strong {
+        display: inline;
+    }
+
+    &.weak {
+        #passwordStrength {
+            color: var(--red);
+        }
+    }
+    &.neutral {
+        #passwordStrength {
+            color: var(--yellow);
+        }
+    }
+    &.strong {
+        #passwordStrength {
+            color: var(--green);
+        }
+    }
+}
+
+.alert {
+    margin-left: auto;
+    margin-right: auto;
+    width: fit-content;
+
+    ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        font-size: 1rem;
+    }
 }

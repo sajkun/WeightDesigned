@@ -2,7 +2,10 @@
 <template>
     <div class="form-control-custom">
         <input
+            :minlength="minlength"
+            :pattern="pattern"
             :type="type"
+            :title="title"
             :name="name"
             autocomplete="off"
             :class="{ active: value }"
@@ -29,6 +32,9 @@ export default {
             required: this._info?.required,
             label: this._info?.label,
             type: this._info?.type,
+            pattern: this._info?.pattern,
+            minlength: this._info?.minlength,
+            title: this._info?.title,
         };
     },
 

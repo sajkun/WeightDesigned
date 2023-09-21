@@ -1,31 +1,33 @@
 /**
- * First we will load all of this project's JavaScript dependencies which
- * includes Vue and other libraries. It is a great starting point when
- * building robust, powerful web applications using Vue and Laravel.
+ * Основной файл, собирающий весь скрипт приложения
  */
 
-require("./bootstrap");
+import { createApp } from "vue";
+import appPublicUsers from "./public/users.js";
+import appPublicEmployees from "./public/employees.js";
+import appPublicVehicles from "./public/vehicle.js";
+import appPublicGrasslands from "./public/grasslands.js";
 
-window.Vue = require("vue").default;
-require("./dadata");
+// инициализация приложения пользователей для публичной зоны
+if (document.getElementById("public-users")) {
+    createApp(appPublicUsers).mount("#public-users");
+}
 
-/**
- * The following block of code may be used to automatically register your
- * Vue components. It will recursively scan this directory for the Vue
- * components and automatically register them with their "basename".
- *
- * Eg. ./components/ExampleComponent.vue -> <example-component></example-component>
- */
+// инициализация приложения сотрудников для публичной зоны
+if (document.getElementById("public-employees")) {
+    createApp(appPublicEmployees).mount("#public-employees");
+}
 
-const files = require.context("./", true, /\.vue$/i);
-files
-    .keys()
-    .map((key) =>
-        Vue.component(key.split("/").pop().split(".")[0], files(key).default)
-    );
+// инициализация приложения техники для публичной зоны
+if (document.getElementById("public-vehicles")) {
+    createApp(appPublicVehicles).mount("#public-vehicles");
+}
+
+// инициализация приложения полей для публичной зоны
+if (document.getElementById("public-grasslands")) {
+    createApp(appPublicGrasslands).mount("#public-grasslands");
+}
 
 require("./public/ready");
-require("./public/users");
-require("./public/employees");
-require("./public/vehicle");
-require("./public/grasslands");
+// require("./public/vehicle");
+// require("./public/grasslands");
