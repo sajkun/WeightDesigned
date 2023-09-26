@@ -3,13 +3,25 @@
  */
 
 import messages from "../mixins/messages";
-import MessagesComponent from "./../components/MessagesComponent/";
+import MessagesComponent from "../components/MessagesComponent/";
+import SwitcherComponent from "../components/SwitcherComponent";
+import CalendarComponent from "../components/CalendarComponent";
+import crud from "../mixins/crud";
 var grasslandMap;
-const homePage = {
-    mixins: [messages],
 
-    componentsa: {
+const homePage = {
+    mixins: [messages, crud],
+
+    components: {
         MessagesComponent,
+        SwitcherComponent,
+        Calendar: CalendarComponent,
+    },
+
+    data() {
+        return {
+            mode: "",
+        };
     },
 
     mounted() {
@@ -21,7 +33,22 @@ const homePage = {
         });
     },
 
+    computed: {
+        modes() {
+            const modes = {
+                all: "За все время",
+                day: "За день",
+                period: "За период",
+            };
+            return modes;
+        },
+    },
+
     methods: {
+        changeMode(mode) {
+            console.log(mode);
+        },
+
         initMap(selector) {
             let map = new ymaps.Map(
                 selector,

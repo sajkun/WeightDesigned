@@ -1,0 +1,35 @@
+.week-cell {
+    width: 14.285714285714286%;
+    max-width: 14.285714285714286%;
+    min-width: 14.285714285714286%;
+    flex-basis: 14.285714285714286%;
+    padding: 0.25rem;
+    text-align: center;
+    border-radius: 0.25rem;
+    border: 1px solid transparent;
+
+    &.active {
+        border-color: var(--green);
+    }
+}
+
+.btn-controls {
+    font-size: 1.25rem;
+    color: var(--grey);
+    transition: color 0.15s;
+
+    &:hover {
+        color: var(--blue);
+    }
+}
+
+.calendar {
+    border-radius: 0.5rem;
+    background-color: var(--lightest);
+}
+
+.day-name {
+    color: var(--grey-medium);
+    border-bottom: 1px solid var(--grey-light);
+    padding-bottom: 0.5rem;
+}
