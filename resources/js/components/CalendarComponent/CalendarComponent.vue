@@ -37,7 +37,11 @@
                     class="week-cell"
                     v-for="(day, key) in month"
                     :key="'date' + key"
-                    :class="{ active: day.selected }"
+                    :class="{
+                        active: day.selected,
+                        first: day.first,
+                        last: day.last,
+                    }"
                 >
                     <button
                         class="btn"
@@ -57,16 +61,38 @@
 import { strip, clog } from "../../misc/helpers";
 export default {
     props: {
-        _startDate: {
+        _initialDate: {
             type: String,
             default: "",
             required: true,
         },
+        _selectPeriod: {
+            type: Boolean,
+            default: false,
+            required: false,
+        },
     },
 
     watch: {
-        _startDate(date) {
-            this.startDate = date;
+        _initialDate(date) {
+            this.initialDate = date;
+        },
+        _selectPeriod(select) {
+            this._selectPeriod = select;
+        },
+
+        endDate(date) {
+            if (!date) {
+                return;
+            }
+            const vm = this;
+            const eDate = new Date(date);
+            const sDate = new Date(vm.startDate);
+
+            if (sDate > eDate) {
+                vm.startDate = vm.formatDate(eDate);
+                vm.endDate = vm.formatDate(sDate);
+            }
         },
     },
 
@@ -81,13 +107,13 @@ export default {
 
         currentYear() {
             const vm = this;
-            let date = !vm.startDate ? new Date() : new Date(vm.startDate);
+            let date = !vm.initialDate ? new Date() : new Date(vm.initialDate);
             return date.getFullYear();
         },
 
         monthName() {
             const vm = this;
-            let date = !vm.startDate ? new Date() : new Date(vm.startDate);
+            let date = !vm.initialDate ? new Date() : new Date(vm.initialDate);
             const idx = date.getMonth();
             return this.months[idx];
         },
@@ -116,26 +142,33 @@ export default {
 
     data() {
         return {
-            startDate: this._startDate,
-            selectedDate: false,
+            initialDate: this._initialDate,
+            startDate: false,
+            endDate: false,
+            selectPeriod: this._selectPeriod,
+            clickMode: "startDate",
         };
     },
     methods: {
         changeMonth(delta) {
             const vm = this;
-            const date = new Date(vm.startDate);
+            const date = new Date(vm.initialDate);
             date.setMonth(date.getMonth() + delta);
+            vm.initialDate = vm.formatDate(date);
+        },
 
+        formatDate(_date) {
+            const date = new Date(_date);
             const monthFormatted = (date.getMonth() + 1)
                 .toString()
                 .padStart(2, "0");
             const dayFormatted = date.getDate().toString().padStart(2, "0");
-            vm.startDate = `${date.getFullYear()}-${monthFormatted}-${dayFormatted}`;
+            return `${date.getFullYear()}-${monthFormatted}-${dayFormatted}`;
         },
 
         getMonthData() {
             const vm = this;
-            const date = new Date(vm.startDate);
+            const date = new Date(vm.initialDate);
             const monthLength = vm.getDaysInMonths(date);
             const weeksNumber = Math.ceil(monthLength / 7) + 1;
             date.setDate(1);
@@ -172,13 +205,34 @@ export default {
                             .toString()
                             .padStart(2, "0");
                         const dateFormatted = `${data.year}-${monthFormatted}-${dayFormatted}`;
-                        const selected = vm.selectedDate
-                            ? dateFormatted === vm.selectedDate
+
+                        let selected = vm.startDate
+                            ? dateFormatted === vm.startDate
                             : false;
 
+                        let first = false;
+                        let last = false;
+
+                        first = vm.startDate
+                            ? dateFormatted === vm.startDate
+                            : false;
+
+                        if (vm.selectPeriod && vm.endDate && vm.startDate) {
+                            const date = new Date(dateFormatted);
+                            const start = new Date(vm.startDate);
+                            const end = new Date(vm.endDate);
+                            selected = date >= start && date <= end;
+                            last = vm.endDate === dateFormatted;
+                        }
+
+                        if (!vm.selectPeriod || !vm.endDate) {
+                            last = first;
+                        }
                         month.push({
                             day: mayBedate,
                             date: dateFormatted,
+                            last: last,
+                            first: first,
                             selected: selected,
                         });
                     }
@@ -197,7 +251,17 @@ export default {
         },
 
         selectDay(date) {
-            this.selectedDate = date;
+            const vm = this;
+            vm[vm.clickMode] = date;
+
+            if (vm.clickMode === "startDate") {
+                vm.endDate = false;
+            }
+
+            if (vm.selectPeriod) {
+                vm.clickMode =
+                    vm.clickMode === "startDate" ? "endDate" : "startDate";
+            }
         },
     },
 };

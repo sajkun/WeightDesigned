@@ -5,11 +5,28 @@
     flex-basis: 14.285714285714286%;
     padding: 0.25rem;
     text-align: center;
-    border-radius: 0.25rem;
     border: 1px solid transparent;
 
     &.active {
-        border-color: var(--green);
+        border-top-color: var(--green);
+        border-bottom-color: var(--green);
+        background-color: var(--green);
+        color: var(--lightest);
+        button {
+            color: var(--lightest);
+        }
+
+        &.first {
+            border-top-left-radius: 0.25rem;
+            border-left-color: var(--green);
+            border-bottom-left-radius: 0.25rem;
+        }
+
+        &.last {
+            border-right-color: var(--green);
+            border-top-right-radius: 0.25rem;
+            border-bottom-right-radius: 0.25rem;
+        }
     }
 }
 

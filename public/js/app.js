@@ -15196,15 +15196,35 @@ __webpack_require__.r(__webpack_exports__);
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   props: {
-    _startDate: {
+    _initialDate: {
       type: String,
       "default": "",
       required: true
+    },
+    _selectPeriod: {
+      type: Boolean,
+      "default": false,
+      required: false
     }
   },
   watch: {
-    _startDate: function _startDate(date) {
-      this.startDate = date;
+    _initialDate: function _initialDate(date) {
+      this.initialDate = date;
+    },
+    _selectPeriod: function _selectPeriod(select) {
+      this._selectPeriod = select;
+    },
+    endDate: function endDate(date) {
+      if (!date) {
+        return;
+      }
+      var vm = this;
+      var eDate = new Date(date);
+      var sDate = new Date(vm.startDate);
+      if (sDate > eDate) {
+        vm.startDate = vm.formatDate(eDate);
+        vm.endDate = vm.formatDate(sDate);
+      }
     }
   },
   computed: {
@@ -15216,12 +15236,12 @@ __webpack_require__.r(__webpack_exports__);
     },
     currentYear: function currentYear() {
       var vm = this;
-      var date = !vm.startDate ? new Date() : new Date(vm.startDate);
+      var date = !vm.initialDate ? new Date() : new Date(vm.initialDate);
       return date.getFullYear();
     },
     monthName: function monthName() {
       var vm = this;
-      var date = !vm.startDate ? new Date() : new Date(vm.startDate);
+      var date = !vm.initialDate ? new Date() : new Date(vm.initialDate);
       var idx = date.getMonth();
       return this.months[idx];
     },
@@ -15234,22 +15254,29 @@ __webpack_require__.r(__webpack_exports__);
   },
   data: function data() {
     return {
-      startDate: this._startDate,
-      selectedDate: false
+      initialDate: this._initialDate,
+      startDate: false,
+      endDate: false,
+      selectPeriod: this._selectPeriod,
+      clickMode: "startDate"
     };
   },
   methods: {
     changeMonth: function changeMonth(delta) {
       var vm = this;
-      var date = new Date(vm.startDate);
+      var date = new Date(vm.initialDate);
       date.setMonth(date.getMonth() + delta);
+      vm.initialDate = vm.formatDate(date);
+    },
+    formatDate: function formatDate(_date) {
+      var date = new Date(_date);
       var monthFormatted = (date.getMonth() + 1).toString().padStart(2, "0");
       var dayFormatted = date.getDate().toString().padStart(2, "0");
-      vm.startDate = "".concat(date.getFullYear(), "-").concat(monthFormatted, "-").concat(dayFormatted);
+      return "".concat(date.getFullYear(), "-").concat(monthFormatted, "-").concat(dayFormatted);
     },
     getMonthData: function getMonthData() {
       var vm = this;
-      var date = new Date(vm.startDate);
+      var date = new Date(vm.initialDate);
       var monthLength = vm.getDaysInMonths(date);
       var weeksNumber = Math.ceil(monthLength / 7) + 1;
       date.setDate(1);
@@ -15275,10 +15302,25 @@ __webpack_require__.r(__webpack_exports__);
             var monthFormatted = (data.index + 1).toString().padStart(2, "0");
             var dayFormatted = mayBedate.toString().padStart(2, "0");
             var dateFormatted = "".concat(data.year, "-").concat(monthFormatted, "-").concat(dayFormatted);
-            var selected = vm.selectedDate ? dateFormatted === vm.selectedDate : false;
+            var selected = vm.startDate ? dateFormatted === vm.startDate : false;
+            var first = false;
+            var last = false;
+            first = vm.startDate ? dateFormatted === vm.startDate : false;
+            if (vm.selectPeriod && vm.endDate && vm.startDate) {
+              var date = new Date(dateFormatted);
+              var start = new Date(vm.startDate);
+              var end = new Date(vm.endDate);
+              selected = date >= start && date <= end;
+              last = vm.endDate === dateFormatted;
+            }
+            if (!vm.selectPeriod || !vm.endDate) {
+              last = first;
+            }
             month.push({
               day: mayBedate,
               date: dateFormatted,
+              last: last,
+              first: first,
               selected: selected
             });
           }
@@ -15294,7 +15336,14 @@ __webpack_require__.r(__webpack_exports__);
       return _date.getDate();
     },
     selectDay: function selectDay(date) {
-      this.selectedDate = date;
+      var vm = this;
+      vm[vm.clickMode] = date;
+      if (vm.clickMode === "startDate") {
+        vm.endDate = false;
+      }
+      if (vm.selectPeriod) {
+        vm.clickMode = vm.clickMode === "startDate" ? "endDate" : "startDate";
+      }
     }
   }
 });
@@ -15724,7 +15773,9 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
   }), 128 /* KEYED_FRAGMENT */))]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_10, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($options.month, function (day, key) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", {
       "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)(["week-cell", {
-        active: day.selected
+        active: day.selected,
+        first: day.first,
+        last: day.last
       }]),
       key: 'date' + key
     }, [day ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("button", {
@@ -18785,7 +18836,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, ".week-cell[data-v-baf6c618] {\n  width: 14.2857142857%;\n  max-width: 14.2857142857%;\n  min-width: 14.2857142857%;\n  flex-basis: 14.2857142857%;\n  padding: 0.25rem;\n  text-align: center;\n  border-radius: 0.25rem;\n  border: 1px solid transparent;\n}\n.week-cell.active[data-v-baf6c618] {\n  border-color: var(--green);\n}\n.btn-controls[data-v-baf6c618] {\n  font-size: 1.25rem;\n  color: var(--grey);\n  transition: color 0.15s;\n}\n.btn-controls[data-v-baf6c618]:hover {\n  color: var(--blue);\n}\n.calendar[data-v-baf6c618] {\n  border-radius: 0.5rem;\n  background-color: var(--lightest);\n}\n.day-name[data-v-baf6c618] {\n  color: var(--grey-medium);\n  border-bottom: 1px solid var(--grey-light);\n  padding-bottom: 0.5rem;\n}", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, ".week-cell[data-v-baf6c618] {\n  width: 14.2857142857%;\n  max-width: 14.2857142857%;\n  min-width: 14.2857142857%;\n  flex-basis: 14.2857142857%;\n  padding: 0.25rem;\n  text-align: center;\n  border: 1px solid transparent;\n}\n.week-cell.active[data-v-baf6c618] {\n  border-top-color: var(--green);\n  border-bottom-color: var(--green);\n  background-color: var(--green);\n  color: var(--lightest);\n}\n.week-cell.active button[data-v-baf6c618] {\n  color: var(--lightest);\n}\n.week-cell.active.first[data-v-baf6c618] {\n  border-top-left-radius: 0.25rem;\n  border-left-color: var(--green);\n  border-bottom-left-radius: 0.25rem;\n}\n.week-cell.active.last[data-v-baf6c618] {\n  border-right-color: var(--green);\n  border-top-right-radius: 0.25rem;\n  border-bottom-right-radius: 0.25rem;\n}\n.btn-controls[data-v-baf6c618] {\n  font-size: 1.25rem;\n  color: var(--grey);\n  transition: color 0.15s;\n}\n.btn-controls[data-v-baf6c618]:hover {\n  color: var(--blue);\n}\n.calendar[data-v-baf6c618] {\n  border-radius: 0.5rem;\n  background-color: var(--lightest);\n}\n.day-name[data-v-baf6c618] {\n  color: var(--grey-medium);\n  border-bottom: 1px solid var(--grey-light);\n  padding-bottom: 0.5rem;\n}", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 

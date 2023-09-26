@@ -9,7 +9,7 @@
                 <switcher-component :_buttons="modes" @clicked='changeMode'>
                 </switcher-component>
                 <div class="mt-4"></div>
-                <calendar :_start-date='"2023-10-25"'></calendar>
+                <calendar :_initial-date='"2023-10-25"' :_select-period='true'></calendar>
             </div>
             <div class="col-12 col-md-6">
                 <div class="h-100 w-100" id="map"></div>
