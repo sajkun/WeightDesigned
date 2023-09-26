@@ -17260,28 +17260,6 @@ var appPublicGrasslands = {
       }, {
         searchControlProvider: "yandex#search"
       });
-      // let clickedPoint;
-
-      // map.events.add("click", (e) => {
-      //     let coordsClicked = e.get("coords");
-
-      //     if (!vm.formData.geo_json) {
-      //         return;
-      //     }
-
-      //     if (clickedPoint) {
-      //         map.geoObjects.remove(clickedPoint);
-      //     }
-
-      //     clickedPoint = new ymaps.Placemark(coordsClicked, {
-      //         hintContent: "Точка въезда",
-      //     });
-
-      //     vm.formData.entry_point = coordsClicked;
-
-      //     map.geoObjects.add(clickedPoint);
-      // });
-
       return map;
     },
     parseShapeFile: function parseShapeFile(data) {
@@ -17387,10 +17365,30 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+var grasslandMap;
 var homePage = {
   mixins: [_mixins_messages__WEBPACK_IMPORTED_MODULE_0__["default"]],
   componentsa: {
     MessagesComponent: _components_MessagesComponent___WEBPACK_IMPORTED_MODULE_1__["default"]
+  },
+  mounted: function mounted() {
+    var vm = this;
+    vm.$nextTick(function () {
+      ymaps.ready(function () {
+        grasslandMap = vm.initMap("map");
+      });
+    });
+  },
+  methods: {
+    initMap: function initMap(selector) {
+      var map = new ymaps.Map(selector, {
+        center: [45, 45],
+        zoom: 13
+      }, {
+        searchControlProvider: "yandex#search"
+      });
+      return map;
+    }
   }
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (homePage);
