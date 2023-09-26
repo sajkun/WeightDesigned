@@ -23,11 +23,11 @@ class StoreBvsDataController extends Controller
                 'amount_transfered' => 'integer|required',
                 'accelerometer' => 'string',
                 'has_check' => 'boolean|required',
-                // 'coordinates' => 'string|required',
-                // 'to' => 'string|required',
-                // 'from' => 'string|required',
-                // 'bvs_name' => 'string|required',
-                // 'rfid_status' => 'integer|required',
+                'to' => 'string|required',
+                'from' => 'string|required',
+                'bvs_name' => 'string|required',
+                'rfid_status' => 'integer|required',
+                'coordinates' => 'required',
             ];
 
             $validator = Validator::make($request->all(), $validate_rules);
@@ -47,7 +47,7 @@ class StoreBvsDataController extends Controller
             return response()->json([
                 'message' => 'success',
                 'status' => 200,
-                'data_stored' => $data_stored,
+                // 'data_stored' => $data_stored,
             ], 200);
         } catch (\Exception $e) {
             return response()->json([

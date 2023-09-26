@@ -14,8 +14,6 @@ import editEmployeeForm from "../formFields/employees/edit";
 
 const axios = require("axios");
 const appPublicEmployees = {
-    el: "#public-employees",
-
     mixins: [messages, crud, addEmployeeForm, editEmployeeForm],
     components: {
         FieldComponent,

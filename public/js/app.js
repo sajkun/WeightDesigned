@@ -15292,6 +15292,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _FieldComponent__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../FieldComponent */ "./resources/js/components/FieldComponent/index.js");
 
 
+
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   props: {
     _structure: Array
@@ -15319,7 +15320,7 @@ __webpack_require__.r(__webpack_exports__);
     submit: function submit() {
       var vm = this;
       var data = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.getFormData)(vm.$refs.form);
-      clog("%c Отправка данных формы", "color: green", data);
+      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c Отправка данных формы", "color: green", data);
       vm.$emit("exec-submit", data);
     },
     reset: function reset() {
@@ -15847,10 +15848,11 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
-/* harmony import */ var _public_users_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./public/users.js */ "./resources/js/public/users.js");
-/* harmony import */ var _public_employees_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./public/employees.js */ "./resources/js/public/employees.js");
-/* harmony import */ var _public_vehicle_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./public/vehicle.js */ "./resources/js/public/vehicle.js");
-/* harmony import */ var _public_grasslands_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./public/grasslands.js */ "./resources/js/public/grasslands.js");
+/* harmony import */ var _public_home_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./public/home.js */ "./resources/js/public/home.js");
+/* harmony import */ var _public_users_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./public/users.js */ "./resources/js/public/users.js");
+/* harmony import */ var _public_employees_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./public/employees.js */ "./resources/js/public/employees.js");
+/* harmony import */ var _public_vehicle_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./public/vehicle.js */ "./resources/js/public/vehicle.js");
+/* harmony import */ var _public_grasslands_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./public/grasslands.js */ "./resources/js/public/grasslands.js");
 /**
  * Основной файл, собирающий весь скрипт приложения
  */
@@ -15861,24 +15863,29 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
+// инициализация домашней страницы для публичной зоны
+if (document.getElementById("home-page")) {
+  (0,vue__WEBPACK_IMPORTED_MODULE_0__.createApp)(_public_home_js__WEBPACK_IMPORTED_MODULE_1__["default"]).mount("#home-page");
+}
 // инициализация приложения пользователей для публичной зоны
 if (document.getElementById("public-users")) {
-  (0,vue__WEBPACK_IMPORTED_MODULE_0__.createApp)(_public_users_js__WEBPACK_IMPORTED_MODULE_1__["default"]).mount("#public-users");
+  (0,vue__WEBPACK_IMPORTED_MODULE_0__.createApp)(_public_users_js__WEBPACK_IMPORTED_MODULE_2__["default"]).mount("#public-users");
 }
 
 // инициализация приложения сотрудников для публичной зоны
 if (document.getElementById("public-employees")) {
-  (0,vue__WEBPACK_IMPORTED_MODULE_0__.createApp)(_public_employees_js__WEBPACK_IMPORTED_MODULE_2__["default"]).mount("#public-employees");
+  (0,vue__WEBPACK_IMPORTED_MODULE_0__.createApp)(_public_employees_js__WEBPACK_IMPORTED_MODULE_3__["default"]).mount("#public-employees");
 }
 
 // инициализация приложения техники для публичной зоны
 if (document.getElementById("public-vehicles")) {
-  (0,vue__WEBPACK_IMPORTED_MODULE_0__.createApp)(_public_vehicle_js__WEBPACK_IMPORTED_MODULE_3__["default"]).mount("#public-vehicles");
+  (0,vue__WEBPACK_IMPORTED_MODULE_0__.createApp)(_public_vehicle_js__WEBPACK_IMPORTED_MODULE_4__["default"]).mount("#public-vehicles");
 }
 
 // инициализация приложения полей для публичной зоны
 if (document.getElementById("public-grasslands")) {
-  (0,vue__WEBPACK_IMPORTED_MODULE_0__.createApp)(_public_grasslands_js__WEBPACK_IMPORTED_MODULE_4__["default"]).mount("#public-grasslands");
+  (0,vue__WEBPACK_IMPORTED_MODULE_0__.createApp)(_public_grasslands_js__WEBPACK_IMPORTED_MODULE_5__["default"]).mount("#public-grasslands");
 }
 __webpack_require__(/*! ./public/ready */ "./resources/js/public/ready.js");
 // require("./public/vehicle");
@@ -16414,6 +16421,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+/* harmony import */ var _misc_helpers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../misc/helpers */ "./resources/js/misc/helpers.js");
+
 var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 var crud = {
   methods: {
@@ -16463,14 +16472,14 @@ var crud = {
       return this.sendRequest(postData, url).then(document.dispatchEvent(new CustomEvent("updateList")));
     },
     sendRequest: function sendRequest(postData, url) {
-      clog("%c sendRequest fire", "color:blue", url, postData);
+      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c sendRequest fire", "color:blue", url, postData);
       var vm = this;
       return axios.post(url, postData).then(function (response) {
         vm.messages[response.data.type] = response.data.message;
-        clog("%c sendRequest success", "color:green", response);
+        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c sendRequest success", "color:green", response);
         return response;
       })["catch"](function (e) {
-        clog("%c sendRequest error", "color:red", e.response);
+        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c sendRequest error", "color:red", e.response);
         vm.messages.error = "".concat(e.response.status, " ").concat(e.response.statusText, " : ").concat(e.response.data.message);
         return e.response;
       });
@@ -16839,7 +16848,6 @@ __webpack_require__.r(__webpack_exports__);
 
 var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 var appPublicEmployees = {
-  el: "#public-employees",
   mixins: [_mixins_messages__WEBPACK_IMPORTED_MODULE_1__["default"], _mixins_crud__WEBPACK_IMPORTED_MODULE_6__["default"], _formFields_employees_add__WEBPACK_IMPORTED_MODULE_7__["default"], _formFields_employees_edit__WEBPACK_IMPORTED_MODULE_8__["default"]],
   components: {
     FieldComponent: _components_FieldComponent__WEBPACK_IMPORTED_MODULE_4__["default"],
@@ -17094,7 +17102,6 @@ __webpack_require__.r(__webpack_exports__);
 var grasslandMap;
 var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 var appPublicGrasslands = {
-  el: "#public-grasslands",
   mixins: [_mixins_messages__WEBPACK_IMPORTED_MODULE_2__["default"], _mixins_crud__WEBPACK_IMPORTED_MODULE_3__["default"]],
   components: {
     file: _components_FileInputComponent__WEBPACK_IMPORTED_MODULE_4__["default"]
@@ -17361,6 +17368,35 @@ var appPublicGrasslands = {
 
 /***/ }),
 
+/***/ "./resources/js/public/home.js":
+/*!*************************************!*\
+  !*** ./resources/js/public/home.js ***!
+  \*************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _mixins_messages__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../mixins/messages */ "./resources/js/mixins/messages.js");
+/* harmony import */ var _components_MessagesComponent___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./../components/MessagesComponent/ */ "./resources/js/components/MessagesComponent/index.js");
+/**
+ * Домашняя страница
+ */
+
+
+
+var homePage = {
+  mixins: [_mixins_messages__WEBPACK_IMPORTED_MODULE_0__["default"]],
+  componentsa: {
+    MessagesComponent: _components_MessagesComponent___WEBPACK_IMPORTED_MODULE_1__["default"]
+  }
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (homePage);
+
+/***/ }),
+
 /***/ "./resources/js/public/ready.js":
 /*!**************************************!*\
   !*** ./resources/js/public/ready.js ***!
@@ -17413,7 +17449,6 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
 
 var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 var appPublicUsers = {
-  el: "#public-users",
   mixins: [_mixins_messages__WEBPACK_IMPORTED_MODULE_0__["default"], _mixins_crud__WEBPACK_IMPORTED_MODULE_2__["default"], _formFields_addUser__WEBPACK_IMPORTED_MODULE_4__["default"], _formFields_editUser__WEBPACK_IMPORTED_MODULE_6__["default"], _formFields_editPwd__WEBPACK_IMPORTED_MODULE_5__["default"]],
   components: {
     Field: _components_InputComponent__WEBPACK_IMPORTED_MODULE_7__["default"],
@@ -17632,7 +17667,6 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
 var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 var appPublicVehicles = {
-  el: "#public-vehicles",
   mixins: [_mixins_messages__WEBPACK_IMPORTED_MODULE_0__["default"]],
   data: function data() {
     return {
@@ -18419,7 +18453,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.relative[data-v-51e9b158] {\r\n    position: relative;\n}\n.file[data-v-51e9b158] {\r\n    opacity: 0;\r\n    cursor: pointer;\r\n    z-index: 10;\r\n    position: absolute;\r\n    top: 0;\r\n    bottom: 0;\r\n    left: 0;\r\n    right: 0;\n}\r\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.relative[data-v-51e9b158] {\n    position: relative;\n}\n.file[data-v-51e9b158] {\n    opacity: 0;\n    cursor: pointer;\n    z-index: 10;\n    position: absolute;\n    top: 0;\n    bottom: 0;\n    left: 0;\n    right: 0;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -25830,7 +25864,7 @@ function genPropsAccessExp(name) {
 /***/ ((module) => {
 
 "use strict";
-module.exports = JSON.parse('{"_args":[["axios@0.21.4","D:\\\\009-1 Liliani\\\\WeightDesigned"]],"_development":true,"_from":"axios@0.21.4","_id":"axios@0.21.4","_inBundle":false,"_integrity":"sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg==","_location":"/axios","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"axios@0.21.4","name":"axios","escapedName":"axios","rawSpec":"0.21.4","saveSpec":null,"fetchSpec":"0.21.4"},"_requiredBy":["#DEV:/"],"_resolved":"https://registry.npmjs.org/axios/-/axios-0.21.4.tgz","_spec":"0.21.4","_where":"D:\\\\009-1 Liliani\\\\WeightDesigned","author":{"name":"Matt Zabriskie"},"browser":{"./lib/adapters/http.js":"./lib/adapters/xhr.js"},"bugs":{"url":"https://github.com/axios/axios/issues"},"bundlesize":[{"path":"./dist/axios.min.js","threshold":"5kB"}],"dependencies":{"follow-redirects":"^1.14.0"},"description":"Promise based HTTP client for the browser and node.js","devDependencies":{"coveralls":"^3.0.0","es6-promise":"^4.2.4","grunt":"^1.3.0","grunt-banner":"^0.6.0","grunt-cli":"^1.2.0","grunt-contrib-clean":"^1.1.0","grunt-contrib-watch":"^1.0.0","grunt-eslint":"^23.0.0","grunt-karma":"^4.0.0","grunt-mocha-test":"^0.13.3","grunt-ts":"^6.0.0-beta.19","grunt-webpack":"^4.0.2","istanbul-instrumenter-loader":"^1.0.0","jasmine-core":"^2.4.1","karma":"^6.3.2","karma-chrome-launcher":"^3.1.0","karma-firefox-launcher":"^2.1.0","karma-jasmine":"^1.1.1","karma-jasmine-ajax":"^0.1.13","karma-safari-launcher":"^1.0.0","karma-sauce-launcher":"^4.3.6","karma-sinon":"^1.0.5","karma-sourcemap-loader":"^0.3.8","karma-webpack":"^4.0.2","load-grunt-tasks":"^3.5.2","minimist":"^1.2.0","mocha":"^8.2.1","sinon":"^4.5.0","terser-webpack-plugin":"^4.2.3","typescript":"^4.0.5","url-search-params":"^0.10.0","webpack":"^4.44.2","webpack-dev-server":"^3.11.0"},"homepage":"https://axios-http.com","jsdelivr":"dist/axios.min.js","keywords":["xhr","http","ajax","promise","node"],"license":"MIT","main":"index.js","name":"axios","repository":{"type":"git","url":"git+https://github.com/axios/axios.git"},"scripts":{"build":"NODE_ENV=production grunt build","coveralls":"cat coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js","examples":"node ./examples/server.js","fix":"eslint --fix lib/**/*.js","postversion":"git push && git push --tags","preversion":"npm test","start":"node ./sandbox/server.js","test":"grunt test","version":"npm run build && grunt version && git add -A dist && git add CHANGELOG.md bower.json package.json"},"typings":"./index.d.ts","unpkg":"dist/axios.min.js","version":"0.21.4"}');
+module.exports = JSON.parse('{"_args":[["axios@0.21.4","C:\\\\0091_liliani\\\\weight3"]],"_development":true,"_from":"axios@0.21.4","_id":"axios@0.21.4","_inBundle":false,"_integrity":"sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg==","_location":"/axios","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"axios@0.21.4","name":"axios","escapedName":"axios","rawSpec":"0.21.4","saveSpec":null,"fetchSpec":"0.21.4"},"_requiredBy":["#DEV:/"],"_resolved":"https://registry.npmjs.org/axios/-/axios-0.21.4.tgz","_spec":"0.21.4","_where":"C:\\\\0091_liliani\\\\weight3","author":{"name":"Matt Zabriskie"},"browser":{"./lib/adapters/http.js":"./lib/adapters/xhr.js"},"bugs":{"url":"https://github.com/axios/axios/issues"},"bundlesize":[{"path":"./dist/axios.min.js","threshold":"5kB"}],"dependencies":{"follow-redirects":"^1.14.0"},"description":"Promise based HTTP client for the browser and node.js","devDependencies":{"coveralls":"^3.0.0","es6-promise":"^4.2.4","grunt":"^1.3.0","grunt-banner":"^0.6.0","grunt-cli":"^1.2.0","grunt-contrib-clean":"^1.1.0","grunt-contrib-watch":"^1.0.0","grunt-eslint":"^23.0.0","grunt-karma":"^4.0.0","grunt-mocha-test":"^0.13.3","grunt-ts":"^6.0.0-beta.19","grunt-webpack":"^4.0.2","istanbul-instrumenter-loader":"^1.0.0","jasmine-core":"^2.4.1","karma":"^6.3.2","karma-chrome-launcher":"^3.1.0","karma-firefox-launcher":"^2.1.0","karma-jasmine":"^1.1.1","karma-jasmine-ajax":"^0.1.13","karma-safari-launcher":"^1.0.0","karma-sauce-launcher":"^4.3.6","karma-sinon":"^1.0.5","karma-sourcemap-loader":"^0.3.8","karma-webpack":"^4.0.2","load-grunt-tasks":"^3.5.2","minimist":"^1.2.0","mocha":"^8.2.1","sinon":"^4.5.0","terser-webpack-plugin":"^4.2.3","typescript":"^4.0.5","url-search-params":"^0.10.0","webpack":"^4.44.2","webpack-dev-server":"^3.11.0"},"homepage":"https://axios-http.com","jsdelivr":"dist/axios.min.js","keywords":["xhr","http","ajax","promise","node"],"license":"MIT","main":"index.js","name":"axios","repository":{"type":"git","url":"git+https://github.com/axios/axios.git"},"scripts":{"build":"NODE_ENV=production grunt build","coveralls":"cat coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js","examples":"node ./examples/server.js","fix":"eslint --fix lib/**/*.js","postversion":"git push && git push --tags","preversion":"npm test","start":"node ./sandbox/server.js","test":"grunt test","version":"npm run build && grunt version && git add -A dist && git add CHANGELOG.md bower.json package.json"},"typings":"./index.d.ts","unpkg":"dist/axios.min.js","version":"0.21.4"}');
 
 /***/ })
 

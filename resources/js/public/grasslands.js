@@ -14,10 +14,7 @@ import { kml } from "../../../node_modules/@tmcw/togeojson";
 let grasslandMap;
 const axios = require("axios");
 const appPublicGrasslands = {
-    el: "#public-grasslands",
-
     mixins: [messages, crud],
-
     components: {
         file: FileInputComponent,
     },
@@ -98,6 +95,7 @@ const appPublicGrasslands = {
 
             grasslandMap.setCenter(center);
             grasslandMap.geoObjects.removeAll();
+
             vm.drawGrasslandCb(points, grasslandMap);
         },
 

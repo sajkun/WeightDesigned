@@ -3,10 +3,7 @@ import { strip, clog } from "./../misc/helpers";
 
 const axios = require("axios");
 const appPublicVehicles = {
-    el: "#public-vehicles",
-
     mixins: [messages],
-
     data() {
         return {
             organisationId: -1,

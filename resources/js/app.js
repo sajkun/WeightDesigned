@@ -3,29 +3,34 @@
  */
 
 import { createApp } from "vue";
-import appPublicUsers from "./public/users.js";
-import appPublicEmployees from "./public/employees.js";
-import appPublicVehicles from "./public/vehicle.js";
-import appPublicGrasslands from "./public/grasslands.js";
+import homePage from "./public/home.js";
+import publicUsers from "./public/users.js";
+import publicEmployees from "./public/employees.js";
+import publicVehicles from "./public/vehicle.js";
+import publicGrasslands from "./public/grasslands.js";
 
+// инициализация домашней страницы для публичной зоны
+if (document.getElementById("home-page")) {
+    createApp(homePage).mount("#home-page");
+}
 // инициализация приложения пользователей для публичной зоны
 if (document.getElementById("public-users")) {
-    createApp(appPublicUsers).mount("#public-users");
+    createApp(publicUsers).mount("#public-users");
 }
 
 // инициализация приложения сотрудников для публичной зоны
 if (document.getElementById("public-employees")) {
-    createApp(appPublicEmployees).mount("#public-employees");
+    createApp(publicEmployees).mount("#public-employees");
 }
 
 // инициализация приложения техники для публичной зоны
 if (document.getElementById("public-vehicles")) {
-    createApp(appPublicVehicles).mount("#public-vehicles");
+    createApp(publicVehicles).mount("#public-vehicles");
 }
 
 // инициализация приложения полей для публичной зоны
 if (document.getElementById("public-grasslands")) {
-    createApp(appPublicGrasslands).mount("#public-grasslands");
+    createApp(publicGrasslands).mount("#public-grasslands");
 }
 
 require("./public/ready");

@@ -13,7 +13,6 @@ import FormComponent from "./../components/FormComponent/";
 const axios = require("axios");
 
 const appPublicUsers = {
-    el: "#public-users",
     mixins: [messages, crud, addUserForm, editUserForm, editPasswordForm],
     components: {
         Field: InputComponent,

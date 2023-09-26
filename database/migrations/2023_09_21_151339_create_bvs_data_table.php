@@ -15,17 +15,16 @@ class CreateBvsDataTable extends Migration
     {
         Schema::create('bvs_data', function (Blueprint $table) {
             $table->id();
-            $table->string('bvs_name')->nullable();
-            $table->string('from')->nullable();
-            $table->string('to')->nullable();
+            $table->string('bvs_name');
+            $table->string('from');
+            $table->string('to');
             $table->integer('rfid_status')->nullable();
             $table->integer('amount_in_bunker')->nullable();
-            $table->integer('amount_transfered')->nullable();
-            $table->dateTime('operation_time')->nullable();
+            $table->integer('amount_transfered');
+            $table->dateTime('operation_time');
             $table->string('accelerometer')->nullable();
-            $table->boolean('has_check')->nullable();
-            $table->string('error')->nullable();
-            $table->json('coordinates')->nullable();
+            $table->boolean('has_check');
+            $table->string('coordinates');
             $table->timestamps();
         });
     }
