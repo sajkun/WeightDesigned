@@ -24,6 +24,10 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/logout')->name('logout')->uses('Auth\LoginController@logout');
     Route::get('/', 'PublicArea\IndexController')->name('public.index');
 
+    Route::group(['namespace' => 'PublicArea\BvsData', 'prefix' => 'bvsdata'], function () {
+        Route::post('/list', 'ListController')->name('public.user.list');
+    });
+
     Route::group(['namespace' => 'PublicArea\User', 'prefix' => 'users'], function () {
         Route::get('/', 'IndexController')->name('public.users.index');
         Route::get('/list', 'ListController')->name('public.user.list');

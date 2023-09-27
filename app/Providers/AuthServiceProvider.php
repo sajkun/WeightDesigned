@@ -17,6 +17,7 @@ class AuthServiceProvider extends ServiceProvider
         'App\Models\Employee' => 'App\Policies\PublicArea\EmployeePolicy',
         'App\Models\Vehicle' => 'App\Policies\PublicArea\VehiclePolicy',
         'App\Models\Grassland' => 'App\Policies\PublicArea\GrasslandsPolicy',
+        'App\Models\BvsData' => 'App\Policies\PublicArea\BvsDataPolicy',
 
     ];
 

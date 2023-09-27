@@ -17934,11 +17934,13 @@ var homePage = {
   },
   data: function data() {
     return {
-      mode: "day"
+      mode: "day",
+      bvsData: []
     };
   },
   mounted: function mounted() {
     var vm = this;
+    vm.getBvsData();
     vm.$nextTick(function () {
       ymaps.ready(function () {
         grasslandMap = vm.initMap("map");
@@ -17961,17 +17963,24 @@ var homePage = {
       return this.mode === "period";
     }
   },
+  watch: {
+    bvsData: function bvsData(data) {
+      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_5__.clog)((0,_misc_helpers__WEBPACK_IMPORTED_MODULE_5__.strip)(data));
+    }
+  },
   methods: {
     changeMode: function changeMode(data) {
       this.mode = data.mode;
     },
     getBvsData: function getBvsData() {
+      var vm = this;
       var postData = {
         user_id: vm.userId,
         organisation_id: vm.organisationId
       };
-      axios.post("/bvsdata/test", postData).then(function (response) {
+      axios.post("/bvsdata/list", postData).then(function (response) {
         (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_5__.clog)("%c getBvsData response", "color:green", response);
+        vm.bvsData = response.data.bvs_data;
         // vm.messages[response.data.type] = response?.data?.message;
       })["catch"](function (e) {
         (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_5__.clog)("%c getBvsData error", "color: red", e.response);

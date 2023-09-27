@@ -25,11 +25,13 @@ const homePage = {
     data() {
         return {
             mode: "day",
+            bvsData: [],
         };
     },
 
     mounted() {
         const vm = this;
+        vm.getBvsData();
         vm.$nextTick(() => {
             ymaps.ready(function () {
                 grasslandMap = vm.initMap("map");
@@ -56,21 +58,31 @@ const homePage = {
         },
     },
 
+    watch: {
+        bvsData(data) {
+            clog(strip(data));
+        },
+    },
+
     methods: {
         changeMode(data) {
             this.mode = data.mode;
         },
 
         getBvsData() {
+            const vm = this;
+
             const postData = {
                 user_id: vm.userId,
                 organisation_id: vm.organisationId,
             };
 
             axios
-                .post(`/bvsdata/test`, postData)
+                .post(`/bvsdata/list`, postData)
                 .then((response) => {
                     clog("%c getBvsData response", "color:green", response);
+
+                    vm.bvsData = response.data.bvs_data;
                     // vm.messages[response.data.type] = response?.data?.message;
                 })
                 .catch((e) => {
