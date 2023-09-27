@@ -15196,84 +15196,170 @@ __webpack_require__.r(__webpack_exports__);
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   props: {
+    // начальная дата для отображения календаря
     _initialDate: {
       type: String,
       "default": "",
       required: true
     },
+    // режим работы если true - период, если false дата
     _selectPeriod: {
+      type: Boolean,
+      "default": false,
+      required: false
+    },
+    //отключение календаря
+    _disabled: {
       type: Boolean,
       "default": false,
       required: false
     }
   },
+  data: function data() {
+    return {
+      /**
+       * @see _disabled
+       */
+      disabled: this._disabled,
+      /**
+       * @see _selectPeriod
+       */
+      selectPeriod: this._selectPeriod,
+      /**
+       * @see _initialDate
+       */
+      initialDate: this._initialDate,
+      startDate: false,
+      // начальная дата для периода или выбранная дата для selectPeriod=false
+      endDate: false,
+      // завершающая дата периода
+      clickMode: "startDate" //какую дату выбираем, нужен для чередования при selectPeriod=true
+    };
+  },
+  mounted: function mounted() {
+    var vm = this;
+
+    // если режим работы дата, задается начальная дата
+    if (vm.selectPeriod) return;
+    vm.startDate = vm.initialDate;
+  },
   watch: {
+    // отслеживание состояние свойства активности,
+    _disabled: function _disabled(disabled) {
+      this.disabled = disabled;
+    },
+    // отслеживание состояние свойства начальной даты,
     _initialDate: function _initialDate(date) {
       this.initialDate = date;
     },
+    // отслеживание состояние свойства выбора периода,
     _selectPeriod: function _selectPeriod(select) {
-      this._selectPeriod = select;
+      this.selectPeriod = select;
     },
-    endDate: function endDate(date) {
+    selectPeriod: function selectPeriod() {
+      var vm = this;
+      //обнуление даты при смене режима выбора периода/даты,
+      vm.startDate = false;
+      vm.endDate = false;
+    },
+    endDate: function endDate(newDate, oldDate) {
+      var date = newDate;
+      var vm = this;
       if (!date) {
         return;
       }
+      if (newDate === oldDate) return;
+
+      //активация событие выбора периода
+      vm.$emit("selectedPeriod", {
+        start: vm.startDate,
+        end: vm.endDate
+      });
+    },
+    startDate: function startDate(newDate, oldDate) {
+      if (!newDate) return;
+      if (newDate === oldDate) return;
       var vm = this;
-      var eDate = new Date(date);
-      var sDate = new Date(vm.startDate);
-      if (sDate > eDate) {
-        vm.startDate = vm.formatDate(eDate);
-        vm.endDate = vm.formatDate(sDate);
+      if (!vm.selectPeriod) {
+        //активация событие выбора даты
+        vm.$emit("selectedDate", {
+          date: newDate
+        });
       }
     }
   },
   computed: {
+    // дни недели
     days: function days() {
       return ["пн", "вт", "ср", "чт", "пт", "сб", "вс"];
     },
-    month: function month() {
-      return this.getMonthMap();
-    },
+    // текущий год
     currentYear: function currentYear() {
       var vm = this;
       var date = !vm.initialDate ? new Date() : new Date(vm.initialDate);
       return date.getFullYear();
     },
+    // текущий месяц
+    month: function month() {
+      return this.getMonthMap();
+    },
+    //название выбранного месяца
     monthName: function monthName() {
       var vm = this;
       var date = !vm.initialDate ? new Date() : new Date(vm.initialDate);
       var idx = date.getMonth();
       return this.months[idx];
     },
+    // название месяцев
     months: function months() {
       return ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"];
+    },
+    //маркер отображения кнопок интерфейса
+    showButtons: function showButtons() {
+      var vm = this;
+      var showClearButton = vm.startDate && vm.endDate;
+      return {
+        clear: showClearButton,
+        nextMonth: true,
+        prevMonth: true
+      };
     }
   },
-  mounted: function mounted() {
-    // this.getMonthMap();
-  },
-  data: function data() {
-    return {
-      initialDate: this._initialDate,
-      startDate: false,
-      endDate: false,
-      selectPeriod: this._selectPeriod,
-      clickMode: "startDate"
-    };
-  },
   methods: {
+    //смена начальной даты, как результат месяца отображения
     changeMonth: function changeMonth(delta) {
       var vm = this;
+      if (vm.disabled) {
+        return;
+      }
       var date = new Date(vm.initialDate);
       date.setMonth(date.getMonth() + delta);
       vm.initialDate = vm.formatDate(date);
     },
+    //обнуление выбранных дат
+    clearDates: function clearDates() {
+      var vm = this;
+      vm.startDate = false;
+      vm.endDate = false;
+    },
+    /**
+     *форматирование переданной строки или объекта
+     *
+     * @param {String|Date} _date -
+     *
+     * @returns {String} "Y-m-d"
+     */
     formatDate: function formatDate(_date) {
       var date = new Date(_date);
       var monthFormatted = (date.getMonth() + 1).toString().padStart(2, "0");
       var dayFormatted = date.getDate().toString().padStart(2, "0");
       return "".concat(date.getFullYear(), "-").concat(monthFormatted, "-").concat(dayFormatted);
     },
+    /**
+     * Получает информаци о текущем месяце для формирования календаря
+     *
+     * @returns {Object}
+     */
     getMonthData: function getMonthData() {
       var vm = this;
       var date = new Date(vm.initialDate);
@@ -15282,12 +15368,27 @@ __webpack_require__.r(__webpack_exports__);
       date.setDate(1);
       return {
         length: monthLength,
+        // дней в месяце
         weeks: weeksNumber,
+        // количество дней в неделе
         startOn: date.getDay() === 0 ? 7 : date.getDay(),
+        // номер дня в неделе с которого начинается месяц
         year: date.getFullYear(),
-        index: date.getMonth()
+        // текущий год
+        index: date.getMonth() // индекс месяца 0 - 11
       };
     },
+    /**
+     * Формирует данные о месяце
+     *
+     * @returns [{
+    *           day: <int|string>день в месяце,
+        date: <String> стрка даты Y-m-d,
+        last: <boolean>признак последнего выбранного дня,
+        first: <boolean>признак первого выбранного дня,
+        selected: <boolean>признак выбранного дня,
+     * }]
+     */
     getMonthMap: function getMonthMap() {
       var vm = this;
       var data = vm.getMonthData();
@@ -15328,6 +15429,13 @@ __webpack_require__.r(__webpack_exports__);
       }
       return month;
     },
+    /**
+     * Получает количество дней в месяце
+     *
+     * @param {String|Date} date
+     *
+     * @returns {Integer}
+     */
     getDaysInMonths: function getDaysInMonths(date) {
       var _date = new Date(date);
       var month = _date.getMonth();
@@ -15335,11 +15443,29 @@ __webpack_require__.r(__webpack_exports__);
       _date.setDate(0);
       return _date.getDate();
     },
+    /**
+     * Задает дату. Обработчик клика на дату в календаре
+     *
+     * @param {String} date  Y-m-d
+     */
     selectDay: function selectDay(date) {
       var vm = this;
-      vm[vm.clickMode] = date;
+      if (vm.disabled) {
+        return;
+      }
       if (vm.clickMode === "startDate") {
+        vm.startDate = date;
         vm.endDate = false;
+      }
+      if (vm.clickMode === "endDate") {
+        var eDate = new Date(date);
+        var sDate = new Date(vm.startDate);
+        if (sDate > eDate) {
+          vm.startDate = vm.formatDate(eDate);
+          vm.endDate = vm.formatDate(sDate);
+        } else {
+          vm.endDate = date;
+        }
       }
       if (vm.selectPeriod) {
         vm.clickMode = vm.clickMode === "startDate" ? "endDate" : "startDate";
@@ -15683,18 +15809,33 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   props: {
+    // текущий режим работы родителя
+    _activeMode: {
+      type: String,
+      "default": "",
+      required: false
+    },
+    // список кнопок
     _buttons: {
       type: Object,
       "default": [],
       required: true
     }
   },
+  watch: {
+    // интерактивность изменения режима работы
+    _activeMode: function _activeMode(mode) {
+      this.activeMode = mode;
+    }
+  },
   data: function data() {
     return {
-      buttons: this._buttons
+      buttons: this._buttons,
+      activeMode: this._activeMode
     };
   },
   methods: {
+    // обработчик выбора кнопки
     trigger: function trigger(key) {
       this.$emit("clicked", {
         mode: key
@@ -15722,14 +15863,12 @@ var _withScopeId = function _withScopeId(n) {
   return (0,vue__WEBPACK_IMPORTED_MODULE_0__.pushScopeId)("data-v-baf6c618"), n = n(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.popScopeId)(), n;
 };
 var _hoisted_1 = {
-  "class": "w-100 calendar"
-};
-var _hoisted_2 = {
   "class": "d-flex flex-column w-100"
 };
-var _hoisted_3 = {
+var _hoisted_2 = {
   "class": "d-flex py-3"
 };
+var _hoisted_3 = ["disabled"];
 var _hoisted_4 = /*#__PURE__*/_withScopeId(function () {
   return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("i", {
     "class": "fa fa-solid fa-arrow-circle-left"
@@ -15739,38 +15878,51 @@ var _hoisted_5 = [_hoisted_4];
 var _hoisted_6 = {
   "class": "flex-grow-1 col text-center fs-4 align-self-center fw-bold"
 };
-var _hoisted_7 = /*#__PURE__*/_withScopeId(function () {
+var _hoisted_7 = ["disabled"];
+var _hoisted_8 = /*#__PURE__*/_withScopeId(function () {
   return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("i", {
     "class": "fa fa-solid fa-arrow-circle-right"
   }, null, -1 /* HOISTED */);
 });
-var _hoisted_8 = [_hoisted_7];
-var _hoisted_9 = {
+var _hoisted_9 = [_hoisted_8];
+var _hoisted_10 = {
   "class": "d-flex"
 };
-var _hoisted_10 = {
+var _hoisted_11 = {
   "class": "d-flex w-100 flex-wrap"
 };
-var _hoisted_11 = ["onClick"];
+var _hoisted_12 = ["disabled", "onClick"];
+var _hoisted_13 = {
+  "class": "d-flex pb-2 justify-content-end flex-wrap"
+};
+var _hoisted_14 = ["disabled"];
 function render(_ctx, _cache, $props, $setup, $data, $options) {
-  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", {
+    "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)(["w-100 calendar", {
+      disabled: $data.disabled
+    }])
+  }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" НАЧАЛО БЛОКА\n                 кнопки управления месяцами "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [$options.showButtons.prevMonth ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("button", {
+    key: 0,
     "class": "btn btn-controls",
     type: "button",
     onClick: _cache[0] || (_cache[0] = function ($event) {
       return $options.changeMonth(-1);
-    })
-  }, _hoisted_5), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_6, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($options.monthName) + " " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($options.currentYear), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+    }),
+    disabled: $data.disabled
+  }, _hoisted_5, 8 /* PROPS */, _hoisted_3)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_6, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($options.monthName) + " " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($options.currentYear), 1 /* TEXT */), $options.showButtons.nextMonth ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("button", {
+    key: 1,
     "class": "btn btn-controls",
     type: "button",
     onClick: _cache[1] || (_cache[1] = function ($event) {
       return $options.changeMonth(1);
-    })
-  }, _hoisted_8)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_9, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($options.days, function (d, key) {
+    }),
+    disabled: $data.disabled
+  }, _hoisted_9, 8 /* PROPS */, _hoisted_7)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" КОНЕЦ БЛОКА\n                кнопки управления месяцами "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" НАЧАЛО БЛОКА\n                 дни недели "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_10, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($options.days, function (d, key) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", {
       "class": "flex-grow-1 text-center day-name",
       key: 'day' + key
     }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(d), 1 /* TEXT */);
-  }), 128 /* KEYED_FRAGMENT */))]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_10, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($options.month, function (day, key) {
+  }), 128 /* KEYED_FRAGMENT */))]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" КОНЕЦ БЛОКА\n                 дни недели "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" НАЧАЛО БЛОКА\n                дни календаря "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_11, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($options.month, function (day, key) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", {
       "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)(["week-cell", {
         active: day.selected,
@@ -15782,11 +15934,20 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       key: 0,
       "class": "btn",
       type: "button",
+      disabled: $data.disabled,
       onClick: function onClick($event) {
         return $options.selectDay(day.date);
       }
-    }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(day.day), 9 /* TEXT, PROPS */, _hoisted_11)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)], 2 /* CLASS */);
-  }), 128 /* KEYED_FRAGMENT */))])])]);
+    }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(day.day), 9 /* TEXT, PROPS */, _hoisted_12)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)], 2 /* CLASS */);
+  }), 128 /* KEYED_FRAGMENT */))]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" КОНЕЦ БЛОКА\n                 дни календаря "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" НАЧАЛО БЛОКА\n                кнопки управления "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_13, [$options.showButtons.clear ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("button", {
+    key: 0,
+    "class": "btn btn-link",
+    type: "button",
+    disabled: $data.disabled,
+    onClick: _cache[2] || (_cache[2] = function () {
+      return $options.clearDates && $options.clearDates.apply($options, arguments);
+    })
+  }, " Очистить даты ", 8 /* PROPS */, _hoisted_14)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" КОНЕЦ БЛОКА\n                 кнопки управления ")])], 2 /* CLASS */);
 }
 
 /***/ }),
@@ -16146,19 +16307,21 @@ var _withScopeId = function _withScopeId(n) {
   return (0,vue__WEBPACK_IMPORTED_MODULE_0__.pushScopeId)("data-v-2f34dba4"), n = n(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.popScopeId)(), n;
 };
 var _hoisted_1 = {
-  "class": "d-flex mt-2 button-holder"
+  "class": "d-flex button-holder"
 };
 var _hoisted_2 = ["onClick"];
 function render(_ctx, _cache, $props, $setup, $data, $options) {
   return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.buttons, function (btn, key) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("button", {
-      "class": "btn flex-grow-1",
+      "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)(["btn flex-grow-1 btn-switcher", {
+        active: $data.activeMode === key
+      }]),
       type: "button",
       onClick: function onClick($event) {
         return $options.trigger(key);
       },
       key: 'btn' + key
-    }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(btn), 9 /* TEXT, PROPS */, _hoisted_2);
+    }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(btn), 11 /* TEXT, CLASS, PROPS */, _hoisted_2);
   }), 128 /* KEYED_FRAGMENT */))]);
 }
 
@@ -17720,7 +17883,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_MessagesComponent___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../components/MessagesComponent/ */ "./resources/js/components/MessagesComponent/index.js");
 /* harmony import */ var _components_SwitcherComponent__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../components/SwitcherComponent */ "./resources/js/components/SwitcherComponent/index.js");
 /* harmony import */ var _components_CalendarComponent__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../components/CalendarComponent */ "./resources/js/components/CalendarComponent/index.js");
-/* harmony import */ var _mixins_crud__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../mixins/crud */ "./resources/js/mixins/crud.js");
+/* harmony import */ var _misc_helpers__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../misc/helpers */ "./resources/js/misc/helpers.js");
+/* harmony import */ var _mixins_crud__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../mixins/crud */ "./resources/js/mixins/crud.js");
 /**
  * Домашняя страница
  */
@@ -17730,9 +17894,10 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
 var grasslandMap;
 var homePage = {
-  mixins: [_mixins_messages__WEBPACK_IMPORTED_MODULE_0__["default"], _mixins_crud__WEBPACK_IMPORTED_MODULE_4__["default"]],
+  mixins: [_mixins_messages__WEBPACK_IMPORTED_MODULE_0__["default"], _mixins_crud__WEBPACK_IMPORTED_MODULE_5__["default"]],
   components: {
     MessagesComponent: _components_MessagesComponent___WEBPACK_IMPORTED_MODULE_1__["default"],
     SwitcherComponent: _components_SwitcherComponent__WEBPACK_IMPORTED_MODULE_2__["default"],
@@ -17740,7 +17905,7 @@ var homePage = {
   },
   data: function data() {
     return {
-      mode: ""
+      mode: "day"
     };
   },
   mounted: function mounted() {
@@ -17752,6 +17917,9 @@ var homePage = {
     });
   },
   computed: {
+    calendarState: function calendarState() {
+      return this.mode === "all";
+    },
     modes: function modes() {
       var modes = {
         all: "За все время",
@@ -17759,11 +17927,14 @@ var homePage = {
         period: "За период"
       };
       return modes;
+    },
+    selectPeriod: function selectPeriod() {
+      return this.mode === "period";
     }
   },
   methods: {
-    changeMode: function changeMode(mode) {
-      console.log(mode);
+    changeMode: function changeMode(data) {
+      this.mode = data.mode;
     },
     initMap: function initMap(selector) {
       var map = new ymaps.Map(selector, {
@@ -17773,6 +17944,12 @@ var homePage = {
         searchControlProvider: "yandex#search"
       });
       return map;
+    },
+    selectDateCb: function selectDateCb(data) {
+      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_4__.clog)("%c selectDateCb", "color: blue", data);
+    },
+    selectPeriodCb: function selectPeriodCb(data) {
+      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_4__.clog)("%c selectDateCb", "color: blue", data);
     }
   }
 };
@@ -18836,7 +19013,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, ".week-cell[data-v-baf6c618] {\n  width: 14.2857142857%;\n  max-width: 14.2857142857%;\n  min-width: 14.2857142857%;\n  flex-basis: 14.2857142857%;\n  padding: 0.25rem;\n  text-align: center;\n  border: 1px solid transparent;\n}\n.week-cell.active[data-v-baf6c618] {\n  border-top-color: var(--green);\n  border-bottom-color: var(--green);\n  background-color: var(--green);\n  color: var(--lightest);\n}\n.week-cell.active button[data-v-baf6c618] {\n  color: var(--lightest);\n}\n.week-cell.active.first[data-v-baf6c618] {\n  border-top-left-radius: 0.25rem;\n  border-left-color: var(--green);\n  border-bottom-left-radius: 0.25rem;\n}\n.week-cell.active.last[data-v-baf6c618] {\n  border-right-color: var(--green);\n  border-top-right-radius: 0.25rem;\n  border-bottom-right-radius: 0.25rem;\n}\n.btn-controls[data-v-baf6c618] {\n  font-size: 1.25rem;\n  color: var(--grey);\n  transition: color 0.15s;\n}\n.btn-controls[data-v-baf6c618]:hover {\n  color: var(--blue);\n}\n.calendar[data-v-baf6c618] {\n  border-radius: 0.5rem;\n  background-color: var(--lightest);\n}\n.day-name[data-v-baf6c618] {\n  color: var(--grey-medium);\n  border-bottom: 1px solid var(--grey-light);\n  padding-bottom: 0.5rem;\n}", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, ".week-cell[data-v-baf6c618] {\n  width: 14.2857142857%;\n  max-width: 14.2857142857%;\n  min-width: 14.2857142857%;\n  flex-basis: 14.2857142857%;\n  padding: 0.25rem;\n  text-align: center;\n  border: 1px solid transparent;\n}\n.week-cell.active[data-v-baf6c618] {\n  border-top-color: var(--green);\n  border-bottom-color: var(--green);\n  background-color: var(--green);\n  color: var(--lightest);\n}\n.week-cell.active button[data-v-baf6c618] {\n  color: var(--lightest);\n}\n.week-cell.active.first[data-v-baf6c618] {\n  border-top-left-radius: 0.25rem;\n  border-left-color: var(--green);\n  border-bottom-left-radius: 0.25rem;\n}\n.week-cell.active.last[data-v-baf6c618] {\n  border-right-color: var(--green);\n  border-top-right-radius: 0.25rem;\n  border-bottom-right-radius: 0.25rem;\n}\n.week-cell button[data-v-baf6c618]:disabled {\n  opacity: 0.5;\n  --bs-btn-disabled-border-color: transparent;\n}\n.disabled[data-v-baf6c618] {\n  opacity: 0.5;\n}\n.btn-controls[data-v-baf6c618] {\n  font-size: 1.25rem;\n  color: var(--grey);\n  transition: color 0.15s;\n}\n.btn-controls[data-v-baf6c618]:disabled {\n  --bs-btn-disabled-border-color: transparent;\n}\n.btn-controls[data-v-baf6c618]:hover {\n  color: var(--blue);\n}\n.calendar[data-v-baf6c618] {\n  border-radius: 0.5rem;\n  background-color: var(--lightest);\n}\n.day-name[data-v-baf6c618] {\n  color: var(--grey-medium);\n  border-bottom: 1px solid var(--grey-light);\n  padding-bottom: 0.5rem;\n}", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -18860,7 +19037,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, ".button-holder[data-v-2f34dba4] {\n  background-color: var(--lightest);\n  font-weight: 700;\n}\n.button-holder button[data-v-2f34dba4] {\n  font-weight: 700;\n}\n.button-holder button.active[data-v-2f34dba4] {\n  color: var(--green);\n}", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -18884,7 +19061,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.relative[data-v-51e9b158] {\n    position: relative;\n}\n.file[data-v-51e9b158] {\n    opacity: 0;\n    cursor: pointer;\n    z-index: 10;\n    position: absolute;\n    top: 0;\n    bottom: 0;\n    left: 0;\n    right: 0;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.relative[data-v-51e9b158] {\r\n    position: relative;\n}\n.file[data-v-51e9b158] {\r\n    opacity: 0;\r\n    cursor: pointer;\r\n    z-index: 10;\r\n    position: absolute;\r\n    top: 0;\r\n    bottom: 0;\r\n    left: 0;\r\n    right: 0;\n}\r\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -26507,7 +26684,7 @@ function genPropsAccessExp(name) {
 /***/ ((module) => {
 
 "use strict";
-module.exports = JSON.parse('{"_args":[["axios@0.21.4","C:\\\\0091_liliani\\\\weight3"]],"_development":true,"_from":"axios@0.21.4","_id":"axios@0.21.4","_inBundle":false,"_integrity":"sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg==","_location":"/axios","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"axios@0.21.4","name":"axios","escapedName":"axios","rawSpec":"0.21.4","saveSpec":null,"fetchSpec":"0.21.4"},"_requiredBy":["#DEV:/"],"_resolved":"https://registry.npmjs.org/axios/-/axios-0.21.4.tgz","_spec":"0.21.4","_where":"C:\\\\0091_liliani\\\\weight3","author":{"name":"Matt Zabriskie"},"browser":{"./lib/adapters/http.js":"./lib/adapters/xhr.js"},"bugs":{"url":"https://github.com/axios/axios/issues"},"bundlesize":[{"path":"./dist/axios.min.js","threshold":"5kB"}],"dependencies":{"follow-redirects":"^1.14.0"},"description":"Promise based HTTP client for the browser and node.js","devDependencies":{"coveralls":"^3.0.0","es6-promise":"^4.2.4","grunt":"^1.3.0","grunt-banner":"^0.6.0","grunt-cli":"^1.2.0","grunt-contrib-clean":"^1.1.0","grunt-contrib-watch":"^1.0.0","grunt-eslint":"^23.0.0","grunt-karma":"^4.0.0","grunt-mocha-test":"^0.13.3","grunt-ts":"^6.0.0-beta.19","grunt-webpack":"^4.0.2","istanbul-instrumenter-loader":"^1.0.0","jasmine-core":"^2.4.1","karma":"^6.3.2","karma-chrome-launcher":"^3.1.0","karma-firefox-launcher":"^2.1.0","karma-jasmine":"^1.1.1","karma-jasmine-ajax":"^0.1.13","karma-safari-launcher":"^1.0.0","karma-sauce-launcher":"^4.3.6","karma-sinon":"^1.0.5","karma-sourcemap-loader":"^0.3.8","karma-webpack":"^4.0.2","load-grunt-tasks":"^3.5.2","minimist":"^1.2.0","mocha":"^8.2.1","sinon":"^4.5.0","terser-webpack-plugin":"^4.2.3","typescript":"^4.0.5","url-search-params":"^0.10.0","webpack":"^4.44.2","webpack-dev-server":"^3.11.0"},"homepage":"https://axios-http.com","jsdelivr":"dist/axios.min.js","keywords":["xhr","http","ajax","promise","node"],"license":"MIT","main":"index.js","name":"axios","repository":{"type":"git","url":"git+https://github.com/axios/axios.git"},"scripts":{"build":"NODE_ENV=production grunt build","coveralls":"cat coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js","examples":"node ./examples/server.js","fix":"eslint --fix lib/**/*.js","postversion":"git push && git push --tags","preversion":"npm test","start":"node ./sandbox/server.js","test":"grunt test","version":"npm run build && grunt version && git add -A dist && git add CHANGELOG.md bower.json package.json"},"typings":"./index.d.ts","unpkg":"dist/axios.min.js","version":"0.21.4"}');
+module.exports = JSON.parse('{"_args":[["axios@0.21.4","D:\\\\009-1 Liliani\\\\WeightDesigned"]],"_development":true,"_from":"axios@0.21.4","_id":"axios@0.21.4","_inBundle":false,"_integrity":"sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg==","_location":"/axios","_phantomChildren":{},"_requested":{"type":"version","registry":true,"raw":"axios@0.21.4","name":"axios","escapedName":"axios","rawSpec":"0.21.4","saveSpec":null,"fetchSpec":"0.21.4"},"_requiredBy":["#DEV:/"],"_resolved":"https://registry.npmjs.org/axios/-/axios-0.21.4.tgz","_spec":"0.21.4","_where":"D:\\\\009-1 Liliani\\\\WeightDesigned","author":{"name":"Matt Zabriskie"},"browser":{"./lib/adapters/http.js":"./lib/adapters/xhr.js"},"bugs":{"url":"https://github.com/axios/axios/issues"},"bundlesize":[{"path":"./dist/axios.min.js","threshold":"5kB"}],"dependencies":{"follow-redirects":"^1.14.0"},"description":"Promise based HTTP client for the browser and node.js","devDependencies":{"coveralls":"^3.0.0","es6-promise":"^4.2.4","grunt":"^1.3.0","grunt-banner":"^0.6.0","grunt-cli":"^1.2.0","grunt-contrib-clean":"^1.1.0","grunt-contrib-watch":"^1.0.0","grunt-eslint":"^23.0.0","grunt-karma":"^4.0.0","grunt-mocha-test":"^0.13.3","grunt-ts":"^6.0.0-beta.19","grunt-webpack":"^4.0.2","istanbul-instrumenter-loader":"^1.0.0","jasmine-core":"^2.4.1","karma":"^6.3.2","karma-chrome-launcher":"^3.1.0","karma-firefox-launcher":"^2.1.0","karma-jasmine":"^1.1.1","karma-jasmine-ajax":"^0.1.13","karma-safari-launcher":"^1.0.0","karma-sauce-launcher":"^4.3.6","karma-sinon":"^1.0.5","karma-sourcemap-loader":"^0.3.8","karma-webpack":"^4.0.2","load-grunt-tasks":"^3.5.2","minimist":"^1.2.0","mocha":"^8.2.1","sinon":"^4.5.0","terser-webpack-plugin":"^4.2.3","typescript":"^4.0.5","url-search-params":"^0.10.0","webpack":"^4.44.2","webpack-dev-server":"^3.11.0"},"homepage":"https://axios-http.com","jsdelivr":"dist/axios.min.js","keywords":["xhr","http","ajax","promise","node"],"license":"MIT","main":"index.js","name":"axios","repository":{"type":"git","url":"git+https://github.com/axios/axios.git"},"scripts":{"build":"NODE_ENV=production grunt build","coveralls":"cat coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js","examples":"node ./examples/server.js","fix":"eslint --fix lib/**/*.js","postversion":"git push && git push --tags","preversion":"npm test","start":"node ./sandbox/server.js","test":"grunt test","version":"npm run build && grunt version && git add -A dist && git add CHANGELOG.md bower.json package.json"},"typings":"./index.d.ts","unpkg":"dist/axios.min.js","version":"0.21.4"}');
 
 /***/ })
 

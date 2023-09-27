@@ -1,11 +1,16 @@
+<!-- Компонент отображения календаря -->
 <template>
-    <div class="w-100 calendar">
+    <div class="w-100 calendar" :class="{ disabled: disabled }">
         <div class="d-flex flex-column w-100">
+            <!-- НАЧАЛО БЛОКА
+                 кнопки управления месяцами -->
             <div class="d-flex py-3">
                 <button
                     class="btn btn-controls"
                     type="button"
                     @click="changeMonth(-1)"
+                    :disabled="disabled"
+                    v-if="showButtons.prevMonth"
                 >
                     <i class="fa fa-solid fa-arrow-circle-left"></i>
                 </button>
@@ -19,10 +24,17 @@
                     class="btn btn-controls"
                     type="button"
                     @click="changeMonth(1)"
+                    :disabled="disabled"
+                    v-if="showButtons.nextMonth"
                 >
                     <i class="fa fa-solid fa-arrow-circle-right"></i>
                 </button>
             </div>
+            <!-- КОНЕЦ БЛОКА
+                кнопки управления месяцами -->
+
+            <!-- НАЧАЛО БЛОКА
+                 дни недели -->
             <div class="d-flex">
                 <div
                     class="flex-grow-1 text-center day-name"
@@ -32,6 +44,11 @@
                     {{ d }}
                 </div>
             </div>
+            <!-- КОНЕЦ БЛОКА
+                 дни недели -->
+
+            <!-- НАЧАЛО БЛОКА
+                дни календаря -->
             <div class="d-flex w-100 flex-wrap">
                 <div
                     class="week-cell"
@@ -47,12 +64,32 @@
                         class="btn"
                         type="button"
                         v-if="day"
+                        :disabled="disabled"
                         @click="selectDay(day.date)"
                     >
                         {{ day.day }}
                     </button>
                 </div>
             </div>
+            <!-- КОНЕЦ БЛОКА
+                 дни календаря -->
+
+            <!-- НАЧАЛО БЛОКА
+                кнопки управления -->
+            <div class="d-flex pb-2 justify-content-end flex-wrap">
+                <button
+                    class="btn btn-link"
+                    type="button"
+                    :disabled="disabled"
+                    v-if="showButtons.clear"
+                    @click="clearDates"
+                >
+                    Очистить даты
+                </button>
+            </div>
+
+            <!-- КОНЕЦ БЛОКА
+                 кнопки управления -->
         </div>
     </div>
 </template>
@@ -61,56 +98,127 @@
 import { strip, clog } from "../../misc/helpers";
 export default {
     props: {
+        // начальная дата для отображения календаря
         _initialDate: {
             type: String,
             default: "",
             required: true,
         },
+
+        // режим работы если true - период, если false дата
         _selectPeriod: {
+            type: Boolean,
+            default: false,
+            required: false,
+        },
+
+        //отключение календаря
+        _disabled: {
             type: Boolean,
             default: false,
             required: false,
         },
     },
 
+    data() {
+        return {
+            /**
+             * @see _disabled
+             */
+            disabled: this._disabled,
+            /**
+             * @see _selectPeriod
+             */
+            selectPeriod: this._selectPeriod,
+            /**
+             * @see _initialDate
+             */
+            initialDate: this._initialDate,
+            startDate: false, // начальная дата для периода или выбранная дата для selectPeriod=false
+            endDate: false, // завершающая дата периода
+            clickMode: "startDate", //какую дату выбираем, нужен для чередования при selectPeriod=true
+        };
+    },
+
+    mounted() {
+        const vm = this;
+
+        // если режим работы дата, задается начальная дата
+        if (vm.selectPeriod) return;
+        vm.startDate = vm.initialDate;
+    },
+
     watch: {
+        // отслеживание состояние свойства активности,
+        _disabled(disabled) {
+            this.disabled = disabled;
+        },
+
+        // отслеживание состояние свойства начальной даты,
         _initialDate(date) {
             this.initialDate = date;
         },
+
+        // отслеживание состояние свойства выбора периода,
         _selectPeriod(select) {
-            this._selectPeriod = select;
+            this.selectPeriod = select;
         },
 
-        endDate(date) {
+        selectPeriod() {
+            const vm = this;
+            //обнуление даты при смене режима выбора периода/даты,
+            vm.startDate = false;
+            vm.endDate = false;
+        },
+
+        endDate(newDate, oldDate) {
+            const date = newDate;
+            const vm = this;
+
             if (!date) {
                 return;
             }
-            const vm = this;
-            const eDate = new Date(date);
-            const sDate = new Date(vm.startDate);
 
-            if (sDate > eDate) {
-                vm.startDate = vm.formatDate(eDate);
-                vm.endDate = vm.formatDate(sDate);
+            if (newDate === oldDate) return;
+
+            //активация событие выбора периода
+            vm.$emit("selectedPeriod", {
+                start: vm.startDate,
+                end: vm.endDate,
+            });
+        },
+
+        startDate(newDate, oldDate) {
+            if (!newDate) return;
+            if (newDate === oldDate) return;
+
+            const vm = this;
+            if (!vm.selectPeriod) {
+                //активация событие выбора даты
+                vm.$emit("selectedDate", { date: newDate });
             }
         },
     },
 
     computed: {
+        // дни недели
         days() {
             return ["пн", "вт", "ср", "чт", "пт", "сб", "вс"];
         },
 
-        month() {
-            return this.getMonthMap();
-        },
-
+        // текущий год
         currentYear() {
             const vm = this;
             let date = !vm.initialDate ? new Date() : new Date(vm.initialDate);
             return date.getFullYear();
         },
 
+        // текущий месяц
+        month() {
+            return this.getMonthMap();
+        },
+
+        //название выбранного месяца
         monthName() {
             const vm = this;
             let date = !vm.initialDate ? new Date() : new Date(vm.initialDate);
@@ -118,6 +226,7 @@ export default {
             return this.months[idx];
         },
 
+        // название месяцев
         months() {
             return [
                 "Январь",
@@ -134,29 +243,48 @@ export default {
                 "Декабрь",
             ];
         },
+
+        //маркер отображения кнопок интерфейса
+        showButtons() {
+            const vm = this;
+            const showClearButton = vm.startDate && vm.endDate;
+
+            return {
+                clear: showClearButton,
+                nextMonth: true,
+                prevMonth: true,
+            };
+        },
     },
 
-    mounted() {
-        // this.getMonthMap();
-    },
-
-    data() {
-        return {
-            initialDate: this._initialDate,
-            startDate: false,
-            endDate: false,
-            selectPeriod: this._selectPeriod,
-            clickMode: "startDate",
-        };
-    },
     methods: {
+        //смена начальной даты, как результат месяца отображения
         changeMonth(delta) {
             const vm = this;
+
+            if (vm.disabled) {
+                return;
+            }
+
             const date = new Date(vm.initialDate);
             date.setMonth(date.getMonth() + delta);
             vm.initialDate = vm.formatDate(date);
         },
 
+        //обнуление выбранных дат
+        clearDates() {
+            const vm = this;
+            vm.startDate = false;
+            vm.endDate = false;
+        },
+
+        /**
+         *форматирование переданной строки или объекта
+         *
+         * @param {String|Date} _date -
+         *
+         * @returns {String} "Y-m-d"
+         */
         formatDate(_date) {
             const date = new Date(_date);
             const monthFormatted = (date.getMonth() + 1)
@@ -166,6 +294,11 @@ export default {
             return `${date.getFullYear()}-${monthFormatted}-${dayFormatted}`;
         },
 
+        /**
+         * Получает информаци о текущем месяце для формирования календаря
+         *
+         * @returns {Object}
+         */
         getMonthData() {
             const vm = this;
             const date = new Date(vm.initialDate);
@@ -174,13 +307,25 @@ export default {
             date.setDate(1);
 
             return {
-                length: monthLength,
-                weeks: weeksNumber,
-                startOn: date.getDay() === 0 ? 7 : date.getDay(),
-                year: date.getFullYear(),
-                index: date.getMonth(),
+                length: monthLength, // дней в месяце
+                weeks: weeksNumber, // количество дней в неделе
+                startOn: date.getDay() === 0 ? 7 : date.getDay(), // номер дня в неделе с которого начинается месяц
+                year: date.getFullYear(), // текущий год
+                index: date.getMonth(), // индекс месяца 0 - 11
             };
         },
+
+        /**
+         * Формирует данные о месяце
+         *
+         * @returns [{
+*           day: <int|string>день в месяце,
+            date: <String> стрка даты Y-m-d,
+            last: <boolean>признак последнего выбранного дня,
+            first: <boolean>признак первого выбранного дня,
+            selected: <boolean>признак выбранного дня,
+         * }]
+         */
 
         getMonthMap() {
             const vm = this;
@@ -242,6 +387,13 @@ export default {
             return month;
         },
 
+        /**
+         * Получает количество дней в месяце
+         *
+         * @param {String|Date} date
+         *
+         * @returns {Integer}
+         */
         getDaysInMonths(date) {
             const _date = new Date(date);
             const month = _date.getMonth();
@@ -250,12 +402,32 @@ export default {
             return _date.getDate();
         },
 
+        /**
+         * Задает дату. Обработчик клика на дату в календаре
+         *
+         * @param {String} date  Y-m-d
+         */
         selectDay(date) {
             const vm = this;
-            vm[vm.clickMode] = date;
+            if (vm.disabled) {
+                return;
+            }
 
             if (vm.clickMode === "startDate") {
+                vm.startDate = date;
                 vm.endDate = false;
+            }
+
+            if (vm.clickMode === "endDate") {
+                const eDate = new Date(date);
+                const sDate = new Date(vm.startDate);
+
+                if (sDate > eDate) {
+                    vm.startDate = vm.formatDate(eDate);
+                    vm.endDate = vm.formatDate(sDate);
+                } else {
+                    vm.endDate = date;
+                }
             }
 
             if (vm.selectPeriod) {

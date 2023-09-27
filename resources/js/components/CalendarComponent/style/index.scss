@@ -28,12 +28,27 @@
             border-bottom-right-radius: 0.25rem;
         }
     }
+
+    button {
+        &:disabled {
+            opacity: 0.5;
+            --bs-btn-disabled-border-color: transparent;
+        }
+    }
+}
+
+.disabled {
+    opacity: 0.5;
 }
 
 .btn-controls {
     font-size: 1.25rem;
     color: var(--grey);
     transition: color 0.15s;
+
+    &:disabled {
+        --bs-btn-disabled-border-color: transparent;
+    }
 
     &:hover {
         color: var(--blue);

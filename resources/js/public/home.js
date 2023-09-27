@@ -6,6 +6,7 @@ import messages from "../mixins/messages";
 import MessagesComponent from "../components/MessagesComponent/";
 import SwitcherComponent from "../components/SwitcherComponent";
 import CalendarComponent from "../components/CalendarComponent";
+import { strip, clog } from "../misc/helpers";
 import crud from "../mixins/crud";
 var grasslandMap;
 
@@ -20,7 +21,7 @@ const homePage = {
 
     data() {
         return {
-            mode: "",
+            mode: "day",
         };
     },
 
@@ -34,6 +35,10 @@ const homePage = {
     },
 
     computed: {
+        calendarState() {
+            return this.mode === "all";
+        },
+
         modes() {
             const modes = {
                 all: "За все время",
@@ -42,11 +47,15 @@ const homePage = {
             };
             return modes;
         },
+
+        selectPeriod() {
+            return this.mode === "period";
+        },
     },
 
     methods: {
-        changeMode(mode) {
-            console.log(mode);
+        changeMode(data) {
+            this.mode = data.mode;
         },
 
         initMap(selector) {
@@ -62,6 +71,14 @@ const homePage = {
             );
 
             return map;
+        },
+
+        selectDateCb(data) {
+            clog("%c selectDateCb", "color: blue", data);
+        },
+
+        selectPeriodCb(data) {
+            clog("%c selectDateCb", "color: blue", data);
         },
     },
 };
