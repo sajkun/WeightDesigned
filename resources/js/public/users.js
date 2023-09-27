@@ -1,6 +1,7 @@
 /**
  * работа с пользователями публичной зоны
  */
+import publicAuthData from "../mixins/publicAuthData";
 import messages from "../mixins/messages";
 import MessagesComponent from "./../components/MessagesComponent/";
 import crud from "../mixins/crud";
@@ -13,16 +14,23 @@ import FormComponent from "./../components/FormComponent/";
 const axios = require("axios");
 
 const appPublicUsers = {
-    mixins: [messages, crud, addUserForm, editUserForm, editPasswordForm],
+    mixins: [
+        messages,
+        crud,
+        addUserForm,
+        editUserForm,
+        editPasswordForm,
+        publicAuthData,
+    ],
+
     components: {
         Field: InputComponent,
         TheForm: FormComponent,
         MessagesComponent,
     },
+
     data() {
         return {
-            organisationId: -1,
-            userId: -1,
             users: [],
             roles: [],
             activeTab: "info",
@@ -55,9 +63,6 @@ const appPublicUsers = {
 
     mounted() {
         const vm = this;
-        vm.$el.parentNode.classList.remove("d-none");
-        vm.organisationId = vm.$refs.organisationId.value;
-        vm.userId = vm.$refs.userId.value;
         vm.getUsers();
 
         document.addEventListener("updateList", () => {

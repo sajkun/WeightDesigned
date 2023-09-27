@@ -17117,6 +17117,38 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/mixins/publicAuthData.js":
+/*!***********************************************!*\
+  !*** ./resources/js/mixins/publicAuthData.js ***!
+  \***********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _misc_helpers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./../misc/helpers */ "./resources/js/misc/helpers.js");
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  data: function data() {
+    return {
+      organisationId: -1,
+      userId: -1
+    };
+  },
+  mounted: function mounted() {
+    var _vm$$refs$organisatio, _vm$$refs$userId;
+    var vm = this;
+    vm.$el.parentNode.classList.remove("d-none");
+    vm.organisationId = (_vm$$refs$organisatio = vm.$refs.organisationId) === null || _vm$$refs$organisatio === void 0 ? void 0 : _vm$$refs$organisatio.value;
+    vm.userId = (_vm$$refs$userId = vm.$refs.userId) === null || _vm$$refs$userId === void 0 ? void 0 : _vm$$refs$userId.value;
+    (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c Auth params", "color:blue", "organisationId: ".concat(vm.organisationId), "userId: ".concat(vm.userId));
+  }
+});
+
+/***/ }),
+
 /***/ "./resources/js/public/dbf.js":
 /*!************************************!*\
   !*** ./resources/js/public/dbf.js ***!
@@ -17347,14 +17379,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _misc_helpers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./../misc/helpers */ "./resources/js/misc/helpers.js");
-/* harmony import */ var _mixins_messages__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../mixins/messages */ "./resources/js/mixins/messages.js");
-/* harmony import */ var _components_MessagesComponent___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./../components/MessagesComponent/ */ "./resources/js/components/MessagesComponent/index.js");
-/* harmony import */ var _components_InputComponent__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../components/InputComponent */ "./resources/js/components/InputComponent/index.js");
-/* harmony import */ var _components_FieldComponent__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../components/FieldComponent */ "./resources/js/components/FieldComponent/index.js");
-/* harmony import */ var _components_FormComponent___WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./../components/FormComponent/ */ "./resources/js/components/FormComponent/index.js");
-/* harmony import */ var _mixins_crud__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../mixins/crud */ "./resources/js/mixins/crud.js");
-/* harmony import */ var _formFields_employees_add__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../formFields/employees/add */ "./resources/js/formFields/employees/add.js");
-/* harmony import */ var _formFields_employees_edit__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../formFields/employees/edit */ "./resources/js/formFields/employees/edit.js");
+/* harmony import */ var _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../mixins/publicAuthData */ "./resources/js/mixins/publicAuthData.js");
+/* harmony import */ var _mixins_messages__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../mixins/messages */ "./resources/js/mixins/messages.js");
+/* harmony import */ var _components_MessagesComponent___WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./../components/MessagesComponent/ */ "./resources/js/components/MessagesComponent/index.js");
+/* harmony import */ var _components_InputComponent__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../components/InputComponent */ "./resources/js/components/InputComponent/index.js");
+/* harmony import */ var _components_FieldComponent__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../components/FieldComponent */ "./resources/js/components/FieldComponent/index.js");
+/* harmony import */ var _components_FormComponent___WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./../components/FormComponent/ */ "./resources/js/components/FormComponent/index.js");
+/* harmony import */ var _mixins_crud__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../mixins/crud */ "./resources/js/mixins/crud.js");
+/* harmony import */ var _formFields_employees_add__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../formFields/employees/add */ "./resources/js/formFields/employees/add.js");
+/* harmony import */ var _formFields_employees_edit__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../formFields/employees/edit */ "./resources/js/formFields/employees/edit.js");
 /**
  * Приложение отвечающее за внешний вид и отправку
  * запросов CRUD раздела "Сотрудники"
@@ -17368,19 +17401,18 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
 var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 var appPublicEmployees = {
-  mixins: [_mixins_messages__WEBPACK_IMPORTED_MODULE_1__["default"], _mixins_crud__WEBPACK_IMPORTED_MODULE_6__["default"], _formFields_employees_add__WEBPACK_IMPORTED_MODULE_7__["default"], _formFields_employees_edit__WEBPACK_IMPORTED_MODULE_8__["default"]],
+  mixins: [_mixins_messages__WEBPACK_IMPORTED_MODULE_2__["default"], _mixins_crud__WEBPACK_IMPORTED_MODULE_7__["default"], _formFields_employees_add__WEBPACK_IMPORTED_MODULE_8__["default"], _formFields_employees_edit__WEBPACK_IMPORTED_MODULE_9__["default"], _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_1__["default"]],
   components: {
-    FieldComponent: _components_FieldComponent__WEBPACK_IMPORTED_MODULE_4__["default"],
-    Field: _components_InputComponent__WEBPACK_IMPORTED_MODULE_3__["default"],
-    TheForm: _components_FormComponent___WEBPACK_IMPORTED_MODULE_5__["default"],
-    MessagesComponent: _components_MessagesComponent___WEBPACK_IMPORTED_MODULE_2__["default"]
+    FieldComponent: _components_FieldComponent__WEBPACK_IMPORTED_MODULE_5__["default"],
+    Field: _components_InputComponent__WEBPACK_IMPORTED_MODULE_4__["default"],
+    TheForm: _components_FormComponent___WEBPACK_IMPORTED_MODULE_6__["default"],
+    MessagesComponent: _components_MessagesComponent___WEBPACK_IMPORTED_MODULE_3__["default"]
   },
   data: function data() {
     return {
-      organisationId: -1,
-      userId: -1,
       editMode: false,
       showForm: false,
       employees: [],
@@ -17453,9 +17485,6 @@ var appPublicEmployees = {
   },
   mounted: function mounted() {
     var vm = this;
-    vm.$el.parentNode.classList.remove("d-none");
-    vm.organisationId = vm.$refs.organisationId.value;
-    vm.userId = vm.$refs.userId.value;
     vm.getEmployees();
     vm.getVehicles();
     document.addEventListener("updateList", function () {
@@ -17609,12 +17638,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _misc_helpers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./../misc/helpers */ "./resources/js/misc/helpers.js");
-/* harmony import */ var _dbf__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./dbf */ "./resources/js/public/dbf.js");
-/* harmony import */ var _mixins_messages__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../mixins/messages */ "./resources/js/mixins/messages.js");
-/* harmony import */ var _mixins_crud__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../mixins/crud */ "./resources/js/mixins/crud.js");
-/* harmony import */ var _components_FileInputComponent__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../components/FileInputComponent */ "./resources/js/components/FileInputComponent/index.js");
-/* harmony import */ var _node_modules_tmcw_togeojson__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../node_modules/@tmcw/togeojson */ "./node_modules/@tmcw/togeojson/dist/togeojson.umd.js");
-/* harmony import */ var _node_modules_tmcw_togeojson__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_node_modules_tmcw_togeojson__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../mixins/publicAuthData */ "./resources/js/mixins/publicAuthData.js");
+/* harmony import */ var _dbf__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./dbf */ "./resources/js/public/dbf.js");
+/* harmony import */ var _mixins_messages__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../mixins/messages */ "./resources/js/mixins/messages.js");
+/* harmony import */ var _mixins_crud__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../mixins/crud */ "./resources/js/mixins/crud.js");
+/* harmony import */ var _components_FileInputComponent__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../components/FileInputComponent */ "./resources/js/components/FileInputComponent/index.js");
+/* harmony import */ var _node_modules_tmcw_togeojson__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../../node_modules/@tmcw/togeojson */ "./node_modules/@tmcw/togeojson/dist/togeojson.umd.js");
+/* harmony import */ var _node_modules_tmcw_togeojson__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_node_modules_tmcw_togeojson__WEBPACK_IMPORTED_MODULE_6__);
+
 
 
 
@@ -17624,22 +17655,17 @@ __webpack_require__.r(__webpack_exports__);
 var grasslandMap;
 var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 var appPublicGrasslands = {
-  mixins: [_mixins_messages__WEBPACK_IMPORTED_MODULE_2__["default"], _mixins_crud__WEBPACK_IMPORTED_MODULE_3__["default"]],
+  mixins: [_mixins_messages__WEBPACK_IMPORTED_MODULE_3__["default"], _mixins_crud__WEBPACK_IMPORTED_MODULE_4__["default"], _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_1__["default"]],
   components: {
-    file: _components_FileInputComponent__WEBPACK_IMPORTED_MODULE_4__["default"]
+    file: _components_FileInputComponent__WEBPACK_IMPORTED_MODULE_5__["default"]
   },
   data: {
-    organisationId: -1,
-    userId: -1,
     mode: "list",
     grasslands: [],
     grassalndToEdit: {}
   },
   mounted: function mounted() {
     var vm = this;
-    vm.$el.parentNode.classList.remove("d-none");
-    vm.organisationId = vm.$refs.organisationId.value;
-    vm.userId = vm.$refs.userId.value;
     vm.getGrasslands();
     document.addEventListener("updateList", function () {
       vm.getGrasslands();
@@ -17680,7 +17706,7 @@ var appPublicGrasslands = {
     drawGrassland: function drawGrassland(points) {
       var _vm$$refs;
       var vm = this;
-      var center = (0,_dbf__WEBPACK_IMPORTED_MODULE_1__.getCenterByPoints)(points);
+      var center = (0,_dbf__WEBPACK_IMPORTED_MODULE_2__.getCenterByPoints)(points);
       if ((_vm$$refs = vm.$refs) !== null && _vm$$refs !== void 0 && _vm$$refs.geo_json) {
         vm.$refs.geo_json.value = JSON.stringify(points);
       }
@@ -17807,12 +17833,12 @@ var appPublicGrasslands = {
       };
       switch (ext) {
         case "shp":
-          (0,_dbf__WEBPACK_IMPORTED_MODULE_1__.readBinaryShapeFile)(data.file)["catch"](function (error) {
+          (0,_dbf__WEBPACK_IMPORTED_MODULE_2__.readBinaryShapeFile)(data.file)["catch"](function (error) {
             console.error("Error reading file:", error);
           }).then(function (shpData) {
             (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)(shpData);
-            var center = (0,_dbf__WEBPACK_IMPORTED_MODULE_1__.getShapeFileCenter)(shpData);
-            var points = (0,_dbf__WEBPACK_IMPORTED_MODULE_1__.getPointsForGrassland)(shpData);
+            var center = (0,_dbf__WEBPACK_IMPORTED_MODULE_2__.getShapeFileCenter)(shpData);
+            var points = (0,_dbf__WEBPACK_IMPORTED_MODULE_2__.getPointsForGrassland)(shpData);
             vm.drawGrassland(points);
           });
           break;
@@ -17820,14 +17846,14 @@ var appPublicGrasslands = {
           var reader = new FileReader();
           var geoJsonObject;
           reader.addEventListener("load", function () {
-            geoJsonObject = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)((0,_node_modules_tmcw_togeojson__WEBPACK_IMPORTED_MODULE_5__.kml)(getDom(reader.result)));
+            geoJsonObject = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)((0,_node_modules_tmcw_togeojson__WEBPACK_IMPORTED_MODULE_6__.kml)(getDom(reader.result)));
             vm.drawKmlShape(geoJsonObject);
           }, false);
           reader.readAsText(data.file);
           break;
         case "kmz":
           var geoJson = getKmlDom(data.file).then(function (kmlDom) {
-            var geoJsonObject = (0,_node_modules_tmcw_togeojson__WEBPACK_IMPORTED_MODULE_5__.kml)(kmlDom);
+            var geoJsonObject = (0,_node_modules_tmcw_togeojson__WEBPACK_IMPORTED_MODULE_6__.kml)(kmlDom);
             return geoJsonObject;
           });
           geoJson.then(function (gj) {
@@ -17880,11 +17906,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _mixins_messages__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../mixins/messages */ "./resources/js/mixins/messages.js");
-/* harmony import */ var _components_MessagesComponent___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../components/MessagesComponent/ */ "./resources/js/components/MessagesComponent/index.js");
-/* harmony import */ var _components_SwitcherComponent__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../components/SwitcherComponent */ "./resources/js/components/SwitcherComponent/index.js");
-/* harmony import */ var _components_CalendarComponent__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../components/CalendarComponent */ "./resources/js/components/CalendarComponent/index.js");
-/* harmony import */ var _misc_helpers__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../misc/helpers */ "./resources/js/misc/helpers.js");
-/* harmony import */ var _mixins_crud__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../mixins/crud */ "./resources/js/mixins/crud.js");
+/* harmony import */ var _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../mixins/publicAuthData */ "./resources/js/mixins/publicAuthData.js");
+/* harmony import */ var _components_MessagesComponent___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../components/MessagesComponent/ */ "./resources/js/components/MessagesComponent/index.js");
+/* harmony import */ var _components_SwitcherComponent__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../components/SwitcherComponent */ "./resources/js/components/SwitcherComponent/index.js");
+/* harmony import */ var _components_CalendarComponent__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../components/CalendarComponent */ "./resources/js/components/CalendarComponent/index.js");
+/* harmony import */ var _misc_helpers__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../misc/helpers */ "./resources/js/misc/helpers.js");
+/* harmony import */ var _mixins_crud__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../mixins/crud */ "./resources/js/mixins/crud.js");
 /**
  * Домашняя страница
  */
@@ -17895,13 +17922,15 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
+var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 var grasslandMap;
 var homePage = {
-  mixins: [_mixins_messages__WEBPACK_IMPORTED_MODULE_0__["default"], _mixins_crud__WEBPACK_IMPORTED_MODULE_5__["default"]],
+  mixins: [_mixins_messages__WEBPACK_IMPORTED_MODULE_0__["default"], _mixins_crud__WEBPACK_IMPORTED_MODULE_6__["default"], _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_1__["default"]],
   components: {
-    MessagesComponent: _components_MessagesComponent___WEBPACK_IMPORTED_MODULE_1__["default"],
-    SwitcherComponent: _components_SwitcherComponent__WEBPACK_IMPORTED_MODULE_2__["default"],
-    Calendar: _components_CalendarComponent__WEBPACK_IMPORTED_MODULE_3__["default"]
+    MessagesComponent: _components_MessagesComponent___WEBPACK_IMPORTED_MODULE_2__["default"],
+    SwitcherComponent: _components_SwitcherComponent__WEBPACK_IMPORTED_MODULE_3__["default"],
+    Calendar: _components_CalendarComponent__WEBPACK_IMPORTED_MODULE_4__["default"]
   },
   data: function data() {
     return {
@@ -17936,6 +17965,19 @@ var homePage = {
     changeMode: function changeMode(data) {
       this.mode = data.mode;
     },
+    getBvsData: function getBvsData() {
+      var postData = {
+        user_id: vm.userId,
+        organisation_id: vm.organisationId
+      };
+      axios.post("/bvsdata/test", postData).then(function (response) {
+        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_5__.clog)("%c getBvsData response", "color:green", response);
+        // vm.messages[response.data.type] = response?.data?.message;
+      })["catch"](function (e) {
+        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_5__.clog)("%c getBvsData error", "color: red", e.response);
+        // vm.messages.error = e.response.data.message;
+      });
+    },
     initMap: function initMap(selector) {
       var map = new ymaps.Map(selector, {
         center: [45, 45],
@@ -17946,10 +17988,10 @@ var homePage = {
       return map;
     },
     selectDateCb: function selectDateCb(data) {
-      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_4__.clog)("%c selectDateCb", "color: blue", data);
+      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_5__.clog)("%c selectDateCb", "color: blue", data);
     },
     selectPeriodCb: function selectPeriodCb(data) {
-      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_4__.clog)("%c selectDateCb", "color: blue", data);
+      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_5__.clog)("%c selectDateCb", "color: blue", data);
     }
   }
 };
@@ -17982,15 +18024,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _mixins_messages__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../mixins/messages */ "./resources/js/mixins/messages.js");
-/* harmony import */ var _components_MessagesComponent___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./../components/MessagesComponent/ */ "./resources/js/components/MessagesComponent/index.js");
-/* harmony import */ var _mixins_crud__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../mixins/crud */ "./resources/js/mixins/crud.js");
-/* harmony import */ var _misc_helpers__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../misc/helpers */ "./resources/js/misc/helpers.js");
-/* harmony import */ var _formFields_addUser__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../formFields/addUser */ "./resources/js/formFields/addUser.js");
-/* harmony import */ var _formFields_editPwd__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../formFields/editPwd */ "./resources/js/formFields/editPwd.js");
-/* harmony import */ var _formFields_editUser__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../formFields/editUser */ "./resources/js/formFields/editUser.js");
-/* harmony import */ var _components_InputComponent__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../components/InputComponent */ "./resources/js/components/InputComponent/index.js");
-/* harmony import */ var _components_FormComponent___WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./../components/FormComponent/ */ "./resources/js/components/FormComponent/index.js");
+/* harmony import */ var _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../mixins/publicAuthData */ "./resources/js/mixins/publicAuthData.js");
+/* harmony import */ var _mixins_messages__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../mixins/messages */ "./resources/js/mixins/messages.js");
+/* harmony import */ var _components_MessagesComponent___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./../components/MessagesComponent/ */ "./resources/js/components/MessagesComponent/index.js");
+/* harmony import */ var _mixins_crud__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../mixins/crud */ "./resources/js/mixins/crud.js");
+/* harmony import */ var _misc_helpers__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../misc/helpers */ "./resources/js/misc/helpers.js");
+/* harmony import */ var _formFields_addUser__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../formFields/addUser */ "./resources/js/formFields/addUser.js");
+/* harmony import */ var _formFields_editPwd__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../formFields/editPwd */ "./resources/js/formFields/editPwd.js");
+/* harmony import */ var _formFields_editUser__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../formFields/editUser */ "./resources/js/formFields/editUser.js");
+/* harmony import */ var _components_InputComponent__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../components/InputComponent */ "./resources/js/components/InputComponent/index.js");
+/* harmony import */ var _components_FormComponent___WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./../components/FormComponent/ */ "./resources/js/components/FormComponent/index.js");
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
@@ -18007,19 +18050,18 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
 
 
 
+
 var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 var appPublicUsers = {
-  mixins: [_mixins_messages__WEBPACK_IMPORTED_MODULE_0__["default"], _mixins_crud__WEBPACK_IMPORTED_MODULE_2__["default"], _formFields_addUser__WEBPACK_IMPORTED_MODULE_4__["default"], _formFields_editUser__WEBPACK_IMPORTED_MODULE_6__["default"], _formFields_editPwd__WEBPACK_IMPORTED_MODULE_5__["default"]],
+  mixins: [_mixins_messages__WEBPACK_IMPORTED_MODULE_1__["default"], _mixins_crud__WEBPACK_IMPORTED_MODULE_3__["default"], _formFields_addUser__WEBPACK_IMPORTED_MODULE_5__["default"], _formFields_editUser__WEBPACK_IMPORTED_MODULE_7__["default"], _formFields_editPwd__WEBPACK_IMPORTED_MODULE_6__["default"], _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_0__["default"]],
   components: {
-    Field: _components_InputComponent__WEBPACK_IMPORTED_MODULE_7__["default"],
-    TheForm: _components_FormComponent___WEBPACK_IMPORTED_MODULE_8__["default"],
-    MessagesComponent: _components_MessagesComponent___WEBPACK_IMPORTED_MODULE_1__["default"]
+    Field: _components_InputComponent__WEBPACK_IMPORTED_MODULE_8__["default"],
+    TheForm: _components_FormComponent___WEBPACK_IMPORTED_MODULE_9__["default"],
+    MessagesComponent: _components_MessagesComponent___WEBPACK_IMPORTED_MODULE_2__["default"]
   },
   data: function data() {
     var _editedUser;
     return {
-      organisationId: -1,
-      userId: -1,
       users: [],
       roles: [],
       activeTab: "info",
@@ -18047,9 +18089,6 @@ var appPublicUsers = {
   },
   mounted: function mounted() {
     var vm = this;
-    vm.$el.parentNode.classList.remove("d-none");
-    vm.organisationId = vm.$refs.organisationId.value;
-    vm.userId = vm.$refs.userId.value;
     vm.getUsers();
     document.addEventListener("updateList", function () {
       vm.getUsers();
@@ -18125,11 +18164,11 @@ var appPublicUsers = {
         return;
       }
       axios.get("/users/list").then(function (response) {
-        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_3__.clog)("%c getUsers успех", "color:green", response);
+        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_4__.clog)("%c getUsers успех", "color:green", response);
         vm.users = response.data.users;
         vm.roles = response.data.roles;
       })["catch"](function (e) {
-        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_3__.clog)("%c getUsers ошибка", "color:red", e.response);
+        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_4__.clog)("%c getUsers ошибка", "color:red", e.response);
       });
     },
     patchUser: function patchUser(data) {
@@ -18150,7 +18189,7 @@ var appPublicUsers = {
     },
     storeUser: function storeUser(data) {
       var vm = this;
-      var password = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_3__.strip)(data.password);
+      var password = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_4__.strip)(data.password);
       delete data.password;
       var postData = {
         user_id: vm.userId,
@@ -18190,7 +18229,7 @@ var appPublicUsers = {
         new_password: data.newPassword,
         old_password: data.oldPassword
       }).then(function (response) {
-        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_3__.clog)(response);
+        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_4__.clog)(response);
         vm.editPassword = false;
         vm.messages.success = response.data.message ? response.data.message : "Пароль успешно изменен";
       })["catch"](function (e) {
@@ -18216,6 +18255,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _mixins_messages__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../mixins/messages */ "./resources/js/mixins/messages.js");
 /* harmony import */ var _misc_helpers__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./../misc/helpers */ "./resources/js/misc/helpers.js");
+/* harmony import */ var _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../mixins/publicAuthData */ "./resources/js/mixins/publicAuthData.js");
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
@@ -18225,13 +18265,12 @@ function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o =
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
 
 
+
 var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 var appPublicVehicles = {
-  mixins: [_mixins_messages__WEBPACK_IMPORTED_MODULE_0__["default"]],
+  mixins: [_mixins_messages__WEBPACK_IMPORTED_MODULE_0__["default"], _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_2__["default"]],
   data: function data() {
     return {
-      organisationId: -1,
-      userId: -1,
       mode: "list",
       // list | edit | create | details
       vehicleAddType: null,
@@ -18356,9 +18395,6 @@ var appPublicVehicles = {
   },
   mounted: function mounted() {
     var vm = this;
-    vm.$el.parentNode.classList.remove("d-none");
-    vm.organisationId = vm.$refs.organisationId.value;
-    vm.userId = vm.$refs.userId.value;
     vm.vehicleType = vm.$refs.vehicleType.value;
     vm.getEmployees();
     vm.getVehicles();

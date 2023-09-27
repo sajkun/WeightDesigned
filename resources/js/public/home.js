@@ -3,15 +3,18 @@
  */
 
 import messages from "../mixins/messages";
+import publicAuthData from "../mixins/publicAuthData";
 import MessagesComponent from "../components/MessagesComponent/";
 import SwitcherComponent from "../components/SwitcherComponent";
 import CalendarComponent from "../components/CalendarComponent";
 import { strip, clog } from "../misc/helpers";
 import crud from "../mixins/crud";
+const axios = require("axios");
+
 var grasslandMap;
 
 const homePage = {
-    mixins: [messages, crud],
+    mixins: [messages, crud, publicAuthData],
 
     components: {
         MessagesComponent,
@@ -56,6 +59,24 @@ const homePage = {
     methods: {
         changeMode(data) {
             this.mode = data.mode;
+        },
+
+        getBvsData() {
+            const postData = {
+                user_id: vm.userId,
+                organisation_id: vm.organisationId,
+            };
+
+            axios
+                .post(`/bvsdata/test`, postData)
+                .then((response) => {
+                    clog("%c getBvsData response", "color:green", response);
+                    // vm.messages[response.data.type] = response?.data?.message;
+                })
+                .catch((e) => {
+                    clog("%c getBvsData error", "color: red", e.response);
+                    // vm.messages.error = e.response.data.message;
+                });
         },
 
         initMap(selector) {
