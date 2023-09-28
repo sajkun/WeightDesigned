@@ -15286,12 +15286,9 @@ var grasslandMap;
           size: [50, 50],
           offset: [-20, -20]
         }],
-        // Эта опция отвечает за размеры кластеров.
-        // В данном случае для кластеров, содержащих до 100 элементов,
-        // будет показываться маленькая иконка. Для остальных - большая.
         clusterNumbers: [(0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(data).length],
         clusterIconContentLayout: clusterIconContentLayout,
-        clusterHideIconOnBalloonOpen: false,
+        // clusterHideIconOnBalloonOpen: false,
         clusterDisableClickZoom: true
       });
       var placemarks = [];
@@ -15308,15 +15305,17 @@ var grasslandMap;
           placemarksHTML.append(newDiv);
           var rect = newDiv.getBoundingClientRect();
           document.getElementById("check").remove();
+          var bvsIcon = bvsData.rfid_status === 1 && bvsData.has_check ? vm.bvsIcon : vm.bvsIconError;
 
           // формирование метки
-          var html = "<div>\n                        <div class=\"bvs_preview\">".concat(vm.bvsIcon, " <span>").concat(bvsData.bvs_name, "</span></div>\n                    </div>");
+          var html = "<div>\n                        <div class=\"bvs_preview\">".concat(bvsIcon, " <span>").concat(bvsData.bvs_name, "</span></div>\n                    </div>");
           var circleLayout = ymaps.templateLayoutFactory.createClass(html);
           var coordinates = bvsData.coordinates.split(",").map(function (i) {
             return parseFloat(i);
           });
           var operation = bvsData.from === bvsData.bvs_name ? "\u041F\u0435\u0440\u0435\u0434\u0430\u043B \u0432 ".concat(bvsData.to) : "\u041F\u043E\u043B\u0443\u0447\u0438\u043B \u043E\u0442 ".concat(bvsData.from);
           var checkStatus = bvsData.has_check ? "чек распечатан" : "чек не распечатан";
+          var amount = "".concat(bvsData.amount_transfered, "\u043A\u0433");
           var amountLeft = bvsData.amount_in_bunker ? "\u043E\u0441\u0442\u0430\u0442\u043E\u043A \u0432 \u0431\u0443\u043D\u043A\u0435\u0440\u0435 ".concat(bvsData.amount_in_bunker, "\u043A\u0433<br>") : "";
           var rfid = void 0;
           switch (bvsData.rfid_status) {
@@ -15335,12 +15334,12 @@ var grasslandMap;
           }
           var point = new ymaps.Placemark(coordinates, {
             // Зададим содержимое заголовка балуна.
-            balloonContentHeader: "<span class=\"description\">\u0411\u0443\u043D\u043A\u0435\u0440 \u043F\u0435\u0440\u0435\u0433\u0440\u0443\u0437\u0447\u0438\u043A ".concat(bvsData.bvs_name, " </span>"),
+            balloonContentHeader: "<span class=\"description\">\u0411\u041F ".concat(bvsData.bvs_name, " </span>"),
             // Зададим содержимое основной части балуна.
-            balloonContentBody: "".concat(operation, " ") + "".concat(bvsData.amount_transfered, " \u043A\u0433 <br>") + amountLeft + "".concat(checkStatus, " <br>") + rfid,
+            balloonContentBody: "".concat(operation, " ") + "".concat(amount, " <br>") + amountLeft + "".concat(checkStatus, " <br>") + rfid,
             // Зададим содержимое нижней части балуна.
             balloonContentFooter: "\u041E\u043F\u0435\u0440\u0430\u0446\u0438\u044F \u043F\u0440\u043E\u0438\u0437\u0432\u0435\u0434\u0435\u043D\u0430: ".concat(bvsData.operation_time),
-            hintContent: bvsData.bvs_name
+            hintContent: bvsData.bvs_name + " " + operation + " " + amount
           }, {
             iconLayout: circleLayout,
             // Описываем фигуру активной области "Прямоугольник".
@@ -15351,8 +15350,6 @@ var grasslandMap;
             }
           });
           placemarks.push(point);
-
-          // grasslandMap.geoObjects.add(point);
         }
       } catch (err) {
         _iterator.e(err);
@@ -16813,7 +16810,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   computed: {
     bvsIcon: function bvsIcon() {
-      return "<svg width=\"24\" height=\"16\" viewBox=\"0 0 24 16\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n<path d=\"M0 6.60098V5.22461C0 4.67232 0.447716 4.22461 1 4.22461H17.0208C17.5731 4.22461 18.0208 4.67232 18.0208 5.22461V6.60098H0Z\" fill=\"currentColor\"/>\n<path d=\"M0.514881 8.97744L0 6.86511H18.0208L17.5059 8.97744H0.514881Z\" fill=\"currentColor\"/>\n<path d=\"M19.9572 0.454871L17.506 9.50549L18.7932 10.2976L20.8283 3.01447C20.8947 2.77681 21.1584 2.65538 21.3822 2.75938L22.0699 3.07904C22.2559 3.16548 22.4772 3.09724 22.5822 2.92104L22.8557 2.46187C22.9233 2.34846 22.9306 2.20902 22.8752 2.0892L22.4596 1.19072C22.4194 1.1039 22.3495 1.03435 22.2625 0.994674L20.5092 0.195468C20.2846 0.0930748 20.0217 0.216593 19.9572 0.454871Z\" fill=\"currentColor\"/>\n<ellipse cx=\"9.52535\" cy=\"13.4661\" rx=\"1.80208\" ry=\"1.84829\" fill=\"currentColor\"/>\n<path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M0.562378 9.24133L0.903839 11.5558C0.976219 12.0464 1.39722 12.4098 1.89313 12.4098H2.30051C2.67969 11.6275 3.46689 11.0899 4.37652 11.0899C5.28615 11.0899 6.07335 11.6275 6.45253 12.4098H7.44927C7.82845 11.6275 8.61565 11.0899 9.52528 11.0899C10.4349 11.0899 11.2221 11.6275 11.6013 12.4098H17.506L23.4271 13.466L23.1697 12.4098L17.506 9.24133H0.562378ZM17.506 10.0335V11.8817H17.7635V10.0335H17.506Z\" fill=\"currentColor\"/>\n<ellipse cx=\"4.37655\" cy=\"13.4661\" rx=\"1.80208\" ry=\"1.84829\" fill=\"currentColor\"/>\n</svg>\n";
+      return "<svg width=\"24\" height=\"16\" viewBox=\"0 0 24 16\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n                <path d=\"M0 6.60098V5.22461C0 4.67232 0.447716 4.22461 1 4.22461H17.0208C17.5731 4.22461 18.0208 4.67232 18.0208 5.22461V6.60098H0Z\" fill=\"#007E3C\"/>\n                <path d=\"M0.514881 8.97744L0 6.86511H18.0208L17.5059 8.97744H0.514881Z\" fill=\"#007E3C\"/>\n                <path d=\"M19.9572 0.454871L17.506 9.50549L18.7932 10.2976L20.8283 3.01447C20.8947 2.77681 21.1584 2.65538 21.3822 2.75938L22.0699 3.07904C22.2559 3.16548 22.4772 3.09724 22.5822 2.92104L22.8557 2.46187C22.9233 2.34846 22.9306 2.20902 22.8752 2.0892L22.4596 1.19072C22.4194 1.1039 22.3495 1.03435 22.2625 0.994674L20.5092 0.195468C20.2846 0.0930748 20.0217 0.216593 19.9572 0.454871Z\" fill=\"#007E3C\"/>\n                <ellipse cx=\"9.52535\" cy=\"13.4661\" rx=\"1.80208\" ry=\"1.84829\" fill=\"#007E3C\"/>\n                <path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M0.562378 9.24133L0.903839 11.5558C0.976219 12.0464 1.39722 12.4098 1.89313 12.4098H2.30051C2.67969 11.6275 3.46689 11.0899 4.37652 11.0899C5.28615 11.0899 6.07335 11.6275 6.45253 12.4098H7.44927C7.82845 11.6275 8.61565 11.0899 9.52528 11.0899C10.4349 11.0899 11.2221 11.6275 11.6013 12.4098H17.506L23.4271 13.466L23.1697 12.4098L17.506 9.24133H0.562378ZM17.506 10.0335V11.8817H17.7635V10.0335H17.506Z\" fill=\"#007E3C\"/>\n                <ellipse cx=\"4.37655\" cy=\"13.4661\" rx=\"1.80208\" ry=\"1.84829\" fill=\"#007E3C\"/>\n                </svg>\n\n                ";
+    },
+    bvsIconError: function bvsIconError() {
+      return "<svg width=\"24\" height=\"16\" viewBox=\"0 0 24 16\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n                <path d=\"M0 6.60104V5.22467C0 4.67239 0.447716 4.22467 1 4.22467H17.0208C17.5731 4.22467 18.0208 4.67239 18.0208 5.22467V6.60104H0Z\" fill=\"#E73A42\"/>\n                <path d=\"M0.514881 8.97738L0 6.86505H18.0208L17.5059 8.97738H0.514881Z\" fill=\"#E73A42\"/>\n                <path d=\"M19.9572 0.454871L17.506 9.50549L18.7932 10.2976L20.8283 3.01447C20.8947 2.77681 21.1584 2.65538 21.3822 2.75938L22.0699 3.07904C22.2559 3.16548 22.4772 3.09724 22.5822 2.92104L22.8557 2.46187C22.9233 2.34846 22.9306 2.20902 22.8752 2.0892L22.4596 1.19072C22.4194 1.1039 22.3495 1.03435 22.2625 0.994674L20.5092 0.195468C20.2846 0.0930748 20.0217 0.216593 19.9572 0.454871Z\" fill=\"#E73A42\"/>\n                <ellipse cx=\"9.52535\" cy=\"13.4661\" rx=\"1.80208\" ry=\"1.84829\" fill=\"#E73A42\"/>\n                <path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M0.562378 9.24133L0.903839 11.5558C0.976219 12.0464 1.39722 12.4098 1.89313 12.4098H2.30051C2.67969 11.6275 3.46689 11.0899 4.37652 11.0899C5.28615 11.0899 6.07335 11.6275 6.45253 12.4098H7.44927C7.82845 11.6275 8.61565 11.0899 9.52528 11.0899C10.4349 11.0899 11.2221 11.6275 11.6013 12.4098H17.506L23.4271 13.466L23.1697 12.4098L17.506 9.24133H0.562378ZM17.506 10.0335V11.8817H17.7635V10.0335H17.506Z\" fill=\"#E73A42\"/>\n                <ellipse cx=\"4.37655\" cy=\"13.4661\" rx=\"1.80208\" ry=\"1.84829\" fill=\"#E73A42\"/>\n                </svg>";
     }
   }
 });
@@ -19333,7 +19333,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, ".bvs_preview {\n  position: absolute;\n  padding: 10px;\n  display: grid;\n  grid-template-columns: 2rem auto;\n  background: #fff;\n  border-radius: 0.25rem;\n  font-size: 1rem;\n  color: var(--green);\n}\n.bvs_preview svg {\n  display: inline-block;\n  margin-left: 5px;\n  font-size: 16rem;\n  max-width: 100%;\n}\n.bvs_preview span {\n  color: var(--darkest);\n}\n.cluster-icon {\n  position: absolute;\n  display: block;\n  background-color: #fff;\n  border-radius: 9999rem;\n  width: 1.5rem;\n  height: 1.5rem;\n  text-align: center;\n  line-height: 1.5rem;\n  font-weight: bold;\n  box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);\n}\n#placemarks {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  z-index: -1;\n  top: 0;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  overflow: hidden;\n}", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, ".bvs_preview {\n  position: absolute;\n  box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);\n  padding: 0.25rem 0.5rem;\n  display: grid;\n  grid-template-columns: 2rem auto;\n  background: #fff;\n  border-radius: 0.25rem;\n  font-size: 1rem;\n  color: var(--green);\n}\n.bvs_preview svg {\n  display: inline-block;\n  margin-left: 5px;\n  font-size: 16rem;\n  max-width: 100%;\n}\n.bvs_preview span {\n  color: var(--darkest);\n}\n.cluster-icon {\n  position: absolute;\n  display: block;\n  background-color: #fff;\n  border-radius: 9999rem;\n  width: 1.5rem;\n  height: 1.5rem;\n  text-align: center;\n  line-height: 1.5rem;\n  font-weight: bold;\n  box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);\n}\n#placemarks {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  z-index: -1;\n  top: 0;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  overflow: hidden;\n}", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 

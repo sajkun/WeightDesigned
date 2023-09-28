@@ -111,12 +111,10 @@ export default {
                         offset: [-20, -20],
                     },
                 ],
-                // Эта опция отвечает за размеры кластеров.
-                // В данном случае для кластеров, содержащих до 100 элементов,
-                // будет показываться маленькая иконка. Для остальных - большая.
+
                 clusterNumbers: [strip(data).length],
                 clusterIconContentLayout: clusterIconContentLayout,
-                clusterHideIconOnBalloonOpen: false,
+                // clusterHideIconOnBalloonOpen: false,
                 clusterDisableClickZoom: true,
             });
 
@@ -132,9 +130,14 @@ export default {
                 const rect = newDiv.getBoundingClientRect();
                 document.getElementById("check").remove();
 
+                const bvsIcon =
+                    bvsData.rfid_status === 1 && bvsData.has_check
+                        ? vm.bvsIcon
+                        : vm.bvsIconError;
+
                 // формирование метки
                 const html = `<div>
-                        <div class="bvs_preview">${vm.bvsIcon} <span>${bvsData.bvs_name}</span></div>
+                        <div class="bvs_preview">${bvsIcon} <span>${bvsData.bvs_name}</span></div>
                     </div>`;
 
                 const circleLayout =
@@ -151,7 +154,7 @@ export default {
                 const checkStatus = bvsData.has_check
                     ? "чек распечатан"
                     : "чек не распечатан";
-
+                const amount = `${bvsData.amount_transfered}кг`;
                 const amountLeft = bvsData.amount_in_bunker
                     ? `остаток в бункере ${bvsData.amount_in_bunker}кг<br>`
                     : "";
@@ -177,18 +180,19 @@ export default {
                     coordinates,
                     {
                         // Зададим содержимое заголовка балуна.
-                        balloonContentHeader: `<span class="description">Бункер перегрузчик ${bvsData.bvs_name} </span>`,
+                        balloonContentHeader: `<span class="description">БП ${bvsData.bvs_name} </span>`,
                         // Зададим содержимое основной части балуна.
                         balloonContentBody:
                             `${operation} ` +
-                            `${bvsData.amount_transfered} кг <br>` +
+                            `${amount} <br>` +
                             amountLeft +
                             `${checkStatus} <br>` +
                             rfid,
                         // Зададим содержимое нижней части балуна.
                         balloonContentFooter: `Операция произведена: ${bvsData.operation_time}`,
 
-                        hintContent: bvsData.bvs_name,
+                        hintContent:
+                            bvsData.bvs_name + " " + operation + " " + amount,
                     },
                     {
                         iconLayout: circleLayout,
@@ -208,8 +212,6 @@ export default {
                 );
 
                 placemarks.push(point);
-
-                // grasslandMap.geoObjects.add(point);
             }
 
             clusterer.add(placemarks);
