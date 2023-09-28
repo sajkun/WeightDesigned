@@ -9,8 +9,8 @@ import { strip, clog } from "../misc/helpers";
 import addUserForm from "../formFields/addUser";
 import editPasswordForm from "../formFields/editPwd";
 import editUserForm from "../formFields/editUser";
-import InputComponent from "../components/InputComponent";
-import FormComponent from "./../components/FormComponent/";
+import InputComponent from "../components/inputs/InputComponent";
+import FormComponent from "./../components/inputs/FormComponent/";
 const axios = require("axios");
 
 const appPublicUsers = {
