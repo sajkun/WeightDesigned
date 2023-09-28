@@ -28,7 +28,8 @@
             <div class="col-12 col-md-6">
                 <div class="py-4 h-100 w-100">
                     {{-- контейнер для Яндекс карты --}}
-                    <div class="h-100 w-100" id="map"></div>
+                    <bvs-map :_id='"map"' :_bvs-data='bvsData'></bvs-map>
+                    <div id="placemarks"></div>
                 </div>
             </div>
             {{-- КОНЕЦ БЛОКА карты  --}}

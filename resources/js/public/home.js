@@ -5,6 +5,7 @@
 import messages from "../mixins/messages";
 import publicAuthData from "../mixins/publicAuthData";
 import MessagesComponent from "../components/MessagesComponent/";
+import BvsMapComponent from "../components/BvsMapComponent/";
 import SwitcherComponent from "../components/SwitcherComponent";
 import CalendarComponent from "../components/CalendarComponent";
 import { strip, clog } from "../misc/helpers";
@@ -20,6 +21,7 @@ const homePage = {
         MessagesComponent,
         SwitcherComponent,
         Calendar: CalendarComponent,
+        BvsMap: BvsMapComponent,
     },
 
     data() {
@@ -32,11 +34,6 @@ const homePage = {
     mounted() {
         const vm = this;
         vm.getBvsData();
-        vm.$nextTick(() => {
-            ymaps.ready(function () {
-                grasslandMap = vm.initMap("map");
-            });
-        });
     },
 
     computed: {
@@ -59,9 +56,9 @@ const homePage = {
     },
 
     watch: {
-        bvsData(data) {
-            clog(strip(data));
-        },
+        // bvsData(data) {
+        //     clog(strip(data));
+        // },
     },
 
     methods: {
@@ -89,21 +86,6 @@ const homePage = {
                     clog("%c getBvsData error", "color: red", e.response);
                     // vm.messages.error = e.response.data.message;
                 });
-        },
-
-        initMap(selector) {
-            let map = new ymaps.Map(
-                selector,
-                {
-                    center: [45, 45],
-                    zoom: 13,
-                },
-                {
-                    searchControlProvider: "yandex#search",
-                }
-            );
-
-            return map;
         },
 
         selectDateCb(data) {

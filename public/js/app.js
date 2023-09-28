@@ -15181,6 +15181,231 @@ module.exports = {
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/components/BvsMapComponent/BvsMapComponent.vue?vue&type=script&lang=js":
+/*!*************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/components/BvsMapComponent/BvsMapComponent.vue?vue&type=script&lang=js ***!
+  \*************************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _misc_helpers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../misc/helpers */ "./resources/js/misc/helpers.js");
+/* harmony import */ var _svg_bvs_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../svg/bvs.js */ "./resources/js/components/svg/bvs.js");
+function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
+
+
+
+// переменная для хранения карты
+var grasslandMap;
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  data: function data() {
+    return {
+      id: this._id,
+      // HTML id атрибут
+      bvsData: this._bvsData // данные от бвс
+    };
+  },
+
+  mixins: [_svg_bvs_js__WEBPACK_IMPORTED_MODULE_1__["default"]],
+  watch: {
+    // обновление данных от родителя
+    _bvsData: function _bvsData(data) {
+      var vm = this;
+      vm.bvsData = data;
+    },
+    // добавление данных на карту при их изменении
+    bvsData: function bvsData(data) {
+      var vm = this;
+      if (!grasslandMap) {
+        grasslandMap = vm.initMap(vm.id);
+      }
+      grasslandMap.geoObjects.removeAll();
+      vm.drawBvsData(data);
+      grasslandMap.setBounds(grasslandMap.geoObjects.getBounds());
+    }
+  },
+  props: {
+    // данные от бвс
+    _bvsData: {
+      type: Array,
+      "default": [],
+      required: false
+    },
+    // HTML id атрибут
+    _id: {
+      type: String,
+      "default": "wow-map",
+      required: true
+    }
+  },
+  mounted: function mounted() {
+    var vm = this;
+    vm.id = vm._id;
+    vm.$nextTick(function () {
+      ymaps.ready(function () {
+        grasslandMap = vm.initMap(vm.id);
+      });
+    });
+  },
+  methods: {
+    /**
+     * инициализация яндекс карты
+     *
+     * @param {String} selector для блока карты
+     *
+     * @returns {Object} ymap - объект яндекс карт
+     */
+    initMap: function initMap(selector) {
+      var vm = this;
+      var map = new ymaps.Map(selector, {
+        center: [45, 45],
+        zoom: 12
+      }, {
+        searchControlProvider: "yandex#search"
+      });
+      return map;
+    },
+    /**
+     * Добавляет на карту метки с данными от бвс
+     *
+     * @param {Array} data массив объектов данных от БВС
+     */
+    drawBvsData: function drawBvsData(data) {
+      var vm = this;
+      var placemarksHTML = document.getElementById("placemarks");
+      var clusterIconContentLayout = ymaps.templateLayoutFactory.createClass('<div class="cluster-icon">{{ properties.geoObjects.length }}</div>');
+      var clusterer = new ymaps.Clusterer({
+        // Зададим массив, описывающий иконки кластеров разного размера.
+        clusterIcons: [{
+          href: "images/svg/bvs.svg",
+          size: [50, 50],
+          offset: [-20, -20]
+        }],
+        // Эта опция отвечает за размеры кластеров.
+        // В данном случае для кластеров, содержащих до 100 элементов,
+        // будет показываться маленькая иконка. Для остальных - большая.
+        clusterNumbers: [(0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(data).length],
+        clusterIconContentLayout: clusterIconContentLayout,
+        clusterHideIconOnBalloonOpen: false,
+        clusterDisableClickZoom: true
+      });
+      var placemarks = [];
+      var _iterator = _createForOfIteratorHelper((0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(data)),
+        _step;
+      try {
+        for (_iterator.s(); !(_step = _iterator.n()).done;) {
+          var bvsData = _step.value;
+          // вычисление размера метки
+          var newDiv = document.createElement("div");
+          newDiv.setAttribute("id", "check");
+          newDiv.classList.add("bvs_preview");
+          newDiv.innerText = bvsData.bvs_name;
+          placemarksHTML.append(newDiv);
+          var rect = newDiv.getBoundingClientRect();
+          document.getElementById("check").remove();
+
+          // формирование метки
+          var html = "<div>\n                        <div class=\"bvs_preview\">".concat(vm.bvsIcon, " <span>").concat(bvsData.bvs_name, "</span></div>\n                    </div>");
+          var circleLayout = ymaps.templateLayoutFactory.createClass(html);
+          var coordinates = bvsData.coordinates.split(",").map(function (i) {
+            return parseFloat(i);
+          });
+          var operation = bvsData.from === bvsData.bvs_name ? "\u041F\u0435\u0440\u0435\u0434\u0430\u043B \u0432 ".concat(bvsData.to) : "\u041F\u043E\u043B\u0443\u0447\u0438\u043B \u043E\u0442 ".concat(bvsData.from);
+          var checkStatus = bvsData.has_check ? "чек распечатан" : "чек не распечатан";
+          var amountLeft = bvsData.amount_in_bunker ? "\u043E\u0441\u0442\u0430\u0442\u043E\u043A \u0432 \u0431\u0443\u043D\u043A\u0435\u0440\u0435 ".concat(bvsData.amount_in_bunker, "\u043A\u0433<br>") : "";
+          var rfid = void 0;
+          switch (bvsData.rfid_status) {
+            case 1:
+              rfid = "RFID карта идентифицирована";
+              break;
+            case 10:
+              rfid = "RFID ошибка считывателя";
+              break;
+            case 2:
+              rfid = "RFID карта обнаружена, но не идентифицирована";
+              break;
+            case 0:
+              rfid = "RFID карта не обнаружена";
+              break;
+          }
+          var point = new ymaps.Placemark(coordinates, {
+            // Зададим содержимое заголовка балуна.
+            balloonContentHeader: "<span class=\"description\">\u0411\u0443\u043D\u043A\u0435\u0440 \u043F\u0435\u0440\u0435\u0433\u0440\u0443\u0437\u0447\u0438\u043A ".concat(bvsData.bvs_name, " </span>"),
+            // Зададим содержимое основной части балуна.
+            balloonContentBody: "".concat(operation, " ") + "".concat(bvsData.amount_transfered, " \u043A\u0433 <br>") + amountLeft + "".concat(checkStatus, " <br>") + rfid,
+            // Зададим содержимое нижней части балуна.
+            balloonContentFooter: "\u041E\u043F\u0435\u0440\u0430\u0446\u0438\u044F \u043F\u0440\u043E\u0438\u0437\u0432\u0435\u0434\u0435\u043D\u0430: ".concat(bvsData.operation_time),
+            hintContent: bvsData.bvs_name
+          }, {
+            iconLayout: circleLayout,
+            // Описываем фигуру активной области "Прямоугольник".
+            iconShape: {
+              type: "Rectangle",
+              // Прямоугольник описывается в виде двух точек - верхней левой и нижней правой.
+              coordinates: [[0, 0], [Math.floor(rect.width + 32), Math.floor(rect.height)]]
+            }
+          });
+          placemarks.push(point);
+
+          // grasslandMap.geoObjects.add(point);
+        }
+      } catch (err) {
+        _iterator.e(err);
+      } finally {
+        _iterator.f();
+      }
+      clusterer.add(placemarks);
+      grasslandMap.geoObjects.add(clusterer);
+      var objectState = clusterer.getObjectState(placemarks[2]);
+      if (objectState.isClustered) {
+        // Если метка находится в кластере, выставим ее в качестве активного объекта.
+        // Тогда она будет "выбрана" в открытом балуне кластера.
+        objectState.cluster.state.set("activeObject", placemarks[2]);
+        clusterer.balloon.open(objectState.cluster);
+      } else if (objectState.isShown) {
+        // Если метка не попала в кластер и видна на карте, откроем ее балун.
+        placemarks[2].balloon.open();
+      }
+      grasslandMap.setBounds(clusterer.getBounds(), {
+        checkZoomRange: true
+      });
+    },
+    /**
+     * Определяет центр области где находятся бункера
+     *
+     * @param {Array} data массив объектов данных от БВС
+     *
+     * @returns {Array} [lat, lang]
+     */
+    getMapCenter: function getMapCenter(data) {
+      if (!data || !data.length) {
+        return [45, 45];
+      }
+      var bvsCoords = data.map(function (e) {
+        var coords = e.coordinates.split(",").map(function (i) {
+          return parseFloat(i);
+        });
+        return coords;
+      });
+      if (bvsCoords.length === 1) {
+        return bvsCoords;
+      }
+      var initialValue = bvsCoords.pop();
+      var totalSum = bvsCoords.reduce(function (accumulator, val) {
+        return [(accumulator[0] + val[0]) / 2, (accumulator[1] + val[1]) / 2];
+      }, initialValue);
+      return totalSum;
+    }
+  }
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/components/CalendarComponent/CalendarComponent.vue?vue&type=script&lang=js":
 /*!*****************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/components/CalendarComponent/CalendarComponent.vue?vue&type=script&lang=js ***!
@@ -15846,6 +16071,29 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/components/BvsMapComponent/BvsMapComponent.vue?vue&type=template&id=701aac36":
+/*!*****************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/components/BvsMapComponent/BvsMapComponent.vue?vue&type=template&id=701aac36 ***!
+  \*****************************************************************************************************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   render: () => (/* binding */ render)
+/* harmony export */ });
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
+
+var _hoisted_1 = ["id"];
+function render(_ctx, _cache, $props, $setup, $data, $options) {
+  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", {
+    "class": "h-100 w-100",
+    id: $data.id
+  }, null, 8 /* PROPS */, _hoisted_1);
+}
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/components/CalendarComponent/CalendarComponent.vue?vue&type=template&id=baf6c618&scoped=true":
 /*!*********************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/components/CalendarComponent/CalendarComponent.vue?vue&type=template&id=baf6c618&scoped=true ***!
@@ -16381,6 +16629,23 @@ __webpack_require__(/*! ./public/ready */ "./resources/js/public/ready.js");
 
 /***/ }),
 
+/***/ "./resources/js/components/BvsMapComponent/index.js":
+/*!**********************************************************!*\
+  !*** ./resources/js/components/BvsMapComponent/index.js ***!
+  \**********************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _BvsMapComponent_vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./BvsMapComponent.vue */ "./resources/js/components/BvsMapComponent/BvsMapComponent.vue");
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_BvsMapComponent_vue__WEBPACK_IMPORTED_MODULE_0__["default"]);
+
+/***/ }),
+
 /***/ "./resources/js/components/CalendarComponent/index.js":
 /*!************************************************************!*\
   !*** ./resources/js/components/CalendarComponent/index.js ***!
@@ -16531,6 +16796,27 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _SelectComponent_vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./SelectComponent.vue */ "./resources/js/components/inputs/SelectComponent/SelectComponent.vue");
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_SelectComponent_vue__WEBPACK_IMPORTED_MODULE_0__["default"]);
+
+/***/ }),
+
+/***/ "./resources/js/components/svg/bvs.js":
+/*!********************************************!*\
+  !*** ./resources/js/components/svg/bvs.js ***!
+  \********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  computed: {
+    bvsIcon: function bvsIcon() {
+      return "<svg width=\"24\" height=\"16\" viewBox=\"0 0 24 16\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n<path d=\"M0 6.60098V5.22461C0 4.67232 0.447716 4.22461 1 4.22461H17.0208C17.5731 4.22461 18.0208 4.67232 18.0208 5.22461V6.60098H0Z\" fill=\"currentColor\"/>\n<path d=\"M0.514881 8.97744L0 6.86511H18.0208L17.5059 8.97744H0.514881Z\" fill=\"currentColor\"/>\n<path d=\"M19.9572 0.454871L17.506 9.50549L18.7932 10.2976L20.8283 3.01447C20.8947 2.77681 21.1584 2.65538 21.3822 2.75938L22.0699 3.07904C22.2559 3.16548 22.4772 3.09724 22.5822 2.92104L22.8557 2.46187C22.9233 2.34846 22.9306 2.20902 22.8752 2.0892L22.4596 1.19072C22.4194 1.1039 22.3495 1.03435 22.2625 0.994674L20.5092 0.195468C20.2846 0.0930748 20.0217 0.216593 19.9572 0.454871Z\" fill=\"currentColor\"/>\n<ellipse cx=\"9.52535\" cy=\"13.4661\" rx=\"1.80208\" ry=\"1.84829\" fill=\"currentColor\"/>\n<path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M0.562378 9.24133L0.903839 11.5558C0.976219 12.0464 1.39722 12.4098 1.89313 12.4098H2.30051C2.67969 11.6275 3.46689 11.0899 4.37652 11.0899C5.28615 11.0899 6.07335 11.6275 6.45253 12.4098H7.44927C7.82845 11.6275 8.61565 11.0899 9.52528 11.0899C10.4349 11.0899 11.2221 11.6275 11.6013 12.4098H17.506L23.4271 13.466L23.1697 12.4098L17.506 9.24133H0.562378ZM17.506 10.0335V11.8817H17.7635V10.0335H17.506Z\" fill=\"currentColor\"/>\n<ellipse cx=\"4.37655\" cy=\"13.4661\" rx=\"1.80208\" ry=\"1.84829\" fill=\"currentColor\"/>\n</svg>\n";
+    }
+  }
+});
 
 /***/ }),
 
@@ -17908,10 +18194,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _mixins_messages__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../mixins/messages */ "./resources/js/mixins/messages.js");
 /* harmony import */ var _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../mixins/publicAuthData */ "./resources/js/mixins/publicAuthData.js");
 /* harmony import */ var _components_MessagesComponent___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../components/MessagesComponent/ */ "./resources/js/components/MessagesComponent/index.js");
-/* harmony import */ var _components_SwitcherComponent__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../components/SwitcherComponent */ "./resources/js/components/SwitcherComponent/index.js");
-/* harmony import */ var _components_CalendarComponent__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../components/CalendarComponent */ "./resources/js/components/CalendarComponent/index.js");
-/* harmony import */ var _misc_helpers__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../misc/helpers */ "./resources/js/misc/helpers.js");
-/* harmony import */ var _mixins_crud__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../mixins/crud */ "./resources/js/mixins/crud.js");
+/* harmony import */ var _components_BvsMapComponent___WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../components/BvsMapComponent/ */ "./resources/js/components/BvsMapComponent/index.js");
+/* harmony import */ var _components_SwitcherComponent__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../components/SwitcherComponent */ "./resources/js/components/SwitcherComponent/index.js");
+/* harmony import */ var _components_CalendarComponent__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../components/CalendarComponent */ "./resources/js/components/CalendarComponent/index.js");
+/* harmony import */ var _misc_helpers__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../misc/helpers */ "./resources/js/misc/helpers.js");
+/* harmony import */ var _mixins_crud__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../mixins/crud */ "./resources/js/mixins/crud.js");
 /**
  * Домашняя страница
  */
@@ -17923,14 +18210,16 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
 var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 var grasslandMap;
 var homePage = {
-  mixins: [_mixins_messages__WEBPACK_IMPORTED_MODULE_0__["default"], _mixins_crud__WEBPACK_IMPORTED_MODULE_6__["default"], _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_1__["default"]],
+  mixins: [_mixins_messages__WEBPACK_IMPORTED_MODULE_0__["default"], _mixins_crud__WEBPACK_IMPORTED_MODULE_7__["default"], _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_1__["default"]],
   components: {
     MessagesComponent: _components_MessagesComponent___WEBPACK_IMPORTED_MODULE_2__["default"],
-    SwitcherComponent: _components_SwitcherComponent__WEBPACK_IMPORTED_MODULE_3__["default"],
-    Calendar: _components_CalendarComponent__WEBPACK_IMPORTED_MODULE_4__["default"]
+    SwitcherComponent: _components_SwitcherComponent__WEBPACK_IMPORTED_MODULE_4__["default"],
+    Calendar: _components_CalendarComponent__WEBPACK_IMPORTED_MODULE_5__["default"],
+    BvsMap: _components_BvsMapComponent___WEBPACK_IMPORTED_MODULE_3__["default"]
   },
   data: function data() {
     return {
@@ -17941,11 +18230,6 @@ var homePage = {
   mounted: function mounted() {
     var vm = this;
     vm.getBvsData();
-    vm.$nextTick(function () {
-      ymaps.ready(function () {
-        grasslandMap = vm.initMap("map");
-      });
-    });
   },
   computed: {
     calendarState: function calendarState() {
@@ -17964,9 +18248,9 @@ var homePage = {
     }
   },
   watch: {
-    bvsData: function bvsData(data) {
-      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_5__.clog)((0,_misc_helpers__WEBPACK_IMPORTED_MODULE_5__.strip)(data));
-    }
+    // bvsData(data) {
+    //     clog(strip(data));
+    // },
   },
   methods: {
     changeMode: function changeMode(data) {
@@ -17979,28 +18263,19 @@ var homePage = {
         organisation_id: vm.organisationId
       };
       axios.post("/bvsdata/list", postData).then(function (response) {
-        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_5__.clog)("%c getBvsData response", "color:green", response);
+        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_6__.clog)("%c getBvsData response", "color:green", response);
         vm.bvsData = response.data.bvs_data;
         // vm.messages[response.data.type] = response?.data?.message;
       })["catch"](function (e) {
-        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_5__.clog)("%c getBvsData error", "color: red", e.response);
+        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_6__.clog)("%c getBvsData error", "color: red", e.response);
         // vm.messages.error = e.response.data.message;
       });
     },
-    initMap: function initMap(selector) {
-      var map = new ymaps.Map(selector, {
-        center: [45, 45],
-        zoom: 13
-      }, {
-        searchControlProvider: "yandex#search"
-      });
-      return map;
-    },
     selectDateCb: function selectDateCb(data) {
-      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_5__.clog)("%c selectDateCb", "color: blue", data);
+      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_6__.clog)("%c selectDateCb", "color: blue", data);
     },
     selectPeriodCb: function selectPeriodCb(data) {
-      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_5__.clog)("%c selectDateCb", "color: blue", data);
+      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_6__.clog)("%c selectDateCb", "color: blue", data);
     }
   }
 };
@@ -19041,6 +19316,30 @@ passwordModeSwitcher === null || passwordModeSwitcher === void 0 ? void 0 : pass
 
 /***/ }),
 
+/***/ "./node_modules/css-loader/dist/cjs.js??clonedRuleSet-12.use[1]!./node_modules/vue-loader/dist/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-12.use[2]!./node_modules/sass-loader/dist/cjs.js??clonedRuleSet-12.use[3]!./resources/js/components/BvsMapComponent/style/index.scss?vue&type=style&index=0&lang=scss&external":
+/*!****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js??clonedRuleSet-12.use[1]!./node_modules/vue-loader/dist/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-12.use[2]!./node_modules/sass-loader/dist/cjs.js??clonedRuleSet-12.use[3]!./resources/js/components/BvsMapComponent/style/index.scss?vue&type=style&index=0&lang=scss&external ***!
+  \****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/***/ ((module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0__);
+// Imports
+
+var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
+// Module
+___CSS_LOADER_EXPORT___.push([module.id, ".bvs_preview {\n  position: absolute;\n  padding: 10px;\n  display: grid;\n  grid-template-columns: 2rem auto;\n  background: #fff;\n  border-radius: 0.25rem;\n  font-size: 1rem;\n  color: var(--green);\n}\n.bvs_preview svg {\n  display: inline-block;\n  margin-left: 5px;\n  font-size: 16rem;\n  max-width: 100%;\n}\n.bvs_preview span {\n  color: var(--darkest);\n}\n.cluster-icon {\n  position: absolute;\n  display: block;\n  background-color: #fff;\n  border-radius: 9999rem;\n  width: 1.5rem;\n  height: 1.5rem;\n  text-align: center;\n  line-height: 1.5rem;\n  font-weight: bold;\n  box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);\n}\n#placemarks {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  z-index: -1;\n  top: 0;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  overflow: hidden;\n}", ""]);
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
+
+
+/***/ }),
+
 /***/ "./node_modules/css-loader/dist/cjs.js??clonedRuleSet-12.use[1]!./node_modules/vue-loader/dist/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-12.use[2]!./node_modules/sass-loader/dist/cjs.js??clonedRuleSet-12.use[3]!./resources/js/components/CalendarComponent/style/index.scss?vue&type=style&index=0&id=baf6c618&scoped=true&lang=scss&external":
 /*!******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/css-loader/dist/cjs.js??clonedRuleSet-12.use[1]!./node_modules/vue-loader/dist/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-12.use[2]!./node_modules/sass-loader/dist/cjs.js??clonedRuleSet-12.use[3]!./resources/js/components/CalendarComponent/style/index.scss?vue&type=style&index=0&id=baf6c618&scoped=true&lang=scss&external ***!
@@ -19199,6 +19498,36 @@ module.exports = function (cssWithMappingToString) {
 __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
+
+/***/ }),
+
+/***/ "./node_modules/style-loader/dist/cjs.js!./node_modules/css-loader/dist/cjs.js??clonedRuleSet-12.use[1]!./node_modules/vue-loader/dist/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-12.use[2]!./node_modules/sass-loader/dist/cjs.js??clonedRuleSet-12.use[3]!./resources/js/components/BvsMapComponent/style/index.scss?vue&type=style&index=0&lang=scss&external":
+/*!********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/style-loader/dist/cjs.js!./node_modules/css-loader/dist/cjs.js??clonedRuleSet-12.use[1]!./node_modules/vue-loader/dist/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-12.use[2]!./node_modules/sass-loader/dist/cjs.js??clonedRuleSet-12.use[3]!./resources/js/components/BvsMapComponent/style/index.scss?vue&type=style&index=0&lang=scss&external ***!
+  \********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! !../../../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_css_loader_dist_cjs_js_clonedRuleSet_12_use_1_node_modules_vue_loader_dist_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_12_use_2_node_modules_sass_loader_dist_cjs_js_clonedRuleSet_12_use_3_index_scss_vue_type_style_index_0_lang_scss_external__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! !!../../../../../node_modules/css-loader/dist/cjs.js??clonedRuleSet-12.use[1]!../../../../../node_modules/vue-loader/dist/stylePostLoader.js!../../../../../node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-12.use[2]!../../../../../node_modules/sass-loader/dist/cjs.js??clonedRuleSet-12.use[3]!./index.scss?vue&type=style&index=0&lang=scss&external */ "./node_modules/css-loader/dist/cjs.js??clonedRuleSet-12.use[1]!./node_modules/vue-loader/dist/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-12.use[2]!./node_modules/sass-loader/dist/cjs.js??clonedRuleSet-12.use[3]!./resources/js/components/BvsMapComponent/style/index.scss?vue&type=style&index=0&lang=scss&external");
+
+            
+
+var options = {};
+
+options.insert = "head";
+options.singleton = false;
+
+var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default()(_node_modules_css_loader_dist_cjs_js_clonedRuleSet_12_use_1_node_modules_vue_loader_dist_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_12_use_2_node_modules_sass_loader_dist_cjs_js_clonedRuleSet_12_use_3_index_scss_vue_type_style_index_0_lang_scss_external__WEBPACK_IMPORTED_MODULE_1__["default"], options);
+
+
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_css_loader_dist_cjs_js_clonedRuleSet_12_use_1_node_modules_vue_loader_dist_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_12_use_2_node_modules_sass_loader_dist_cjs_js_clonedRuleSet_12_use_3_index_scss_vue_type_style_index_0_lang_scss_external__WEBPACK_IMPORTED_MODULE_1__["default"].locals || {});
 
 /***/ }),
 
@@ -19593,6 +19922,37 @@ exports["default"] = (sfc, props) => {
 
 /***/ }),
 
+/***/ "./resources/js/components/BvsMapComponent/BvsMapComponent.vue":
+/*!*********************************************************************!*\
+  !*** ./resources/js/components/BvsMapComponent/BvsMapComponent.vue ***!
+  \*********************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _BvsMapComponent_vue_vue_type_template_id_701aac36__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./BvsMapComponent.vue?vue&type=template&id=701aac36 */ "./resources/js/components/BvsMapComponent/BvsMapComponent.vue?vue&type=template&id=701aac36");
+/* harmony import */ var _BvsMapComponent_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./BvsMapComponent.vue?vue&type=script&lang=js */ "./resources/js/components/BvsMapComponent/BvsMapComponent.vue?vue&type=script&lang=js");
+/* harmony import */ var _style_index_scss_vue_type_style_index_0_lang_scss_external__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./style/index.scss?vue&type=style&index=0&lang=scss&external */ "./resources/js/components/BvsMapComponent/style/index.scss?vue&type=style&index=0&lang=scss&external");
+/* harmony import */ var _node_modules_vue_loader_dist_exportHelper_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/dist/exportHelper.js */ "./node_modules/vue-loader/dist/exportHelper.js");
+
+
+
+
+;
+
+
+const __exports__ = /*#__PURE__*/(0,_node_modules_vue_loader_dist_exportHelper_js__WEBPACK_IMPORTED_MODULE_3__["default"])(_BvsMapComponent_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__["default"], [['render',_BvsMapComponent_vue_vue_type_template_id_701aac36__WEBPACK_IMPORTED_MODULE_0__.render],['__file',"resources/js/components/BvsMapComponent/BvsMapComponent.vue"]])
+/* hot reload */
+if (false) {}
+
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (__exports__);
+
+/***/ }),
+
 /***/ "./resources/js/components/CalendarComponent/CalendarComponent.vue":
 /*!*************************************************************************!*\
   !*** ./resources/js/components/CalendarComponent/CalendarComponent.vue ***!
@@ -19854,6 +20214,22 @@ if (false) {}
 
 /***/ }),
 
+/***/ "./resources/js/components/BvsMapComponent/BvsMapComponent.vue?vue&type=script&lang=js":
+/*!*********************************************************************************************!*\
+  !*** ./resources/js/components/BvsMapComponent/BvsMapComponent.vue?vue&type=script&lang=js ***!
+  \*********************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_BvsMapComponent_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_0__["default"])
+/* harmony export */ });
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_BvsMapComponent_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../../node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./BvsMapComponent.vue?vue&type=script&lang=js */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/components/BvsMapComponent/BvsMapComponent.vue?vue&type=script&lang=js");
+ 
+
+/***/ }),
+
 /***/ "./resources/js/components/CalendarComponent/CalendarComponent.vue?vue&type=script&lang=js":
 /*!*************************************************************************************************!*\
   !*** ./resources/js/components/CalendarComponent/CalendarComponent.vue?vue&type=script&lang=js ***!
@@ -19998,6 +20374,22 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/components/BvsMapComponent/BvsMapComponent.vue?vue&type=template&id=701aac36":
+/*!***************************************************************************************************!*\
+  !*** ./resources/js/components/BvsMapComponent/BvsMapComponent.vue?vue&type=template&id=701aac36 ***!
+  \***************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   render: () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_dist_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_BvsMapComponent_vue_vue_type_template_id_701aac36__WEBPACK_IMPORTED_MODULE_0__.render)
+/* harmony export */ });
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_dist_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_BvsMapComponent_vue_vue_type_template_id_701aac36__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../../node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!../../../../node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./BvsMapComponent.vue?vue&type=template&id=701aac36 */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/components/BvsMapComponent/BvsMapComponent.vue?vue&type=template&id=701aac36");
+
+
+/***/ }),
+
 /***/ "./resources/js/components/CalendarComponent/CalendarComponent.vue?vue&type=template&id=baf6c618&scoped=true":
 /*!*******************************************************************************************************************!*\
   !*** ./resources/js/components/CalendarComponent/CalendarComponent.vue?vue&type=template&id=baf6c618&scoped=true ***!
@@ -20138,6 +20530,19 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   render: () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_dist_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_SelectComponent_vue_vue_type_template_id_cb73c050__WEBPACK_IMPORTED_MODULE_0__.render)
 /* harmony export */ });
 /* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_dist_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_SelectComponent_vue_vue_type_template_id_cb73c050__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../../../node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!../../../../../node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./SelectComponent.vue?vue&type=template&id=cb73c050 */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/components/inputs/SelectComponent/SelectComponent.vue?vue&type=template&id=cb73c050");
+
+
+/***/ }),
+
+/***/ "./resources/js/components/BvsMapComponent/style/index.scss?vue&type=style&index=0&lang=scss&external":
+/*!************************************************************************************************************!*\
+  !*** ./resources/js/components/BvsMapComponent/style/index.scss?vue&type=style&index=0&lang=scss&external ***!
+  \************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_style_loader_dist_cjs_js_node_modules_css_loader_dist_cjs_js_clonedRuleSet_12_use_1_node_modules_vue_loader_dist_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_12_use_2_node_modules_sass_loader_dist_cjs_js_clonedRuleSet_12_use_3_index_scss_vue_type_style_index_0_lang_scss_external__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/style-loader/dist/cjs.js!../../../../../node_modules/css-loader/dist/cjs.js??clonedRuleSet-12.use[1]!../../../../../node_modules/vue-loader/dist/stylePostLoader.js!../../../../../node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-12.use[2]!../../../../../node_modules/sass-loader/dist/cjs.js??clonedRuleSet-12.use[3]!./index.scss?vue&type=style&index=0&lang=scss&external */ "./node_modules/style-loader/dist/cjs.js!./node_modules/css-loader/dist/cjs.js??clonedRuleSet-12.use[1]!./node_modules/vue-loader/dist/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-12.use[2]!./node_modules/sass-loader/dist/cjs.js??clonedRuleSet-12.use[3]!./resources/js/components/BvsMapComponent/style/index.scss?vue&type=style&index=0&lang=scss&external");
 
 
 /***/ }),
