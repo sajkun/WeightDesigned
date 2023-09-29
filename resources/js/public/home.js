@@ -9,6 +9,7 @@ import BvsMapComponent from "../components/BvsMapComponent/";
 import SwitcherComponent from "../components/SwitcherComponent";
 import CalendarComponent from "../components/CalendarComponent";
 import BvsShortComponent from "../components/BvsShortComponent";
+import BvsOperationComponent from "../components/BvsOperationComponent";
 import { strip, clog } from "../misc/helpers";
 import crud from "../mixins/crud";
 import moment from "moment";
@@ -24,6 +25,7 @@ const homePage = {
         SwitcherComponent,
         Calendar: CalendarComponent,
         BvsMap: BvsMapComponent,
+        BvsOperation: BvsOperationComponent,
     },
 
     data() {
@@ -145,7 +147,8 @@ const homePage = {
             const vm = this;
 
             if (vm.period.start) {
-                return vm.period.start;
+                const date = new Date(vm.period.start);
+                return moment(date).format("YYYY-MM-DD");
             }
             return moment().format("YYYY-MM-DD");
         },

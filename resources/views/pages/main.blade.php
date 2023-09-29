@@ -38,7 +38,7 @@
                     :_bvs='bvs'></bvs-short-component>
 
                 {{-- Кнопка перехода к режиму просмотра отдельных транзакций бвс --}}
-                <div class="div">
+                <div class="div" v-if='selectedBvs.length > 0'>
                     <button class="btn btn-primary-alt w-100 text-center mt-4" type='button'
                         @click='changeDisplay("items")'>Продолжить</button>
                 </div>
@@ -48,10 +48,16 @@
 
             {{-- НАЧАЛО БЛОКА  отображения списка операций --}}
             <div class="col-12 col-md-6 py-4" v-if='display==="items"'>
-                @{{ bvsOperations }}
+                <button class="btn btn-primary-alt w-100 text-center mt-4" type='button'
+                    @click='changeDisplay("calendar")'>Выбрать другие даты</button>
+                {{-- операции БВС --}}
+                <bvs-operation :_info='info' :key='"operation" + key' v-for='info,key in bvsOperations'
+                    :class='"mt-4"'>
+                </bvs-operation>
+
                 <div class="div">
                     <button class="btn btn-primary-alt w-100 text-center mt-4" type='button'
-                        @click='changeDisplay("calendar")'>Продолжить</button>
+                        @click='changeDisplay("calendar")'>Выбрать другие даты</button>
                 </div>
             </div>
             {{--  КОНЕЦ БЛОКА отображения списка операций --}}

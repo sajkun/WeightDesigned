@@ -95,7 +95,7 @@
 </template>
 
 <script>
-import { strip, clog } from "../../misc/helpers";
+import moment from "moment";
 export default {
     props: {
         _period: {
@@ -169,9 +169,15 @@ export default {
 
         // отслеживание дат
         _period(period) {
-            if (!vm.startDate) [(vm.startDate = period.start)];
-            if (!vm.endDate) [(vm.endDate = period.end)];
             console.log(period);
+            if (!vm.startDate) {
+                const date = new Date(period.start);
+                vm.startDate = moment(date).format("YYYY-MM-DD");
+            }
+            if (!vm.endDate) {
+                const date = new Date(period.end);
+                vm.endDate = moment(date).format("YYYY-MM-DD");
+            }
         },
 
         // отслеживание состояние свойства выбора периода,
