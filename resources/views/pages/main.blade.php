@@ -10,7 +10,7 @@
 
         <div class="row flex-grow-1 ">
             {{-- НАЧАЛО БЛОКА выбора периода отображения  --}}
-            <div class="col-12 col-md-6 py-4 ">
+            <div class="col-12 col-md-6 py-4" v-if='display==="calendar"'>
 
                 {{-- компонент отображения кнопок выбора периода --}}
                 <switcher-component :_buttons="modes" :_active-mode='mode' @clicked='changeMode'>
@@ -18,18 +18,27 @@
                 <div class="mt-4"></div>
 
                 {{-- компонент Календарь --}}
-                <calendar :_initial-date='"2023-10-25"' :_disabled='calendarState' :_select-period='selectPeriod'
+                <calendar :_initial-date='today' :_disabled='calendarState' :_select-period='selectPeriod'
                     @selected-date='selectDateCb' @selected-period='selectPeriodCb'>
                 </calendar>
+
+                <div class="div" v-if='bvsDataFiltered.length'>
+                    <button class="btn btn-primary-alt w-100 text-center mt-4" type='button'
+                        @click='changeDisplay("list")'>Продолжить</button>
+                </div>
             </div>
             {{--  КОНЕЦ БЛОКА выбора периода отображения  --}}
+
+            {{-- НАЧАЛО БЛОКА  отображения списка БВС  --}}
+            <div class="col-12 col-md-6 py-4" v-if='display==="list"'>
+            </div>
+            {{--  КОНЕЦ БЛОКА отображения списка БВС --}}
 
             {{-- НАЧАЛО БЛОКА карты  --}}
             <div class="col-12 col-md-6">
                 <div class="py-4 h-100 w-100">
                     {{-- контейнер для Яндекс карты --}}
-                    <bvs-map :_id='"map"' :_bvs-data='bvsData'></bvs-map>
-                    <div id="placemarks"></div>
+                    <bvs-map :_id='"map"' :_bvs-data='bvsDataFiltered'></bvs-map>
                 </div>
             </div>
             {{-- КОНЕЦ БЛОКА карты  --}}

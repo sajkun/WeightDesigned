@@ -1,6 +1,7 @@
 <!-- МИодуль отобраения данных от бвс на яндекс карте -->
 <template>
     <div class="h-100 w-100" :id="id"></div>
+    <div id="placemarks"></div>
 </template>
 
 <script>
@@ -30,15 +31,16 @@ export default {
         bvsData(data) {
             const vm = this;
 
-            if (!grasslandMap) {
-                grasslandMap = vm.initMap(vm.id);
-            }
+            if (!grasslandMap) return;
 
             grasslandMap.geoObjects.removeAll();
             vm.drawBvsData(data);
-            grasslandMap.setBounds(grasslandMap.geoObjects.getBounds());
+            if (grasslandMap.geoObjects.getLength()) {
+                grasslandMap.setBounds(grasslandMap.geoObjects.getBounds());
+            }
         },
     },
+
     props: {
         // данные от бвс
         _bvsData: {
@@ -60,7 +62,12 @@ export default {
 
         vm.$nextTick(() => {
             ymaps.ready(function () {
+                const data = strip(vm.bvsData);
                 grasslandMap = vm.initMap(vm.id);
+                vm.drawBvsData(data);
+                if (grasslandMap.geoObjects.getLength()) {
+                    grasslandMap.setBounds(grasslandMap.geoObjects.getBounds());
+                }
             });
         });
     },
@@ -95,6 +102,9 @@ export default {
          * @param {Array} data массив объектов данных от БВС
          */
         drawBvsData(data) {
+            if (!data || !data.length) {
+                return;
+            }
             const vm = this;
 
             const placemarksHTML = document.getElementById("placemarks");
@@ -114,12 +124,10 @@ export default {
 
                 clusterNumbers: [strip(data).length],
                 clusterIconContentLayout: clusterIconContentLayout,
-                // clusterHideIconOnBalloonOpen: false,
                 clusterDisableClickZoom: true,
             });
 
             let placemarks = [];
-
             for (let bvsData of strip(data)) {
                 // вычисление размера метки
                 const newDiv = document.createElement("div");
@@ -130,17 +138,17 @@ export default {
                 const rect = newDiv.getBoundingClientRect();
                 document.getElementById("check").remove();
 
+                // формирование метки
                 const bvsIcon =
                     bvsData.rfid_status === 1 && bvsData.has_check
                         ? vm.bvsIcon
                         : vm.bvsIconError;
 
-                // формирование метки
                 const html = `<div>
                         <div class="bvs_preview">${bvsIcon} <span>${bvsData.bvs_name}</span></div>
                     </div>`;
 
-                const circleLayout =
+                const placemarkLayout =
                     ymaps.templateLayoutFactory.createClass(html);
 
                 const coordinates = bvsData.coordinates
@@ -176,30 +184,25 @@ export default {
                         break;
                 }
 
-                let point = new ymaps.Placemark(
+                const point = new ymaps.Placemark(
                     coordinates,
                     {
-                        // Зададим содержимое заголовка балуна.
                         balloonContentHeader: `<span class="description">БП ${bvsData.bvs_name} </span>`,
-                        // Зададим содержимое основной части балуна.
                         balloonContentBody:
                             `${operation} ` +
                             `${amount} <br>` +
                             amountLeft +
                             `${checkStatus} <br>` +
                             rfid,
-                        // Зададим содержимое нижней части балуна.
                         balloonContentFooter: `Операция произведена: ${bvsData.operation_time}`,
 
                         hintContent:
                             bvsData.bvs_name + " " + operation + " " + amount,
                     },
                     {
-                        iconLayout: circleLayout,
-                        // Описываем фигуру активной области "Прямоугольник".
+                        iconLayout: placemarkLayout,
                         iconShape: {
                             type: "Rectangle",
-                            // Прямоугольник описывается в виде двух точек - верхней левой и нижней правой.
                             coordinates: [
                                 [0, 0],
                                 [
@@ -217,7 +220,7 @@ export default {
             clusterer.add(placemarks);
 
             grasslandMap.geoObjects.add(clusterer);
-            var objectState = clusterer.getObjectState(placemarks[2]);
+            const objectState = clusterer?.getObjectState(placemarks[2]);
             if (objectState.isClustered) {
                 // Если метка находится в кластере, выставим ее в качестве активного объекта.
                 // Тогда она будет "выбрана" в открытом балуне кластера.
@@ -225,7 +228,7 @@ export default {
                 clusterer.balloon.open(objectState.cluster);
             } else if (objectState.isShown) {
                 // Если метка не попала в кластер и видна на карте, откроем ее балун.
-                placemarks[2].balloon.open();
+                // placemarks[2].balloon.open();E
             }
 
             grasslandMap.setBounds(clusterer.getBounds(), {

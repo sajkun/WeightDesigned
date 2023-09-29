@@ -157,6 +157,8 @@ export default {
         // отслеживание состояние свойства начальной даты,
         _initialDate(date) {
             this.initialDate = date;
+
+            console.log(date);
         },
 
         // отслеживание состояние свойства выбора периода,
@@ -169,6 +171,7 @@ export default {
             //обнуление даты при смене режима выбора периода/даты,
             vm.startDate = false;
             vm.endDate = false;
+            vm.clickMode = "startDate";
         },
 
         endDate(newDate, oldDate) {
