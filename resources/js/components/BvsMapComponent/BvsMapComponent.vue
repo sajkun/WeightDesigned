@@ -218,9 +218,9 @@ export default {
             }
 
             clusterer.add(placemarks);
-
             grasslandMap.geoObjects.add(clusterer);
-            const objectState = clusterer?.getObjectState(placemarks[2]);
+
+            const objectState = clusterer.getObjectState(placemarks);
             if (objectState.isClustered) {
                 // Если метка находится в кластере, выставим ее в качестве активного объекта.
                 // Тогда она будет "выбрана" в открытом балуне кластера.

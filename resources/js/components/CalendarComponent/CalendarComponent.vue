@@ -98,6 +98,14 @@
 import { strip, clog } from "../../misc/helpers";
 export default {
     props: {
+        _period: {
+            type: Object,
+            default: {
+                start: null,
+                end: null,
+            },
+            required: false,
+        },
         // начальная дата для отображения календаря
         _initialDate: {
             type: String,
@@ -157,8 +165,13 @@ export default {
         // отслеживание состояние свойства начальной даты,
         _initialDate(date) {
             this.initialDate = date;
+        },
 
-            console.log(date);
+        // отслеживание дат
+        _period(period) {
+            if (!vm.startDate) [(vm.startDate = period.start)];
+            if (!vm.endDate) [(vm.endDate = period.end)];
+            console.log(period);
         },
 
         // отслеживание состояние свойства выбора периода,

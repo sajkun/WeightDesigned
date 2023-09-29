@@ -18,10 +18,11 @@
                 <div class="mt-4"></div>
 
                 {{-- компонент Календарь --}}
-                <calendar :_initial-date='today' :_disabled='calendarState' :_select-period='selectPeriod'
-                    @selected-date='selectDateCb' @selected-period='selectPeriodCb'>
+                <calendar :_initial-date='today' :_disabled='calendarState' :_period="period"
+                    :_select-period='selectPeriod' @selected-date='selectDateCb' @selected-period='selectPeriodCb'>
                 </calendar>
 
+                {{-- кпопка перехода к режиму просмотра в разрезе БВС --}}
                 <div class="div" v-if='bvsDataFiltered.length'>
                     <button class="btn btn-primary-alt w-100 text-center mt-4" type='button'
                         @click='changeDisplay("list")'>Продолжить</button>
@@ -31,14 +32,35 @@
 
             {{-- НАЧАЛО БЛОКА  отображения списка БВС  --}}
             <div class="col-12 col-md-6 py-4" v-if='display==="list"'>
+
+                {{-- превью с данными БВС  --}}
+                <bvs-short-component @select='selectBvsCb' v-for='bvs, key in bsvFilteredByUnit' :key='"key" + bvs'
+                    :_bvs='bvs'></bvs-short-component>
+
+                {{-- Кнопка перехода к режиму просмотра отдельных транзакций бвс --}}
+                <div class="div">
+                    <button class="btn btn-primary-alt w-100 text-center mt-4" type='button'
+                        @click='changeDisplay("items")'>Продолжить</button>
+                </div>
             </div>
             {{--  КОНЕЦ БЛОКА отображения списка БВС --}}
+
+
+            {{-- НАЧАЛО БЛОКА  отображения списка операций --}}
+            <div class="col-12 col-md-6 py-4" v-if='display==="items"'>
+                @{{ bvsOperations }}
+                <div class="div">
+                    <button class="btn btn-primary-alt w-100 text-center mt-4" type='button'
+                        @click='changeDisplay("calendar")'>Продолжить</button>
+                </div>
+            </div>
+            {{--  КОНЕЦ БЛОКА отображения списка операций --}}
 
             {{-- НАЧАЛО БЛОКА карты  --}}
             <div class="col-12 col-md-6">
                 <div class="py-4 h-100 w-100">
                     {{-- контейнер для Яндекс карты --}}
-                    <bvs-map :_id='"map"' :_bvs-data='bvsDataFiltered'></bvs-map>
+                    <bvs-map :_id='"map"' :_bvs-data='bvsOperations'></bvs-map>
                 </div>
             </div>
             {{-- КОНЕЦ БЛОКА карты  --}}

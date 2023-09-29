@@ -8,6 +8,7 @@ import MessagesComponent from "../components/MessagesComponent/";
 import BvsMapComponent from "../components/BvsMapComponent/";
 import SwitcherComponent from "../components/SwitcherComponent";
 import CalendarComponent from "../components/CalendarComponent";
+import BvsShortComponent from "../components/BvsShortComponent";
 import { strip, clog } from "../misc/helpers";
 import crud from "../mixins/crud";
 import moment from "moment";
@@ -19,6 +20,7 @@ const homePage = {
 
     components: {
         MessagesComponent,
+        BvsShortComponent,
         SwitcherComponent,
         Calendar: CalendarComponent,
         BvsMap: BvsMapComponent,
@@ -26,14 +28,15 @@ const homePage = {
 
     data() {
         return {
-            // редим выбора даты
+            // режим выбора даты
             mode: "day", // day | period | all
-            display: "calendar", // calendar | list | bunker
+            display: "calendar", // calendar | list | items
             bvsData: [],
             period: {
                 start: null,
                 end: null,
             },
+            selectedBvs: [],
         };
     },
 
@@ -54,7 +57,7 @@ const homePage = {
 
     computed: {
         /**
-         * отфильтрованные значения данных от БВС
+         * отфильтрованные значения данных от БВС по дате и по выбранным бункерам
          *
          * @returns {Array} массив данных о БВС
          */
@@ -76,6 +79,55 @@ const homePage = {
         },
 
         /**
+         * отфильтрованные значения данных от БВС в разрезе бункеров
+         *
+         * @returns {Array} массив данных о БВС
+         */
+        bsvFilteredByUnit() {
+            const vm = this;
+            const dataRaw = strip(vm.bvsDataFiltered);
+            const initialValue = {};
+            const data = dataRaw.reduce((accumulator, val) => {
+                const idx = val.bvs_name;
+
+                if (!accumulator[idx]) {
+                    accumulator[idx] = {
+                        name: idx,
+                        items: [],
+                        selected: false,
+                    };
+                }
+                accumulator[idx].selected =
+                    strip(vm.selectedBvs).indexOf(idx) >= 0;
+                accumulator[idx].items.push(val);
+
+                return accumulator;
+            }, initialValue);
+
+            return data;
+        },
+
+        /**
+         * Отфильтровывает все операции по выбранным бункерам
+         *
+         * @returns {Array} массив данных конкретных операций
+         */
+        bvsOperations() {
+            const vm = this;
+            const dataRaw = strip(vm.bvsDataFiltered);
+            const names = strip(vm.selectedBvs);
+            let data;
+            data =
+                names.length > 0
+                    ? dataRaw.filter((d) => {
+                          return names.indexOf(d.bvs_name) >= 0;
+                      })
+                    : dataRaw;
+
+            return data;
+        },
+
+        /**
          * Признак активности календаря
          *
          * @returns {Boolean}
@@ -90,6 +142,11 @@ const homePage = {
          * @returns String D-m-y
          */
         today() {
+            const vm = this;
+
+            if (vm.period.start) {
+                return vm.period.start;
+            }
             return moment().format("YYYY-MM-DD");
         },
 
@@ -103,6 +160,7 @@ const homePage = {
             return modes;
         },
 
+        // признак режима работы календаря выбор периода или нет
         selectPeriod() {
             return this.mode === "period";
         },
@@ -176,6 +234,21 @@ const homePage = {
             const vm = this;
             vm.period.start = `${data.start}T00:00:00`;
             vm.period.end = `${data.end}T23:59:59`;
+        },
+
+        /**
+         * обработчик события выбора БВС
+         *
+         * @param {Object} data
+         */
+        selectBvsCb(data) {
+            const vm = this;
+            const idx = strip(vm.selectedBvs).indexOf(data.name);
+            if (idx >= 0) {
+                vm.selectedBvs.splice(idx, 1);
+            } else {
+                vm.selectedBvs.push(data.name);
+            }
         },
     },
 };
