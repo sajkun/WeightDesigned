@@ -32,6 +32,8 @@ const homePage = {
         return {
             // режим выбора даты
             mode: "day", // day | period | all
+
+            // тип детализации отображенния данных
             display: "calendar", // calendar | list | items
             bvsData: [],
             period: {
@@ -39,6 +41,7 @@ const homePage = {
                 end: null,
             },
             selectedBvs: [],
+            selectedOperationsIds: [],
         };
     },
 
@@ -48,12 +51,40 @@ const homePage = {
     },
 
     watch: {
+        /**
+         * Обработка зависимостей переменных оттипа детализации отображения данных БВС
+         *
+         * @param {Enum} display calendar | list | items
+         *
+         * @return null
+         */
+        display(display) {
+            const vm = this;
+
+            if (display === "calendar") {
+                vm.selectedBvs = [];
+                vm.selectedOperationsIds = [];
+            }
+
+            return null;
+        },
+
+        /**
+         * Обработка зависимостей переменных от режима отображения календаря
+         *
+         * @param {Enum} mode all|period|day
+         *
+         * @return null
+         */
         mode(mode) {
             const vm = this;
+            // сброс дат
             if (mode === "all") {
                 vm.period.start = null;
                 vm.period.end = null;
             }
+
+            return null;
         },
     },
 
@@ -109,6 +140,20 @@ const homePage = {
             return data;
         },
 
+        bvsFilteredByOperations() {
+            const vm = this;
+            let data = strip(vm.bvsOperations);
+
+            if (vm.selectedOperationsIds.length) {
+                const items = strip(vm.selectedOperationsIds);
+                data = data.filter((d) => {
+                    return items.indexOf(d.id) >= 0;
+                });
+            }
+
+            return data;
+        },
+
         /**
          * Отфильтровывает все операции по выбранным бункерам
          *
@@ -125,6 +170,12 @@ const homePage = {
                           return names.indexOf(d.bvs_name) >= 0;
                       })
                     : dataRaw;
+
+            const operations = strip(vm.selectedOperationsIds);
+            data = data.map((d) => {
+                d.selected = operations.indexOf(d.id) >= 0;
+                return d;
+            });
 
             return data;
         },
@@ -212,15 +263,47 @@ const homePage = {
         },
 
         /**
+         * обработчик события выбора БВС
+         *
+         * @param {Object} data
+         */
+        selectBvsCb(data) {
+            const vm = this;
+            const idx = strip(vm.selectedBvs).indexOf(data.name);
+            if (idx >= 0) {
+                vm.selectedBvs.splice(idx, 1);
+            } else {
+                vm.selectedBvs.push(data.name);
+            }
+        },
+
+        /**
          * обработчик события календаря. Выбор 1 даты
          *
          * @param {Object} data {date: ISO date string}
+         *
          */
         selectDateCb(data) {
             clog("%c selectDateCb", "color: blue", data);
             const vm = this;
             vm.period.start = `${data.date}T00:00:00`;
             vm.period.end = `${data.date}T23:59:59`;
+        },
+
+        /**
+         * обработчик события выбора операции БВС
+         *
+         * @param {Object} data BvsData object @see BvsData Laravel Model BvsData
+         *
+         */
+        selectOperationCb(data) {
+            const vm = this;
+            const idx = vm.selectedOperationsIds.indexOf(data.id);
+            if (idx >= 0) {
+                vm.selectedOperationsIds.splice(idx, 1);
+            } else {
+                vm.selectedOperationsIds.push(data.id);
+            }
         },
 
         /**
@@ -237,21 +320,6 @@ const homePage = {
             const vm = this;
             vm.period.start = `${data.start}T00:00:00`;
             vm.period.end = `${data.end}T23:59:59`;
-        },
-
-        /**
-         * обработчик события выбора БВС
-         *
-         * @param {Object} data
-         */
-        selectBvsCb(data) {
-            const vm = this;
-            const idx = strip(vm.selectedBvs).indexOf(data.name);
-            if (idx >= 0) {
-                vm.selectedBvs.splice(idx, 1);
-            } else {
-                vm.selectedBvs.push(data.name);
-            }
         },
     },
 };

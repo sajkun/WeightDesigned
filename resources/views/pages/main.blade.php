@@ -32,10 +32,12 @@
 
             {{-- НАЧАЛО БЛОКА  отображения списка БВС  --}}
             <div class="col-12 col-md-6 py-4" v-if='display==="list"'>
+                <button class="btn btn-primary-alt w-100 text-center mb-4" type='button'
+                    @click='changeDisplay("calendar")'>Выбрать другие даты</button>
 
                 {{-- превью с данными БВС  --}}
                 <bvs-short-component @select='selectBvsCb' v-for='bvs, key in bsvFilteredByUnit' :key='"key" + bvs'
-                    :_bvs='bvs'></bvs-short-component>
+                    class='mt-2' :_bvs='bvs'></bvs-short-component>
 
                 {{-- Кнопка перехода к режиму просмотра отдельных транзакций бвс --}}
                 <div class="div" v-if='selectedBvs.length > 0'>
@@ -52,7 +54,7 @@
                     @click='changeDisplay("calendar")'>Выбрать другие даты</button>
                 {{-- операции БВС --}}
                 <bvs-operation :_info='info' :key='"operation" + key' v-for='info,key in bvsOperations'
-                    :class='"mt-4"'>
+                    :class='"mt-2"' @selected='selectOperationCb'>
                 </bvs-operation>
 
                 <div class="div">
@@ -66,7 +68,7 @@
             <div class="col-12 col-md-6">
                 <div class="py-4 h-100 w-100">
                     {{-- контейнер для Яндекс карты --}}
-                    <bvs-map :_id='"map"' :_bvs-data='bvsOperations'></bvs-map>
+                    <bvs-map :_id='"map"' :_bvs-data='bvsFilteredByOperations'></bvs-map>
                 </div>
             </div>
             {{-- КОНЕЦ БЛОКА карты  --}}

@@ -14,13 +14,14 @@
             </div>
             <div class="col-4"><span class="label">Всего выгружено</span></div>
             <div class="col-4"></div>
-            <div class="col-4">{{ received }}</div>
-            <div class="col-4">{{ delivered }}</div>
+            <div class="col-4">{{ total.received }}</div>
+            <div class="col-4">{{ total.delivered }}</div>
         </div>
     </div>
 </template>
 
 <script>
+import { strip, clog } from "../../misc/helpers";
 export default {
     props: {
         // данные от БВС
@@ -32,14 +33,46 @@ export default {
     },
 
     computed: {
-        // всего получено
-        received() {
-            return "999 тонн";
-        },
+        items() {
+            const vm = this;
+            const items = strip(vm.bvs?.items);
 
-        // всего выгружено
-        delivered() {
-            return "999 тонн";
+            return {
+                received: items.filter((item) => {
+                    return item.to === item.bvs_name;
+                }),
+
+                delivered: items.filter((item) => {
+                    return item.from === item.bvs_name;
+                }),
+            };
+        },
+        // всего получено
+        total() {
+            const vm = this;
+
+            let totalReceived = vm.items.received.reduce((total, item) => {
+                return total + item.amount_transfered;
+            }, 0);
+
+            totalReceived =
+                totalReceived > 1000
+                    ? `${totalReceived / 1000}т.`
+                    : `${totalReceived}кг`;
+
+            let totalDelivered = vm.items.delivered.reduce((total, item) => {
+                return total + item.amount_transfered;
+            }, 0);
+
+            totalDelivered =
+                totalDelivered > 1000
+                    ? `${totalDelivered / 1000}т.`
+                    : `${totalDelivered}кг`;
+
+            return {
+                received: totalReceived,
+                delivered: totalDelivered,
+            };
         },
     },
 
