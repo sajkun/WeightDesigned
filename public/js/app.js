@@ -16559,7 +16559,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)(["w-100 calendar", {
       disabled: $data.disabled
     }])
-  }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" НАЧАЛО БЛОКА\n                 кнопки управления месяцами "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [$options.showButtons.prevMonth ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("button", {
+  }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" НАЧАЛО БЛОКА\r\n                 кнопки управления месяцами "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [$options.showButtons.prevMonth ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("button", {
     key: 0,
     "class": "btn btn-controls",
     type: "button",
@@ -16575,12 +16575,12 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       return $options.changeMonth(1);
     }),
     disabled: $data.disabled
-  }, _hoisted_9, 8 /* PROPS */, _hoisted_7)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" КОНЕЦ БЛОКА\n                кнопки управления месяцами "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" НАЧАЛО БЛОКА\n                 дни недели "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_10, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($options.days, function (d, key) {
+  }, _hoisted_9, 8 /* PROPS */, _hoisted_7)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" КОНЕЦ БЛОКА\r\n                кнопки управления месяцами "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" НАЧАЛО БЛОКА\r\n                 дни недели "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_10, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($options.days, function (d, key) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", {
       "class": "flex-grow-1 text-center day-name",
       key: 'day' + key
     }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(d), 1 /* TEXT */);
-  }), 128 /* KEYED_FRAGMENT */))]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" КОНЕЦ БЛОКА\n                 дни недели "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" НАЧАЛО БЛОКА\n                дни календаря "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_11, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($options.month, function (day, key) {
+  }), 128 /* KEYED_FRAGMENT */))]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" КОНЕЦ БЛОКА\r\n                 дни недели "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" НАЧАЛО БЛОКА\r\n                дни календаря "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_11, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($options.month, function (day, key) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", {
       "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)(["day-cell", {
         active: day.selected,
@@ -16598,7 +16598,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
         return $options.selectDay(day.date);
       }
     }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(day.day), 9 /* TEXT, PROPS */, _hoisted_12)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)], 2 /* CLASS */);
-  }), 128 /* KEYED_FRAGMENT */))]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" КОНЕЦ БЛОКА\n                 дни календаря "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" НАЧАЛО БЛОКА\n                кнопки управления "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_13, [$options.showButtons.clear ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("button", {
+  }), 128 /* KEYED_FRAGMENT */))]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" КОНЕЦ БЛОКА\r\n                 дни календаря "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" НАЧАЛО БЛОКА\r\n                кнопки управления "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_13, [$options.showButtons.clear ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("button", {
     key: 0,
     "class": "btn btn-link",
     type: "button",
@@ -16606,7 +16606,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     onClick: _cache[2] || (_cache[2] = function () {
       return $options.clearDates && $options.clearDates.apply($options, arguments);
     })
-  }, " Очистить даты ", 8 /* PROPS */, _hoisted_14)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" КОНЕЦ БЛОКА\n                 кнопки управления ")])], 2 /* CLASS */);
+  }, " Очистить даты ", 8 /* PROPS */, _hoisted_14)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" КОНЕЦ БЛОКА\r\n                 кнопки управления ")])], 2 /* CLASS */);
 }
 
 /***/ }),
@@ -18692,11 +18692,16 @@ var homePage = {
         end: null
       },
       selectedBvs: [],
-      selectedOperationsIds: []
+      selectedOperationsIds: [],
+      windowWidth: window.innerWidth,
+      showMap: true
     };
   },
   mounted: function mounted() {
     var vm = this;
+    vm.$nextTick(function () {
+      window.addEventListener("resize", vm.onResize);
+    });
     vm.getBvsData();
   },
   watch: {
@@ -18731,6 +18736,12 @@ var homePage = {
         vm.display = "list";
       }
       return null;
+    },
+    windowWidth: function windowWidth(newWidth) {
+      var vm = this;
+      var breakpoint = 768;
+      var show = newWidth > breakpoint;
+      vm.showMap = show;
     }
   },
   computed: {
@@ -18885,6 +18896,13 @@ var homePage = {
         (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_8__.clog)("%c getBvsData error", "color: red", e.response);
         // vm.messages.error = e.response.data.message;
       });
+    },
+    /**
+     * Коллбэк для события изменения размеров окна браузера
+     * Обновляет значение переменной ширины окна
+     */
+    onResize: function onResize() {
+      this.windowWidth = window.innerWidth;
     },
     /**
      * обработчик события выбора БВС

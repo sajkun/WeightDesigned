@@ -42,11 +42,17 @@ const homePage = {
             },
             selectedBvs: [],
             selectedOperationsIds: [],
+            windowWidth: window.innerWidth,
+            showMap: true,
         };
     },
 
     mounted() {
         const vm = this;
+        vm.$nextTick(() => {
+            window.addEventListener("resize", vm.onResize);
+        });
+
         vm.getBvsData();
     },
 
@@ -86,6 +92,13 @@ const homePage = {
             }
 
             return null;
+        },
+
+        windowWidth(newWidth) {
+            const vm = this;
+            const breakpoint = 768;
+            let show = newWidth > breakpoint;
+            vm.showMap = show;
         },
     },
 
@@ -275,6 +288,14 @@ const homePage = {
                     clog("%c getBvsData error", "color: red", e.response);
                     // vm.messages.error = e.response.data.message;
                 });
+        },
+
+        /**
+         * Коллбэк для события изменения размеров окна браузера
+         * Обновляет значение переменной ширины окна
+         */
+        onResize() {
+            this.windowWidth = window.innerWidth;
         },
 
         /**

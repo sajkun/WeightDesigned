@@ -71,7 +71,7 @@
 
 
             {{-- НАЧАЛО БЛОКА карты  --}}
-            <div class="col-12 col-md-6">
+            <div class="col-12 col-md-6" v-if='showMap'>
                 <div class="py-4 h-100 w-100">
                     {{-- контейнер для Яндекс карты --}}
                     <bvs-map :_id='"map"' :_bvs-data='bvsFilteredByOperations'></bvs-map>
