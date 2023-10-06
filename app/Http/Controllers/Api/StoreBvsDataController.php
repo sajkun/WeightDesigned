@@ -27,7 +27,7 @@ class StoreBvsDataController extends Controller
                 'from' => 'string|required',
                 'bvs_name' => 'string|required',
                 'rfid_status' => 'integer|required',
-                'coordinates' => 'required',
+                'coordinates' => 'string',
             ];
 
             $validator = Validator::make($request->all(), $validate_rules);

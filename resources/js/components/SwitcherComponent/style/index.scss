@@ -1,0 +1,12 @@
+.button-holder {
+    background-color: var(--lightest);
+    font-weight: 700;
+
+    button {
+        font-weight: 700;
+
+        &.active {
+            color: var(--green);
+        }
+    }
+}

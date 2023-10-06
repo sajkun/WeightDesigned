@@ -3,18 +3,19 @@
  * запросов CRUD раздела "Сотрудники"
  */
 import { strip, clog, getFormData } from "./../misc/helpers";
+import publicAuthData from "../mixins/publicAuthData";
 import messages from "../mixins/messages";
 import MessagesComponent from "./../components/MessagesComponent/";
-import InputComponent from "../components/InputComponent";
-import FieldComponent from "../components/FieldComponent";
-import FormComponent from "./../components/FormComponent/";
+import FieldComponent from "../components/inputs/FieldComponent";
+import InputComponent from "../components/inputs/InputComponent";
+import FormComponent from "./../components/inputs/FormComponent/";
 import crud from "../mixins/crud";
 import addEmployeeForm from "../formFields/employees/add";
 import editEmployeeForm from "../formFields/employees/edit";
 
 const axios = require("axios");
 const appPublicEmployees = {
-    mixins: [messages, crud, addEmployeeForm, editEmployeeForm],
+    mixins: [messages, crud, addEmployeeForm, editEmployeeForm, publicAuthData],
     components: {
         FieldComponent,
         Field: InputComponent,
@@ -23,8 +24,6 @@ const appPublicEmployees = {
     },
     data() {
         return {
-            organisationId: -1,
-            userId: -1,
             editMode: false,
             showForm: false,
             employees: [],
@@ -110,9 +109,6 @@ const appPublicEmployees = {
 
     mounted() {
         const vm = this;
-        vm.$el.parentNode.classList.remove("d-none");
-        vm.organisationId = vm.$refs.organisationId.value;
-        vm.userId = vm.$refs.userId.value;
         vm.getEmployees();
         vm.getVehicles();
 

@@ -13,6 +13,24 @@ class Organisation extends Model
 
     protected $guarded = false;
 
+    // получение всех имеющихся данных от бункеров перегрузчиков
+    public function bvsData()
+    {
+        $bunkers = [];
+        $vehicles = $this->vehicles()->get();
+        $bunkers = $vehicles->filter(function ($vehicle) {
+            return $vehicle['type'] === 'bunker' && count($vehicle->pincode()->get()) !== 0;
+        });
+
+        $bunkerNames = $bunkers->map(function ($bunker) {
+            return $bunker['name'];
+        })->toArray();
+
+        $bvsData = BvsData::whereIn('bvs_name', $bunkerNames)->get()->toArray();
+
+        return $bvsData;
+    }
+
     public function users()
     {
         return $this->hasMany(User::class, 'organisation_id', 'id');

@@ -1,4 +1,5 @@
 import { strip, clog, getFormData } from "./../misc/helpers";
+import publicAuthData from "../mixins/publicAuthData";
 
 import {
     readBinaryShapeFile,
@@ -14,14 +15,12 @@ import { kml } from "../../../node_modules/@tmcw/togeojson";
 let grasslandMap;
 const axios = require("axios");
 const appPublicGrasslands = {
-    mixins: [messages, crud],
+    mixins: [messages, crud, publicAuthData],
     components: {
         file: FileInputComponent,
     },
 
     data: {
-        organisationId: -1,
-        userId: -1,
         mode: "list",
         grasslands: [],
         grassalndToEdit: {},
@@ -29,11 +28,8 @@ const appPublicGrasslands = {
 
     mounted() {
         const vm = this;
-        vm.$el.parentNode.classList.remove("d-none");
-        vm.organisationId = vm.$refs.organisationId.value;
-        vm.userId = vm.$refs.userId.value;
-        vm.getGrasslands();
 
+        vm.getGrasslands();
         document.addEventListener("updateList", () => {
             vm.getGrasslands();
         });

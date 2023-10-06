@@ -1,0 +1,47 @@
+.bvs_preview {
+    position: absolute;
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+    svg {
+        display: inline-block;
+        margin-left: 5px;
+        font-size: 16rem;
+        max-width: 100%;
+    }
+    padding: 0.25rem 0.5rem;
+    display: grid;
+    grid-template-columns: 2rem auto;
+    background: #fff;
+    border-radius: 0.25rem;
+    font-size: 1rem;
+
+    color: var(--green);
+
+    span {
+        color: var(--darkest);
+    }
+}
+
+.cluster-icon {
+    position: absolute;
+    display: block;
+    background-color: #fff;
+    border-radius: 9999rem;
+    width: 1.5rem;
+    height: 1.5rem;
+    text-align: center;
+    line-height: 1.5rem;
+    font-weight: bold;
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+}
+
+#placemarks {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    z-index: -1;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: hidden;
+}

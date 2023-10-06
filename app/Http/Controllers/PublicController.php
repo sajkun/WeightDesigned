@@ -9,6 +9,16 @@ use Illuminate\Support\Facades\File;
 
 class PublicController extends Controller
 {
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     public function prepareData()
     {
         $path = public_path('/js/libs');
@@ -21,6 +31,8 @@ class PublicController extends Controller
         $user = Auth::user();
         $organisation = Organisation::find($user->organisation_id);
         $roles = config('users.roles_nice_names');
+
+        $organisation->bvsData();
 
         unset($roles['admin'], $roles['superadmin']);
 

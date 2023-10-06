@@ -1,13 +1,12 @@
 import messages from "../mixins/messages";
 import { strip, clog } from "./../misc/helpers";
+import publicAuthData from "../mixins/publicAuthData";
 
 const axios = require("axios");
 const appPublicVehicles = {
-    mixins: [messages],
+    mixins: [messages, publicAuthData],
     data() {
         return {
-            organisationId: -1,
-            userId: -1,
             mode: "list", // list | edit | create | details
             vehicleAddType: null,
             vehicleType: null, // bunker | transporter | tractor | harvester
@@ -183,9 +182,6 @@ const appPublicVehicles = {
 
     mounted() {
         const vm = this;
-        vm.$el.parentNode.classList.remove("d-none");
-        vm.organisationId = vm.$refs.organisationId.value;
-        vm.userId = vm.$refs.userId.value;
         vm.vehicleType = vm.$refs.vehicleType.value;
         vm.getEmployees();
         vm.getVehicles();

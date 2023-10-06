@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import passevents from "../../mixins/passevents";
+import passevents from "../../../mixins/passevents";
 import InputComponent from "../InputComponent";
 import SelectComponent from "../SelectComponent";
 import PasswordInputComponent from "../PasswordInputComponent";

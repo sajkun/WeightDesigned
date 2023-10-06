@@ -1,0 +1,85 @@
+.day-cell {
+    width: 14.285714285714286%;
+    max-width: 14.285714285714286%;
+    min-width: 14.285714285714286%;
+    flex-basis: 14.285714285714286%;
+    padding: 0.25rem;
+    text-align: center;
+    border: 1px solid transparent;
+    color: var(--grey);
+    --bs-btn-color: var(--grey);
+
+    .btn {
+        --bs-btn-color: var(--grey-light);
+    }
+
+    &.marked {
+        color: var(--darkest);
+
+        .btn {
+            --bs-btn-color: var(--darkest);
+        }
+    }
+
+    &.active {
+        border-top-color: var(--green);
+        border-bottom-color: var(--green);
+        background-color: var(--green);
+        color: var(--lightest);
+
+        .btn {
+            // color: var(--lightest);
+            --bs-btn-color: var(--lightest);
+        }
+
+        &.first {
+            border-top-left-radius: 0.25rem;
+            border-left-color: var(--green);
+            border-bottom-left-radius: 0.25rem;
+        }
+
+        &.last {
+            border-right-color: var(--green);
+            border-top-right-radius: 0.25rem;
+            border-bottom-right-radius: 0.25rem;
+        }
+    }
+
+    button {
+        color: inherite;
+
+        &:disabled {
+            opacity: 0.5;
+            --bs-btn-disabled-border-color: transparent;
+        }
+    }
+}
+
+.disabled {
+    opacity: 0.5;
+}
+
+.btn-controls {
+    font-size: 1.25rem;
+    color: var(--grey);
+    transition: color 0.15s;
+
+    &:disabled {
+        --bs-btn-disabled-border-color: transparent;
+    }
+
+    &:hover {
+        color: var(--blue);
+    }
+}
+
+.calendar {
+    border-radius: 0.5rem;
+    background-color: var(--lightest);
+}
+
+.day-name {
+    color: var(--grey-medium);
+    border-bottom: 1px solid var(--grey-light);
+    padding-bottom: 0.5rem;
+}

@@ -1,6 +1,11 @@
+:
 <template>
     <div class="form-control-custom">
-        <select
+        <input
+            :minlength="minlength"
+            :pattern="pattern"
+            :type="type"
+            :title="title"
             :name="name"
             autocomplete="off"
             :class="{ active: value }"
@@ -9,22 +14,13 @@
             v-model="value"
             @change="change"
             @input="input"
-        >
-            <option
-                v-for="(name, key) in options"
-                :key="'options' + key"
-                :value="key"
-            >
-                {{ name }}
-            </option>
-        </select>
-
+        />
         <label :for="id">{{ label }}</label>
     </div>
 </template>
 
 <script>
-import inputEvents from "../../mixins/inputEvents";
+import inputEvents from "../../../mixins/inputEvents";
 export default {
     mixins: [inputEvents],
     props: ["_info", "_value"],
@@ -35,19 +31,19 @@ export default {
             name: this._info?.name,
             required: this._info?.required,
             label: this._info?.label,
+            type: this._info?.type,
+            pattern: this._info?.pattern,
+            minlength: this._info?.minlength,
+            title: this._info?.title,
         };
     },
+
     watch: {
         _value(v) {
             this.value = v;
         },
     },
 
-    computed: {
-        options() {
-            return this._info?.options ? this._info.options : [];
-        },
-    },
     methods: {},
 };
 </script>

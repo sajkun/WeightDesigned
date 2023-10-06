@@ -18,8 +18,8 @@
 </template>
 
 <script>
-import passevents from "../../mixins/passevents";
-import { strip } from "../../misc/helpers";
+import passevents from "../../../mixins/passevents";
+import { strip } from "../../../misc/helpers";
 import InputComponent from "../InputComponent";
 export default {
     mixins: [passevents],
