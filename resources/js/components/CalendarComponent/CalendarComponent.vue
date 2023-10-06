@@ -51,13 +51,14 @@
                 дни календаря -->
             <div class="d-flex w-100 flex-wrap">
                 <div
-                    class="week-cell"
+                    class="day-cell"
                     v-for="(day, key) in month"
                     :key="'date' + key"
                     :class="{
                         active: day.selected,
                         first: day.first,
                         last: day.last,
+                        marked: detectDayMark(day),
                     }"
                 >
                     <button
@@ -96,6 +97,7 @@
 
 <script>
 import moment from "moment";
+import { strip, clog } from "../../misc/helpers";
 export default {
     props: {
         _period: {
@@ -106,6 +108,14 @@ export default {
             },
             required: false,
         },
+
+        // дни календаря, которые будут выделены как активные
+        _markedDays: {
+            type: Array,
+            default: [],
+            required: false,
+        },
+
         // начальная дата для отображения календаря
         _initialDate: {
             type: String,
@@ -145,6 +155,8 @@ export default {
             startDate: false, // начальная дата для периода или выбранная дата для selectPeriod=false
             endDate: false, // завершающая дата периода
             clickMode: "startDate", //какую дату выбираем, нужен для чередования при selectPeriod=true
+
+            markedDays: this._markedDays,
         };
     },
 
@@ -178,6 +190,11 @@ export default {
                 const date = new Date(period.end);
                 vm.endDate = moment(date).format("YYYY-MM-DD");
             }
+        },
+
+        // отслеживание изменение дней активности,
+        _markedDays(markedDays) {
+            this.markedDays = markedDays;
         },
 
         // отслеживание состояние свойства выбора периода,
@@ -456,6 +473,29 @@ export default {
                 vm.clickMode =
                     vm.clickMode === "startDate" ? "endDate" : "startDate";
             }
+        },
+
+        /**
+         * Определяет присваивать ли ячейке класс 'marked' по тому заданны дням активности переменная markedDays.  Если массив markedDays пуст, всегда возвращается true
+         *
+         * @param {Integer} day 1 - 31
+         *
+         * @return {Boolean} marked
+         */
+        detectDayMark(day) {
+            const vm = this;
+            const dates = strip(vm.markedDays);
+            let marked = true;
+
+            if (!vm.markedDays.length) {
+                return marked;
+            }
+
+            if (!day?.date) {
+                marked = false;
+            }
+
+            return dates.indexOf(day.date) >= 0;
         },
     },
 };

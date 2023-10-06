@@ -82,6 +82,7 @@ const homePage = {
             if (mode === "all") {
                 vm.period.start = null;
                 vm.period.end = null;
+                vm.display = "list";
             }
 
             return null;
@@ -204,6 +205,18 @@ const homePage = {
             return moment().format("YYYY-MM-DD");
         },
 
+        markedDays() {
+            const vm = this;
+            let data = strip(vm.bvsData);
+
+            const dates = data.map((d) => {
+                const day = moment(d.operation_time);
+                return day.format("YYYY-MM-DD");
+            });
+
+            return dates;
+        },
+
         // режимы выбора даты
         modes() {
             const modes = {
@@ -236,7 +249,9 @@ const homePage = {
          * @param {Enum} display :// all | day | period
          */
         changeMode(data) {
-            this.mode = data.mode;
+            const vm = this;
+            vm.mode = data.mode;
+            vm.display = vm.mode === "all" ? "list" : "calendar";
         },
 
         // запрос данных БВС

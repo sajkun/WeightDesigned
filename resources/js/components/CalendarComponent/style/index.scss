@@ -1,4 +1,4 @@
-.week-cell {
+.day-cell {
     width: 14.285714285714286%;
     max-width: 14.285714285714286%;
     min-width: 14.285714285714286%;
@@ -6,14 +6,30 @@
     padding: 0.25rem;
     text-align: center;
     border: 1px solid transparent;
+    color: var(--grey);
+    --bs-btn-color: var(--grey);
+
+    .btn {
+        --bs-btn-color: var(--grey-light);
+    }
+
+    &.marked {
+        color: var(--darkest);
+
+        .btn {
+            --bs-btn-color: var(--darkest);
+        }
+    }
 
     &.active {
         border-top-color: var(--green);
         border-bottom-color: var(--green);
         background-color: var(--green);
         color: var(--lightest);
-        button {
-            color: var(--lightest);
+
+        .btn {
+            // color: var(--lightest);
+            --bs-btn-color: var(--lightest);
         }
 
         &.first {
@@ -30,6 +46,8 @@
     }
 
     button {
+        color: inherite;
+
         &:disabled {
             opacity: 0.5;
             --bs-btn-disabled-border-color: transparent;

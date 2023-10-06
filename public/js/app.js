@@ -15643,6 +15643,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _misc_helpers__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../misc/helpers */ "./resources/js/misc/helpers.js");
+
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   props: {
@@ -15652,6 +15654,12 @@ __webpack_require__.r(__webpack_exports__);
         start: null,
         end: null
       },
+      required: false
+    },
+    // дни календаря, которые будут выделены как активные
+    _markedDays: {
+      type: Array,
+      "default": [],
       required: false
     },
     // начальная дата для отображения календаря
@@ -15691,7 +15699,10 @@ __webpack_require__.r(__webpack_exports__);
       // начальная дата для периода или выбранная дата для selectPeriod=false
       endDate: false,
       // завершающая дата периода
-      clickMode: "startDate" //какую дату выбираем, нужен для чередования при selectPeriod=true
+      clickMode: "startDate",
+      //какую дату выбираем, нужен для чередования при selectPeriod=true
+
+      markedDays: this._markedDays
     };
   },
   mounted: function mounted() {
@@ -15721,6 +15732,10 @@ __webpack_require__.r(__webpack_exports__);
         var _date2 = new Date(period.end);
         vm.endDate = moment__WEBPACK_IMPORTED_MODULE_0___default()(_date2).format("YYYY-MM-DD");
       }
+    },
+    // отслеживание изменение дней активности,
+    _markedDays: function _markedDays(markedDays) {
+      this.markedDays = markedDays;
     },
     // отслеживание состояние свойства выбора периода,
     _selectPeriod: function _selectPeriod(select) {
@@ -15941,6 +15956,25 @@ __webpack_require__.r(__webpack_exports__);
       if (vm.selectPeriod) {
         vm.clickMode = vm.clickMode === "startDate" ? "endDate" : "startDate";
       }
+    },
+    /**
+     * Определяет присваивать ли ячейке класс 'marked' по тому заданны дням активности переменная markedDays.  Если массив markedDays пуст, всегда возвращается true
+     *
+     * @param {Integer} day 1 - 31
+     *
+     * @return {Boolean} marked
+     */
+    detectDayMark: function detectDayMark(day) {
+      var vm = this;
+      var dates = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.strip)(vm.markedDays);
+      var marked = true;
+      if (!vm.markedDays.length) {
+        return marked;
+      }
+      if (!(day !== null && day !== void 0 && day.date)) {
+        marked = false;
+      }
+      return dates.indexOf(day.date) >= 0;
     }
   }
 });
@@ -16548,10 +16582,11 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(d), 1 /* TEXT */);
   }), 128 /* KEYED_FRAGMENT */))]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" КОНЕЦ БЛОКА\n                 дни недели "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" НАЧАЛО БЛОКА\n                дни календаря "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_11, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($options.month, function (day, key) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", {
-      "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)(["week-cell", {
+      "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)(["day-cell", {
         active: day.selected,
         first: day.first,
-        last: day.last
+        last: day.last,
+        marked: $options.detectDayMark(day)
       }]),
       key: 'date' + key
     }, [day ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("button", {
@@ -18693,6 +18728,7 @@ var homePage = {
       if (_mode === "all") {
         vm.period.start = null;
         vm.period.end = null;
+        vm.display = "list";
       }
       return null;
     }
@@ -18792,6 +18828,15 @@ var homePage = {
       }
       return moment__WEBPACK_IMPORTED_MODULE_10___default()().format("YYYY-MM-DD");
     },
+    markedDays: function markedDays() {
+      var vm = this;
+      var data = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_8__.strip)(vm.bvsData);
+      var dates = data.map(function (d) {
+        var day = moment__WEBPACK_IMPORTED_MODULE_10___default()(d.operation_time);
+        return day.format("YYYY-MM-DD");
+      });
+      return dates;
+    },
     // режимы выбора даты
     modes: function modes() {
       var modes = {
@@ -18821,7 +18866,9 @@ var homePage = {
      * @param {Enum} display :// all | day | period
      */
     changeMode: function changeMode(data) {
-      this.mode = data.mode;
+      var vm = this;
+      vm.mode = data.mode;
+      vm.display = vm.mode === "all" ? "list" : "calendar";
     },
     // запрос данных БВС
     getBvsData: function getBvsData() {
@@ -20023,7 +20070,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, ".week-cell[data-v-baf6c618] {\n  width: 14.2857142857%;\n  max-width: 14.2857142857%;\n  min-width: 14.2857142857%;\n  flex-basis: 14.2857142857%;\n  padding: 0.25rem;\n  text-align: center;\n  border: 1px solid transparent;\n}\n.week-cell.active[data-v-baf6c618] {\n  border-top-color: var(--green);\n  border-bottom-color: var(--green);\n  background-color: var(--green);\n  color: var(--lightest);\n}\n.week-cell.active button[data-v-baf6c618] {\n  color: var(--lightest);\n}\n.week-cell.active.first[data-v-baf6c618] {\n  border-top-left-radius: 0.25rem;\n  border-left-color: var(--green);\n  border-bottom-left-radius: 0.25rem;\n}\n.week-cell.active.last[data-v-baf6c618] {\n  border-right-color: var(--green);\n  border-top-right-radius: 0.25rem;\n  border-bottom-right-radius: 0.25rem;\n}\n.week-cell button[data-v-baf6c618]:disabled {\n  opacity: 0.5;\n  --bs-btn-disabled-border-color: transparent;\n}\n.disabled[data-v-baf6c618] {\n  opacity: 0.5;\n}\n.btn-controls[data-v-baf6c618] {\n  font-size: 1.25rem;\n  color: var(--grey);\n  transition: color 0.15s;\n}\n.btn-controls[data-v-baf6c618]:disabled {\n  --bs-btn-disabled-border-color: transparent;\n}\n.btn-controls[data-v-baf6c618]:hover {\n  color: var(--blue);\n}\n.calendar[data-v-baf6c618] {\n  border-radius: 0.5rem;\n  background-color: var(--lightest);\n}\n.day-name[data-v-baf6c618] {\n  color: var(--grey-medium);\n  border-bottom: 1px solid var(--grey-light);\n  padding-bottom: 0.5rem;\n}", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, ".day-cell[data-v-baf6c618] {\n  width: 14.2857142857%;\n  max-width: 14.2857142857%;\n  min-width: 14.2857142857%;\n  flex-basis: 14.2857142857%;\n  padding: 0.25rem;\n  text-align: center;\n  border: 1px solid transparent;\n  color: var(--grey);\n  --bs-btn-color: var(--grey);\n}\n.day-cell .btn[data-v-baf6c618] {\n  --bs-btn-color: var(--grey-light);\n}\n.day-cell.marked[data-v-baf6c618] {\n  color: var(--darkest);\n}\n.day-cell.marked .btn[data-v-baf6c618] {\n  --bs-btn-color: var(--darkest);\n}\n.day-cell.active[data-v-baf6c618] {\n  border-top-color: var(--green);\n  border-bottom-color: var(--green);\n  background-color: var(--green);\n  color: var(--lightest);\n}\n.day-cell.active .btn[data-v-baf6c618] {\n  --bs-btn-color: var(--lightest);\n}\n.day-cell.active.first[data-v-baf6c618] {\n  border-top-left-radius: 0.25rem;\n  border-left-color: var(--green);\n  border-bottom-left-radius: 0.25rem;\n}\n.day-cell.active.last[data-v-baf6c618] {\n  border-right-color: var(--green);\n  border-top-right-radius: 0.25rem;\n  border-bottom-right-radius: 0.25rem;\n}\n.day-cell button[data-v-baf6c618] {\n  color: inherite;\n}\n.day-cell button[data-v-baf6c618]:disabled {\n  opacity: 0.5;\n  --bs-btn-disabled-border-color: transparent;\n}\n.disabled[data-v-baf6c618] {\n  opacity: 0.5;\n}\n.btn-controls[data-v-baf6c618] {\n  font-size: 1.25rem;\n  color: var(--grey);\n  transition: color 0.15s;\n}\n.btn-controls[data-v-baf6c618]:disabled {\n  --bs-btn-disabled-border-color: transparent;\n}\n.btn-controls[data-v-baf6c618]:hover {\n  color: var(--blue);\n}\n.calendar[data-v-baf6c618] {\n  border-radius: 0.5rem;\n  background-color: var(--lightest);\n}\n.day-name[data-v-baf6c618] {\n  color: var(--grey-medium);\n  border-bottom: 1px solid var(--grey-light);\n  padding-bottom: 0.5rem;\n}", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 

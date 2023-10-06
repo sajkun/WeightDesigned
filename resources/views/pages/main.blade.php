@@ -9,60 +9,66 @@
             v-on:clear-msg='clearMessages'></messages-component>
 
         <div class="row flex-grow-1 ">
-            {{-- НАЧАЛО БЛОКА выбора периода отображения  --}}
-            <div class="col-12 col-md-6 py-4" v-if='display==="calendar"'>
-
-                {{-- компонент отображения кнопок выбора периода --}}
-                <switcher-component :_buttons="modes" :_active-mode='mode' @clicked='changeMode'>
-                </switcher-component>
-                <div class="mt-4"></div>
-
-                {{-- компонент Календарь --}}
-                <calendar :_initial-date='today' :_disabled='calendarState' :_period="period"
-                    :_select-period='selectPeriod' @selected-date='selectDateCb' @selected-period='selectPeriodCb'>
-                </calendar>
-
-                {{-- кпопка перехода к режиму просмотра в разрезе БВС --}}
-                <div class="div" v-if='bvsDataFiltered.length'>
-                    <button class="btn btn-primary-alt w-100 text-center mt-4" type='button'
-                        @click='changeDisplay("list")'>Продолжить</button>
+            <div class="col-12 col-md-6">
+                {{-- НАЧАЛО БЛОКА выбора периода отображения  --}}
+                <div class="px-4 py-2">
+                    {{-- компонент отображения кнопок выбора периода --}}
+                    <switcher-component :_buttons="modes" :_active-mode='mode' @clicked='changeMode'>
+                    </switcher-component>
                 </div>
-            </div>
-            {{--  КОНЕЦ БЛОКА выбора периода отображения  --}}
+                <div class="px-4 py-2" v-if='display==="calendar"'>
 
-            {{-- НАЧАЛО БЛОКА  отображения списка БВС  --}}
-            <div class="col-12 col-md-6 py-4" v-if='display==="list"'>
-                <button class="btn btn-primary-alt w-100 text-center mb-4" type='button'
-                    @click='changeDisplay("calendar")'>Выбрать другие даты</button>
+                    <div class="mt-4"></div>
 
-                {{-- превью с данными БВС  --}}
-                <bvs-short-component @select='selectBvsCb' v-for='bvs, key in bsvFilteredByUnit' :key='"key" + bvs'
-                    class='mt-2' :_bvs='bvs'></bvs-short-component>
+                    {{-- компонент Календарь --}}
+                    <calendar :_initial-date='today' :_disabled='calendarState' :_period="period"
+                        :_select-period='selectPeriod' :_marked-days="markedDays" @selected-date='selectDateCb'
+                        @selected-period='selectPeriodCb'>
+                    </calendar>
 
-                {{-- Кнопка перехода к режиму просмотра отдельных транзакций бвс --}}
-                <div class="div" v-if='selectedBvs.length > 0'>
-                    <button class="btn btn-primary-alt w-100 text-center mt-4" type='button'
-                        @click='changeDisplay("items")'>Продолжить</button>
+                    {{-- кпопка перехода к режиму просмотра в разрезе БВС --}}
+                    <div class="div" v-if='bvsDataFiltered.length'>
+                        <button class="btn btn-primary-alt w-100 text-center mt-4" type='button'
+                            @click='changeDisplay("list")'>Продолжить</button>
+                    </div>
                 </div>
-            </div>
-            {{--  КОНЕЦ БЛОКА отображения списка БВС --}}
+                {{--  КОНЕЦ БЛОКА выбора периода отображения  --}}
 
+                {{-- НАЧАЛО БЛОКА  отображения списка БВС  --}}
+                <div class="px-4 py-2" v-if='display==="list"'>
+                    <button class="btn btn-primary-alt w-100 text-center mb-4" type='button'
+                        @click='changeDisplay("calendar")'>Выбрать другие даты</button>
 
-            {{-- НАЧАЛО БЛОКА  отображения списка операций --}}
-            <div class="col-12 col-md-6 py-4" v-if='display==="items"'>
-                <button class="btn btn-primary-alt w-100 text-center mt-4" type='button'
-                    @click='changeDisplay("calendar")'>Выбрать другие даты</button>
-                {{-- операции БВС --}}
-                <bvs-operation :_info='info' :key='"operation" + key' v-for='info,key in bvsOperations'
-                    :class='"mt-2"' @selected='selectOperationCb'>
-                </bvs-operation>
+                    {{-- превью с данными БВС  --}}
+                    <bvs-short-component @select='selectBvsCb' v-for='bvs, key in bsvFilteredByUnit' :key='"key" + bvs'
+                        class='mt-2' :_bvs='bvs'></bvs-short-component>
 
-                <div class="div">
+                    {{-- Кнопка перехода к режиму просмотра отдельных транзакций бвс --}}
+                    <div class="div" v-if='selectedBvs.length > 0'>
+                        <button class="btn btn-primary-alt w-100 text-center mt-4" type='button'
+                            @click='changeDisplay("items")'>Продолжить</button>
+                    </div>
+                </div>
+                {{--  КОНЕЦ БЛОКА отображения списка БВС --}}
+
+                {{-- НАЧАЛО БЛОКА  отображения списка операций --}}
+                <div class="py-4" v-if='display==="items"'>
                     <button class="btn btn-primary-alt w-100 text-center mt-4" type='button'
                         @click='changeDisplay("calendar")'>Выбрать другие даты</button>
+                    {{-- операции БВС --}}
+                    <bvs-operation :_info='info' :key='"operation" + key' v-for='info,key in bvsOperations'
+                        :class='"mt-2"' @selected='selectOperationCb'>
+                    </bvs-operation>
+
+                    <div class="div">
+                        <button class="btn btn-primary-alt w-100 text-center mt-4" type='button'
+                            @click='changeDisplay("calendar")'>Выбрать другие даты</button>
+                    </div>
                 </div>
+                {{--  КОНЕЦ БЛОКА отображения списка операций --}}
             </div>
-            {{--  КОНЕЦ БЛОКА отображения списка операций --}}
+
+
 
             {{-- НАЧАЛО БЛОКА карты  --}}
             <div class="col-12 col-md-6">
