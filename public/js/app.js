@@ -17000,9 +17000,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _public_employees_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./public/employees.js */ "./resources/js/public/employees.js");
 /* harmony import */ var _public_vehicle_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./public/vehicle.js */ "./resources/js/public/vehicle.js");
 /* harmony import */ var _public_grasslands_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./public/grasslands.js */ "./resources/js/public/grasslands.js");
+/* harmony import */ var _public_statistics_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./public/statistics.js */ "./resources/js/public/statistics.js");
 /**
  * Основной файл, собирающий весь скрипт приложения
  */
+
 
 
 
@@ -17035,8 +17037,6 @@ if (document.getElementById("public-grasslands")) {
   (0,vue__WEBPACK_IMPORTED_MODULE_0__.createApp)(_public_grasslands_js__WEBPACK_IMPORTED_MODULE_5__["default"]).mount("#public-grasslands");
 }
 __webpack_require__(/*! ./public/ready */ "./resources/js/public/ready.js");
-// require("./public/vehicle");
-// require("./public/grasslands");
 
 /***/ }),
 
@@ -18977,6 +18977,22 @@ __webpack_require__(/*! ./../ready/dadata */ "./resources/js/ready/dadata.js");
 __webpack_require__(/*! ./../ready/mobileMenu */ "./resources/js/ready/mobileMenu.js");
 __webpack_require__(/*! ./../ready/formFields */ "./resources/js/ready/formFields.js");
 __webpack_require__(/*! ./../ready/passwordStrength */ "./resources/js/ready/passwordStrength.js");
+
+/***/ }),
+
+/***/ "./resources/js/public/statistics.js":
+/*!*******************************************!*\
+  !*** ./resources/js/public/statistics.js ***!
+  \*******************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+var statistics = {};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (statistics);
 
 /***/ }),
 

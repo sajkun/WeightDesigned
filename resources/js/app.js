@@ -8,6 +8,7 @@ import publicUsers from "./public/users.js";
 import publicEmployees from "./public/employees.js";
 import publicVehicles from "./public/vehicle.js";
 import publicGrasslands from "./public/grasslands.js";
+import publicStatistics from "./public/statistics.js";
 
 // инициализация домашней страницы для публичной зоны
 if (document.getElementById("home-page")) {
@@ -34,5 +35,3 @@ if (document.getElementById("public-grasslands")) {
 }
 
 require("./public/ready");
-// require("./public/vehicle");
-// require("./public/grasslands");

@@ -28,6 +28,10 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('/list', 'ListController')->name('public.user.list');
     });
 
+    Route::group(['namespace' => 'PublicArea\Info', 'prefix' => 'data'], function () {
+        Route::get('/statistics', 'StatisticsController')->name('public.data.statistics');
+    });
+
     Route::group(['namespace' => 'PublicArea\User', 'prefix' => 'users'], function () {
         Route::get('/', 'IndexController')->name('public.users.index');
         Route::get('/list', 'ListController')->name('public.user.list');
