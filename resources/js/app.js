@@ -34,4 +34,9 @@ if (document.getElementById("public-grasslands")) {
     createApp(publicGrasslands).mount("#public-grasslands");
 }
 
+// инициализация приложения статистики для публичной зоны
+if (document.getElementById("public-statistics")) {
+    createApp(publicStatistics).mount("#public-statistics");
+}
+
 require("./public/ready");

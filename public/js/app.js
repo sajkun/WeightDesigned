@@ -17036,6 +17036,11 @@ if (document.getElementById("public-vehicles")) {
 if (document.getElementById("public-grasslands")) {
   (0,vue__WEBPACK_IMPORTED_MODULE_0__.createApp)(_public_grasslands_js__WEBPACK_IMPORTED_MODULE_5__["default"]).mount("#public-grasslands");
 }
+
+// инициализация приложения статистики для публичной зоны
+if (document.getElementById("public-statistics")) {
+  (0,vue__WEBPACK_IMPORTED_MODULE_0__.createApp)(_public_statistics_js__WEBPACK_IMPORTED_MODULE_6__["default"]).mount("#public-statistics");
+}
 __webpack_require__(/*! ./public/ready */ "./resources/js/public/ready.js");
 
 /***/ }),
@@ -17663,6 +17668,82 @@ var clog = function clog() {
   if (!show) return;
   (_console = console).log.apply(_console, arguments);
 };
+
+/***/ }),
+
+/***/ "./resources/js/mixins/axiosRequests.js":
+/*!**********************************************!*\
+  !*** ./resources/js/mixins/axiosRequests.js ***!
+  \**********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _misc_helpers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../misc/helpers */ "./resources/js/misc/helpers.js");
+var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+// хэлперы
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  methods: {
+    /**
+     * запрос данных БВС
+     *
+     * @return {Promise}
+     */
+    getBvsData: function getBvsData() {
+      var vm = this;
+      var postData = {
+        user_id: vm.userId,
+        organisation_id: vm.organisationId
+      };
+      return axios.post("/bvsdata/list", postData).then(function (response) {
+        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c getBvsData response", "color:green", response);
+        return response.data;
+      })["catch"](function (e) {
+        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c getBvsData error", "color: red", e.response);
+        return e.response;
+      });
+    },
+    /**
+     * запрос перечня сотрудников
+     *
+     * @return {Promise}
+     */
+    getEmployees: function getEmployees() {
+      var vm = this;
+      if (vm.$refs.organisationId < 0) {
+        return;
+      }
+      return axios.get("/employees/list", {
+        user_id: vm.userId
+      }).then(function (response) {
+        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c getEmployees", "color: green", response);
+        return response.data;
+      })["catch"](function (e) {
+        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c getVehicles error", "color: red", e.response);
+        return e.response;
+      });
+    },
+    /**
+     * запрос перечня техники
+     *
+     * @return {Promise}
+     */
+    getVehicles: function getVehicles() {
+      var vm = this;
+      return axios.get("/vehicles/list").then(function (response) {
+        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c getVehicles", "color: green", response);
+        return response.data;
+      })["catch"](function (e) {
+        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c getVehicles error", "color: red", e.response);
+        return e.response;
+      });
+    }
+  }
+});
 
 /***/ }),
 
@@ -18991,8 +19072,67 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-var statistics = {};
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (statistics);
+/* harmony import */ var _misc_helpers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../misc/helpers */ "./resources/js/misc/helpers.js");
+/* harmony import */ var _mixins_axiosRequests__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../mixins/axiosRequests */ "./resources/js/mixins/axiosRequests.js");
+/* harmony import */ var _mixins_crud__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../mixins/crud */ "./resources/js/mixins/crud.js");
+/* harmony import */ var _mixins_messages__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../mixins/messages */ "./resources/js/mixins/messages.js");
+/* harmony import */ var _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../mixins/publicAuthData */ "./resources/js/mixins/publicAuthData.js");
+/* harmony import */ var _components_MessagesComponent___WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../components/MessagesComponent/ */ "./resources/js/components/MessagesComponent/index.js");
+/**
+ * Отображение статистики по предприятию
+ */
+
+//хэлперы
+
+
+//миксины
+
+
+
+
+
+// компоненты
+
+var appPublicStatistics = {
+  mixins: [_mixins_axiosRequests__WEBPACK_IMPORTED_MODULE_1__["default"], _mixins_crud__WEBPACK_IMPORTED_MODULE_2__["default"], _mixins_messages__WEBPACK_IMPORTED_MODULE_3__["default"], _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_4__["default"]],
+  components: {
+    MessagesComponent: _components_MessagesComponent___WEBPACK_IMPORTED_MODULE_5__["default"]
+  },
+  data: function data() {
+    return {
+      employees: [],
+      vehicles: [],
+      ratingBy: ""
+    };
+  },
+  watch: {},
+  computed: {
+    ratingOptions: function ratingOptions() {
+      var options = {
+        "Водитель Трактора": "Трактористов",
+        "Водитель Комбайна": "Комбайнеров",
+        "Водитель Зерновоза": "Водителей",
+        "-": "----",
+        bunker: "Бункеров Перегрузчиков",
+        harvester: "Комбайнов",
+        transporter: "Зерновозов"
+      };
+      return options;
+    }
+  },
+  mounted: function mounted() {
+    var vm = this;
+    vm.ratingBy = Object.keys((0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.ratingOptions))[0];
+    vm.getEmployees().then(function (e) {
+      return vm.employees = e.employees;
+    });
+    vm.getVehicles().then(function (e) {
+      return vm.vehicles = e.vehicles;
+    });
+  },
+  methods: {}
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (appPublicStatistics);
 
 /***/ }),
 

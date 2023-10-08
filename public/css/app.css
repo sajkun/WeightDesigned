@@ -13487,6 +13487,12 @@ body {
   font-size: 1rem;
 }
 
+.inline-select {
+  border: 0;
+  background: transparent;
+  outline: 0;
+}
+
 .btn-primary-alt {
   --bs-btn-color: var(--lightest);
   --bs-btn-bg: var(--green);
