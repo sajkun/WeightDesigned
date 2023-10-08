@@ -11,14 +11,16 @@
             v-on:clear-msg='clearMessages'></messages-component>
 
         <div class="row mt-4">
-            <div class="col-6">
+            <div class="col-6 align-self-center">
                 <p class="m-0 h-6 d-inline">Рейтинг среди:</p>
                 <select v-model='ratingBy' class='ms-2  inline-select'>
                     <option v-for='rate, key in ratingOptions' :key='"options" + key' :value='key'>
                         @{{ rate }}</option>
                 </select>
             </div>
-            <div class="col-6 text-end"></div>
+            <div class="col-6 text-end">
+                <month-picker />
+            </div>
         </div>
     </div>
 @endsection
