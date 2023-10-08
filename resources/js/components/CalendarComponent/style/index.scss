@@ -28,8 +28,13 @@
         color: var(--lightest);
 
         .btn {
-            // color: var(--lightest);
-            --bs-btn-color: var(--lightest);
+            --bs-btn-color: var(--grey-medium);
+        }
+
+        &.marked {
+            .btn {
+                --bs-btn-color: var(--lightest);
+            }
         }
 
         &.first {
