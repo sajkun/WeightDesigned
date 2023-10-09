@@ -19404,12 +19404,9 @@ var appPublicStatistics = {
       var vehicleTypes = ["bunker", "transporter", "harvester"];
       var vehicles = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.vehicles);
       if (vehicleTypes.indexOf(vm.ratingBy) < 0) return vehicles;
-      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)(vehicles);
       vehicles = vehicles.filter(function (v) {
         return v.type === vm.ratingBy;
       });
-      console.log(vm.vehicles);
-      console.log(vehicles);
       return vehicles;
     }
   },
@@ -19421,7 +19418,7 @@ var appPublicStatistics = {
     vm.getEmployees().then(function (e) {
       return vm.employees = e.employees;
     });
-    // запрос и получение списка техники
+    // запрос и получение списка техники, присвоение списка
     vm.getVehicles().then(function (e) {
       vm.vehicles = [].concat(_toConsumableArray(Object.values(e.bunkers)), _toConsumableArray(Object.values(e.harvesters)), _toConsumableArray(Object.values(e.tractors)), _toConsumableArray(Object.values(e.transporters)));
     });

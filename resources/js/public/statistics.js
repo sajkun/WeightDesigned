@@ -102,14 +102,12 @@ const appPublicStatistics = {
             const vm = this;
             const vehicleTypes = ["bunker", "transporter", "harvester"];
             let vehicles = strip(vm.vehicles);
+
             if (vehicleTypes.indexOf(vm.ratingBy) < 0) return vehicles;
-            clog(vehicles);
             vehicles = vehicles.filter((v) => {
                 return v.type === vm.ratingBy;
             });
 
-            console.log(vm.vehicles);
-            console.log(vehicles);
             return vehicles;
         },
     },
@@ -120,7 +118,7 @@ const appPublicStatistics = {
         vm.ratingBy = Object.keys(strip(vm.ratingOptions))[0];
         // запрос и получение списка сотрудников
         vm.getEmployees().then((e) => (vm.employees = e.employees));
-        // запрос и получение списка техники
+        // запрос и получение списка техники, присвоение списка
         vm.getVehicles().then((e) => {
             vm.vehicles = [
                 ...Object.values(e.bunkers),
