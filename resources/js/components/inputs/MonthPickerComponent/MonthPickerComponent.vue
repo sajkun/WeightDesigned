@@ -2,6 +2,7 @@
 
 <template>
     <div class="month-picker">
+        <!-- отображение выбранного месяца и года -->
         <button
             type="button"
             class="btn btn-borders"
@@ -9,8 +10,11 @@
         >
             {{ monthName }} {{ year }} <i class="fa-calendar-o fa"></i>
         </button>
+        <!-- ------------------------------------- -->
 
+        <!-- выпадающий элемент -->
         <div class="month-picker__dropdown" v-if="showDropdown">
+            <!-- выбор года  -->
             <div class="d-flex align-content-between w-100">
                 <button class="btn" type="button" @click="chaYear(-1)">
                     <i class="fa fa-caret-left"></i>
@@ -28,10 +32,11 @@
                 </button>
             </div>
 
+            <!-- список месяцев -->
             <div class="row">
                 <div
                     class="col-4"
-                    v-for="(month, key) in months"
+                    v-for="(monthName, key) in months"
                     :key="'month' + key"
                 >
                     <button
@@ -39,7 +44,7 @@
                         type="button"
                         @click="setMonth(key + 1)"
                     >
-                        {{ month }}
+                        {{ monthName }}
                     </button>
                 </div>
             </div>
@@ -65,11 +70,11 @@ export default {
          *
          * @return {Boolean}
          */
-
         disableNextYear() {
             const vm = this;
             if (!vm.year || !vm.month) return false;
-            const date = moment();
+            const dateRaw = new Date().toISOString().slice(0, 19);
+            const date = moment(dateRaw);
             const currentYear = parseInt(date.format("Y"));
 
             return currentYear <= vm.year;
@@ -93,7 +98,8 @@ export default {
         monthName() {
             const vm = this;
             if (!vm.month) return "";
-            const date = moment(`${vm.year}-${vm.month}-01`);
+            const dateRaw = new Date(`${vm.year}-${vm.month}-01T00:00:00`);
+            const date = moment(dateRaw);
             return date.format("MMMM");
         },
     },
@@ -131,7 +137,7 @@ export default {
         setMonth(index) {
             const vm = this;
             let fixedIndex = index < 1 ? 1 : index > 12 ? 12 : index;
-            vm.month = fixedIndex;
+            vm.month = fixedIndex.toString().padStart(2, 0);
             vm.$emit("selected", { month: fixedIndex, year: vm.year });
             vm.showDropdown = false;
             return;

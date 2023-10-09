@@ -16294,7 +16294,8 @@ __webpack_require__.r(__webpack_exports__);
     disableNextYear: function disableNextYear() {
       var vm = this;
       if (!vm.year || !vm.month) return false;
-      var date = moment__WEBPACK_IMPORTED_MODULE_0___default()();
+      var dateRaw = new Date().toISOString().slice(0, 19);
+      var date = moment__WEBPACK_IMPORTED_MODULE_0___default()(dateRaw);
       var currentYear = parseInt(date.format("Y"));
       return currentYear <= vm.year;
     },
@@ -16315,7 +16316,8 @@ __webpack_require__.r(__webpack_exports__);
     monthName: function monthName() {
       var vm = this;
       if (!vm.month) return "";
-      var date = moment__WEBPACK_IMPORTED_MODULE_0___default()("".concat(vm.year, "-").concat(vm.month, "-01"));
+      var dateRaw = new Date("".concat(vm.year, "-").concat(vm.month, "-01T00:00:00"));
+      var date = moment__WEBPACK_IMPORTED_MODULE_0___default()(dateRaw);
       return date.format("MMMM");
     }
   },
@@ -16351,7 +16353,7 @@ __webpack_require__.r(__webpack_exports__);
     setMonth: function setMonth(index) {
       var vm = this;
       var fixedIndex = index < 1 ? 1 : index > 12 ? 12 : index;
-      vm.month = fixedIndex;
+      vm.month = fixedIndex.toString().padStart(2, 0);
       vm.$emit("selected", {
         month: fixedIndex,
         year: vm.year
@@ -17062,13 +17064,13 @@ var _hoisted_11 = {
 };
 var _hoisted_12 = ["onClick"];
 function render(_ctx, _cache, $props, $setup, $data, $options) {
-  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" отображение выбранного месяца и года "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
     type: "button",
     "class": "btn btn-borders",
     onClick: _cache[0] || (_cache[0] = function ($event) {
       return $data.showDropdown = true;
     })
-  }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)((0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($options.monthName) + " " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.year) + " ", 1 /* TEXT */), _hoisted_2]), $data.showDropdown ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_4, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+  }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)((0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($options.monthName) + " " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.year) + " ", 1 /* TEXT */), _hoisted_2]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" ------------------------------------- "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" выпадающий элемент "), $data.showDropdown ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" выбор года  "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_4, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
     "class": "btn",
     type: "button",
     onClick: _cache[1] || (_cache[1] = function ($event) {
@@ -17081,7 +17083,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     onClick: _cache[2] || (_cache[2] = function ($event) {
       return $options.chaYear(1);
     })
-  }, _hoisted_10, 8 /* PROPS */, _hoisted_8)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_11, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($options.months, function (month, key) {
+  }, _hoisted_10, 8 /* PROPS */, _hoisted_8)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" список месяцев "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_11, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($options.months, function (monthName, key) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", {
       "class": "col-4",
       key: 'month' + key
@@ -17091,7 +17093,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       onClick: function onClick($event) {
         return $options.setMonth(key + 1);
       }
-    }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(month), 9 /* TEXT, PROPS */, _hoisted_12)]);
+    }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(monthName), 9 /* TEXT, PROPS */, _hoisted_12)]);
   }), 128 /* KEYED_FRAGMENT */))])])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)]);
 }
 
@@ -20516,7 +20518,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "@charset \"UTF-8\";\n.row[data-v-674a5734] {\n  --bs-gutter-x: 0;\n  --bs-gutter-н: 0;\n}\n.month-picker[data-v-674a5734] {\n  position: relative;\n}\n.month-picker__dropdown[data-v-674a5734] {\n  background-color: var(--lightest);\n  border: 1px solid var(--grey-light);\n  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);\n  position: absolute;\n  top: 100%;\n  right: 0;\n  width: -moz-fit-content;\n  width: fit-content;\n  border-top-style: 0.5rem;\n}\n.month-picker__dropdown button[data-v-674a5734] {\n  background-color: #fff;\n  border: 1px solid transparent;\n}\n.month-picker__dropdown button.selected[data-v-674a5734] {\n  border: 1px solid var(--green);\n}", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "@charset \"UTF-8\";\n.row[data-v-674a5734] {\n  --bs-gutter-x: 0;\n  --bs-gutter-н: 0;\n}\n.month-picker[data-v-674a5734] {\n  position: relative;\n}\n.month-picker__dropdown[data-v-674a5734] {\n  background-color: var(--lightest);\n  border: 1px solid var(--grey-light);\n  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);\n  position: absolute;\n  top: 100%;\n  right: 0;\n  width: -moz-fit-content;\n  width: fit-content;\n  border-top-style: 0.5rem;\n  max-width: 360px;\n}\n.month-picker__dropdown button[data-v-674a5734] {\n  background-color: #fff;\n  border: 1px solid transparent;\n}\n.month-picker__dropdown button.selected[data-v-674a5734] {\n  border: 1px solid var(--green);\n}\n.month-picker__dropdown button[data-v-674a5734]:hover {\n  background-color: var(--grey-light);\n}", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
