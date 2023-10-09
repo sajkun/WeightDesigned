@@ -107,7 +107,6 @@ export default {
     mounted() {
         const today = new Date();
         const vm = this;
-
         // назначение текущего месяца и года выбранными при инициализации
         vm.month = moment(today).format("M");
         vm.year = parseInt(moment(today).format("Y"));

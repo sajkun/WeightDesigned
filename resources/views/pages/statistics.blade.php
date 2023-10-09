@@ -22,5 +22,12 @@
                 <month-picker />
             </div>
         </div>
+
+        <div class="row">
+            <div class="col-12 col-md-6">
+                <div v-for='data, key in vehiclesFiltered' :key='"bvsdata" + key'>1</div>
+            </div>
+            <div class="col-12 col-md-6"></div>
+        </div>
     </div>
 @endsection

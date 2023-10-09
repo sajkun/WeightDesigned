@@ -16324,7 +16324,6 @@ __webpack_require__.r(__webpack_exports__);
   mounted: function mounted() {
     var today = new Date();
     var vm = this;
-
     // назначение текущего месяца и года выбранными при инициализации
     vm.month = moment__WEBPACK_IMPORTED_MODULE_0___default()(today).format("M");
     vm.year = parseInt(moment__WEBPACK_IMPORTED_MODULE_0___default()(today).format("Y"));
@@ -19290,6 +19289,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../mixins/publicAuthData */ "./resources/js/mixins/publicAuthData.js");
 /* harmony import */ var _components_MessagesComponent___WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../components/MessagesComponent/ */ "./resources/js/components/MessagesComponent/index.js");
 /* harmony import */ var _components_inputs_MonthPickerComponent___WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../components/inputs/MonthPickerComponent/ */ "./resources/js/components/inputs/MonthPickerComponent/index.js");
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
+function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
 /**
  * Отображение статистики по предприятию
  */
@@ -19314,6 +19320,7 @@ var appPublicStatistics = {
   },
   data: function data() {
     return {
+      bvsData: [],
       employees: [],
       // перечень сотрудников организации
       vehicles: [],
@@ -19322,8 +19329,53 @@ var appPublicStatistics = {
     };
   },
 
-  watch: {},
+  watch: {
+    ratingBy: function ratingBy(_ratingBy) {
+      console.log(_ratingBy);
+    }
+  },
   computed: {
+    /**
+     * Вычисляет итоговое собранное количество зерна в разрезе техники
+     *
+     * @return {Void|Array}
+     */
+    bvsTransferedAmounts: function bvsTransferedAmounts() {
+      var vm = this;
+      if (!vm.bvsData.length) return;
+      var data = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.bvsData);
+      var parsedData = {};
+
+      // перебор массива данных бвс
+      var _iterator = _createForOfIteratorHelper(data),
+        _step;
+      try {
+        for (_iterator.s(); !(_step = _iterator.n()).done;) {
+          var _data = _step.value;
+          /**
+           * если загрузка от комбайна (bvs_name === to), то данные добавляются и для БВС
+           * Если загрузка от БВС (bvs_name === from), то значение переданное плюсуется только для грузовика
+           */
+
+          if (_data.bvs_name === _data.to) {
+            if (!parsedData[_data.from]) {
+              parsedData[_data.from] = 0;
+            }
+            parsedData[_data.from] += parseFloat(_data.amount_transfered);
+          }
+          if (!parsedData[_data.to]) {
+            parsedData[_data.to] = 0;
+          }
+          parsedData[_data.to] += parseFloat(_data.amount_transfered);
+        }
+      } catch (err) {
+        _iterator.e(err);
+      } finally {
+        _iterator.f();
+      }
+      console.log(parsedData);
+      return parsedData;
+    },
     /**
      * Список доступных вариантов рейтинга
      *
@@ -19341,6 +19393,24 @@ var appPublicStatistics = {
         transporter: "Зерновозов"
       };
       return options;
+    },
+    /**
+     * отфильтрованный список техники в зависимости от значения ratingBy
+     *
+     * @return {Array} техники
+     */
+    vehiclesFiltered: function vehiclesFiltered() {
+      var vm = this;
+      var vehicleTypes = ["bunker", "transporter", "harvester"];
+      var vehicles = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.vehicles);
+      if (vehicleTypes.indexOf(vm.ratingBy) < 0) return vehicles;
+      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)(vehicles);
+      vehicles = vehicles.filter(function (v) {
+        return v.type === vm.ratingBy;
+      });
+      console.log(vm.vehicles);
+      console.log(vehicles);
+      return vehicles;
     }
   },
   mounted: function mounted() {
@@ -19353,7 +19423,11 @@ var appPublicStatistics = {
     });
     // запрос и получение списка техники
     vm.getVehicles().then(function (e) {
-      return vm.vehicles = e.vehicles;
+      vm.vehicles = [].concat(_toConsumableArray(Object.values(e.bunkers)), _toConsumableArray(Object.values(e.harvesters)), _toConsumableArray(Object.values(e.tractors)), _toConsumableArray(Object.values(e.transporters)));
+    });
+    //запрос данных от БВС
+    vm.getBvsData().then(function (e) {
+      return vm.bvsData = e.bvs_data;
     });
   },
   methods: {}

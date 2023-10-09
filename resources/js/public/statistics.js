@@ -22,15 +22,58 @@ const appPublicStatistics = {
 
     data() {
         return {
+            bvsData: [],
             employees: [], // перечень сотрудников организации
             vehicles: [], // перечень техники
             ratingBy: "", // по ком или чем отображать рейтинг
         };
     },
 
-    watch: {},
+    watch: {
+        ratingBy(ratingBy) {
+            console.log(ratingBy);
+        },
+    },
 
     computed: {
+        /**
+         * Вычисляет итоговое собранное количество зерна в разрезе техники
+         *
+         * @return {Void|Array}
+         */
+        bvsTransferedAmounts() {
+            const vm = this;
+
+            if (!vm.bvsData.length) return;
+            let data = strip(vm.bvsData);
+            let parsedData = {};
+
+            // перебор массива данных бвс
+            for (const _data of data) {
+                /**
+                 * если загрузка от комбайна (bvs_name === to), то данные добавляются и для БВС
+                 * Если загрузка от БВС (bvs_name === from), то значение переданное плюсуется только для грузовика
+                 */
+
+                if (_data.bvs_name === _data.to) {
+                    if (!parsedData[_data.from]) {
+                        parsedData[_data.from] = 0;
+                    }
+                    parsedData[_data.from] += parseFloat(
+                        _data.amount_transfered
+                    );
+                }
+
+                if (!parsedData[_data.to]) {
+                    parsedData[_data.to] = 0;
+                }
+                parsedData[_data.to] += parseFloat(_data.amount_transfered);
+            }
+
+            console.log(parsedData);
+            return parsedData;
+        },
+
         /**
          * Список доступных вариантов рейтинга
          *
@@ -49,6 +92,26 @@ const appPublicStatistics = {
             };
             return options;
         },
+
+        /**
+         * отфильтрованный список техники в зависимости от значения ratingBy
+         *
+         * @return {Array} техники
+         */
+        vehiclesFiltered() {
+            const vm = this;
+            const vehicleTypes = ["bunker", "transporter", "harvester"];
+            let vehicles = strip(vm.vehicles);
+            if (vehicleTypes.indexOf(vm.ratingBy) < 0) return vehicles;
+            clog(vehicles);
+            vehicles = vehicles.filter((v) => {
+                return v.type === vm.ratingBy;
+            });
+
+            console.log(vm.vehicles);
+            console.log(vehicles);
+            return vehicles;
+        },
     },
 
     mounted() {
@@ -58,7 +121,16 @@ const appPublicStatistics = {
         // запрос и получение списка сотрудников
         vm.getEmployees().then((e) => (vm.employees = e.employees));
         // запрос и получение списка техники
-        vm.getVehicles().then((e) => (vm.vehicles = e.vehicles));
+        vm.getVehicles().then((e) => {
+            vm.vehicles = [
+                ...Object.values(e.bunkers),
+                ...Object.values(e.harvesters),
+                ...Object.values(e.tractors),
+                ...Object.values(e.transporters),
+            ];
+        });
+        //запрос данных от БВС
+        vm.getBvsData().then((e) => (vm.bvsData = e.bvs_data));
     },
 
     methods: {},
