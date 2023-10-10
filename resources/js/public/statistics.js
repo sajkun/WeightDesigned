@@ -70,8 +70,16 @@ const appPublicStatistics = {
                 parsedData[_data.to] += parseFloat(_data.amount_transfered);
             }
 
-            console.log(parsedData);
             return parsedData;
+        },
+
+        /**
+         * Сформированные данные для рейтинга
+         *
+         * @return {Array}
+         */
+        ratingData() {
+            const vm = this;
         },
 
         /**

@@ -19378,8 +19378,15 @@ var appPublicStatistics = {
       } finally {
         _iterator.f();
       }
-      console.log(parsedData);
       return parsedData;
+    },
+    /**
+     * Сформированные данные для рейтинга
+     *
+     * @return {Array}
+     */
+    ratingData: function ratingData() {
+      var vm = this;
     },
     /**
      * Список доступных вариантов рейтинга
