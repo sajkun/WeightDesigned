@@ -110,6 +110,12 @@ export default {
         // назначение текущего месяца и года выбранными при инициализации
         vm.month = moment(today).format("M");
         vm.year = parseInt(moment(today).format("Y"));
+
+        document.addEventListener("click", (e) => {
+            if (!e.target.closest(".month-picker")) {
+                vm.showDropdown = false;
+            }
+        });
     },
     methods: {
         /**

@@ -16327,6 +16327,11 @@ __webpack_require__.r(__webpack_exports__);
     // назначение текущего месяца и года выбранными при инициализации
     vm.month = moment__WEBPACK_IMPORTED_MODULE_0___default()(today).format("M");
     vm.year = parseInt(moment__WEBPACK_IMPORTED_MODULE_0___default()(today).format("Y"));
+    document.addEventListener("click", function (e) {
+      if (!e.target.closest(".month-picker")) {
+        vm.showDropdown = false;
+      }
+    });
   },
   methods: {
     /**
