@@ -8,7 +8,8 @@
             class="btn btn-borders"
             @click="showDropdown = true"
         >
-            {{ monthName }} {{ year }} <i class="fa-calendar-o fa"></i>
+            {{ monthName }} {{ year }}
+            <i class="fa-calendar-o fa"></i>
         </button>
         <!-- ------------------------------------- -->
 
@@ -19,9 +20,11 @@
                 <button class="btn" type="button" @click="chaYear(-1)">
                     <i class="fa fa-caret-left"></i>
                 </button>
-                <span class="align-self-center flex-grow-1 text-center">
-                    {{ year }}
-                </span>
+                <div class="align-self-center flex-grow-1 text-center">
+                    <button class="btn" type="button" @click="setMonth(0)">
+                        {{ year }}
+                    </button>
+                </div>
                 <button
                     class="btn"
                     type="button"
@@ -72,7 +75,7 @@ export default {
          */
         disableNextYear() {
             const vm = this;
-            if (!vm.year || !vm.month) return false;
+            if (!vm.year) return false;
             const dateRaw = new Date().toISOString().slice(0, 19);
             const date = moment(dateRaw);
             const currentYear = parseInt(date.format("Y"));
@@ -141,10 +144,14 @@ export default {
          */
         setMonth(index) {
             const vm = this;
-            let fixedIndex = index < 1 ? 1 : index > 12 ? 12 : index;
-            vm.month = fixedIndex.toString().padStart(2, 0);
-            vm.$emit("selected", { month: fixedIndex, year: vm.year });
+            let fixedIndex = index < 0 ? 0 : index > 12 ? 12 : index;
+
             vm.showDropdown = false;
+
+            vm.month =
+                fixedIndex === 0 ? null : fixedIndex.toString().padStart(2, 0);
+
+            vm.$emit("selected", { month: fixedIndex, year: vm.year });
             return;
         },
     },

@@ -16293,7 +16293,7 @@ __webpack_require__.r(__webpack_exports__);
      */
     disableNextYear: function disableNextYear() {
       var vm = this;
-      if (!vm.year || !vm.month) return false;
+      if (!vm.year) return false;
       var dateRaw = new Date().toISOString().slice(0, 19);
       var date = moment__WEBPACK_IMPORTED_MODULE_0___default()(dateRaw);
       var currentYear = parseInt(date.format("Y"));
@@ -16356,13 +16356,13 @@ __webpack_require__.r(__webpack_exports__);
      */
     setMonth: function setMonth(index) {
       var vm = this;
-      var fixedIndex = index < 1 ? 1 : index > 12 ? 12 : index;
-      vm.month = fixedIndex.toString().padStart(2, 0);
+      var fixedIndex = index < 0 ? 0 : index > 12 ? 12 : index;
+      vm.showDropdown = false;
+      vm.month = fixedIndex === 0 ? null : fixedIndex.toString().padStart(2, 0);
       vm.$emit("selected", {
         month: fixedIndex,
         year: vm.year
       });
-      vm.showDropdown = false;
       return;
     }
   }
@@ -17080,11 +17080,17 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     onClick: _cache[1] || (_cache[1] = function ($event) {
       return $options.chaYear(-1);
     })
-  }, _hoisted_6), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_7, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.year), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+  }, _hoisted_6), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_7, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+    "class": "btn",
+    type: "button",
+    onClick: _cache[2] || (_cache[2] = function ($event) {
+      return $options.setMonth(0);
+    })
+  }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.year), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
     "class": "btn",
     type: "button",
     disabled: $options.disableNextYear,
-    onClick: _cache[2] || (_cache[2] = function ($event) {
+    onClick: _cache[3] || (_cache[3] = function ($event) {
       return $options.chaYear(1);
     })
   }, _hoisted_10, 8 /* PROPS */, _hoisted_8)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" список месяцев "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_11, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($options.months, function (monthName, key) {
