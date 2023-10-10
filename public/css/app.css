@@ -2337,6 +2337,7 @@ body {
   --yellow: #ffd111;
   --lightest: #fff;
   --darkest: #000;
+  --cooper: #b18a4b;
   --link-color: #fff;
   --link-color-active: var(--grey);
   --contrast: #fff;
@@ -13959,4 +13960,28 @@ body.auth #app {
 
 #app {
   overflow: hidden;
+}
+
+.rating2,
+.rating4,
+.rating3 {
+  margin-top: 0.5rem;
+}
+
+.rating-row {
+  padding: 0.25rem 1rem;
+  border-radius: 0.5rem;
+  background-color: var(--lightest);
+}
+.rating-row .fa-star {
+  color: var(--green-medium);
+}
+.rating-row.rating1 .fa-star {
+  color: var(--yellow);
+}
+.rating-row.rating2 .fa-star {
+  color: var(--grey);
+}
+.rating-row.rating3 .fa-star {
+  color: var(--cooper);
 }

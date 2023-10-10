@@ -16670,7 +16670,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)(["w-100 calendar", {
       disabled: $data.disabled
     }])
-  }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" НАЧАЛО БЛОКА\r\n                 кнопки управления месяцами "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [$options.showButtons.prevMonth ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("button", {
+  }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" НАЧАЛО БЛОКА\n                 кнопки управления месяцами "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [$options.showButtons.prevMonth ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("button", {
     key: 0,
     "class": "btn btn-controls",
     type: "button",
@@ -16686,12 +16686,12 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       return $options.changeMonth(1);
     }),
     disabled: $data.disabled
-  }, _hoisted_9, 8 /* PROPS */, _hoisted_7)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" КОНЕЦ БЛОКА\r\n                кнопки управления месяцами "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" НАЧАЛО БЛОКА\r\n                 дни недели "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_10, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($options.days, function (d, key) {
+  }, _hoisted_9, 8 /* PROPS */, _hoisted_7)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" КОНЕЦ БЛОКА\n                кнопки управления месяцами "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" НАЧАЛО БЛОКА\n                 дни недели "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_10, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($options.days, function (d, key) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", {
       "class": "flex-grow-1 text-center day-name",
       key: 'day' + key
     }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(d), 1 /* TEXT */);
-  }), 128 /* KEYED_FRAGMENT */))]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" КОНЕЦ БЛОКА\r\n                 дни недели "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" НАЧАЛО БЛОКА\r\n                дни календаря "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_11, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($options.month, function (day, key) {
+  }), 128 /* KEYED_FRAGMENT */))]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" КОНЕЦ БЛОКА\n                 дни недели "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" НАЧАЛО БЛОКА\n                дни календаря "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_11, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($options.month, function (day, key) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", {
       "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)(["day-cell", {
         active: day.selected,
@@ -16709,7 +16709,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
         return $options.selectDay(day.date);
       }
     }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(day.day), 9 /* TEXT, PROPS */, _hoisted_12)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)], 2 /* CLASS */);
-  }), 128 /* KEYED_FRAGMENT */))]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" КОНЕЦ БЛОКА\r\n                 дни календаря "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" НАЧАЛО БЛОКА\r\n                кнопки управления "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_13, [$options.showButtons.clear ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("button", {
+  }), 128 /* KEYED_FRAGMENT */))]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" КОНЕЦ БЛОКА\n                 дни календаря "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" НАЧАЛО БЛОКА\n                кнопки управления "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_13, [$options.showButtons.clear ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("button", {
     key: 0,
     "class": "btn btn-link",
     type: "button",
@@ -16717,7 +16717,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     onClick: _cache[2] || (_cache[2] = function () {
       return $options.clearDates && $options.clearDates.apply($options, arguments);
     })
-  }, " Очистить даты ", 8 /* PROPS */, _hoisted_14)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" КОНЕЦ БЛОКА\r\n                 кнопки управления ")])], 2 /* CLASS */);
+  }, " Очистить даты ", 8 /* PROPS */, _hoisted_14)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" КОНЕЦ БЛОКА\n                 кнопки управления ")])], 2 /* CLASS */);
 }
 
 /***/ }),
@@ -19328,6 +19328,7 @@ var appPublicStatistics = {
   data: function data() {
     return {
       bvsData: [],
+      // данные о транзакциях БВC
       employees: [],
       // перечень сотрудников организации
       vehicles: [],
@@ -19336,11 +19337,7 @@ var appPublicStatistics = {
     };
   },
 
-  watch: {
-    ratingBy: function ratingBy(_ratingBy) {
-      console.log(_ratingBy);
-    }
-  },
+  watch: {},
   computed: {
     /**
      * Вычисляет итоговое собранное количество зерна в разрезе техники
@@ -19383,29 +19380,148 @@ var appPublicStatistics = {
       return parsedData;
     },
     /**
+     * Сотрудники отфильтрованные по типу рейтинга
+     *
+     * @return {Array}
+     */
+    employeesFiltered: function employeesFiltered() {
+      var vm = this;
+      var employees = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.employees);
+      var professions = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(Object.keys(vm.professions));
+      if (professions.indexOf(vm.ratingBy) === -1) return employees;
+      return employees.filter(function (p) {
+        return p.specialisation === vm.ratingBy;
+      });
+    },
+    /**
+     *  Список профессий
+     * ключи объекта совпадают со значениями модели laravel Employee
+     * @see Laravel Model Employee
+     *
+     * @return {Object}
+     */
+    professions: function professions() {
+      var profesions = {
+        "Водитель Трактора": "Трактористов",
+        "Водитель Комбайна": "Комбайнеров",
+        "Водитель Зерновоза": "Водителей"
+      };
+      return profesions;
+    },
+    /**
      * Сформированные данные для рейтинга
      *
      * @return {Array}
      */
     ratingData: function ratingData() {
       var vm = this;
+      // список отфильтрованной по ratingBy техники
+      var vehicles = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.vehiclesFiltered);
+
+      // список отфильтрованных по ratingBy сотрудников с назначенной техникой
+      var employees = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.employeesFiltered).filter(function (e) {
+        return e.vehicles.length;
+      });
+
+      // количество полученной техникой культуры
+      var transfered = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.bvsTransferedAmounts);
+
+      // перечень профессий
+      var professions = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(Object.keys(vm.professions));
+
+      // перечень типов техники
+      var vehicleTypes = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(Object.keys(vm.vehicleTypes));
+      var output = [];
+
+      // Определить по техники или по сотрудникам фильтрация
+
+      // формирование рейтинга в разрезе сотрудников и назначенной им техники
+      if (professions.indexOf(vm.ratingBy) >= 0) {
+        var _iterator2 = _createForOfIteratorHelper(employees),
+          _step2;
+        try {
+          for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+            var _employee = _step2.value;
+            var _key = "".concat(_employee.last_name, " ").concat(_employee.first_name, " ").concat(_employee.middle_name);
+            var _temp = {
+              name: "",
+              type: "",
+              amount: 0,
+              object: _employee
+            };
+            _temp.name = _key;
+            _temp.type = _employee.specialisation;
+            var _vehicles = _employee.vehicles.map(function (v) {
+              return v.name;
+            });
+            var _iterator3 = _createForOfIteratorHelper(_vehicles),
+              _step3;
+            try {
+              for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
+                var __name = _step3.value;
+                if (!transfered[__name]) continue;
+                _temp.amount += transfered[__name];
+              }
+            } catch (err) {
+              _iterator3.e(err);
+            } finally {
+              _iterator3.f();
+            }
+            output.push(_temp);
+          }
+        } catch (err) {
+          _iterator2.e(err);
+        } finally {
+          _iterator2.f();
+        }
+      }
+      // формирование рейтинга в разрезе техники
+      else if (vehicleTypes.indexOf(vm.ratingBy) >= 0) {
+        var _iterator4 = _createForOfIteratorHelper(vehicles),
+          _step4;
+        try {
+          for (_iterator4.s(); !(_step4 = _iterator4.n()).done;) {
+            var _vehicle = _step4.value;
+            var _temp2 = {
+              name: "",
+              type: "",
+              amount: 0,
+              object: _vehicle
+            };
+            _temp2.name = _vehicle.name;
+            _temp2.type = vm.vehicleTypes[_vehicle.type];
+            if (transfered[_vehicle.name]) {
+              _temp2.amount += transfered[_vehicle.name];
+            }
+            output.push(_temp2);
+          }
+        } catch (err) {
+          _iterator4.e(err);
+        } finally {
+          _iterator4.f();
+        }
+      }
+
+      // сортировка рейтинга по убыванию
+      output.sort(function (itemA, itemB) {
+        if (itemA.amount === itemB.amount) return 0;
+        return itemA.amount < itemB.amount ? 1 : -1;
+      });
+      return output;
     },
     /**
      * Список доступных вариантов рейтинга
      *
      * @returns {Object} В качестве ключа профессия сотрудника либо тип техники
-     * @see Laravel Models Employee | Vehicle
+     * @see Laravel Model Employee | Vehicle
      */
     ratingOptions: function ratingOptions() {
-      var options = {
-        "Водитель Трактора": "Трактористов",
-        "Водитель Комбайна": "Комбайнеров",
-        "Водитель Зерновоза": "Водителей",
-        "-": "----",
-        bunker: "Бункеров Перегрузчиков",
-        harvester: "Комбайнов",
-        transporter: "Зерновозов"
+      var vm = this;
+      var options = {};
+      var separator = {
+        "-": "-----------"
       };
+      Object.assign(options, vm.vehicleTypes, separator, vm.professions);
       return options;
     },
     /**
@@ -19415,13 +19531,28 @@ var appPublicStatistics = {
      */
     vehiclesFiltered: function vehiclesFiltered() {
       var vm = this;
-      var vehicleTypes = ["bunker", "transporter", "harvester"];
+      var vehicleTypes = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(Object.keys(vm.vehicleTypes));
       var vehicles = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.vehicles);
       if (vehicleTypes.indexOf(vm.ratingBy) < 0) return vehicles;
       vehicles = vehicles.filter(function (v) {
         return v.type === vm.ratingBy;
       });
       return vehicles;
+    },
+    /**
+     * список типов техники и их человеко-понятных меток
+     * ключи массива совпадают с типами техники
+     * @see Laravel Model Vehicle
+     *
+     * @return {Object}
+     */
+    vehicleTypes: function vehicleTypes() {
+      var types = {
+        bunker: "Бункер Перегрузчик",
+        harvester: "Комбайн",
+        transporter: "Зерновоз"
+      };
+      return types;
     }
   },
   mounted: function mounted() {
@@ -20605,7 +20736,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "@charset \"UTF-8\";\n.row[data-v-674a5734] {\n  --bs-gutter-x: 0;\n  --bs-gutter-н: 0;\n}\n.month-picker[data-v-674a5734] {\n  position: relative;\n}\n.month-picker__dropdown[data-v-674a5734] {\n  background-color: var(--lightest);\n  border: 1px solid var(--grey-light);\n  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);\n  position: absolute;\n  top: 100%;\n  right: 0;\n  width: -moz-fit-content;\n  width: fit-content;\n  border-top-style: 0.5rem;\n  max-width: 360px;\n}\n.month-picker__dropdown button[data-v-674a5734] {\n  background-color: #fff;\n  border: 1px solid transparent;\n}\n.month-picker__dropdown button.selected[data-v-674a5734] {\n  border: 1px solid var(--green);\n}\n.month-picker__dropdown button[data-v-674a5734]:hover {\n  background-color: var(--grey-light);\n}", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "@charset \"UTF-8\";\n.row[data-v-674a5734] {\n  --bs-gutter-x: 0;\n  --bs-gutter-н: 0;\n}\n.month-picker[data-v-674a5734] {\n  position: relative;\n}\n.month-picker__dropdown[data-v-674a5734] {\n  padding: 0.5rem;\n  background-color: var(--lightest);\n  border: 1px solid var(--grey-light);\n  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);\n  position: absolute;\n  top: 100%;\n  right: 0;\n  width: -moz-fit-content;\n  width: fit-content;\n  border-radius: 0.5rem;\n  max-width: 360px;\n}\n.month-picker__dropdown button[data-v-674a5734] {\n  background-color: #fff;\n  border: 1px solid transparent;\n}\n.month-picker__dropdown button.selected[data-v-674a5734] {\n  border: 1px solid var(--green);\n}\n.month-picker__dropdown button[data-v-674a5734]:hover {\n  background-color: var(--grey-light);\n}", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 

@@ -1,0 +1,25 @@
+.rating2,
+.rating4,
+.rating3 {
+    margin-top: 0.5rem;
+}
+
+.rating-row {
+    padding: 0.25rem 1rem;
+    border-radius: 0.5rem;
+    background-color: var(--lightest);
+
+    .fa-star {
+        color: var(--green-medium);
+    }
+
+    $colors: var(--yellow), var(--grey), var(--cooper);
+
+    @each $color in $colors {
+        &.rating#{index($colors, $color)} {
+            .fa-star {
+                color: $color;
+            }
+        }
+    }
+}

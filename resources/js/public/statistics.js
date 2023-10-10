@@ -22,18 +22,14 @@ const appPublicStatistics = {
 
     data() {
         return {
-            bvsData: [],
+            bvsData: [], // данные о транзакциях БВC
             employees: [], // перечень сотрудников организации
             vehicles: [], // перечень техники
             ratingBy: "", // по ком или чем отображать рейтинг
         };
     },
 
-    watch: {
-        ratingBy(ratingBy) {
-            console.log(ratingBy);
-        },
-    },
+    watch: {},
 
     computed: {
         /**
@@ -74,30 +70,126 @@ const appPublicStatistics = {
         },
 
         /**
+         * Сотрудники отфильтрованные по типу рейтинга
+         *
+         * @return {Array}
+         */
+        employeesFiltered() {
+            const vm = this;
+            const employees = strip(vm.employees);
+            const professions = strip(Object.keys(vm.professions));
+
+            if (professions.indexOf(vm.ratingBy) === -1) return employees;
+
+            return employees.filter((p) => {
+                return p.specialisation === vm.ratingBy;
+            });
+        },
+
+        /**
+         *  Список профессий
+         * ключи объекта совпадают со значениями модели laravel Employee
+         * @see Laravel Model Employee
+         *
+         * @return {Object}
+         */
+        professions() {
+            const profesions = {
+                "Водитель Трактора": "Трактористов",
+                "Водитель Комбайна": "Комбайнеров",
+                "Водитель Зерновоза": "Водителей",
+            };
+
+            return profesions;
+        },
+
+        /**
          * Сформированные данные для рейтинга
          *
          * @return {Array}
          */
         ratingData() {
             const vm = this;
+            // список отфильтрованной по ratingBy техники
+            const vehicles = strip(vm.vehiclesFiltered);
+
+            // список отфильтрованных по ratingBy сотрудников с назначенной техникой
+            const employees = strip(vm.employeesFiltered).filter((e) => {
+                return e.vehicles.length;
+            });
+
+            // количество полученной техникой культуры
+            const transfered = strip(vm.bvsTransferedAmounts);
+
+            // перечень профессий
+            const professions = strip(Object.keys(vm.professions));
+
+            // перечень типов техники
+            const vehicleTypes = strip(Object.keys(vm.vehicleTypes));
+            let output = [];
+
+            // Определить по техники или по сотрудникам фильтрация
+
+            // формирование рейтинга в разрезе сотрудников и назначенной им техники
+            if (professions.indexOf(vm.ratingBy) >= 0) {
+                for (const _employee of employees) {
+                    const _key = `${_employee.last_name} ${_employee.first_name} ${_employee.middle_name}`;
+                    let _temp = {
+                        name: "",
+                        type: "",
+                        amount: 0,
+                        object: _employee,
+                    };
+                    _temp.name = _key;
+                    _temp.type = _employee.specialisation;
+                    const _vehicles = _employee.vehicles.map((v) => v.name);
+
+                    for (const __name of _vehicles) {
+                        if (!transfered[__name]) continue;
+                        _temp.amount += transfered[__name];
+                    }
+                    output.push(_temp);
+                }
+            }
+            // формирование рейтинга в разрезе техники
+            else if (vehicleTypes.indexOf(vm.ratingBy) >= 0) {
+                for (const _vehicle of vehicles) {
+                    const _temp = {
+                        name: "",
+                        type: "",
+                        amount: 0,
+                        object: _vehicle,
+                    };
+                    _temp.name = _vehicle.name;
+                    _temp.type = vm.vehicleTypes[_vehicle.type];
+                    if (transfered[_vehicle.name]) {
+                        _temp.amount += transfered[_vehicle.name];
+                    }
+                    output.push(_temp);
+                }
+            }
+
+            // сортировка рейтинга по убыванию
+            output.sort((itemA, itemB) => {
+                if (itemA.amount === itemB.amount) return 0;
+
+                return itemA.amount < itemB.amount ? 1 : -1;
+            });
+
+            return output;
         },
 
         /**
          * Список доступных вариантов рейтинга
          *
          * @returns {Object} В качестве ключа профессия сотрудника либо тип техники
-         * @see Laravel Models Employee | Vehicle
+         * @see Laravel Model Employee | Vehicle
          */
         ratingOptions() {
-            const options = {
-                "Водитель Трактора": "Трактористов",
-                "Водитель Комбайна": "Комбайнеров",
-                "Водитель Зерновоза": "Водителей",
-                "-": "----",
-                bunker: "Бункеров Перегрузчиков",
-                harvester: "Комбайнов",
-                transporter: "Зерновозов",
-            };
+            const vm = this;
+            let options = {};
+            const separator = { "-": "-----------" };
+            Object.assign(options, vm.vehicleTypes, separator, vm.professions);
             return options;
         },
 
@@ -108,7 +200,7 @@ const appPublicStatistics = {
          */
         vehiclesFiltered() {
             const vm = this;
-            const vehicleTypes = ["bunker", "transporter", "harvester"];
+            const vehicleTypes = strip(Object.keys(vm.vehicleTypes));
             let vehicles = strip(vm.vehicles);
 
             if (vehicleTypes.indexOf(vm.ratingBy) < 0) return vehicles;
@@ -117,6 +209,23 @@ const appPublicStatistics = {
             });
 
             return vehicles;
+        },
+
+        /**
+         * список типов техники и их человеко-понятных меток
+         * ключи массива совпадают с типами техники
+         * @see Laravel Model Vehicle
+         *
+         * @return {Object}
+         */
+        vehicleTypes() {
+            const types = {
+                bunker: "Бункер Перегрузчик",
+                harvester: "Комбайн",
+                transporter: "Зерновоз",
+            };
+
+            return types;
         },
     },
 
