@@ -4,6 +4,7 @@
 
 //хэлперы
 import { strip, clog } from "../misc/helpers";
+import moment from "moment";
 
 //миксины
 import axiosRequests from "../mixins/axiosRequests";
@@ -26,6 +27,11 @@ const appPublicStatistics = {
             employees: [], // перечень сотрудников организации
             vehicles: [], // перечень техники
             ratingBy: "", // по ком или чем отображать рейтинг
+            dateRange: {
+                // диапазон дат для фильтрации данных бвс
+                start: null,
+                end: null,
+            },
         };
     },
 
@@ -41,7 +47,26 @@ const appPublicStatistics = {
             const vm = this;
 
             if (!vm.bvsData.length) return;
-            let data = strip(vm.bvsData);
+
+            // сортировка данных по временному периоду
+            let data = strip(vm.bvsData).filter((d) => {
+                let validatedStart = true;
+                let validatedEnd = true;
+                const operationDate = new Date(d.operation_time);
+
+                if (vm.dateRange.start) {
+                    const start = new Date(vm.dateRange.start);
+                    validatedStart = start <= operationDate;
+                }
+
+                if (vm.dateRange.end) {
+                    const end = new Date(vm.dateRange.end);
+                    validatedEnd = end >= operationDate;
+                }
+
+                return validatedStart && validatedEnd;
+            });
+
             let parsedData = {};
 
             // перебор массива данных бвс
@@ -248,7 +273,35 @@ const appPublicStatistics = {
         vm.getBvsData().then((e) => (vm.bvsData = e.bvs_data));
     },
 
-    methods: {},
+    methods: {
+        /**
+         * Задает значение отображаемого периода
+         *
+         * @param {Object} data {month: int от 0 до 12, year: int}
+         *
+         * @returns {Void}
+         */
+        setDisplayedPeriod(data) {
+            const vm = this;
+            let date, start, end;
+            const month = data.month === 0 ? data.month : data.month - 1;
+
+            date = new Date(data.year, month);
+
+            start =
+                data.month === 0
+                    ? moment(date).startOf("year")
+                    : moment(date).startOf("month");
+            end =
+                data.month === 0
+                    ? moment(date).endOf("year")
+                    : moment(date).endOf("month");
+            vm.dateRange.start = start.format("YYYY-MM-DDTHH:mm:ss");
+            vm.dateRange.end = end.format("YYYY-MM-DDTHH:mm:ss");
+
+            return;
+        },
+    },
 };
 
 export default appPublicStatistics;

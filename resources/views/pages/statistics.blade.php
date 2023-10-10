@@ -20,7 +20,7 @@
                 </select>
             </div>
             <div class="col-6 text-end">
-                <month-picker />
+                <month-picker @selected='setDisplayedPeriod'/>
             </div>
         </div>
 

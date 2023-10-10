@@ -1,5 +1,4 @@
 <!-- Компонент выбора месяца-->
-
 <template>
     <div class="month-picker">
         <!-- отображение выбранного месяца и года -->
@@ -111,8 +110,10 @@ export default {
         const today = new Date();
         const vm = this;
         // назначение текущего месяца и года выбранными при инициализации
-        vm.month = moment(today).format("M");
+        vm.month = parseInt(moment(today).format("M"));
         vm.year = parseInt(moment(today).format("Y"));
+
+        vm.$emit("selected", { month: vm.month, year: vm.year });
 
         document.addEventListener("click", (e) => {
             if (!e.target.closest(".month-picker")) {

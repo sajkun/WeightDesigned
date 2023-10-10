@@ -16325,8 +16325,12 @@ __webpack_require__.r(__webpack_exports__);
     var today = new Date();
     var vm = this;
     // назначение текущего месяца и года выбранными при инициализации
-    vm.month = moment__WEBPACK_IMPORTED_MODULE_0___default()(today).format("M");
+    vm.month = parseInt(moment__WEBPACK_IMPORTED_MODULE_0___default()(today).format("M"));
     vm.year = parseInt(moment__WEBPACK_IMPORTED_MODULE_0___default()(today).format("Y"));
+    vm.$emit("selected", {
+      month: vm.month,
+      year: vm.year
+    });
     document.addEventListener("click", function (e) {
       if (!e.target.closest(".month-picker")) {
         vm.showDropdown = false;
@@ -19296,12 +19300,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _misc_helpers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../misc/helpers */ "./resources/js/misc/helpers.js");
-/* harmony import */ var _mixins_axiosRequests__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../mixins/axiosRequests */ "./resources/js/mixins/axiosRequests.js");
-/* harmony import */ var _mixins_crud__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../mixins/crud */ "./resources/js/mixins/crud.js");
-/* harmony import */ var _mixins_messages__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../mixins/messages */ "./resources/js/mixins/messages.js");
-/* harmony import */ var _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../mixins/publicAuthData */ "./resources/js/mixins/publicAuthData.js");
-/* harmony import */ var _components_MessagesComponent___WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../components/MessagesComponent/ */ "./resources/js/components/MessagesComponent/index.js");
-/* harmony import */ var _components_inputs_MonthPickerComponent___WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../components/inputs/MonthPickerComponent/ */ "./resources/js/components/inputs/MonthPickerComponent/index.js");
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _mixins_axiosRequests__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../mixins/axiosRequests */ "./resources/js/mixins/axiosRequests.js");
+/* harmony import */ var _mixins_crud__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../mixins/crud */ "./resources/js/mixins/crud.js");
+/* harmony import */ var _mixins_messages__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../mixins/messages */ "./resources/js/mixins/messages.js");
+/* harmony import */ var _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../mixins/publicAuthData */ "./resources/js/mixins/publicAuthData.js");
+/* harmony import */ var _components_MessagesComponent___WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../components/MessagesComponent/ */ "./resources/js/components/MessagesComponent/index.js");
+/* harmony import */ var _components_inputs_MonthPickerComponent___WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../components/inputs/MonthPickerComponent/ */ "./resources/js/components/inputs/MonthPickerComponent/index.js");
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
@@ -19316,6 +19322,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 //хэлперы
 
 
+
 //миксины
 
 
@@ -19326,10 +19333,10 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
 
 var appPublicStatistics = {
-  mixins: [_mixins_axiosRequests__WEBPACK_IMPORTED_MODULE_1__["default"], _mixins_crud__WEBPACK_IMPORTED_MODULE_2__["default"], _mixins_messages__WEBPACK_IMPORTED_MODULE_3__["default"], _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_4__["default"]],
+  mixins: [_mixins_axiosRequests__WEBPACK_IMPORTED_MODULE_2__["default"], _mixins_crud__WEBPACK_IMPORTED_MODULE_3__["default"], _mixins_messages__WEBPACK_IMPORTED_MODULE_4__["default"], _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_5__["default"]],
   components: {
-    MessagesComponent: _components_MessagesComponent___WEBPACK_IMPORTED_MODULE_5__["default"],
-    MonthPicker: _components_inputs_MonthPickerComponent___WEBPACK_IMPORTED_MODULE_6__["default"]
+    MessagesComponent: _components_MessagesComponent___WEBPACK_IMPORTED_MODULE_6__["default"],
+    MonthPicker: _components_inputs_MonthPickerComponent___WEBPACK_IMPORTED_MODULE_7__["default"]
   },
   data: function data() {
     return {
@@ -19339,10 +19346,15 @@ var appPublicStatistics = {
       // перечень сотрудников организации
       vehicles: [],
       // перечень техники
-      ratingBy: "" // по ком или чем отображать рейтинг
+      ratingBy: "",
+      // по ком или чем отображать рейтинг
+      dateRange: {
+        // диапазон дат для фильтрации данных бвс
+        start: null,
+        end: null
+      }
     };
   },
-
   watch: {},
   computed: {
     /**
@@ -19353,7 +19365,22 @@ var appPublicStatistics = {
     bvsTransferedAmounts: function bvsTransferedAmounts() {
       var vm = this;
       if (!vm.bvsData.length) return;
-      var data = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.bvsData);
+
+      // сортировка данных по временному периоду
+      var data = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.bvsData).filter(function (d) {
+        var validatedStart = true;
+        var validatedEnd = true;
+        var operationDate = new Date(d.operation_time);
+        if (vm.dateRange.start) {
+          var start = new Date(vm.dateRange.start);
+          validatedStart = start <= operationDate;
+        }
+        if (vm.dateRange.end) {
+          var end = new Date(vm.dateRange.end);
+          validatedEnd = end >= operationDate;
+        }
+        return validatedStart && validatedEnd;
+      });
       var parsedData = {};
 
       // перебор массива данных бвс
@@ -19578,7 +19605,26 @@ var appPublicStatistics = {
       return vm.bvsData = e.bvs_data;
     });
   },
-  methods: {}
+  methods: {
+    /**
+     * Задает значение отображаемого периода
+     *
+     * @param {Object} data {month: int от 0 до 12, year: int}
+     *
+     * @returns {Void}
+     */
+    setDisplayedPeriod: function setDisplayedPeriod(data) {
+      var vm = this;
+      var date, start, end;
+      var month = data.month === 0 ? data.month : data.month - 1;
+      date = new Date(data.year, month);
+      start = data.month === 0 ? moment__WEBPACK_IMPORTED_MODULE_1___default()(date).startOf("year") : moment__WEBPACK_IMPORTED_MODULE_1___default()(date).startOf("month");
+      end = data.month === 0 ? moment__WEBPACK_IMPORTED_MODULE_1___default()(date).endOf("year") : moment__WEBPACK_IMPORTED_MODULE_1___default()(date).endOf("month");
+      vm.dateRange.start = start.format("YYYY-MM-DDTHH:mm:ss");
+      vm.dateRange.end = end.format("YYYY-MM-DDTHH:mm:ss");
+      return;
+    }
+  }
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (appPublicStatistics);
 
