@@ -11,9 +11,7 @@ const crud = {
         },
 
         createEntity(postData, url) {
-            return this.sendRequest(postData, url).then(
-                document.dispatchEvent(new CustomEvent("updateList"))
-            );
+            return this.sendRequest(postData, url);
         },
 
         deleteEntity(postData, url) {
@@ -55,9 +53,7 @@ const crud = {
 
             if (!vm.messages.confirm) {
                 document.addEventListener("submitConfirmEvent", handlerSubmit);
-
                 document.addEventListener("cancelConfirmEvent", handlerCancel);
-
                 vm.messages.confirm = `Вы уверены, что хотите удалить ${postData?.name}?`;
             } else {
                 document.removeEventListener(
@@ -79,15 +75,11 @@ const crud = {
         },
 
         deleteEntityCb(postData, url) {
-            return this.sendRequest(postData, url).then(
-                document.dispatchEvent(new CustomEvent("updateList"))
-            );
+            return this.sendRequest(postData, url);
         },
 
         editEntity(postData, url) {
-            return this.sendRequest(postData, url).then(
-                document.dispatchEvent(new CustomEvent("updateList"))
-            );
+            return this.sendRequest(postData, url);
         },
 
         sendRequest(postData, url) {
@@ -99,6 +91,9 @@ const crud = {
                     vm.messages[response.data.type] = response.data.message;
                     clog("%c sendRequest success", "color:green", response);
                     return response;
+                })
+                .then(() => {
+                    document.dispatchEvent(new CustomEvent("updateList"));
                 })
                 .catch((e) => {
                     clog("%c sendRequest error", "color:red", e.response);

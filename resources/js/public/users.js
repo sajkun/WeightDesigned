@@ -66,6 +66,7 @@ const appPublicUsers = {
         vm.getUsers();
 
         document.addEventListener("updateList", () => {
+            console.log('updateList fired')
             vm.getUsers();
         });
 
@@ -150,11 +151,13 @@ const appPublicUsers = {
         },
 
         getUsers() {
+            clog('%c getUser', 'color:#f7f')
             const vm = this;
 
             if (vm.$refs.organisationId < 0) {
                 return;
             }
+
             axios
                 .get("/users/list")
                 .then((response) => {
