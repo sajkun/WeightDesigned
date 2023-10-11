@@ -17,7 +17,7 @@
         {{-- шапка со списком выбора вариантов сортировки и выбора месяца или года отображения --}}
         {{-- ************************************************ --}}
         <div class="row mt-4 mb-2">
-            <div class="col-6 align-self-center">
+            <div class="col-md-6 col-12 align-self-center">
                 <p class="m-0 h-6 d-inline">Рейтинг среди:</p>
                 <select v-model='ratingBy' class='ms-2  inline-select'>
                     <option v-for='rate, key in ratingOptions' :key='"options" + key' :value='key'
@@ -25,7 +25,7 @@
                         @{{ rate }}</option>
                 </select>
             </div>
-            <div class="col-6 text-end">
+            <div class="col-md-6 col-12 text-md-end mt-4 mt-0-md">
                 <month-picker @selected='setDisplayedPeriod' />
             </div>
         </div>
@@ -34,7 +34,7 @@
 
             {{-- Список отфильтрованных данных --}}
             {{-- ************************************************ --}}
-            <div class='col-12 col-md-6' v-show='ratingData.length'>
+            <div class='col-12 col-md-6 hide' v-show='ratingData.length'>
                 <transition-group :css="false" v-on:before-enter="onBeforeEnter" v-on:enter="onEnter"
                     v-on:leave="onLeave" name='sort'>
                     <div v-for='data, key in ratingData' :data-index='key' :key='data.pid'>

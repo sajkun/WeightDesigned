@@ -43,6 +43,15 @@
         font-size: 1.25rem;
     }
 }
+
+.row {
+    --bs-gutter-x: 0.5rem;
+
+    @media (min-width: 768px) {
+        --bs-gutter-x: 1.5rem;
+    }
+}
+
 .rating-column {
     border-radius: 0.5rem;
     transition: height var(--slow);
@@ -51,6 +60,12 @@
 
     &.min-height {
         min-height: 2rem;
+    }
+
+    font-size: 0.75rem;
+
+    @media (min-width: 768px) {
+        font-size: 1rem;
     }
 }
 
@@ -75,13 +90,18 @@
     width: 20%;
     max-width: 20%;
     flex-basis: 20%;
-    padding-left: 0.5rem;
-    padding-right: 0.5rem;
+    padding-left: 0.25rem;
+    padding-right: 0.25rem;
     text-align: center;
+
+    @media (min-width: 768px) {
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+    }
 
     &__inner {
         width: 100%;
-        padding: 0.5rem 0;
+        padding: 0.25rem 0;
         border-radius: 0.5rem;
 
         .place-1 & {
