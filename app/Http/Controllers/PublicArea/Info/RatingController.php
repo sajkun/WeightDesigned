@@ -7,7 +7,7 @@ namespace App\Http\Controllers\PublicArea\Info;
 use App\Http\Controllers\PublicController;
 use Illuminate\Http\Request;
 
-class StatisticsController extends PublicController
+class RatingController extends PublicController
 {
     /**
      * Handle the incoming request.
@@ -18,6 +18,6 @@ class StatisticsController extends PublicController
     public function __invoke(Request $request)
     {
         $this->prepareData();
-        return view('pages.statistics');
+        return view('pages.rating');
     }
 }

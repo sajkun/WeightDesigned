@@ -1,5 +1,5 @@
 /**
- * Отображение статистики по предприятию
+ * Отображение рейтинга по предприятию
  */
 
 //хэлперы
@@ -14,15 +14,17 @@ import publicAuthData from "../mixins/publicAuthData";
 import sortAnimation from "../mixins/sortAnimation";
 
 // компоненты
-import MessagesComponent from "../components/MessagesComponent/";
-import MonthPickerComponent from "../components/inputs/MonthPickerComponent/";
+import MessagesComponent from "../components/MessagesComponent";
+import MonthPickerComponent from "../components/inputs/MonthPickerComponent";
+import RatingColumsComponent from "../components/RatingColumsComponent";
 
-const appPublicStatistics = {
+const appPublicRating = {
     mixins: [axiosRequests, crud, messages, publicAuthData, sortAnimation],
 
     components: {
         MessagesComponent,
         MonthPicker: MonthPickerComponent,
+        Columns: RatingColumsComponent,
     },
 
     data() {
@@ -143,9 +145,10 @@ const appPublicStatistics = {
                     type: "",
                     amount: 0,
                     object: _vehicle,
-                    type: vehicleTypes[_vehicle.type],
+                    type: vm.vehicleTypes[_vehicle.type],
                     sort: _vehicle.type,
                     pid: idx,
+                    model: "vehicle",
                 };
                 _temp.name = _vehicle.name;
                 _temp.id = _vehicle.id;
@@ -166,6 +169,7 @@ const appPublicStatistics = {
                     type: _employee.specialisation,
                     sort: _employee.specialisation,
                     pid: idx,
+                    model: "employee",
                 };
                 _temp.name = _key;
                 _temp.id = _employee.id;
@@ -232,6 +236,8 @@ const appPublicStatistics = {
     mounted() {
         const vm = this;
         // выбор начального значения из вариантов рейтинга
+
+        vm.$el.parentNode.classList.add("d-flex");
         vm.ratingBy = Object.keys(strip(vm.ratingOptions))[0];
         // запрос и получение списка сотрудников
         vm.getEmployees().then((e) => (vm.employees = e.employees));
@@ -279,4 +285,4 @@ const appPublicStatistics = {
     },
 };
 
-export default appPublicStatistics;
+export default appPublicRating;

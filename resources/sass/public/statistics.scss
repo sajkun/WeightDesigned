@@ -9,7 +9,7 @@
     border-radius: 0.5rem;
     background-color: var(--lightest);
     border: 2px solid var(--lightest);
-    transition: background-color 0.15s;
+    transition: background-color var(--fast);
 
     &__number-cell {
         width: 1.5rem;
