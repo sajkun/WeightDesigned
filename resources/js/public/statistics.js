@@ -11,15 +11,19 @@ import axiosRequests from "../mixins/axiosRequests";
 import crud from "../mixins/crud";
 import messages from "../mixins/messages";
 import publicAuthData from "../mixins/publicAuthData";
+import sortAnimation from "../mixins/sortAnimation";
 
 // компоненты
 import MessagesComponent from "../components/MessagesComponent/";
 import MonthPickerComponent from "../components/inputs/MonthPickerComponent/";
 
 const appPublicStatistics = {
-    mixins: [axiosRequests, crud, messages, publicAuthData],
+    mixins: [axiosRequests, crud, messages, publicAuthData, sortAnimation],
 
-    components: { MessagesComponent, MonthPicker: MonthPickerComponent },
+    components: {
+        MessagesComponent,
+        MonthPicker: MonthPickerComponent,
+    },
 
     data() {
         return {
@@ -95,23 +99,6 @@ const appPublicStatistics = {
         },
 
         /**
-         * Сотрудники отфильтрованные по типу рейтинга
-         *
-         * @return {Array}
-         */
-        employeesFiltered() {
-            const vm = this;
-            const employees = strip(vm.employees);
-            const professions = strip(Object.keys(vm.professions));
-
-            if (professions.indexOf(vm.ratingBy) === -1) return employees;
-
-            return employees.filter((p) => {
-                return p.specialisation === vm.ratingBy;
-            });
-        },
-
-        /**
          *  Список профессий
          * ключи объекта совпадают со значениями модели laravel Employee
          * @see Laravel Model Employee
@@ -133,66 +120,72 @@ const appPublicStatistics = {
          *
          * @return {Array}
          */
-        ratingData() {
+        ratingDataRaw() {
             const vm = this;
             // список отфильтрованной по ratingBy техники
-            const vehicles = strip(vm.vehiclesFiltered);
+            const vehicles = strip(vm.vehicles);
 
             // список отфильтрованных по ratingBy сотрудников с назначенной техникой
-            const employees = strip(vm.employeesFiltered).filter((e) => {
-                return e.vehicles.length;
-            });
+            const employees = strip(vm.employees);
 
             // количество полученной техникой культуры
             const transfered = strip(vm.bvsTransferedAmounts);
 
-            // перечень профессий
-            const professions = strip(Object.keys(vm.professions));
-
             // перечень типов техники
             const vehicleTypes = strip(Object.keys(vm.vehicleTypes));
             let output = [];
+            let idx = 1;
 
-            // Определить по техники или по сотрудникам фильтрация
-
-            // формирование рейтинга в разрезе сотрудников и назначенной им техники
-            if (professions.indexOf(vm.ratingBy) >= 0) {
-                for (const _employee of employees) {
-                    const _key = `${_employee.last_name} ${_employee.first_name} ${_employee.middle_name}`;
-                    let _temp = {
-                        name: "",
-                        type: "",
-                        amount: 0,
-                        object: _employee,
-                    };
-                    _temp.name = _key;
-                    _temp.type = _employee.specialisation;
-                    const _vehicles = _employee.vehicles.map((v) => v.name);
-
-                    for (const __name of _vehicles) {
-                        if (!transfered[__name]) continue;
-                        _temp.amount += transfered[__name];
-                    }
-                    output.push(_temp);
-                }
-            }
             // формирование рейтинга в разрезе техники
-            else if (vehicleTypes.indexOf(vm.ratingBy) >= 0) {
-                for (const _vehicle of vehicles) {
-                    const _temp = {
-                        name: "",
-                        type: "",
-                        amount: 0,
-                        object: _vehicle,
-                    };
-                    _temp.name = _vehicle.name;
-                    _temp.type = vm.vehicleTypes[_vehicle.type];
-                    if (transfered[_vehicle.name]) {
-                        _temp.amount += transfered[_vehicle.name];
-                    }
-                    output.push(_temp);
+            for (const _vehicle of vehicles) {
+                const _temp = {
+                    name: "",
+                    type: "",
+                    amount: 0,
+                    object: _vehicle,
+                    type: vehicleTypes[_vehicle.type],
+                    sort: _vehicle.type,
+                    pid: idx,
+                };
+                _temp.name = _vehicle.name;
+                _temp.id = _vehicle.id;
+                if (transfered[_vehicle.name]) {
+                    _temp.amount += transfered[_vehicle.name];
                 }
+                output.push(_temp);
+                idx++;
             }
+            // формирование рейтинга в разрезе сотрудников
+            for (const _employee of employees) {
+                const _key = `${_employee.last_name} ${_employee.first_name} ${_employee.middle_name}`;
+                const _temp = {
+                    name: "",
+                    type: "",
+                    amount: 0,
+                    object: _employee,
+                    type: _employee.specialisation,
+                    sort: _employee.specialisation,
+                    pid: idx,
+                };
+                _temp.name = _key;
+                _temp.id = _employee.id;
+                const _vehicles = _employee.vehicles.map((v) => v.name);
+
+                for (const __name of _vehicles) {
+                    if (!transfered[__name]) continue;
+                    _temp.amount += transfered[__name];
+                }
+                output.push(_temp);
+                idx++;
+            }
+            return output;
+        },
+
+        ratingData() {
+            const vm = this;
+            const output = strip(vm.ratingDataRaw).filter((i) => {
+                return i.sort === vm.ratingBy;
+            });
 
             // сортировка рейтинга по убыванию
             output.sort((itemA, itemB) => {
@@ -216,24 +209,6 @@ const appPublicStatistics = {
             const separator = { "-": "-----------" };
             Object.assign(options, vm.vehicleTypes, separator, vm.professions);
             return options;
-        },
-
-        /**
-         * отфильтрованный список техники в зависимости от значения ratingBy
-         *
-         * @return {Array} техники
-         */
-        vehiclesFiltered() {
-            const vm = this;
-            const vehicleTypes = strip(Object.keys(vm.vehicleTypes));
-            let vehicles = strip(vm.vehicles);
-
-            if (vehicleTypes.indexOf(vm.ratingBy) < 0) return vehicles;
-            vehicles = vehicles.filter((v) => {
-                return v.type === vm.ratingBy;
-            });
-
-            return vehicles;
         },
 
         /**

@@ -13740,6 +13740,10 @@ body.auth #app {
   display: none;
 }
 
+.sort-move {
+  transition: transform 0.5s;
+}
+
 .public-header {
   background: linear-gradient(103.06deg, #007e3c 18.83%, #032422 100%);
   box-shadow: 6px 6px 6px rgba(33, 40, 41, 0.03);
@@ -13972,6 +13976,15 @@ body.auth #app {
   padding: 0.25rem 1rem;
   border-radius: 0.5rem;
   background-color: var(--lightest);
+  border: 2px solid var(--lightest);
+  transition: background-color 0.15s;
+}
+.rating-row__number-cell {
+  width: 1.5rem;
+  min-width: 1.5rem;
+}
+.rating-row:hover {
+  background-color: var(--grey-lightest);
 }
 .rating-row .fa-star {
   color: var(--green-medium);
