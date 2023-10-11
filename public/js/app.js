@@ -19601,8 +19601,9 @@ var appPublicRating = {
      * @return {Void|Array}
      */
     bvsTransferedAmounts: function bvsTransferedAmounts() {
+      var _vm$bvsData;
       var vm = this;
-      if (!vm.bvsData.length) return;
+      if (!((_vm$bvsData = vm.bvsData) !== null && _vm$bvsData !== void 0 && _vm$bvsData.length)) return;
 
       // сортировка данных по временному периоду
       var data = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.bvsData).filter(function (d) {
