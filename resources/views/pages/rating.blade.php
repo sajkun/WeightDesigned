@@ -67,7 +67,7 @@
                 </div>
             </Transition>
             <div class="col-12 col-md-6">
-                <Columns :_info='ratingData'></Columns>
+                <Columns :_info='ratingData' :_max-value='maxValue'></Columns>
             </div>
         </div>
     </div>

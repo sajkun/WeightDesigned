@@ -16070,17 +16070,28 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+/* harmony import */ var _misc_helpers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../misc/helpers */ "./resources/js/misc/helpers.js");
 function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
+
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   watch: {
+    _maxValue: function _maxValue(val) {
+      this.maxValue = val;
+      return null;
+    },
     _info: function _info(info) {
       this.info = Object.values(info).slice(0, 5);
       return null;
     }
   },
   props: {
+    _maxValue: {
+      type: Number,
+      "default": 0,
+      required: false
+    },
     _info: {
       type: Object,
       "default": {},
@@ -16089,12 +16100,52 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
   },
   data: function data() {
     return {
-      info: Object.values(this._info).slice(0, 5)
+      info: Object.values(this._info).slice(0, 5),
+      maxValue: this._maxValue
     };
   },
-  computed: {},
+  computed: {
+    emptyColumn: function emptyColumn() {
+      return {
+        height: 0,
+        item: {
+          amount: 0,
+          name: "",
+          model: "-"
+        }
+      };
+    },
+    /**
+     * @returns {Array} массив объектов с высотой колонок и соответсвующим объектом рейтинга
+     */
+    columns: function columns() {
+      var vm = this;
+      var data = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.info);
+      if (!data.length) {
+        data = [(0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.emptyColumn), (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.emptyColumn), (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.emptyColumn), (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.emptyColumn), (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.emptyColumn)];
+        return data;
+      }
+      var parentheight = vm.$refs["columns-holder"].clientHeight - 40;
+      data = data.map(function (item) {
+        var height = item.amount * 100 / vm.maxValue * parentheight / 100;
+        return {
+          height: isNaN(height) ? 0 : height,
+          item: item
+        };
+      });
+      for (var i = data.length; i < 5; i++) {
+        data.push(vm.emptyColumn);
+      }
+      return data;
+    }
+  },
   mounted: function mounted() {
-    this.info = Object.values(this._info).slice(0, 5);
+    var vm = this;
+    vm.info = Object.values(vm._info).slice(0, 5);
+    vm.$nextTick(function () {
+      vm.$el.parentNode.style.height = vm.$el.parentNode.scrollHeight + "px";
+      vm.$refs["columns-holder"].style.height = vm.$refs["columns-holder"].scrollHeight - 40 + "px";
+    });
   },
   methods: {
     /**
@@ -16103,7 +16154,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
      * @return {String} название техники или ФИО
      */
     parseName: function parseName(item) {
-      if (item.model == "vehicle") {
+      if (["vehicle", "-"].indexOf(item.model) >= 0) {
         return item.name;
       }
       var parts = item.name.split(" ");
@@ -16922,25 +16973,41 @@ var _withScopeId = function _withScopeId(n) {
   return (0,vue__WEBPACK_IMPORTED_MODULE_0__.pushScopeId)("data-v-07fb03c0"), n = n(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.popScopeId)(), n;
 };
 var _hoisted_1 = {
-  "class": "columns-wrapper p-4 d-flex flex-column"
+  "class": "columns-wrapper d-flex flex-column"
 };
 var _hoisted_2 = {
-  "class": "d-flex flex-grow-1 align-items-end",
+  "class": "p-4 d-flex flex-column flex-grow-1"
+};
+var _hoisted_3 = {
+  "class": "d-flex flex-grow-1",
   ref: "columns-holder"
 };
-var _hoisted_3 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createStaticVNode)("<div class=\"column-5 place-1\" data-v-07fb03c0></div><div class=\"column-5 place-2\" data-v-07fb03c0></div><div class=\"column-5 place-3\" data-v-07fb03c0></div><div class=\"column-5 place-4\" data-v-07fb03c0></div><div class=\"column-5 place-5\" data-v-07fb03c0></div>", 5);
-var _hoisted_8 = [_hoisted_3];
-var _hoisted_9 = {
+var _hoisted_4 = {
+  key: 0,
+  "class": "p-2"
+};
+var _hoisted_5 = {
   "class": "d-flex mt-4 align-items-end"
 };
-var _hoisted_10 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createStaticVNode)("<div class=\"d-flex columns-wrapper__footer mt-4\" data-v-07fb03c0><div class=\"column-5 place-1\" data-v-07fb03c0><div class=\"column-5__inner\" data-v-07fb03c0>1 <i class=\"fa fa-star\" data-v-07fb03c0></i></div></div><div class=\"column-5 place-2\" data-v-07fb03c0><div class=\"column-5__inner\" data-v-07fb03c0>2 <i class=\"fa fa-star\" data-v-07fb03c0></i></div></div><div class=\"column-5 place-3\" data-v-07fb03c0><div class=\"column-5__inner\" data-v-07fb03c0>3 <i class=\"fa fa-star\" data-v-07fb03c0></i></div></div><div class=\"column-5 place-4\" data-v-07fb03c0><div class=\"column-5__inner\" data-v-07fb03c0>4</div></div><div class=\"column-5 place-5\" data-v-07fb03c0><div class=\"column-5__inner\" data-v-07fb03c0>5</div></div></div>", 1);
+var _hoisted_6 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createStaticVNode)("<div class=\"d-flex columns-wrapper__footer mt-4\" data-v-07fb03c0><div class=\"column-5 place-1\" data-v-07fb03c0><div class=\"column-5__inner\" data-v-07fb03c0> 1 <i class=\"fa fa-star\" data-v-07fb03c0></i></div></div><div class=\"column-5 place-2\" data-v-07fb03c0><div class=\"column-5__inner\" data-v-07fb03c0> 2 <i class=\"fa fa-star\" data-v-07fb03c0></i></div></div><div class=\"column-5 place-3\" data-v-07fb03c0><div class=\"column-5__inner\" data-v-07fb03c0> 3 <i class=\"fa fa-star\" data-v-07fb03c0></i></div></div><div class=\"column-5 place-4\" data-v-07fb03c0><div class=\"column-5__inner\" data-v-07fb03c0>4</div></div><div class=\"column-5 place-5\" data-v-07fb03c0><div class=\"column-5__inner\" data-v-07fb03c0>5</div></div></div>", 1);
 function render(_ctx, _cache, $props, $setup, $data, $options) {
-  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" столбцы рейтинга "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, _hoisted_8, 512 /* NEED_PATCH */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" список наименования "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_9, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.info, function (item, idx) {
+  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" столбцы рейтинга "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_3, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($options.columns, function (col, idx) {
+    return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", {
+      "class": "column-5 d-flex flex-column justify-content-end",
+      key: 'val' + idx
+    }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
+      "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)(["rating-column flex-shrink-0 align", 'rating-' + (idx + 1)]),
+      style: (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeStyle)({
+        height: col.height + 'px',
+        transitionDelay: 0.2 * idx + 's'
+      })
+    }, [$options.parseName(col.item) && col.height ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("b", _hoisted_4, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(col.item.amount), 1 /* TEXT */)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)], 6 /* CLASS, STYLE */)]);
+  }), 128 /* KEYED_FRAGMENT */))], 512 /* NEED_PATCH */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" список наименования "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_5, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.info, function (item, idx) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", {
       "class": "column-5 text-start",
       key: 'col' + idx
     }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($options.parseName(item)), 1 /* TEXT */);
-  }), 128 /* KEYED_FRAGMENT */))]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Метки порядкового номера и звездочка  "), _hoisted_10]);
+  }), 128 /* KEYED_FRAGMENT */))]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" Метки порядкового номера и звездочка  "), _hoisted_6])]);
 }
 
 /***/ }),
@@ -19512,10 +19579,21 @@ var appPublicRating = {
         // диапазон дат для фильтрации данных бвс
         start: null,
         end: null
-      }
+      },
+      maxValue: 0
     };
   },
-  watch: {},
+  watch: {
+    employees: function employees() {
+      this.maxValue = this.getMaxValue();
+    },
+    vehicles: function vehicles() {
+      this.maxValue = this.getMaxValue();
+    },
+    bvsData: function bvsData() {
+      this.maxValue = this.getMaxValue();
+    }
+  },
   computed: {
     /**
      * Вычисляет итоговое собранное количество зерна в разрезе техники
@@ -19676,6 +19754,11 @@ var appPublicRating = {
       }
       return output;
     },
+    /**
+     * отсортированныей массив данных для рейтинга
+     *
+     * @returns {Array}
+     */
     ratingData: function ratingData() {
       var vm = this;
       var output = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.ratingDataRaw).filter(function (i) {
@@ -19740,6 +19823,18 @@ var appPublicRating = {
     });
   },
   methods: {
+    /**
+     *
+     * @returns {Integer} максимальное значение переданного зерна
+     */
+    getMaxValue: function getMaxValue() {
+      var vm = this;
+      var data = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.ratingDataRaw);
+      var maxValue = data.reduce(function (accumulator, item) {
+        return Math.max(item.amount, accumulator);
+      }, 0);
+      return Math.max(vm.maxValue, maxValue);
+    },
     /**
      * Задает значение отображаемого периода
      *
@@ -20912,7 +21007,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, ".columns-wrapper[data-v-07fb03c0] {\n  width: 100%;\n  height: 100%;\n  background-color: var(--lightest);\n  border-radius: 0.5rem;\n}\n.columns-wrapper__footer[data-v-07fb03c0] {\n  font-size: 1.25rem;\n}\n.column-5[data-v-07fb03c0] {\n  width: 20%;\n  max-width: 20%;\n  flex-basis: 20%;\n  padding-left: 0.5rem;\n  padding-right: 0.5rem;\n  text-align: center;\n}\n.column-5__inner[data-v-07fb03c0] {\n  width: 100%;\n  padding: 0.5rem 0;\n  border-radius: 0.5rem;\n}\n.place-1 .column-5__inner[data-v-07fb03c0] {\n  background: linear-gradient(77deg, #e5c25b 1.15%, #f9df7b 32.91%, #fff3a6 69.86%, #f9df7b 108.54%);\n}\n.place-2 .column-5__inner[data-v-07fb03c0] {\n  background: linear-gradient(73deg, #636363 -23.34%, #e1e1e1 5.37%, #fff 60.79%, #dedede 85.8%, #b1b1b1 121.43%, #646464 122.18%, #5f5f5f 129%, #737373 136.08%, #656565 138.09%, #8d8d8d 141.98%, #767676 149.46%, #929292 163.1%, #bababa 179.02%, #d3d3d3 185.84%, #dbdbdb 190.39%, #f3f3f3 204.03%);\n}\n.place-3 .column-5__inner[data-v-07fb03c0] {\n  background: linear-gradient(68deg, #663500 -11.99%, #b18a4b 18.82%, #d0ad6a 39.73%, #fdedc9 97.03%);\n}\n.place-4 .column-5__inner[data-v-07fb03c0], .place-5 .column-5__inner[data-v-07fb03c0] {\n  background-color: var(--green-ultralight);\n}\n.column-5.place-1[data-v-07fb03c0], .column-5.place-2[data-v-07fb03c0], .column-5.place-3[data-v-07fb03c0] {\n  color: var(--darkest);\n}\n.column-5.place-4[data-v-07fb03c0], .column-5.place-5[data-v-07fb03c0] {\n  color: var(--green);\n}\n.column-5.place-1 i[data-v-07fb03c0] {\n  color: var(--yellow);\n}\n.column-5.place-2 i[data-v-07fb03c0] {\n  color: var(--grey);\n}\n.column-5.place-3 i[data-v-07fb03c0] {\n  color: var(--cooper);\n}", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, ".columns-wrapper[data-v-07fb03c0] {\n  width: 100%;\n  height: 100%;\n  background-color: var(--lightest);\n  border-radius: 0.5rem;\n  --place-gold: linear-gradient(\n      77deg,\n      #e5c25b 1.15%,\n      #f9df7b 32.91%,\n      #fff3a6 69.86%,\n      #f9df7b 108.54%\n  );\n  --place-silver: linear-gradient(\n      73deg,\n      #636363 -23.34%,\n      #e1e1e1 5.37%,\n      #fff 60.79%,\n      #dedede 85.8%,\n      #b1b1b1 121.43%,\n      #646464 122.18%,\n      #5f5f5f 129%,\n      #737373 136.08%,\n      #656565 138.09%,\n      #8d8d8d 141.98%,\n      #767676 149.46%,\n      #929292 163.1%,\n      #bababa 179.02%,\n      #d3d3d3 185.84%,\n      #dbdbdb 190.39%,\n      #f3f3f3 204.03%\n  );\n  --place-cooper: linear-gradient(\n      68deg,\n      #663500 -11.99%,\n      #b18a4b 18.82%,\n      #d0ad6a 39.73%,\n      #fdedc9 97.03%\n  );\n}\n.columns-wrapper__footer[data-v-07fb03c0] {\n  font-size: 1.25rem;\n}\n.rating-column[data-v-07fb03c0] {\n  border-radius: 0.5rem;\n  transition: height var(--slow);\n  transition-timing-function: cubic-bezier(1, 2, 4, 8);\n  max-height: 100%;\n}\n.rating-column.min-height[data-v-07fb03c0] {\n  min-height: 2rem;\n}\n.rating-1[data-v-07fb03c0] {\n  background: var(--place-gold);\n}\n.rating-2[data-v-07fb03c0] {\n  background: var(--place-silver);\n}\n.rating-3[data-v-07fb03c0] {\n  background: var(--place-cooper);\n}\n.rating-4[data-v-07fb03c0],\n.rating-5[data-v-07fb03c0] {\n  background-color: var(--green-ultralight);\n}\n.column-5[data-v-07fb03c0] {\n  width: 20%;\n  max-width: 20%;\n  flex-basis: 20%;\n  padding-left: 0.5rem;\n  padding-right: 0.5rem;\n  text-align: center;\n}\n.column-5__inner[data-v-07fb03c0] {\n  width: 100%;\n  padding: 0.5rem 0;\n  border-radius: 0.5rem;\n}\n.place-1 .column-5__inner[data-v-07fb03c0] {\n  background: var(--place-gold);\n}\n.place-2 .column-5__inner[data-v-07fb03c0] {\n  background: var(--place-silver);\n}\n.place-3 .column-5__inner[data-v-07fb03c0] {\n  background: var(--place-cooper);\n}\n.place-4 .column-5__inner[data-v-07fb03c0], .place-5 .column-5__inner[data-v-07fb03c0] {\n  background-color: var(--green-ultralight);\n}\n.column-5.place-1[data-v-07fb03c0], .column-5.place-2[data-v-07fb03c0], .column-5.place-3[data-v-07fb03c0] {\n  color: var(--darkest);\n}\n.column-5.place-4[data-v-07fb03c0], .column-5.place-5[data-v-07fb03c0] {\n  color: var(--green);\n}\n.column-5.place-1 i[data-v-07fb03c0] {\n  color: var(--yellow);\n}\n.column-5.place-2 i[data-v-07fb03c0] {\n  color: var(--grey);\n}\n.column-5.place-3 i[data-v-07fb03c0] {\n  color: var(--cooper);\n}\n.text-start[data-v-07fb03c0] {\n  height: 1.5rem;\n}", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 

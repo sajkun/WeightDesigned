@@ -38,10 +38,23 @@ const appPublicRating = {
                 start: null,
                 end: null,
             },
+            maxValue: 0,
         };
     },
 
-    watch: {},
+    watch: {
+        employees() {
+            this.maxValue = this.getMaxValue();
+        },
+
+        vehicles() {
+            this.maxValue = this.getMaxValue();
+        },
+
+        bvsData() {
+            this.maxValue = this.getMaxValue();
+        },
+    },
 
     computed: {
         /**
@@ -185,6 +198,11 @@ const appPublicRating = {
             return output;
         },
 
+        /**
+         * отсортированныей массив данных для рейтинга
+         *
+         * @returns {Array}
+         */
         ratingData() {
             const vm = this;
             const output = strip(vm.ratingDataRaw).filter((i) => {
@@ -255,6 +273,20 @@ const appPublicRating = {
     },
 
     methods: {
+        /**
+         *
+         * @returns {Integer} максимальное значение переданного зерна
+         */
+        getMaxValue() {
+            const vm = this;
+            const data = strip(vm.ratingDataRaw);
+            const maxValue = data.reduce((accumulator, item) => {
+                return Math.max(item.amount, accumulator);
+            }, 0);
+
+            return Math.max(vm.maxValue, maxValue);
+        },
+
         /**
          * Задает значение отображаемого периода
          *
