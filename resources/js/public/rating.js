@@ -65,7 +65,7 @@ const appPublicRating = {
         bvsTransferedAmounts() {
             const vm = this;
 
-            if (!vm.bvsData.length) return;
+            if (!vm.bvsData?.length) return;
 
             // сортировка данных по временному периоду
             let data = strip(vm.bvsData).filter((d) => {
