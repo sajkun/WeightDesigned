@@ -8,7 +8,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Весовая Система - ООО Лилиани') }}</title>
+    <title>Весовая Система - ООО Лилиани</title>
 
     <script type="text/javascript" src="{{ asset('js/app.js') }}"></script>
 
@@ -80,6 +80,7 @@
                                 @can('viewAny', [App\Models\User::class, $organisation_id])
                                     <li><a href="{{ route('public.users.index') }}">Пользователи</a></li>
                                 @endcan
+                                <li><a href="{{ route('public.data.rating') }}">Ретинг</a></li>
                             </ul>
                         </div>
                         <div class="col flex-grow-1 align-self-center">

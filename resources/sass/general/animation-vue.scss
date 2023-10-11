@@ -19,6 +19,7 @@
         transform: scale(1);
     }
 }
+// *************************
 
 .fade-enter-active {
     opacity: 1;
@@ -30,4 +31,8 @@
     opacity: 0;
     visibility: hidden;
     display: none;
+}
+
+.sort-move {
+    transition: transform 0.5s;
 }

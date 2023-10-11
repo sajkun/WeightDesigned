@@ -1,0 +1,34 @@
+.row {
+    --bs-gutter-x: 0;
+    --bs-gutter-н: 0;
+}
+
+.month-picker {
+    position: relative;
+
+    &__dropdown {
+        padding: 0.5rem;
+        background-color: var(--lightest);
+        border: 1px solid var(--grey-light);
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+        position: absolute;
+        top: 100%;
+        right: 0;
+        width: fit-content;
+        border-radius: 0.5rem;
+        max-width: 360px;
+
+        button {
+            background-color: #fff;
+            border: 1px solid transparent;
+
+            &.selected {
+                border: 1px solid var(--green);
+            }
+
+            &:hover {
+                background-color: var(--grey-light);
+            }
+        }
+    }
+}

@@ -8,6 +8,7 @@ import publicUsers from "./public/users.js";
 import publicEmployees from "./public/employees.js";
 import publicVehicles from "./public/vehicle.js";
 import publicGrasslands from "./public/grasslands.js";
+import publicRating from "./public/rating.js";
 
 // инициализация домашней страницы для публичной зоны
 if (document.getElementById("home-page")) {
@@ -33,6 +34,9 @@ if (document.getElementById("public-grasslands")) {
     createApp(publicGrasslands).mount("#public-grasslands");
 }
 
+// инициализация приложения статистики для публичной зоны
+if (document.getElementById("public-rating")) {
+    createApp(publicRating).mount("#public-rating");
+}
+
 require("./public/ready");
-// require("./public/vehicle");
-// require("./public/grasslands");

@@ -1,4 +1,8 @@
 <?php
+/**
+ * Контроллер родитель для всех контроллеро публичной зоны
+ * Подготавливает общие данные для все шаблонов
+ */
 namespace App\Http\Controllers;
 
 use App\Models\User;
@@ -10,7 +14,7 @@ use Illuminate\Support\Facades\File;
 class PublicController extends Controller
 {
     /**
-     * Create a new controller instance.
+     * Создание нового экземпляра класса
      *
      * @return void
      */
@@ -19,23 +23,28 @@ class PublicController extends Controller
         $this->middleware('auth');
     }
 
+    /**
+     * Подготовка данных для шаблонов
+     *
+     * @return void
+     */
     public function prepareData()
     {
+        // получение всех js файлов и формирование массива путей
         $path = public_path('/js/libs');
         $jslibs = array_map(function ($f) {
             return "/js/libs/{$f->getRelativePathname()}";
         }, File::allFiles($path));
-
         view()->share('jslibs', $jslibs);
 
+        // получение данные об авторизованном пользователе и его организации
         $user = Auth::user();
         $organisation = Organisation::find($user->organisation_id);
         $roles = config('users.roles_nice_names');
 
-        $organisation->bvsData();
-
         unset($roles['admin'], $roles['superadmin']);
 
+        // назначение переменных для шаблонов страниц
         view()->share('roles', $roles);
         view()->share('organisation', $organisation->name);
         view()->share('organisation_id', $organisation->id);
