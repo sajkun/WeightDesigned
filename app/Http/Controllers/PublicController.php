@@ -41,7 +41,6 @@ class PublicController extends Controller
         $user = Auth::user();
         $organisation = Organisation::find($user->organisation_id);
         $roles = config('users.roles_nice_names');
-
         unset($roles['admin'], $roles['superadmin']);
 
         // назначение переменных для шаблонов страниц

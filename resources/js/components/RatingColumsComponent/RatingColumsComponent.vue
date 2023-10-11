@@ -28,13 +28,15 @@
 
             <!-- список наименования -->
             <div class="d-flex mt-4 align-items-end">
-                <div
-                    class="column-5 text-start"
-                    v-for="(item, idx) in info"
-                    :key="'col' + idx"
-                >
-                    {{ parseName(item) }}
-                </div>
+                <transition-group name="sort" v-on:leave="onLeave" :css="false">
+                    <div
+                        class="column-5 text-start"
+                        v-for="item in info"
+                        :key="'col' + item.pid"
+                    >
+                        {{ parseName(item) }}
+                    </div>
+                </transition-group>
             </div>
 
             <!-- Метки порядкового номера и звездочка  -->
@@ -67,7 +69,10 @@
 
 <script>
 import { strip, clog } from "../../misc/helpers";
+
+import sortAnimation from "../../mixins/sortAnimation";
 export default {
+    mixins: [sortAnimation],
     watch: {
         _maxValue(val) {
             this.maxValue = val;

@@ -18,6 +18,9 @@ class RatingController extends PublicController
     public function __invoke(Request $request)
     {
         $this->prepareData();
+
+
+
         return view('pages.rating');
     }
 }
