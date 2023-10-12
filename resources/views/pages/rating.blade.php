@@ -25,7 +25,7 @@
                         @{{ rate }}</option>
                 </select>
             </div>
-            <div class="col-md-auto col-12 text-md-end mt-4 mt-0-md">
+            <div class="col-md-4 col-12 text-md-end mt-4 mt-0-md">
                 <month-picker @selected='setDisplayedPeriod' />
             </div>
         </div>
