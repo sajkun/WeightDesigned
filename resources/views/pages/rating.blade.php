@@ -62,11 +62,9 @@
                 </transition-group>
             </div>
             {{-- ************************************************ --}}
-            <Transition name='fade'>
-                <div class="col-12 col-md-6 col-xl-7 mt-4" v-show='!ratingData.length'>
-                    <i>Нет записей </i>
-                </div>
-            </Transition>
+            <div class="col-12 col-md-6 col-xl-7 mt-4" v-if='!ratingData.length'>
+                <i>Нет записей </i>
+            </div>
             <div class="col-12 col-md-6 col-xl-5">
                 <Columns :_info='ratingData' :_max-value='maxValue'></Columns>
             </div>

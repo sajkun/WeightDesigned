@@ -12,45 +12,47 @@
         </button>
         <!-- ------------------------------------- -->
 
-        <!-- выпадающий элемент -->
-        <div class="month-picker__dropdown" v-if="showDropdown">
-            <!-- выбор года  -->
-            <div class="d-flex align-content-between w-100">
-                <button class="btn" type="button" @click="chaYear(-1)">
-                    <i class="fa fa-caret-left"></i>
-                </button>
-                <div class="align-self-center flex-grow-1 text-center">
-                    <button class="btn" type="button" @click="setMonth(0)">
-                        {{ year }}
+        <Transition name="fade">
+            <!-- выпадающий элемент -->
+            <div class="month-picker__dropdown" v-if="showDropdown">
+                <!-- выбор года  -->
+                <div class="d-flex align-content-between w-100">
+                    <button class="btn" type="button" @click="chaYear(-1)">
+                        <i class="fa fa-caret-left"></i>
                     </button>
-                </div>
-                <button
-                    class="btn"
-                    type="button"
-                    :disabled="disableNextYear"
-                    @click="chaYear(1)"
-                >
-                    <i class="fa fa-caret-right"></i>
-                </button>
-            </div>
-
-            <!-- список месяцев -->
-            <div class="row">
-                <div
-                    class="col-4"
-                    v-for="(monthName, key) in months"
-                    :key="'month' + key"
-                >
+                    <div class="align-self-center flex-grow-1 text-center">
+                        <button class="btn" type="button" @click="setMonth(0)">
+                            {{ year }}
+                        </button>
+                    </div>
                     <button
-                        class="btn w-100 p-2"
+                        class="btn"
                         type="button"
-                        @click="setMonth(key + 1)"
+                        :disabled="disableNextYear"
+                        @click="chaYear(1)"
                     >
-                        {{ monthName }}
+                        <i class="fa fa-caret-right"></i>
                     </button>
                 </div>
+
+                <!-- список месяцев -->
+                <div class="row">
+                    <div
+                        class="col-4"
+                        v-for="(monthName, key) in months"
+                        :key="'month' + key"
+                    >
+                        <button
+                            class="btn w-100 p-2"
+                            type="button"
+                            @click="setMonth(key + 1)"
+                        >
+                            {{ monthName }}
+                        </button>
+                    </div>
+                </div>
             </div>
-        </div>
+        </Transition>
     </div>
 </template>
 

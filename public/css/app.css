@@ -13709,7 +13709,7 @@ body.auth #app {
 }
 
 .bounce-enter-active {
-  animation: bounce-in 0.5s;
+  animation: bounce-in var(--slow);
 }
 
 .bounce-leave-to {
@@ -13729,20 +13729,23 @@ body.auth #app {
     transform: scale(1);
   }
 }
-.fade-enter-active {
-  opacity: 1;
-  visibility: visible;
-  display: initial;
+.fade-leave-active {
+  transition: opacity var(--fast), visibility var(--fast);
 }
 
+.fade-enter-active {
+  visibility: visible;
+  transition: opacity var(--slow), visibility var(--fast);
+}
+
+.fade-enter-from,
 .fade-leave-to {
   opacity: 0;
   visibility: hidden;
-  display: none;
 }
 
 .sort-move {
-  transition: transform 0.5s;
+  transition: transform var(--slow);
 }
 
 .public-header {
