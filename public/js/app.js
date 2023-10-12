@@ -18456,6 +18456,39 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/mixins/professions.js":
+/*!********************************************!*\
+  !*** ./resources/js/mixins/professions.js ***!
+  \********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  computed: {
+    /**
+     *  Список профессий
+     * ключи объекта совпадают со значениями модели laravel Employee
+     * @see Laravel Model Employee
+     *
+     * @return {Object}
+     */
+    professions: function professions() {
+      var profesions = {
+        "Водитель Трактора": "Трактористов",
+        "Водитель Комбайна": "Комбайнеров",
+        "Водитель Зерновоза": "Водителей"
+      };
+      return profesions;
+    }
+  }
+});
+
+/***/ }),
+
 /***/ "./resources/js/mixins/publicAuthData.js":
 /*!***********************************************!*\
   !*** ./resources/js/mixins/publicAuthData.js ***!
@@ -18522,6 +18555,39 @@ __webpack_require__.r(__webpack_exports__);
       el.style.opacity = 0;
       el.style.height = 0;
       done();
+    }
+  }
+});
+
+/***/ }),
+
+/***/ "./resources/js/mixins/vehicleTypes.js":
+/*!*********************************************!*\
+  !*** ./resources/js/mixins/vehicleTypes.js ***!
+  \*********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  computed: {
+    /**
+     * список типов техники и их человеко-понятных меток
+     * ключи массива совпадают с типами техники
+     * @see Laravel Model Vehicle
+     *
+     * @return {Object}
+     */
+    vehicleTypes: function vehicleTypes() {
+      var types = {
+        bunker: "Бункер Перегрузчик",
+        harvester: "Комбайн",
+        transporter: "Зерновоз"
+      };
+      return types;
     }
   }
 });
@@ -19630,9 +19696,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _mixins_messages__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../mixins/messages */ "./resources/js/mixins/messages.js");
 /* harmony import */ var _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../mixins/publicAuthData */ "./resources/js/mixins/publicAuthData.js");
 /* harmony import */ var _mixins_sortAnimation__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../mixins/sortAnimation */ "./resources/js/mixins/sortAnimation.js");
-/* harmony import */ var _components_MessagesComponent__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../components/MessagesComponent */ "./resources/js/components/MessagesComponent/index.js");
-/* harmony import */ var _components_inputs_MonthPickerComponent__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../components/inputs/MonthPickerComponent */ "./resources/js/components/inputs/MonthPickerComponent/index.js");
-/* harmony import */ var _components_RatingColumsComponent__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../components/RatingColumsComponent */ "./resources/js/components/RatingColumsComponent/index.js");
+/* harmony import */ var _mixins_professions__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../mixins/professions */ "./resources/js/mixins/professions.js");
+/* harmony import */ var _mixins_vehicleTypes__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../mixins/vehicleTypes */ "./resources/js/mixins/vehicleTypes.js");
+/* harmony import */ var _components_MessagesComponent__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../components/MessagesComponent */ "./resources/js/components/MessagesComponent/index.js");
+/* harmony import */ var _components_inputs_MonthPickerComponent__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../components/inputs/MonthPickerComponent */ "./resources/js/components/inputs/MonthPickerComponent/index.js");
+/* harmony import */ var _components_RatingColumsComponent__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../components/RatingColumsComponent */ "./resources/js/components/RatingColumsComponent/index.js");
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -19659,16 +19727,18 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
 
 
+
+
 // компоненты
 
 
 
 var appPublicRating = {
-  mixins: [_mixins_axiosRequests__WEBPACK_IMPORTED_MODULE_2__["default"], _mixins_crud__WEBPACK_IMPORTED_MODULE_3__["default"], _mixins_messages__WEBPACK_IMPORTED_MODULE_4__["default"], _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_5__["default"], _mixins_sortAnimation__WEBPACK_IMPORTED_MODULE_6__["default"]],
+  mixins: [_mixins_axiosRequests__WEBPACK_IMPORTED_MODULE_2__["default"], _mixins_crud__WEBPACK_IMPORTED_MODULE_3__["default"], _mixins_messages__WEBPACK_IMPORTED_MODULE_4__["default"], _mixins_professions__WEBPACK_IMPORTED_MODULE_7__["default"], _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_5__["default"], _mixins_sortAnimation__WEBPACK_IMPORTED_MODULE_6__["default"], _mixins_vehicleTypes__WEBPACK_IMPORTED_MODULE_8__["default"]],
   components: {
-    MessagesComponent: _components_MessagesComponent__WEBPACK_IMPORTED_MODULE_7__["default"],
-    MonthPicker: _components_inputs_MonthPickerComponent__WEBPACK_IMPORTED_MODULE_8__["default"],
-    Columns: _components_RatingColumsComponent__WEBPACK_IMPORTED_MODULE_9__["default"]
+    MessagesComponent: _components_MessagesComponent__WEBPACK_IMPORTED_MODULE_9__["default"],
+    MonthPicker: _components_inputs_MonthPickerComponent__WEBPACK_IMPORTED_MODULE_10__["default"],
+    Columns: _components_RatingColumsComponent__WEBPACK_IMPORTED_MODULE_11__["default"]
   },
   data: function data() {
     return {
@@ -19755,21 +19825,6 @@ var appPublicRating = {
         _iterator.f();
       }
       return parsedData;
-    },
-    /**
-     *  Список профессий
-     * ключи объекта совпадают со значениями модели laravel Employee
-     * @see Laravel Model Employee
-     *
-     * @return {Object}
-     */
-    professions: function professions() {
-      var profesions = {
-        "Водитель Трактора": "Трактористов",
-        "Водитель Комбайна": "Комбайнеров",
-        "Водитель Зерновоза": "Водителей"
-      };
-      return profesions;
     },
     /**
      * Сформированные данные для рейтинга
@@ -19892,21 +19947,6 @@ var appPublicRating = {
       };
       Object.assign(options, vm.vehicleTypes, separator, vm.professions);
       return options;
-    },
-    /**
-     * список типов техники и их человеко-понятных меток
-     * ключи массива совпадают с типами техники
-     * @see Laravel Model Vehicle
-     *
-     * @return {Object}
-     */
-    vehicleTypes: function vehicleTypes() {
-      var types = {
-        bunker: "Бункер Перегрузчик",
-        harvester: "Комбайн",
-        transporter: "Зерновоз"
-      };
-      return types;
     }
   },
   mounted: function mounted() {
@@ -19997,8 +20037,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _mixins_crud__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../mixins/crud */ "./resources/js/mixins/crud.js");
 /* harmony import */ var _mixins_messages__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../mixins/messages */ "./resources/js/mixins/messages.js");
 /* harmony import */ var _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../mixins/publicAuthData */ "./resources/js/mixins/publicAuthData.js");
-/* harmony import */ var _components_MessagesComponent__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../components/MessagesComponent */ "./resources/js/components/MessagesComponent/index.js");
-/* harmony import */ var _components_inputs_MonthPickerComponent__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../components/inputs/MonthPickerComponent */ "./resources/js/components/inputs/MonthPickerComponent/index.js");
+/* harmony import */ var _mixins_professions__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../mixins/professions */ "./resources/js/mixins/professions.js");
+/* harmony import */ var _mixins_vehicleTypes__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../mixins/vehicleTypes */ "./resources/js/mixins/vehicleTypes.js");
+/* harmony import */ var _components_MessagesComponent__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../components/MessagesComponent */ "./resources/js/components/MessagesComponent/index.js");
+/* harmony import */ var _components_inputs_MonthPickerComponent__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../components/inputs/MonthPickerComponent */ "./resources/js/components/inputs/MonthPickerComponent/index.js");
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
@@ -20019,14 +20061,16 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
 
 
+
+
 // компоненты
 
 
 var appPublicStatistics = {
-  mixins: [_mixins_axiosRequests__WEBPACK_IMPORTED_MODULE_2__["default"], _mixins_crud__WEBPACK_IMPORTED_MODULE_3__["default"], _mixins_messages__WEBPACK_IMPORTED_MODULE_4__["default"], _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_5__["default"]],
+  mixins: [_mixins_axiosRequests__WEBPACK_IMPORTED_MODULE_2__["default"], _mixins_crud__WEBPACK_IMPORTED_MODULE_3__["default"], _mixins_messages__WEBPACK_IMPORTED_MODULE_4__["default"], _mixins_professions__WEBPACK_IMPORTED_MODULE_6__["default"], _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_5__["default"], _mixins_vehicleTypes__WEBPACK_IMPORTED_MODULE_7__["default"]],
   components: {
-    MessagesComponent: _components_MessagesComponent__WEBPACK_IMPORTED_MODULE_6__["default"],
-    MonthPicker: _components_inputs_MonthPickerComponent__WEBPACK_IMPORTED_MODULE_7__["default"]
+    MessagesComponent: _components_MessagesComponent__WEBPACK_IMPORTED_MODULE_8__["default"],
+    MonthPicker: _components_inputs_MonthPickerComponent__WEBPACK_IMPORTED_MODULE_9__["default"]
   },
   data: function data() {
     return {
@@ -20034,10 +20078,17 @@ var appPublicStatistics = {
       // данные о транзакциях БВC
       employees: [],
       // перечень сотрудников организации
-      vehicles: [] // перечень техники
+      vehicles: [],
+      // перечень техники
+      ratingBy: "",
+      // по ком или чем отображать рейтинг
+      dateRange: {
+        // диапазон дат для фильтрации данных бвс
+        start: null,
+        end: null
+      }
     };
   },
-
   watch: {},
   computed: {},
   mounted: function mounted() {

@@ -11,13 +11,22 @@ import axiosRequests from "../mixins/axiosRequests";
 import crud from "../mixins/crud";
 import messages from "../mixins/messages";
 import publicAuthData from "../mixins/publicAuthData";
+import professions from "../mixins/professions";
+import vehicleTypes from "../mixins/vehicleTypes";
 
 // компоненты
 import MessagesComponent from "../components/MessagesComponent";
 import MonthPickerComponent from "../components/inputs/MonthPickerComponent";
 
 const appPublicStatistics = {
-    mixins: [axiosRequests, crud, messages, publicAuthData],
+    mixins: [
+        axiosRequests,
+        crud,
+        messages,
+        professions,
+        publicAuthData,
+        vehicleTypes,
+    ],
 
     components: {
         MessagesComponent,
@@ -29,6 +38,12 @@ const appPublicStatistics = {
             bvsData: [], // данные о транзакциях БВC
             employees: [], // перечень сотрудников организации
             vehicles: [], // перечень техники
+            ratingBy: "", // по ком или чем отображать рейтинг
+            dateRange: {
+                // диапазон дат для фильтрации данных бвс
+                start: null,
+                end: null,
+            },
         };
     },
 

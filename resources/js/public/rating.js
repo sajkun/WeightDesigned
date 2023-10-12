@@ -12,6 +12,8 @@ import crud from "../mixins/crud";
 import messages from "../mixins/messages";
 import publicAuthData from "../mixins/publicAuthData";
 import sortAnimation from "../mixins/sortAnimation";
+import professions from "../mixins/professions";
+import vehicleTypes from "../mixins/vehicleTypes";
 
 // компоненты
 import MessagesComponent from "../components/MessagesComponent";
@@ -19,7 +21,15 @@ import MonthPickerComponent from "../components/inputs/MonthPickerComponent";
 import RatingColumsComponent from "../components/RatingColumsComponent";
 
 const appPublicRating = {
-    mixins: [axiosRequests, crud, messages, publicAuthData, sortAnimation],
+    mixins: [
+        axiosRequests,
+        crud,
+        messages,
+        professions,
+        publicAuthData,
+        sortAnimation,
+        vehicleTypes,
+    ],
 
     components: {
         MessagesComponent,
@@ -111,23 +121,6 @@ const appPublicRating = {
             }
 
             return parsedData;
-        },
-
-        /**
-         *  Список профессий
-         * ключи объекта совпадают со значениями модели laravel Employee
-         * @see Laravel Model Employee
-         *
-         * @return {Object}
-         */
-        professions() {
-            const profesions = {
-                "Водитель Трактора": "Трактористов",
-                "Водитель Комбайна": "Комбайнеров",
-                "Водитель Зерновоза": "Водителей",
-            };
-
-            return profesions;
         },
 
         /**
@@ -231,23 +224,6 @@ const appPublicRating = {
             const separator = { "-": "-----------" };
             Object.assign(options, vm.vehicleTypes, separator, vm.professions);
             return options;
-        },
-
-        /**
-         * список типов техники и их человеко-понятных меток
-         * ключи массива совпадают с типами техники
-         * @see Laravel Model Vehicle
-         *
-         * @return {Object}
-         */
-        vehicleTypes() {
-            const types = {
-                bunker: "Бункер Перегрузчик",
-                harvester: "Комбайн",
-                transporter: "Зерновоз",
-            };
-
-            return types;
         },
     },
 
