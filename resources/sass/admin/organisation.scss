@@ -1,3 +1,5 @@
+@use "sass:map";
+
 table.organisation {
     width: 100%;
     font-size: 0.75rem;
@@ -26,7 +28,7 @@ table.organisation {
         }
     }
 
-    @media (max-width: 640px) {
+    @media (max-width: map.get($grid-breakpoints, "sm")) {
         th {
             display: none;
         }
@@ -90,7 +92,7 @@ table.organisation {
 }
 
 .org-details {
-    @media (max-width: 980px) {
+    @media (max-width: map.get($grid-breakpoints, "lg")) {
         top: 0;
         left: 0;
         z-index: 5;

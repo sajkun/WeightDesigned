@@ -1,9 +1,6 @@
 <!-- шаблон для отображения столбцов рейтинга -->
 <template>
-    <div
-        class="columns-wrapper d-flex flex-column"
-        :class="{ vh: info.length === 0 }"
-    >
+    <div class="columns-wrapper d-flex flex-column">
         <div class="p-1 p-4-md d-flex flex-column flex-grow-1">
             <!-- столбцы рейтинга -->
             <div class="d-flex flex-grow-1" ref="columns-holder">

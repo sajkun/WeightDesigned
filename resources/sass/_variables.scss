@@ -36,4 +36,14 @@ body {
 
     --fast: 0.15s;
     --slow: 0.6s;
+
+    --brs: 0.5rem;
+    --brs-lg: 1rem;
+
+    --breakpoint-xs: 0;
+    --breakpoint-sm: 576px;
+    --breakpoint-md: 768px;
+    --breakpoint-lg: 992px;
+    --breakpoint-xl: 1200px;
+    --breakpoint-xxl: 1400px;
 }

@@ -16,9 +16,8 @@
 
         {{-- шапка со списком выбора вариантов сортировки и выбора месяца или года отображения --}}
         {{-- ************************************************ --}}
-
-        <div class="row mt-4 mb-2">
-            <div class="col-md-6 col-12 align-self-center">
+        <div class="row mt-4 mb-2 justify-content-between">
+            <div class="col-md-auto col-12 align-self-center">
                 <p class="m-0 h-6 d-inline">Рейтинг среди:</p>
                 <select v-model='ratingBy' class='ms-2  inline-select'>
                     <option v-for='rate, key in ratingOptions' :key='"options" + key' :value='key'
@@ -26,16 +25,15 @@
                         @{{ rate }}</option>
                 </select>
             </div>
-            <div class="col-md-6 col-12 text-md-end mt-4 mt-0-md">
+            <div class="col-md-auto col-12 text-md-end mt-4 mt-0-md">
                 <month-picker @selected='setDisplayedPeriod' />
             </div>
         </div>
         {{-- ************************************************ --}}
         <div class="row flex-grow-1">
-
             {{-- Список отфильтрованных данных --}}
             {{-- ************************************************ --}}
-            <div class='col-12 col-md-6 col-xl-7 hide' v-show='ratingData.length'>
+            <div class='col-12 col-md-6 col-xl-7 rating-list' v-show='ratingData.length'>
                 <transition-group :css="false" v-on:before-enter="onBeforeEnter" v-on:enter="onEnter"
                     v-on:leave="onLeave" name='sort'>
                     <div v-for='data, key in ratingData' :data-index='key' :key='data.pid'>
@@ -62,7 +60,7 @@
                 </transition-group>
             </div>
             {{-- ************************************************ --}}
-            <div class="col-12 col-md-6 col-xl-7 mt-4" v-if='!ratingData.length'>
+            <div class="col-12 col-md-6 col-xl-7 mt-4 rating-nolist" v-if='!ratingData.length'>
                 <i>Нет записей </i>
             </div>
             <div class="col-12 col-md-6 col-xl-5">

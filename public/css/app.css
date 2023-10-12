@@ -2343,6 +2343,14 @@ body {
   --contrast: #fff;
   --fast: 0.15s;
   --slow: 0.6s;
+  --brs: 0.5rem;
+  --brs-lg: 1rem;
+  --breakpoint-xs: 0;
+  --breakpoint-sm: 576px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 992px;
+  --breakpoint-xl: 1200px;
+  --breakpoint-xxl: 1400px;
 }
 
 /*!
@@ -13136,7 +13144,7 @@ table.organisation tr:not(:first-child) {
 table.organisation tr:hover:not(:first-child):not(.no-hover) {
   outline: 2px solid #007e3c;
 }
-@media (max-width: 640px) {
+@media (max-width: 576px) {
   table.organisation th {
     display: none;
   }
@@ -13191,7 +13199,7 @@ table.organisation tr:hover:not(:first-child):not(.no-hover) {
   padding: calc(var(--bs-gutter-x) * 0.5);
 }
 
-@media (max-width: 980px) {
+@media (max-width: 992px) {
   .org-details {
     top: 0;
     left: 0;
@@ -13778,7 +13786,7 @@ body.auth #app {
   visibility: visible;
   opacity: 1;
 }
-@media (min-width: 768px) {
+@media (min-width: var(--breakpoint-md)) {
   .main-menu {
     visibility: initial;
     opacity: initial;
@@ -13792,7 +13800,7 @@ body.auth #app {
 .main-menu .submenu {
   padding-left: 1rem;
 }
-@media (min-width: 768px) {
+@media (min-width: var(--breakpoint-md)) {
   .main-menu .submenu {
     position: absolute;
     top: 100%;
@@ -13843,7 +13851,7 @@ body.auth #app {
   color: var(--link-color);
   text-decoration: underline;
 }
-@media (min-width: 768px) {
+@media (min-width: var(--breakpoint-md)) {
   .main-menu button {
     color: var(--link-color);
     padding: 0 !important;
@@ -13859,7 +13867,7 @@ body.auth #app {
   color: var(--darkest);
   padding: 0.5rem 1rem;
 }
-@media (min-width: 768px) {
+@media (min-width: var(--breakpoint-md)) {
   .main-menu a {
     color: var(--link-color);
   }
@@ -13867,7 +13875,7 @@ body.auth #app {
 .main-menu a:hover {
   text-decoration: underline;
 }
-@media (min-width: 768px) {
+@media (min-width: var(--breakpoint-md)) {
   .main-menu a {
     padding: 0 0.5rem;
   }
@@ -13978,7 +13986,7 @@ body.auth #app {
 
 .rating-row {
   padding: 0.25rem 1rem;
-  border-radius: 0.5rem;
+  border-radius: var(--brs);
   background-color: var(--lightest);
   border: 2px solid var(--lightest);
   transition: background-color var(--fast);
@@ -14001,4 +14009,15 @@ body.auth #app {
 }
 .rating-row.rating3 .fa-star {
   color: var(--cooper);
+}
+
+@media (max-width: 768px) {
+  #public-rating .rating-list {
+    display: none !important;
+  }
+}
+@media (max-width: 768px) {
+  #public-rating .rating-nolist {
+    display: none !important;
+  }
 }
