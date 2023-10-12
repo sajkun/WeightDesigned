@@ -28,7 +28,10 @@
 
     &.shown {
         visibility: visible;
-        opacity: 1;
+
+        @media (max-width: map.get($grid-breakpoints, "md")) {
+            opacity: 0.9;
+        }
     }
 
     @media (min-width: map.get($grid-breakpoints, "md")) {
@@ -95,22 +98,25 @@
                 opacity: 1;
             }
         }
+
+        @media (max-width: map.get($grid-breakpoints, "md")) {
+            border-bottom: 1px solid var(--grey-light);
+        }
     }
 
     button {
         display: block;
         color: var(--darkest);
-
-        &:hover {
-            color: var(--link-color);
-            text-decoration: underline;
-        }
-
         padding: 0.5rem 1rem !important;
 
         @media (min-width: map.get($grid-breakpoints, "md")) {
             color: var(--link-color);
             padding: 0 !important;
+        }
+
+        &:hover {
+            color: var(--link-color);
+            text-decoration: underline;
         }
     }
 
@@ -120,18 +126,19 @@
         transition: color var(--fast), text-decoration var(--fast);
         text-decoration: none;
         color: var(--darkest);
+        padding: 0.5rem 1rem;
+
+        @media (max-width: map.get($grid-breakpoints, "md")) {
+            font-size: 1.25rem;
+        }
 
         @media (min-width: map.get($grid-breakpoints, "md")) {
             color: var(--link-color);
+            padding: 0 0.5rem;
         }
 
         &:hover {
             text-decoration: underline;
-        }
-        padding: 0.5rem 1rem;
-
-        @media (min-width: map.get($grid-breakpoints, "md")) {
-            padding: 0 0.5rem;
         }
     }
 

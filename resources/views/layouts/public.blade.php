@@ -80,8 +80,9 @@
                                 @can('viewAny', [App\Models\User::class, $organisation_id])
                                     <li><a href="{{ route('public.users.index') }}">Пользователи</a></li>
                                 @endcan
-                                <li class='ms-md-2 d-flex align-items-center'><span class="icon-holder me-2">
-                                        <i class="fa fa-star"></i></span> <a class='ps-0'
+                                <li class='ms-md-2 d-flex align-items-center'><span
+                                        class="icon-holder me-2 d-none d-md-flex">
+                                        <i class="fa fa-star"></i></span> <a class='ps-md-0'
                                         href="{{ route('public.data.rating') }}">Рейтинг</a></li>
                             </ul>
                         </div>

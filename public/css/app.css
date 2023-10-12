@@ -13793,7 +13793,11 @@ body.auth #app {
 }
 .main-menu.shown {
   visibility: visible;
-  opacity: 1;
+}
+@media (max-width: 768px) {
+  .main-menu.shown {
+    opacity: 0.9;
+  }
 }
 @media (min-width: 768px) {
   .main-menu {
@@ -13851,20 +13855,25 @@ body.auth #app {
   visibility: visible;
   opacity: 1;
 }
+@media (max-width: 768px) {
+  .main-menu > li {
+    border-bottom: 1px solid var(--grey-light);
+  }
+}
 .main-menu button {
   display: block;
   color: var(--darkest);
   padding: 0.5rem 1rem !important;
-}
-.main-menu button:hover {
-  color: var(--link-color);
-  text-decoration: underline;
 }
 @media (min-width: 768px) {
   .main-menu button {
     color: var(--link-color);
     padding: 0 !important;
   }
+}
+.main-menu button:hover {
+  color: var(--link-color);
+  text-decoration: underline;
 }
 .main-menu a {
   display: block;
@@ -13876,18 +13885,19 @@ body.auth #app {
   color: var(--darkest);
   padding: 0.5rem 1rem;
 }
+@media (max-width: 768px) {
+  .main-menu a {
+    font-size: 1.25rem;
+  }
+}
 @media (min-width: 768px) {
   .main-menu a {
     color: var(--link-color);
+    padding: 0 0.5rem;
   }
 }
 .main-menu a:hover {
   text-decoration: underline;
-}
-@media (min-width: 768px) {
-  .main-menu a {
-    padding: 0 0.5rem;
-  }
 }
 .main-menu .active a {
   color: var(--link-color-active);
