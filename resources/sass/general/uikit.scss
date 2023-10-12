@@ -10,8 +10,9 @@
         width: 100%;
         background: var(--lightest) fff;
         border: 1px solid var(--grey-light);
-        border-radius: 0.5em;
-        transition: border-color var(--fast), color var(--fast), outline 0.3s;
+        border-radius: var(--brs);
+        transition: border-color var(--fast), color var(--fast),
+            outline var(--fast);
         outline: 2px solid transparent;
 
         &:hover {
@@ -106,7 +107,7 @@
     .dropdown {
         width: 100%;
         padding: 1rem 0;
-        border-radius: 0.5rem;
+        border-radius: var(--brs);
         border: 1px solid var(--grey-ultralight);
         background: var(--lightest);
         box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.3);
@@ -194,7 +195,7 @@
     border: 1px solid var(--grey-light);
     padding: 0.5rem 1rem;
     background-color: var(--grey-ultralight);
-    border-radius: 0.5rem;
+    border-radius: var(--brs);
     transition: border-color var(--fast), background-color var(--fast);
     outline: 0;
 
@@ -206,7 +207,7 @@
 
 .responsible {
     padding: 0.5rem 1rem;
-    border-radius: 0.5rem;
+    border-radius: var(--brs);
     border: 1px solid var(--grey-light);
 
     &__title {

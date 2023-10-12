@@ -15,7 +15,7 @@
         top: 100%;
         right: 0;
         width: fit-content;
-        border-radius: 0.5rem;
+        border-radius: var(--brs);
         max-width: 360px;
 
         button {

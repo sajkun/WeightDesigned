@@ -79,7 +79,7 @@
 }
 
 .calendar {
-    border-radius: 0.5rem;
+    border-radius: var(--brs);
     background-color: var(--lightest);
 }
 

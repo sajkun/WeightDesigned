@@ -17,7 +17,7 @@ table.organisation {
     tr {
         &:not(:first-child) {
             border-top: 1px solid #dfe6fa;
-            border-radius: 8px;
+            border-radius: var(--brs);
             cursor: pointer;
         }
 
@@ -87,7 +87,7 @@ table.organisation {
     background: #ffffff;
     border: 1px solid #dfe6fa;
     box-shadow: 6px 6px 6px rgba(33, 40, 41, 0.03);
-    border-radius: 8px;
+    border-radius: var(--brs);
     padding: calc(var(--bs-gutter-x) * 0.5);
 }
 

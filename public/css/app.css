@@ -2345,6 +2345,7 @@ body {
   --slow: 0.6s;
   --brs: 0.5rem;
   --brs-lg: 1rem;
+  --brs-max: 9999rem;
   --breakpoint-xs: 0;
   --breakpoint-sm: 576px;
   --breakpoint-md: 768px;
@@ -13138,7 +13139,7 @@ table.organisation th {
 }
 table.organisation tr:not(:first-child) {
   border-top: 1px solid #dfe6fa;
-  border-radius: 8px;
+  border-radius: var(--brs);
   cursor: pointer;
 }
 table.organisation tr:hover:not(:first-child):not(.no-hover) {
@@ -13195,7 +13196,7 @@ table.organisation tr:hover:not(:first-child):not(.no-hover) {
   background: #ffffff;
   border: 1px solid #dfe6fa;
   box-shadow: 6px 6px 6px rgba(33, 40, 41, 0.03);
-  border-radius: 8px;
+  border-radius: var(--brs);
   padding: calc(var(--bs-gutter-x) * 0.5);
 }
 
@@ -13261,8 +13262,8 @@ body {
   width: 100%;
   background: var(--lightest) fff;
   border: 1px solid var(--grey-light);
-  border-radius: 0.5em;
-  transition: border-color var(--fast), color var(--fast), outline 0.3s;
+  border-radius: var(--brs);
+  transition: border-color var(--fast), color var(--fast), outline var(--fast);
   outline: 2px solid transparent;
 }
 .form-control-custom select:hover,
@@ -13353,7 +13354,7 @@ body {
 .dropdown-container .dropdown {
   width: 100%;
   padding: 1rem 0;
-  border-radius: 0.5rem;
+  border-radius: var(--brs);
   border: 1px solid var(--grey-ultralight);
   background: var(--lightest);
   box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.3);
@@ -13431,7 +13432,7 @@ body {
   border: 1px solid var(--grey-light);
   padding: 0.5rem 1rem;
   background-color: var(--grey-ultralight);
-  border-radius: 0.5rem;
+  border-radius: var(--brs);
   transition: border-color var(--fast), background-color var(--fast);
   outline: 0;
 }
@@ -13442,7 +13443,7 @@ body {
 
 .responsible {
   padding: 0.5rem 1rem;
-  border-radius: 0.5rem;
+  border-radius: var(--brs);
   border: 1px solid var(--grey-light);
 }
 .responsible__title {
@@ -13658,7 +13659,7 @@ body.auth #app {
   max-width: 400px;
   background: #ffffff;
   border: 1px solid #dfe6fa;
-  border-radius: 8px;
+  border-radius: var(--brs);
   margin: 0 auto;
 }
 .form-auth__header {
@@ -13713,7 +13714,7 @@ body.auth #app {
   top: 50%;
   left: 50%;
   transform: translateX(-50%) translateY(-50%);
-  border-radius: 0.5rem;
+  border-radius: var(--brs);
 }
 
 .bounce-enter-active {
@@ -13786,7 +13787,7 @@ body.auth #app {
   visibility: visible;
   opacity: 1;
 }
-@media (min-width: var(--breakpoint-md)) {
+@media (min-width: 768px) {
   .main-menu {
     visibility: initial;
     opacity: initial;
@@ -13800,12 +13801,12 @@ body.auth #app {
 .main-menu .submenu {
   padding-left: 1rem;
 }
-@media (min-width: var(--breakpoint-md)) {
+@media (min-width: 768px) {
   .main-menu .submenu {
     position: absolute;
     top: 100%;
     background: #fff;
-    border-radius: 0.5rem;
+    border-radius: var(--brs);
     transform: translateY(0.75rem) translateX(-1rem);
     box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
     padding: 0.5rem 0;
@@ -13851,7 +13852,7 @@ body.auth #app {
   color: var(--link-color);
   text-decoration: underline;
 }
-@media (min-width: var(--breakpoint-md)) {
+@media (min-width: 768px) {
   .main-menu button {
     color: var(--link-color);
     padding: 0 !important;
@@ -13867,7 +13868,7 @@ body.auth #app {
   color: var(--darkest);
   padding: 0.5rem 1rem;
 }
-@media (min-width: var(--breakpoint-md)) {
+@media (min-width: 768px) {
   .main-menu a {
     color: var(--link-color);
   }
@@ -13875,7 +13876,7 @@ body.auth #app {
 .main-menu a:hover {
   text-decoration: underline;
 }
-@media (min-width: var(--breakpoint-md)) {
+@media (min-width: 768px) {
   .main-menu a {
     padding: 0 0.5rem;
   }
@@ -13900,7 +13901,7 @@ body.auth #app {
 
 .organisation-marker {
   background: linear-gradient(#ff9040, #ff4040);
-  border-radius: 999rem;
+  border-radius: var(--brs-max);
   display: inline-block;
   width: 1.25rem;
   height: 1.25rem;
@@ -13937,7 +13938,7 @@ body.auth #app {
 .info-message,
 .success-message,
 .error-message {
-  border-radius: 0.75rem;
+  border-radius: var(--brs);
   padding: 1rem 2.5rem;
   background-color: var(--message-bg-color);
   position: relative;

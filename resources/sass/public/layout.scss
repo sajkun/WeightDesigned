@@ -1,3 +1,5 @@
+@use "sass:map";
+
 .public-header {
     background: linear-gradient(103.06deg, #007e3c 18.83%, #032422 100%);
     box-shadow: 6px 6px 6px rgba(33, 40, 41, 0.03);
@@ -29,7 +31,7 @@
         opacity: 1;
     }
 
-    @media (min-width: var(--breakpoint-md)) {
+    @media (min-width: map.get($grid-breakpoints, "md")) {
         visibility: initial;
         opacity: initial;
         box-shadow: initial;
@@ -45,11 +47,11 @@
     .submenu {
         padding-left: 1rem;
 
-        @media (min-width: var(--breakpoint-md)) {
+        @media (min-width: map.get($grid-breakpoints, "md")) {
             position: absolute;
             top: 100%;
             background: #fff;
-            border-radius: 0.5rem;
+            border-radius: var(--brs);
             transform: translateY(0.75rem) translateX(-1rem);
             box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
             padding: 0.5rem 0;
@@ -106,7 +108,7 @@
 
         padding: 0.5rem 1rem !important;
 
-        @media (min-width: var(--breakpoint-md)) {
+        @media (min-width: map.get($grid-breakpoints, "md")) {
             color: var(--link-color);
             padding: 0 !important;
         }
@@ -119,7 +121,7 @@
         text-decoration: none;
         color: var(--darkest);
 
-        @media (min-width: var(--breakpoint-md)) {
+        @media (min-width: map.get($grid-breakpoints, "md")) {
             color: var(--link-color);
         }
 
@@ -128,7 +130,7 @@
         }
         padding: 0.5rem 1rem;
 
-        @media (min-width: var(--breakpoint-md)) {
+        @media (min-width: map.get($grid-breakpoints, "md")) {
             padding: 0 0.5rem;
         }
     }
@@ -157,7 +159,7 @@
 
 .organisation-marker {
     background: linear-gradient(#ff9040, #ff4040);
-    border-radius: 999rem;
+    border-radius: var(--brs-max);
     display: inline-block;
     width: 1.25rem;
     height: 1.25rem;
@@ -196,7 +198,7 @@
 .info-message,
 .success-message,
 .error-message {
-    border-radius: 0.75rem;
+    border-radius: var(--brs);
     padding: 1rem 2.5rem;
     background-color: var(--message-bg-color);
     position: relative;

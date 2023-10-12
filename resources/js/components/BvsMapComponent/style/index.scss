@@ -11,7 +11,7 @@
     display: grid;
     grid-template-columns: 2rem auto;
     background: #fff;
-    border-radius: 0.25rem;
+    border-radius: var(--brs);
     font-size: 1rem;
 
     color: var(--green);
@@ -25,7 +25,7 @@
     position: absolute;
     display: block;
     background-color: #fff;
-    border-radius: 9999rem;
+    border-radius: var(--brs-max);
     width: 1.5rem;
     height: 1.5rem;
     text-align: center;

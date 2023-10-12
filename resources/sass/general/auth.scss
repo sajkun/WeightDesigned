@@ -14,7 +14,7 @@ body {
     max-width: 400px;
     background: #ffffff;
     border: 1px solid #dfe6fa;
-    border-radius: 8px;
+    border-radius: var(--brs);
     margin: 0 auto;
 
     &__header {
