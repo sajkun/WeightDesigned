@@ -78,11 +78,15 @@ export default {
     mixins: [sortAnimation],
     watch: {
         _maxValue(val) {
-            this.maxValue = val;
+            const vm = this;
+            vm.maxValue = val;
+            vm.rating = vm.calculateRating();
             return null;
         },
         _info(info) {
-            this.info = Object.values(info).slice(0, 5);
+            const vm = this;
+            vm.info = Object.values(info).slice(0, 5);
+            vm.rating = vm.calculateRating();
             return null;
         },
     },
@@ -103,6 +107,8 @@ export default {
         return {
             info: Object.values(this._info).slice(0, 5),
             maxValue: this._maxValue,
+            rating: [],
+            diagramHeight: 0,
         };
     },
 
@@ -121,62 +127,131 @@ export default {
          * @returns {Array} массив объектов с высотой колонок и соответсвующим объектом рейтинга
          */
         columns() {
-            const vm = this;
-            let data = strip(vm.info);
-
-            if (!data.length) {
-                data = [
-                    strip(vm.emptyColumn),
-                    strip(vm.emptyColumn),
-                    strip(vm.emptyColumn),
-                    strip(vm.emptyColumn),
-                    strip(vm.emptyColumn),
-                ];
-                return data;
-            }
-
-            const parentheight = vm.$refs["columns-holder"].clientHeight - 40;
-
-            data = data.map((item) => {
-                const height =
-                    (((item.amount * 100) / vm.maxValue) * parentheight) / 100;
-                return {
-                    height: isNaN(height) ? 0 : height,
-                    item: item,
-                };
-            });
-
-            for (let i = data.length; i < 5; i++) {
-                data.push(vm.emptyColumn);
-            }
-
-            return data;
+            return this.rating;
         },
+    },
+
+    created() {
+        const vm = this;
+        for (let i = 0; i < 5; i++) {
+            vm.rating.push(strip(vm.emptyColumn));
+        }
     },
 
     mounted() {
         const vm = this;
         vm.info = Object.values(vm._info).slice(0, 5);
 
+        // фиксация высот для того, чтобы избежать превышения блоком высоты экрана
         vm.$nextTick(() => {
-            vm.$el.parentNode.style.height =
-                vm.$el.parentNode.scrollHeight + "px";
-            vm.$refs["columns-holder"].style.height =
-                vm.$refs["columns-holder"].scrollHeight - 40 + "px";
+            vm.fitHeight();
+            vm.rating = vm.calculateRating();
+        });
+
+        let ratingUpdateAction;
+
+        window.addEventListener("resize", () => {
+            if (ratingUpdateAction) {
+                clearTimeout(ratingUpdateAction);
+            }
+            vm.fitHeight();
+
+            ratingUpdateAction = setTimeout(() => {
+                vm.rating = vm.calculateRating();
+            }, 100);
         });
     },
 
     methods: {
+        /**
+         * Вычмисляет данные рейтинга
+         *
+         * @returns {Array} массив объектов с высотой колонок и соответсвующим объектом рейтинга
+         */
+        calculateRating() {
+            const vm = this;
+            let data = strip(vm.info);
+
+            // создание массива пустых элементов для сохранения анимаций
+            if (!data.length) {
+                data = [];
+                for (let i = 0; i < 5; i++) {
+                    data.push(strip(vm.emptyColumn));
+                }
+                return data;
+            }
+
+            /**
+             * вычисление размеров столбцов диаграммы
+             */
+
+            /**
+             * массив данных для отображения диаграммы рейтинга
+             *
+             * @returns [
+             * ...{
+             *    height {Integer}: высота колонки в пикселях
+             *    item {Object}:  строка рейтинга на основании   которой сделаны вычисления
+             * }
+             * ]
+             */
+            data = data.map((item) => {
+                const height =
+                    (((item.amount * 100) / vm.maxValue) * vm.diagramHeight) /
+                    100;
+
+                return {
+                    height: isNaN(height) ? 0 : height,
+                    item: item,
+                };
+            });
+
+            // заполнение результирующего массива пустыми элемиентами до 5. В целях сохранения анимации
+            for (let i = data.length; i < 5; i++) {
+                data.push(vm.emptyColumn);
+            }
+
+            return data;
+        },
+
+        /**
+         * фиксация высот всего блока и контейнера с диаграммой.
+         * явно задаёт высоту $el.parentNode и $refs["columns-holder"]
+         *
+         * @returns {Void}
+         */
+        fitHeight() {
+            const vm = this;
+            const unit = "px";
+            const root = vm.$el.parentNode;
+            const diagram = vm.$refs["columns-holder"];
+            const delta = 40;
+
+            root.style.height = "auto";
+            diagram.style.height = "auto";
+
+            const rootHeight = Math.max(root.scrollHeight, 400);
+            vm.diagramHeight = diagram.scrollHeight - delta;
+
+            vm.$nextTick(() => {
+                root.style.height = `${rootHeight}${unit}`;
+                diagram.style.height = `${vm.diagramHeight}${unit}`;
+            });
+
+            return;
+        },
         /**
          * @param {Object} item информация о строке рейтинга
          *
          * @return {String} название техники или ФИО
          */
         parseName(item) {
+            // если техника, возвращает имя
             if (["vehicle", "-"].indexOf(item.model) >= 0) {
                 return item.name;
             }
 
+            //если работник, то возвращает фамимлию и инициалы
             const parts = item.name.split(" ");
             let name = parts.shift();
 

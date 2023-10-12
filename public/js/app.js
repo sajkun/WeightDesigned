@@ -16081,11 +16081,15 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
   mixins: [_mixins_sortAnimation__WEBPACK_IMPORTED_MODULE_1__["default"]],
   watch: {
     _maxValue: function _maxValue(val) {
-      this.maxValue = val;
+      var vm = this;
+      vm.maxValue = val;
+      vm.rating = vm.calculateRating();
       return null;
     },
     _info: function _info(info) {
-      this.info = Object.values(info).slice(0, 5);
+      var vm = this;
+      vm.info = Object.values(info).slice(0, 5);
+      vm.rating = vm.calculateRating();
       return null;
     }
   },
@@ -16104,7 +16108,9 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
   data: function data() {
     return {
       info: Object.values(this._info).slice(0, 5),
-      maxValue: this._maxValue
+      maxValue: this._maxValue,
+      rating: [],
+      diagramHeight: 0
     };
   },
   computed: {
@@ -16122,44 +16128,116 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
      * @returns {Array} массив объектов с высотой колонок и соответсвующим объектом рейтинга
      */
     columns: function columns() {
-      var vm = this;
-      var data = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.info);
-      if (!data.length) {
-        data = [(0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.emptyColumn), (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.emptyColumn), (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.emptyColumn), (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.emptyColumn), (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.emptyColumn)];
-        return data;
-      }
-      var parentheight = vm.$refs["columns-holder"].clientHeight - 40;
-      data = data.map(function (item) {
-        var height = item.amount * 100 / vm.maxValue * parentheight / 100;
-        return {
-          height: isNaN(height) ? 0 : height,
-          item: item
-        };
-      });
-      for (var i = data.length; i < 5; i++) {
-        data.push(vm.emptyColumn);
-      }
-      return data;
+      return this.rating;
+    }
+  },
+  created: function created() {
+    var vm = this;
+    for (var i = 0; i < 5; i++) {
+      vm.rating.push((0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.emptyColumn));
     }
   },
   mounted: function mounted() {
     var vm = this;
     vm.info = Object.values(vm._info).slice(0, 5);
+
+    // фиксация высот для того, чтобы избежать превышения блоком высоты экрана
     vm.$nextTick(function () {
-      vm.$el.parentNode.style.height = vm.$el.parentNode.scrollHeight + "px";
-      vm.$refs["columns-holder"].style.height = vm.$refs["columns-holder"].scrollHeight - 40 + "px";
+      vm.fitHeight();
+      vm.rating = vm.calculateRating();
+    });
+    var ratingUpdateAction;
+    window.addEventListener("resize", function () {
+      if (ratingUpdateAction) {
+        clearTimeout(ratingUpdateAction);
+      }
+      vm.fitHeight();
+      ratingUpdateAction = setTimeout(function () {
+        vm.rating = vm.calculateRating();
+      }, 100);
     });
   },
   methods: {
+    /**
+     * Вычмисляет данные рейтинга
+     *
+     * @returns {Array} массив объектов с высотой колонок и соответсвующим объектом рейтинга
+     */
+    calculateRating: function calculateRating() {
+      var vm = this;
+      var data = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.info);
+
+      // создание массива пустых элементов для сохранения анимаций
+      if (!data.length) {
+        data = [];
+        for (var i = 0; i < 5; i++) {
+          data.push((0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.emptyColumn));
+        }
+        return data;
+      }
+
+      /**
+       * вычисление размеров столбцов диаграммы
+       */
+
+      /**
+       * массив данных для отображения диаграммы рейтинга
+       *
+       * @returns [
+       * ...{
+       *    height {Integer}: высота колонки в пикселях
+       *    item {Object}:  строка рейтинга на основании   которой сделаны вычисления
+       * }
+       * ]
+       */
+      data = data.map(function (item) {
+        var height = item.amount * 100 / vm.maxValue * vm.diagramHeight / 100;
+        return {
+          height: isNaN(height) ? 0 : height,
+          item: item
+        };
+      });
+
+      // заполнение результирующего массива пустыми элемиентами до 5. В целях сохранения анимации
+      for (var _i = data.length; _i < 5; _i++) {
+        data.push(vm.emptyColumn);
+      }
+      return data;
+    },
+    /**
+     * фиксация высот всего блока и контейнера с диаграммой.
+     * явно задаёт высоту $el.parentNode и $refs["columns-holder"]
+     *
+     * @returns {Void}
+     */
+    fitHeight: function fitHeight() {
+      var vm = this;
+      var unit = "px";
+      var root = vm.$el.parentNode;
+      var diagram = vm.$refs["columns-holder"];
+      var delta = 40;
+      root.style.height = "auto";
+      diagram.style.height = "auto";
+      var rootHeight = Math.max(root.scrollHeight, 400);
+      vm.diagramHeight = diagram.scrollHeight - delta;
+      vm.$nextTick(function () {
+        root.style.height = "".concat(rootHeight).concat(unit);
+        diagram.style.height = "".concat(vm.diagramHeight).concat(unit);
+      });
+      return;
+    },
     /**
      * @param {Object} item информация о строке рейтинга
      *
      * @return {String} название техники или ФИО
      */
     parseName: function parseName(item) {
+      // если техника, возвращает имя
       if (["vehicle", "-"].indexOf(item.model) >= 0) {
         return item.name;
       }
+
+      //если работник, то возвращает фамимлию и инициалы
       var parts = item.name.split(" ");
       var name = parts.shift();
       var _iterator = _createForOfIteratorHelper(parts),
@@ -21029,7 +21107,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, ".columns-wrapper[data-v-07fb03c0] {\n  width: 100%;\n  height: 100%;\n  background-color: var(--lightest);\n  border-radius: 0.5rem;\n  --place-gold: linear-gradient(\n      77deg,\n      #e5c25b 1.15%,\n      #f9df7b 32.91%,\n      #fff3a6 69.86%,\n      #f9df7b 108.54%\n  );\n  --place-silver: linear-gradient(\n      73deg,\n      #636363 -23.34%,\n      #e1e1e1 5.37%,\n      #fff 60.79%,\n      #dedede 85.8%,\n      #b1b1b1 121.43%,\n      #646464 122.18%,\n      #5f5f5f 129%,\n      #737373 136.08%,\n      #656565 138.09%,\n      #8d8d8d 141.98%,\n      #767676 149.46%,\n      #929292 163.1%,\n      #bababa 179.02%,\n      #d3d3d3 185.84%,\n      #dbdbdb 190.39%,\n      #f3f3f3 204.03%\n  );\n  --place-cooper: linear-gradient(\n      68deg,\n      #663500 -11.99%,\n      #b18a4b 18.82%,\n      #d0ad6a 39.73%,\n      #fdedc9 97.03%\n  );\n  --gap-x: 0.25rem;\n  --font-size: 0.75rem;\n  --font-size-lg: 1.25rem;\n  --brs: 0.5rem;\n}\n@media (min-width: 768px) {\n.columns-wrapper[data-v-07fb03c0] {\n    --gap-x: 0.5rem;\n    --font-size: 1rem;\n}\n}\n.columns-wrapper__footer[data-v-07fb03c0] {\n  font-size: var(--font-size-lg);\n}\n.row[data-v-07fb03c0] {\n  --bs-gutter-x: 0.5rem;\n}\n@media (min-width: 768px) {\n.row[data-v-07fb03c0] {\n    --bs-gutter-x: 1.5rem;\n}\n}\n.rating-column[data-v-07fb03c0] {\n  border-radius: var(--brs);\n  transition: height var(--slow);\n  transition-timing-function: cubic-bezier(1, 2, 4, 8);\n  max-height: 100%;\n  font-size: var(--font-size);\n}\n.rating-column.min-height[data-v-07fb03c0] {\n  min-height: 2rem;\n}\n.rating-1[data-v-07fb03c0] {\n  background: var(--place-gold);\n}\n.rating-2[data-v-07fb03c0] {\n  background: var(--place-silver);\n}\n.rating-3[data-v-07fb03c0] {\n  background: var(--place-cooper);\n}\n.rating-4[data-v-07fb03c0],\n.rating-5[data-v-07fb03c0] {\n  background-color: var(--green-ultralight);\n}\n.column-5[data-v-07fb03c0] {\n  width: 20%;\n  max-width: 20%;\n  flex-basis: 20%;\n  padding-left: var(--gap-x);\n  padding-right: var(--gap-x);\n  text-align: center;\n}\n.column-5__inner[data-v-07fb03c0] {\n  width: 100%;\n  padding: var(--gap-x) 0;\n  border-radius: var(--brs);\n}\n.place-1 .column-5__inner[data-v-07fb03c0] {\n  background: var(--place-gold);\n}\n.place-2 .column-5__inner[data-v-07fb03c0] {\n  background: var(--place-silver);\n}\n.place-3 .column-5__inner[data-v-07fb03c0] {\n  background: var(--place-cooper);\n}\n.place-4 .column-5__inner[data-v-07fb03c0], .place-5 .column-5__inner[data-v-07fb03c0] {\n  background-color: var(--green-ultralight);\n}\n.column-5.place-1[data-v-07fb03c0], .column-5.place-2[data-v-07fb03c0], .column-5.place-3[data-v-07fb03c0] {\n  color: var(--darkest);\n}\n.column-5.place-4[data-v-07fb03c0], .column-5.place-5[data-v-07fb03c0] {\n  color: var(--green);\n}\n.column-5.place-1 i[data-v-07fb03c0] {\n  color: var(--yellow);\n}\n.column-5.place-2 i[data-v-07fb03c0] {\n  color: var(--grey);\n}\n.column-5.place-3 i[data-v-07fb03c0] {\n  color: var(--cooper);\n}\n.vh[data-v-07fb03c0] {\n  opacity: 0;\n}", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, ".columns-wrapper[data-v-07fb03c0] {\n  width: 100%;\n  height: 100%;\n  background-color: var(--lightest);\n  border-radius: 0.5rem;\n  min-height: 400px !important;\n  --place-gold: linear-gradient(\n      77deg,\n      #e5c25b 1.15%,\n      #f9df7b 32.91%,\n      #fff3a6 69.86%,\n      #f9df7b 108.54%\n  );\n  --place-silver: linear-gradient(\n      73deg,\n      #636363 -23.34%,\n      #e1e1e1 5.37%,\n      #fff 60.79%,\n      #dedede 85.8%,\n      #b1b1b1 121.43%,\n      #646464 122.18%,\n      #5f5f5f 129%,\n      #737373 136.08%,\n      #656565 138.09%,\n      #8d8d8d 141.98%,\n      #767676 149.46%,\n      #929292 163.1%,\n      #bababa 179.02%,\n      #d3d3d3 185.84%,\n      #dbdbdb 190.39%,\n      #f3f3f3 204.03%\n  );\n  --place-cooper: linear-gradient(\n      68deg,\n      #663500 -11.99%,\n      #b18a4b 18.82%,\n      #d0ad6a 39.73%,\n      #fdedc9 97.03%\n  );\n  --gap-x: 0.25rem;\n  --font-size: 0.75rem;\n  --font-size-lg: 1.25rem;\n  --brs: 0.5rem;\n}\n@media (min-width: 768px) {\n.columns-wrapper[data-v-07fb03c0] {\n    --gap-x: 0.5rem;\n    --font-size: 1rem;\n}\n}\n.columns-wrapper__footer[data-v-07fb03c0] {\n  font-size: var(--font-size-lg);\n}\n.row[data-v-07fb03c0] {\n  --bs-gutter-x: 0.5rem;\n}\n@media (min-width: 768px) {\n.row[data-v-07fb03c0] {\n    --bs-gutter-x: 1.5rem;\n}\n}\n.rating-column[data-v-07fb03c0] {\n  border-radius: var(--brs);\n  transition: height var(--slow);\n  transition-timing-function: cubic-bezier(1, 2, 4, 8);\n  max-height: 100%;\n  font-size: var(--font-size);\n}\n.rating-column.min-height[data-v-07fb03c0] {\n  min-height: 2rem;\n}\n.rating-1[data-v-07fb03c0] {\n  background: var(--place-gold);\n}\n.rating-2[data-v-07fb03c0] {\n  background: var(--place-silver);\n}\n.rating-3[data-v-07fb03c0] {\n  background: var(--place-cooper);\n}\n.rating-4[data-v-07fb03c0],\n.rating-5[data-v-07fb03c0] {\n  background-color: var(--green-ultralight);\n}\n.column-5[data-v-07fb03c0] {\n  width: 20%;\n  max-width: 20%;\n  flex-basis: 20%;\n  padding-left: var(--gap-x);\n  padding-right: var(--gap-x);\n  text-align: center;\n}\n.column-5__inner[data-v-07fb03c0] {\n  width: 100%;\n  padding: var(--gap-x) 0;\n  border-radius: var(--brs);\n}\n.place-1 .column-5__inner[data-v-07fb03c0] {\n  background: var(--place-gold);\n}\n.place-2 .column-5__inner[data-v-07fb03c0] {\n  background: var(--place-silver);\n}\n.place-3 .column-5__inner[data-v-07fb03c0] {\n  background: var(--place-cooper);\n}\n.place-4 .column-5__inner[data-v-07fb03c0], .place-5 .column-5__inner[data-v-07fb03c0] {\n  background-color: var(--green-ultralight);\n}\n.column-5.place-1[data-v-07fb03c0], .column-5.place-2[data-v-07fb03c0], .column-5.place-3[data-v-07fb03c0] {\n  color: var(--darkest);\n}\n.column-5.place-4[data-v-07fb03c0], .column-5.place-5[data-v-07fb03c0] {\n  color: var(--green);\n}\n.column-5.place-1 i[data-v-07fb03c0] {\n  color: var(--yellow);\n}\n.column-5.place-2 i[data-v-07fb03c0] {\n  color: var(--grey);\n}\n.column-5.place-3 i[data-v-07fb03c0] {\n  color: var(--cooper);\n}\n.vh[data-v-07fb03c0] {\n  opacity: 0;\n}", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
