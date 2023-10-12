@@ -84,6 +84,7 @@
                                         class="icon-holder me-2 d-none d-md-flex">
                                         <i class="fa fa-star"></i></span> <a class='ps-md-0'
                                         href="{{ route('public.data.rating') }}">Рейтинг</a></li>
+                                <li> <a href="{{ route('public.data.statistics') }}">Статистика</a></li>
                             </ul>
                         </div>
                         <div class="col flex-grow-1 align-self-center">

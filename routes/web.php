@@ -30,6 +30,7 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::group(['namespace' => 'PublicArea\Info', 'prefix' => 'data'], function () {
         Route::get('/rating', 'RatingController')->name('public.data.rating');
+        Route::get('/statistics', 'StatisticsController')->name('public.data.statistics');
     });
 
     Route::group(['namespace' => 'PublicArea\User', 'prefix' => 'users'], function () {

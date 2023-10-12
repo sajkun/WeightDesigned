@@ -17482,9 +17482,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _public_vehicle_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./public/vehicle.js */ "./resources/js/public/vehicle.js");
 /* harmony import */ var _public_grasslands_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./public/grasslands.js */ "./resources/js/public/grasslands.js");
 /* harmony import */ var _public_rating_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./public/rating.js */ "./resources/js/public/rating.js");
+/* harmony import */ var _public_statistics_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./public/statistics.js */ "./resources/js/public/statistics.js");
 /**
  * Основной файл, собирающий весь скрипт приложения
  */
+
 
 
 
@@ -17518,9 +17520,14 @@ if (document.getElementById("public-grasslands")) {
   (0,vue__WEBPACK_IMPORTED_MODULE_0__.createApp)(_public_grasslands_js__WEBPACK_IMPORTED_MODULE_5__["default"]).mount("#public-grasslands");
 }
 
-// инициализация приложения статистики для публичной зоны
+// инициализация приложения рейтинга для публичной зоны
 if (document.getElementById("public-rating")) {
   (0,vue__WEBPACK_IMPORTED_MODULE_0__.createApp)(_public_rating_js__WEBPACK_IMPORTED_MODULE_6__["default"]).mount("#public-rating");
+}
+
+// инициализация приложения статистики для публичной зоны
+if (document.getElementById("public-statistics")) {
+  (0,vue__WEBPACK_IMPORTED_MODULE_0__.createApp)(_public_statistics_js__WEBPACK_IMPORTED_MODULE_7__["default"]).mount("#public-statistics");
 }
 __webpack_require__(/*! ./public/ready */ "./resources/js/public/ready.js");
 
@@ -19969,6 +19976,91 @@ __webpack_require__(/*! ./../ready/dadata */ "./resources/js/ready/dadata.js");
 __webpack_require__(/*! ./../ready/mobileMenu */ "./resources/js/ready/mobileMenu.js");
 __webpack_require__(/*! ./../ready/formFields */ "./resources/js/ready/formFields.js");
 __webpack_require__(/*! ./../ready/passwordStrength */ "./resources/js/ready/passwordStrength.js");
+
+/***/ }),
+
+/***/ "./resources/js/public/statistics.js":
+/*!*******************************************!*\
+  !*** ./resources/js/public/statistics.js ***!
+  \*******************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _misc_helpers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../misc/helpers */ "./resources/js/misc/helpers.js");
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _mixins_axiosRequests__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../mixins/axiosRequests */ "./resources/js/mixins/axiosRequests.js");
+/* harmony import */ var _mixins_crud__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../mixins/crud */ "./resources/js/mixins/crud.js");
+/* harmony import */ var _mixins_messages__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../mixins/messages */ "./resources/js/mixins/messages.js");
+/* harmony import */ var _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../mixins/publicAuthData */ "./resources/js/mixins/publicAuthData.js");
+/* harmony import */ var _components_MessagesComponent__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../components/MessagesComponent */ "./resources/js/components/MessagesComponent/index.js");
+/* harmony import */ var _components_inputs_MonthPickerComponent__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../components/inputs/MonthPickerComponent */ "./resources/js/components/inputs/MonthPickerComponent/index.js");
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
+/**
+ * приложение отображение статистики публичного раздела
+ */
+
+//хэлперы
+
+
+
+//миксины
+
+
+
+
+
+// компоненты
+
+
+var appPublicStatistics = {
+  mixins: [_mixins_axiosRequests__WEBPACK_IMPORTED_MODULE_2__["default"], _mixins_crud__WEBPACK_IMPORTED_MODULE_3__["default"], _mixins_messages__WEBPACK_IMPORTED_MODULE_4__["default"], _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_5__["default"]],
+  components: {
+    MessagesComponent: _components_MessagesComponent__WEBPACK_IMPORTED_MODULE_6__["default"],
+    MonthPicker: _components_inputs_MonthPickerComponent__WEBPACK_IMPORTED_MODULE_7__["default"]
+  },
+  data: function data() {
+    return {
+      bvsData: [],
+      // данные о транзакциях БВC
+      employees: [],
+      // перечень сотрудников организации
+      vehicles: [] // перечень техники
+    };
+  },
+
+  watch: {},
+  computed: {},
+  mounted: function mounted() {
+    var vm = this;
+    // выбор начального значения из вариантов рейтинга
+
+    vm.$el.parentNode.classList.add("d-flex");
+    // запрос и получение списка сотрудников
+    vm.getEmployees().then(function (e) {
+      return vm.employees = e.employees;
+    });
+    // запрос и получение списка техники, присвоение списка
+    vm.getVehicles().then(function (e) {
+      vm.vehicles = [].concat(_toConsumableArray(Object.values(e.bunkers)), _toConsumableArray(Object.values(e.harvesters)), _toConsumableArray(Object.values(e.tractors)), _toConsumableArray(Object.values(e.transporters)));
+    });
+    //запрос данных от БВС
+    vm.getBvsData().then(function (e) {
+      return vm.bvsData = e.bvs_data;
+    });
+  },
+  methods: {}
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (appPublicStatistics);
 
 /***/ }),
 
