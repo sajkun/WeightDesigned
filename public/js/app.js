@@ -20504,6 +20504,24 @@ var appPublicStatistics = {
   methods: {
     setDate: function setDate(type, event) {
       this.dateRange[type] = event.date;
+    },
+    setPeriod: function setPeriod(type) {
+      var vm = this;
+      var today = new Date();
+      switch (type) {
+        case "month":
+          vm.dateRange.start = moment__WEBPACK_IMPORTED_MODULE_1___default()(today).startOf("month").toISOString();
+          vm.dateRange.end = moment__WEBPACK_IMPORTED_MODULE_1___default()(today).endOf("month").toISOString();
+          break;
+        case "quarter":
+          vm.dateRange.start = moment__WEBPACK_IMPORTED_MODULE_1___default()(today).startOf("quarter").toISOString();
+          vm.dateRange.end = moment__WEBPACK_IMPORTED_MODULE_1___default()(today).endOf("quarter").toISOString();
+          break;
+        case "year":
+          vm.dateRange.start = moment__WEBPACK_IMPORTED_MODULE_1___default()(today).startOf("year").toISOString();
+          vm.dateRange.end = moment__WEBPACK_IMPORTED_MODULE_1___default()(today).endOf("year").toISOString();
+          break;
+      }
     }
   }
 };

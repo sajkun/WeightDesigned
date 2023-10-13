@@ -35,6 +35,12 @@
                         по </span>
                     <datepicker :_date='dateRange.end' class='ms-2' @date-changed='setDate("end", $event)' />
                 </div>
+                <div class="col-auto">
+                    <button class="btn btn-sm btn-primary-alt" type='button' @click='setPeriod("month")'>Месяц</button>
+                    <button class="btn btn-sm btn-primary-alt ms-2" type='button'
+                        @click='setPeriod("quarter")'>Квартал</button>
+                    <button class="btn btn-sm btn-primary-alt ms-2" type='button' @click='setPeriod("year")'>Год</button>
+                </div>
 
             </div>
         </div>

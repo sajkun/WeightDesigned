@@ -59,6 +59,38 @@ const appPublicStatistics = {
         setDate(type, event) {
             this.dateRange[type] = event.date;
         },
+
+        setPeriod(type) {
+            const vm = this;
+            const today = new Date();
+
+            switch (type) {
+                case "month":
+                    vm.dateRange.start = moment(today)
+                        .startOf("month")
+                        .toISOString();
+                    vm.dateRange.end = moment(today)
+                        .endOf("month")
+                        .toISOString();
+                    break;
+                case "quarter":
+                    vm.dateRange.start = moment(today)
+                        .startOf("quarter")
+                        .toISOString();
+                    vm.dateRange.end = moment(today)
+                        .endOf("quarter")
+                        .toISOString();
+                    break;
+                case "year":
+                    vm.dateRange.start = moment(today)
+                        .startOf("year")
+                        .toISOString();
+                    vm.dateRange.end = moment(today)
+                        .endOf("year")
+                        .toISOString();
+                    break;
+            }
+        },
     },
 };
 
