@@ -2346,6 +2346,8 @@ body {
   --brs: 0.5rem;
   --brs-lg: 1rem;
   --brs-max: 9999rem;
+  --gap-x: 1rem;
+  --gap-y: 0.5rem;
 }
 
 /*!
@@ -13995,6 +13997,23 @@ body.auth #app {
 
 #app {
   overflow: hidden;
+}
+
+.statistics-list {
+  background-color: var(--lightest);
+  border-radius: var(--brs);
+}
+
+.statistics-row {
+  padding: var(--gap-y) var(--gap-x);
+}
+:not(:last-child) > .statistics-row {
+  border-bottom: 1px solid var(--grey-light);
+}
+.statistics-row__number-cell {
+  width: 1rem;
+  max-width: 1rem;
+  margin-right: 0.25rem;
 }
 
 .rating2,

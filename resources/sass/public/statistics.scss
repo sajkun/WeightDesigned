@@ -1,2 +1,18 @@
 .statistics-list {
+    background-color: var(--lightest);
+    border-radius: var(--brs);
+}
+
+.statistics-row {
+    padding: var(--gap-y) var(--gap-x);
+
+    :not(:last-child) > & {
+        border-bottom: 1px solid var(--grey-light);
+    }
+
+    &__number-cell {
+        width: 1rem;
+        max-width: 1rem;
+        margin-right: 0.25rem;
+    }
 }
