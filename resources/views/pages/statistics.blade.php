@@ -13,5 +13,48 @@
         <messages-component :_messages='messages' v-on:cancel-msg='cancelConfirmActionCb' v-on:confirm-msg='confirmActionCb'
             v-on:clear-msg='clearMessages'></messages-component>
         {{-- ************************************************ --}}
+
+        {{-- шапка со списком выбора вариантов сортировки и выбора месяца или года отображения --}}
+        {{-- ************************************************ --}}
+        <div class="mt-4 mb-2">
+            <p class="m-0 h-6 d-inline">Статистика:</p>
+            <select v-model='ratingBy' class='ms-2  inline-select'>
+                <option v-for='rate, key in ratingOptions' :key='"options" + key' :value='key'
+                    :disabled="(key === '-')">
+                    @{{ rate }}</option>
+            </select>
+        </div>
+
+        {{-- заголовок с выбором периода --}}
+        {{-- ************************************************ --}}
+        <div class="row">
+            {{-- Список отфильтрованных данных --}}
+            {{-- ************************************************ --}}
+            <div class='col-12 col-md-6 statistics-list' v-show='ratingData.length'>
+                <transition-group :css="false" v-on:before-enter="onBeforeEnter" v-on:enter="onEnter"
+                    v-on:leave="onLeave" name='sort'>
+                    <div v-for='data, key in ratingData' :data-index='key' :key='data.pid'>
+                        <div class='statistics-row' :class="'statistics' + (key + 1)">
+                            <div class='d-flex'>
+                                <div class="flex-shrink-0 statistics-row__number-cell me-4">
+                                    @{{ key + 1 }}
+                                </div>
+                                <div class="col-4">
+                                    @{{ data.name }}
+                                </div>
+                                <div class="col-5">
+                                    @{{ data.type }}
+                                </div>
+                                <div class="col text-end">
+                                    @{{ data.amount }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </transition-group>
+            </div>
+            {{-- ************************************************ --}}
+        </div>
+        <div class="row"></div>
     </div>
 @endsection

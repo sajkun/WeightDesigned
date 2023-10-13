@@ -18561,6 +18561,256 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/mixins/statData.js":
+/*!*****************************************!*\
+  !*** ./resources/js/mixins/statData.js ***!
+  \*****************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _misc_helpers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../misc/helpers */ "./resources/js/misc/helpers.js");
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
+function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
+function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
+function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
+//хэлперы
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  data: function data() {
+    return {
+      bvsData: [],
+      // данные о транзакциях БВC
+
+      employees: [],
+      // перечень сотрудников организации
+
+      vehicles: [],
+      // перечень техники
+
+      ratingBy: "",
+      // по ком или чем отображать рейтинг
+
+      dateRange: {
+        // диапазон дат для фильтрации данных бвс
+        start: null,
+        end: null
+      }
+    };
+  },
+  computed: {
+    /**
+     * Вычисляет итоговое собранное количество зерна в разрезе техники
+     *
+     * @return {Void|Array}
+     */
+    bvsTransferedAmounts: function bvsTransferedAmounts() {
+      var _vm$bvsData;
+      var vm = this;
+      if (!((_vm$bvsData = vm.bvsData) !== null && _vm$bvsData !== void 0 && _vm$bvsData.length)) return;
+      // сортировка данных по временному периоду
+      var data = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.bvsData).filter(function (d) {
+        var validatedStart = true;
+        var validatedEnd = true;
+        var operationDate = new Date(d.operation_time);
+        if (vm.dateRange.start) {
+          var start = new Date(vm.dateRange.start);
+          validatedStart = start <= operationDate;
+        }
+        if (vm.dateRange.end) {
+          var end = new Date(vm.dateRange.end);
+          validatedEnd = end >= operationDate;
+        }
+        return validatedStart && validatedEnd;
+      });
+      var parsedData = {};
+
+      // перебор массива данных бвс
+      var _iterator = _createForOfIteratorHelper(data),
+        _step;
+      try {
+        for (_iterator.s(); !(_step = _iterator.n()).done;) {
+          var _data = _step.value;
+          /**
+           * если загрузка от комбайна (bvs_name === to), то данные добавляются и для БВС
+           * Если загрузка от БВС (bvs_name === from), то значение переданное плюсуется только для грузовика
+           */
+
+          if (_data.bvs_name === _data.to) {
+            if (!parsedData[_data.from]) {
+              parsedData[_data.from] = 0;
+            }
+            parsedData[_data.from] += parseFloat(_data.amount_transfered);
+          }
+          if (!parsedData[_data.to]) {
+            parsedData[_data.to] = 0;
+          }
+          parsedData[_data.to] += parseFloat(_data.amount_transfered);
+        }
+      } catch (err) {
+        _iterator.e(err);
+      } finally {
+        _iterator.f();
+      }
+      return parsedData;
+    },
+    /**
+     * Сформированные данные для рейтинга
+     *
+     * @return {Array}
+     */
+    ratingDataRaw: function ratingDataRaw() {
+      var vm = this;
+      // список отфильтрованной по ratingBy техники
+      var vehicles = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.vehicles);
+
+      // список отфильтрованных по ratingBy сотрудников с назначенной техникой
+      var employees = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.employees);
+
+      // количество полученной техникой культуры
+      var transfered = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.bvsTransferedAmounts);
+
+      // перечень типов техники
+      var vehicleTypes = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(Object.keys(vm.vehicleTypes));
+      var output = [];
+      var idx = 1;
+
+      // формирование рейтинга в разрезе техники
+      var _iterator2 = _createForOfIteratorHelper(vehicles),
+        _step2;
+      try {
+        for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+          var _temp2;
+          var _vehicle = _step2.value;
+          var _temp = (_temp2 = {
+            name: "",
+            type: "",
+            amount: 0,
+            object: _vehicle
+          }, _defineProperty(_temp2, "type", vm.vehicleTypes[_vehicle.type]), _defineProperty(_temp2, "sort", _vehicle.type), _defineProperty(_temp2, "pid", idx), _defineProperty(_temp2, "model", "vehicle"), _temp2);
+          _temp.name = _vehicle.name;
+          _temp.id = _vehicle.id;
+          if (transfered[_vehicle.name]) {
+            _temp.amount += transfered[_vehicle.name];
+          }
+          output.push(_temp);
+          idx++;
+        }
+        // формирование рейтинга в разрезе сотрудников
+      } catch (err) {
+        _iterator2.e(err);
+      } finally {
+        _iterator2.f();
+      }
+      var _iterator3 = _createForOfIteratorHelper(employees),
+        _step3;
+      try {
+        for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
+          var _temp4;
+          var _employee = _step3.value;
+          var _key = "".concat(_employee.last_name, " ").concat(_employee.first_name, " ").concat(_employee.middle_name);
+          var _temp3 = (_temp4 = {
+            name: "",
+            type: "",
+            amount: 0,
+            object: _employee
+          }, _defineProperty(_temp4, "type", _employee.specialisation), _defineProperty(_temp4, "sort", _employee.specialisation), _defineProperty(_temp4, "pid", idx), _defineProperty(_temp4, "model", "employee"), _temp4);
+          _temp3.name = _key;
+          _temp3.id = _employee.id;
+          var _vehicles = _employee.vehicles.map(function (v) {
+            return v.name;
+          });
+          var _iterator4 = _createForOfIteratorHelper(_vehicles),
+            _step4;
+          try {
+            for (_iterator4.s(); !(_step4 = _iterator4.n()).done;) {
+              var __name = _step4.value;
+              if (!transfered[__name]) continue;
+              _temp3.amount += transfered[__name];
+            }
+          } catch (err) {
+            _iterator4.e(err);
+          } finally {
+            _iterator4.f();
+          }
+          output.push(_temp3);
+          idx++;
+        }
+      } catch (err) {
+        _iterator3.e(err);
+      } finally {
+        _iterator3.f();
+      }
+      return output;
+    },
+    /**
+     * отсортированныей массив данных для рейтинга
+     *
+     * @returns {Array}
+     */
+    ratingData: function ratingData() {
+      var vm = this;
+      var output = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.ratingDataRaw).filter(function (i) {
+        return i.sort === vm.ratingBy;
+      });
+
+      // сортировка рейтинга по убыванию
+      output.sort(function (itemA, itemB) {
+        if (itemA.amount === itemB.amount) return 0;
+        return itemA.amount < itemB.amount ? 1 : -1;
+      });
+      return output;
+    },
+    /**
+     * Список доступных вариантов рейтинга
+     *
+     * @returns {Object} В качестве ключа профессия сотрудника либо тип техники
+     * @see Laravel Model Employee | Vehicle
+     */
+    ratingOptions: function ratingOptions() {
+      var vm = this;
+      var options = {};
+      var separator = {
+        "-": "-----------"
+      };
+      Object.assign(options, vm.vehicleTypes, separator, vm.professions);
+      return options;
+    }
+  },
+  mounted: function mounted() {
+    var vm = this;
+    // выбор начального значения из вариантов статистики
+    vm.ratingBy = Object.keys((0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.ratingOptions))[0];
+
+    // запрос и получение списка сотрудников
+    vm.getEmployees().then(function (e) {
+      return vm.employees = e.employees;
+    });
+
+    // запрос и получение списка техники, присвоение списка
+    vm.getVehicles().then(function (e) {
+      vm.vehicles = [].concat(_toConsumableArray(Object.values(e.bunkers)), _toConsumableArray(Object.values(e.harvesters)), _toConsumableArray(Object.values(e.tractors)), _toConsumableArray(Object.values(e.transporters)));
+    });
+
+    //запрос данных от БВС
+    vm.getBvsData().then(function (e) {
+      return vm.bvsData = e.bvs_data;
+    });
+  }
+});
+
+/***/ }),
+
 /***/ "./resources/js/mixins/vehicleTypes.js":
 /*!*********************************************!*\
   !*** ./resources/js/mixins/vehicleTypes.js ***!
@@ -19697,21 +19947,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../mixins/publicAuthData */ "./resources/js/mixins/publicAuthData.js");
 /* harmony import */ var _mixins_sortAnimation__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../mixins/sortAnimation */ "./resources/js/mixins/sortAnimation.js");
 /* harmony import */ var _mixins_professions__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../mixins/professions */ "./resources/js/mixins/professions.js");
-/* harmony import */ var _mixins_vehicleTypes__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../mixins/vehicleTypes */ "./resources/js/mixins/vehicleTypes.js");
-/* harmony import */ var _components_MessagesComponent__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../components/MessagesComponent */ "./resources/js/components/MessagesComponent/index.js");
-/* harmony import */ var _components_inputs_MonthPickerComponent__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../components/inputs/MonthPickerComponent */ "./resources/js/components/inputs/MonthPickerComponent/index.js");
-/* harmony import */ var _components_RatingColumsComponent__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../components/RatingColumsComponent */ "./resources/js/components/RatingColumsComponent/index.js");
-function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
-function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
-function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
-function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
-function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
-function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
+/* harmony import */ var _mixins_statData__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../mixins/statData */ "./resources/js/mixins/statData.js");
+/* harmony import */ var _mixins_vehicleTypes__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../mixins/vehicleTypes */ "./resources/js/mixins/vehicleTypes.js");
+/* harmony import */ var _components_MessagesComponent__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../components/MessagesComponent */ "./resources/js/components/MessagesComponent/index.js");
+/* harmony import */ var _components_inputs_MonthPickerComponent__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../components/inputs/MonthPickerComponent */ "./resources/js/components/inputs/MonthPickerComponent/index.js");
+/* harmony import */ var _components_RatingColumsComponent__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../components/RatingColumsComponent */ "./resources/js/components/RatingColumsComponent/index.js");
 /**
  * Отображение рейтинга по предприятию
  */
@@ -19729,32 +19969,20 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
 
 
+
 // компоненты
 
 
 
 var appPublicRating = {
-  mixins: [_mixins_axiosRequests__WEBPACK_IMPORTED_MODULE_2__["default"], _mixins_crud__WEBPACK_IMPORTED_MODULE_3__["default"], _mixins_messages__WEBPACK_IMPORTED_MODULE_4__["default"], _mixins_professions__WEBPACK_IMPORTED_MODULE_7__["default"], _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_5__["default"], _mixins_sortAnimation__WEBPACK_IMPORTED_MODULE_6__["default"], _mixins_vehicleTypes__WEBPACK_IMPORTED_MODULE_8__["default"]],
+  mixins: [_mixins_axiosRequests__WEBPACK_IMPORTED_MODULE_2__["default"], _mixins_crud__WEBPACK_IMPORTED_MODULE_3__["default"], _mixins_messages__WEBPACK_IMPORTED_MODULE_4__["default"], _mixins_professions__WEBPACK_IMPORTED_MODULE_7__["default"], _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_5__["default"], _mixins_sortAnimation__WEBPACK_IMPORTED_MODULE_6__["default"], _mixins_statData__WEBPACK_IMPORTED_MODULE_8__["default"], _mixins_vehicleTypes__WEBPACK_IMPORTED_MODULE_9__["default"]],
   components: {
-    MessagesComponent: _components_MessagesComponent__WEBPACK_IMPORTED_MODULE_9__["default"],
-    MonthPicker: _components_inputs_MonthPickerComponent__WEBPACK_IMPORTED_MODULE_10__["default"],
-    Columns: _components_RatingColumsComponent__WEBPACK_IMPORTED_MODULE_11__["default"]
+    MessagesComponent: _components_MessagesComponent__WEBPACK_IMPORTED_MODULE_10__["default"],
+    MonthPicker: _components_inputs_MonthPickerComponent__WEBPACK_IMPORTED_MODULE_11__["default"],
+    Columns: _components_RatingColumsComponent__WEBPACK_IMPORTED_MODULE_12__["default"]
   },
   data: function data() {
     return {
-      bvsData: [],
-      // данные о транзакциях БВC
-      employees: [],
-      // перечень сотрудников организации
-      vehicles: [],
-      // перечень техники
-      ratingBy: "",
-      // по ком или чем отображать рейтинг
-      dateRange: {
-        // диапазон дат для фильтрации данных бвс
-        start: null,
-        end: null
-      },
       maxValue: 0
     };
   },
@@ -19769,204 +19997,8 @@ var appPublicRating = {
       this.maxValue = this.getMaxValue();
     }
   },
-  computed: {
-    /**
-     * Вычисляет итоговое собранное количество зерна в разрезе техники
-     *
-     * @return {Void|Array}
-     */
-    bvsTransferedAmounts: function bvsTransferedAmounts() {
-      var _vm$bvsData;
-      var vm = this;
-      if (!((_vm$bvsData = vm.bvsData) !== null && _vm$bvsData !== void 0 && _vm$bvsData.length)) return;
-
-      // сортировка данных по временному периоду
-      var data = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.bvsData).filter(function (d) {
-        var validatedStart = true;
-        var validatedEnd = true;
-        var operationDate = new Date(d.operation_time);
-        if (vm.dateRange.start) {
-          var start = new Date(vm.dateRange.start);
-          validatedStart = start <= operationDate;
-        }
-        if (vm.dateRange.end) {
-          var end = new Date(vm.dateRange.end);
-          validatedEnd = end >= operationDate;
-        }
-        return validatedStart && validatedEnd;
-      });
-      var parsedData = {};
-
-      // перебор массива данных бвс
-      var _iterator = _createForOfIteratorHelper(data),
-        _step;
-      try {
-        for (_iterator.s(); !(_step = _iterator.n()).done;) {
-          var _data = _step.value;
-          /**
-           * если загрузка от комбайна (bvs_name === to), то данные добавляются и для БВС
-           * Если загрузка от БВС (bvs_name === from), то значение переданное плюсуется только для грузовика
-           */
-
-          if (_data.bvs_name === _data.to) {
-            if (!parsedData[_data.from]) {
-              parsedData[_data.from] = 0;
-            }
-            parsedData[_data.from] += parseFloat(_data.amount_transfered);
-          }
-          if (!parsedData[_data.to]) {
-            parsedData[_data.to] = 0;
-          }
-          parsedData[_data.to] += parseFloat(_data.amount_transfered);
-        }
-      } catch (err) {
-        _iterator.e(err);
-      } finally {
-        _iterator.f();
-      }
-      return parsedData;
-    },
-    /**
-     * Сформированные данные для рейтинга
-     *
-     * @return {Array}
-     */
-    ratingDataRaw: function ratingDataRaw() {
-      var vm = this;
-      // список отфильтрованной по ratingBy техники
-      var vehicles = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.vehicles);
-
-      // список отфильтрованных по ratingBy сотрудников с назначенной техникой
-      var employees = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.employees);
-
-      // количество полученной техникой культуры
-      var transfered = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.bvsTransferedAmounts);
-
-      // перечень типов техники
-      var vehicleTypes = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(Object.keys(vm.vehicleTypes));
-      var output = [];
-      var idx = 1;
-
-      // формирование рейтинга в разрезе техники
-      var _iterator2 = _createForOfIteratorHelper(vehicles),
-        _step2;
-      try {
-        for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
-          var _temp2;
-          var _vehicle = _step2.value;
-          var _temp = (_temp2 = {
-            name: "",
-            type: "",
-            amount: 0,
-            object: _vehicle
-          }, _defineProperty(_temp2, "type", vm.vehicleTypes[_vehicle.type]), _defineProperty(_temp2, "sort", _vehicle.type), _defineProperty(_temp2, "pid", idx), _defineProperty(_temp2, "model", "vehicle"), _temp2);
-          _temp.name = _vehicle.name;
-          _temp.id = _vehicle.id;
-          if (transfered[_vehicle.name]) {
-            _temp.amount += transfered[_vehicle.name];
-          }
-          output.push(_temp);
-          idx++;
-        }
-        // формирование рейтинга в разрезе сотрудников
-      } catch (err) {
-        _iterator2.e(err);
-      } finally {
-        _iterator2.f();
-      }
-      var _iterator3 = _createForOfIteratorHelper(employees),
-        _step3;
-      try {
-        for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
-          var _temp4;
-          var _employee = _step3.value;
-          var _key = "".concat(_employee.last_name, " ").concat(_employee.first_name, " ").concat(_employee.middle_name);
-          var _temp3 = (_temp4 = {
-            name: "",
-            type: "",
-            amount: 0,
-            object: _employee
-          }, _defineProperty(_temp4, "type", _employee.specialisation), _defineProperty(_temp4, "sort", _employee.specialisation), _defineProperty(_temp4, "pid", idx), _defineProperty(_temp4, "model", "employee"), _temp4);
-          _temp3.name = _key;
-          _temp3.id = _employee.id;
-          var _vehicles = _employee.vehicles.map(function (v) {
-            return v.name;
-          });
-          var _iterator4 = _createForOfIteratorHelper(_vehicles),
-            _step4;
-          try {
-            for (_iterator4.s(); !(_step4 = _iterator4.n()).done;) {
-              var __name = _step4.value;
-              if (!transfered[__name]) continue;
-              _temp3.amount += transfered[__name];
-            }
-          } catch (err) {
-            _iterator4.e(err);
-          } finally {
-            _iterator4.f();
-          }
-          output.push(_temp3);
-          idx++;
-        }
-      } catch (err) {
-        _iterator3.e(err);
-      } finally {
-        _iterator3.f();
-      }
-      return output;
-    },
-    /**
-     * отсортированныей массив данных для рейтинга
-     *
-     * @returns {Array}
-     */
-    ratingData: function ratingData() {
-      var vm = this;
-      var output = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.ratingDataRaw).filter(function (i) {
-        return i.sort === vm.ratingBy;
-      });
-
-      // сортировка рейтинга по убыванию
-      output.sort(function (itemA, itemB) {
-        if (itemA.amount === itemB.amount) return 0;
-        return itemA.amount < itemB.amount ? 1 : -1;
-      });
-      return output;
-    },
-    /**
-     * Список доступных вариантов рейтинга
-     *
-     * @returns {Object} В качестве ключа профессия сотрудника либо тип техники
-     * @see Laravel Model Employee | Vehicle
-     */
-    ratingOptions: function ratingOptions() {
-      var vm = this;
-      var options = {};
-      var separator = {
-        "-": "-----------"
-      };
-      Object.assign(options, vm.vehicleTypes, separator, vm.professions);
-      return options;
-    }
-  },
   mounted: function mounted() {
-    var vm = this;
-    // выбор начального значения из вариантов рейтинга
-
     vm.$el.parentNode.classList.add("d-flex");
-    vm.ratingBy = Object.keys((0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.ratingOptions))[0];
-    // запрос и получение списка сотрудников
-    vm.getEmployees().then(function (e) {
-      return vm.employees = e.employees;
-    });
-    // запрос и получение списка техники, присвоение списка
-    vm.getVehicles().then(function (e) {
-      vm.vehicles = [].concat(_toConsumableArray(Object.values(e.bunkers)), _toConsumableArray(Object.values(e.harvesters)), _toConsumableArray(Object.values(e.tractors)), _toConsumableArray(Object.values(e.transporters)));
-    });
-    //запрос данных от БВС
-    vm.getBvsData().then(function (e) {
-      return vm.bvsData = e.bvs_data;
-    });
   },
   methods: {
     /**
@@ -20037,16 +20069,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _mixins_crud__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../mixins/crud */ "./resources/js/mixins/crud.js");
 /* harmony import */ var _mixins_messages__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../mixins/messages */ "./resources/js/mixins/messages.js");
 /* harmony import */ var _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../mixins/publicAuthData */ "./resources/js/mixins/publicAuthData.js");
-/* harmony import */ var _mixins_professions__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../mixins/professions */ "./resources/js/mixins/professions.js");
-/* harmony import */ var _mixins_vehicleTypes__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../mixins/vehicleTypes */ "./resources/js/mixins/vehicleTypes.js");
-/* harmony import */ var _components_MessagesComponent__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../components/MessagesComponent */ "./resources/js/components/MessagesComponent/index.js");
-/* harmony import */ var _components_inputs_MonthPickerComponent__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../components/inputs/MonthPickerComponent */ "./resources/js/components/inputs/MonthPickerComponent/index.js");
-function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
-function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
-function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
+/* harmony import */ var _mixins_sortAnimation__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../mixins/sortAnimation */ "./resources/js/mixins/sortAnimation.js");
+/* harmony import */ var _mixins_professions__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../mixins/professions */ "./resources/js/mixins/professions.js");
+/* harmony import */ var _mixins_statData__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../mixins/statData */ "./resources/js/mixins/statData.js");
+/* harmony import */ var _mixins_vehicleTypes__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../mixins/vehicleTypes */ "./resources/js/mixins/vehicleTypes.js");
+/* harmony import */ var _components_MessagesComponent__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../components/MessagesComponent */ "./resources/js/components/MessagesComponent/index.js");
+/* harmony import */ var _components_inputs_MonthPickerComponent__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../components/inputs/MonthPickerComponent */ "./resources/js/components/inputs/MonthPickerComponent/index.js");
 /**
  * приложение отображение статистики публичного раздела
  */
@@ -20063,51 +20091,25 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
 
 
+
+
 // компоненты
 
 
 var appPublicStatistics = {
-  mixins: [_mixins_axiosRequests__WEBPACK_IMPORTED_MODULE_2__["default"], _mixins_crud__WEBPACK_IMPORTED_MODULE_3__["default"], _mixins_messages__WEBPACK_IMPORTED_MODULE_4__["default"], _mixins_professions__WEBPACK_IMPORTED_MODULE_6__["default"], _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_5__["default"], _mixins_vehicleTypes__WEBPACK_IMPORTED_MODULE_7__["default"]],
+  mixins: [_mixins_axiosRequests__WEBPACK_IMPORTED_MODULE_2__["default"], _mixins_crud__WEBPACK_IMPORTED_MODULE_3__["default"], _mixins_messages__WEBPACK_IMPORTED_MODULE_4__["default"], _mixins_professions__WEBPACK_IMPORTED_MODULE_7__["default"], _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_5__["default"], _mixins_statData__WEBPACK_IMPORTED_MODULE_8__["default"], _mixins_sortAnimation__WEBPACK_IMPORTED_MODULE_6__["default"], _mixins_vehicleTypes__WEBPACK_IMPORTED_MODULE_9__["default"]],
   components: {
-    MessagesComponent: _components_MessagesComponent__WEBPACK_IMPORTED_MODULE_8__["default"],
-    MonthPicker: _components_inputs_MonthPickerComponent__WEBPACK_IMPORTED_MODULE_9__["default"]
+    MessagesComponent: _components_MessagesComponent__WEBPACK_IMPORTED_MODULE_10__["default"],
+    MonthPicker: _components_inputs_MonthPickerComponent__WEBPACK_IMPORTED_MODULE_11__["default"]
   },
   data: function data() {
-    return {
-      bvsData: [],
-      // данные о транзакциях БВC
-      employees: [],
-      // перечень сотрудников организации
-      vehicles: [],
-      // перечень техники
-      ratingBy: "",
-      // по ком или чем отображать рейтинг
-      dateRange: {
-        // диапазон дат для фильтрации данных бвс
-        start: null,
-        end: null
-      }
-    };
+    return {};
   },
   watch: {},
   computed: {},
   mounted: function mounted() {
     var vm = this;
-    // выбор начального значения из вариантов рейтинга
-
     vm.$el.parentNode.classList.add("d-flex");
-    // запрос и получение списка сотрудников
-    vm.getEmployees().then(function (e) {
-      return vm.employees = e.employees;
-    });
-    // запрос и получение списка техники, присвоение списка
-    vm.getVehicles().then(function (e) {
-      vm.vehicles = [].concat(_toConsumableArray(Object.values(e.bunkers)), _toConsumableArray(Object.values(e.harvesters)), _toConsumableArray(Object.values(e.tractors)), _toConsumableArray(Object.values(e.transporters)));
-    });
-    //запрос данных от БВС
-    vm.getBvsData().then(function (e) {
-      return vm.bvsData = e.bvs_data;
-    });
   },
   methods: {}
 };
