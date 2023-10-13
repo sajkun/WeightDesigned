@@ -15724,6 +15724,7 @@ __webpack_require__.r(__webpack_exports__);
       var vm = this;
       var helper = moment__WEBPACK_IMPORTED_MODULE_0___default()(date);
       vm.initialDate = helper.format("YYYY-MM-DD");
+      vm.startDate = vm.initialDate;
     },
     // отслеживание дат
     _period: function _period(period) {
@@ -16362,6 +16363,7 @@ __webpack_require__.r(__webpack_exports__);
      */
     date: function date(_date2) {
       var vm = this;
+      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)(_date2);
       // передает на уровень родительского элемента изменившуюся дату
       vm.$emit("dateChanged", {
         date: _date2
@@ -20495,8 +20497,15 @@ var appPublicStatistics = {
   mounted: function mounted() {
     var vm = this;
     vm.$el.parentNode.classList.add("d-flex");
+    var today = new Date();
+    vm.dateRange.start = moment__WEBPACK_IMPORTED_MODULE_1___default()(today).set("date", 1).toISOString();
+    vm.dateRange.end = moment__WEBPACK_IMPORTED_MODULE_1___default()(today).toISOString();
   },
-  methods: {}
+  methods: {
+    setDate: function setDate(type, event) {
+      this.dateRange[type] = event.date;
+    }
+  }
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (appPublicStatistics);
 

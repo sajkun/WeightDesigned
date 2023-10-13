@@ -1,4 +1,5 @@
 <!-- Поле ввода с выпадающим выбором календаря -->
+<!-- vm.$emit("dateChanged", { date: date }); -->
 <template>
     <div
         class="component-holder"
@@ -89,6 +90,7 @@ export default {
          */
         date(date) {
             const vm = this;
+            clog(date);
             // передает на уровень родительского элемента изменившуюся дату
             vm.$emit("dateChanged", { date: date });
         },

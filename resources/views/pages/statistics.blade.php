@@ -28,12 +28,12 @@
                 </div>
                 <div class="col-auto d-flex align-items-center">
                     <span class="label">с </span>
-                    <datepicker class='ms-2' />
+                    <datepicker class='ms-2' :_date='dateRange.start' @date-changed='setDate("start", $event)' />
                 </div>
                 <div class="col-auto d-flex align-items-center">
                     <span class="label">
                         по </span>
-                    <datepicker class='ms-2' />
+                    <datepicker :_date='dateRange.end' class='ms-2' @date-changed='setDate("end", $event)' />
                 </div>
 
             </div>

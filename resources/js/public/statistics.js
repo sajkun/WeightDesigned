@@ -50,9 +50,16 @@ const appPublicStatistics = {
     mounted() {
         const vm = this;
         vm.$el.parentNode.classList.add("d-flex");
+        const today = new Date();
+        vm.dateRange.start = moment(today).set("date", 1).toISOString();
+        vm.dateRange.end = moment(today).toISOString();
     },
 
-    methods: {},
+    methods: {
+        setDate(type, event) {
+            this.dateRange[type] = event.date;
+        },
+    },
 };
 
 export default appPublicStatistics;

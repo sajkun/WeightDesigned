@@ -194,6 +194,7 @@ export default {
             const vm = this;
             const helper = moment(date);
             vm.initialDate = helper.format("YYYY-MM-DD");
+            vm.startDate = vm.initialDate;
         },
 
         // отслеживание дат
