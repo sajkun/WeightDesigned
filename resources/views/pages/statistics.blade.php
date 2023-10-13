@@ -16,14 +16,29 @@
 
         {{-- шапка со списком выбора вариантов сортировки и выбора месяца или года отображения --}}
         {{-- ************************************************ --}}
-        <div class="mt-4 mb-2">
-            <p class="m-0 h-6 d-inline">Статистика:</p>
-            <select v-model='ratingBy' class='ms-2  inline-select'>
-                <option v-for='rate, key in ratingOptions' :key='"options" + key' :value='key'
-                    :disabled="(key === '-')">
-                    @{{ rate }}</option>
-            </select>
+        <div class="mt-4 mb-2 statistics-header">
+            <div class="row align-items-center">
+                <div class="col-auto">
+                    <p class="m-0 h-6 d-inline">Статистика:</p>
+                    <select v-model='ratingBy' class='ms-2  inline-select'>
+                        <option v-for='rate, key in ratingOptions' :key='"options" + key' :value='key'
+                            :disabled="(key === '-')">
+                            @{{ rate }}</option>
+                    </select>
+                </div>
+                <div class="col-auto d-flex align-items-center">
+                    <span class="label">с </span>
+                    <datepicker class='ms-2' />
+                </div>
+                <div class="col-auto d-flex align-items-center">
+                    <span class="label">
+                        по </span>
+                    <datepicker class='ms-2' />
+                </div>
+
+            </div>
         </div>
+        {{-- ************************************************ --}}
 
         {{-- заголовок с выбором периода --}}
         {{-- ************************************************ --}}

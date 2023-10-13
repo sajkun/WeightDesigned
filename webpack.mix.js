@@ -1,4 +1,5 @@
 const mix = require("laravel-mix");
+const path = require("path");
 const webpack = require("webpack");
 mix.webpackConfig({
     plugins: [
@@ -7,6 +8,12 @@ mix.webpackConfig({
             __VUE_PROD_DEVTOOLS__: true,
         }),
     ],
+
+    resolve: {
+        alias: {
+            "@": path.resolve(__dirname, "resources/js/"),
+        },
+    },
 });
 /*
  |--------------------------------------------------------------------------
