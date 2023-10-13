@@ -48,7 +48,7 @@
 
         {{-- заголовок с выбором периода --}}
         {{-- ************************************************ --}}
-        <div class="row">
+        <div class="row flex-grow-1">
             {{-- Список отфильтрованных данных --}}
             {{-- ************************************************ --}}
             <div class='col-12 col-md-6 statistics-list' v-show='ratingData.length'>
@@ -75,7 +75,10 @@
                 </transition-group>
             </div>
             {{-- ************************************************ --}}
+            <div class="col-12 col-md-6">
+                <div class="d-flex flex-column h-100" style='background-color: #fff; border-radius: var(--brs)'></div>
+
+            </div>
         </div>
-        <div class="row"></div>
     </div>
 @endsection
