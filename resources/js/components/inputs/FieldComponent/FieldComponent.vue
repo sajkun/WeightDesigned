@@ -27,10 +27,10 @@
 </template>
 
 <script>
-import passevents from "../../../mixins/passevents";
-import InputComponent from "../InputComponent";
-import SelectComponent from "../SelectComponent";
-import PasswordInputComponent from "../PasswordInputComponent";
+import passevents from "@/mixins/passevents";
+import InputComponent from "@/components/inputs/InputComponent";
+import SelectComponent from "@/components/inputs/SelectComponent";
+import PasswordInputComponent from "@/components/inputs/PasswordInputComponent";
 export default {
     mixins: [passevents],
     components: {

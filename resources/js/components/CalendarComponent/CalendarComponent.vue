@@ -97,7 +97,7 @@
 
 <script>
 import moment from "moment";
-import { strip, clog } from "../../misc/helpers";
+import { strip, clog } from "@/misc/helpers";
 export default {
     props: {
         _period: {

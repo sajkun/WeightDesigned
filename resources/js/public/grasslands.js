@@ -1,5 +1,5 @@
-import { strip, clog, getFormData } from "./../misc/helpers";
-import publicAuthData from "../mixins/publicAuthData";
+import { strip, clog, getFormData } from "@/misc/helpers";
+import publicAuthData from "@/mixins/publicAuthData";
 
 import {
     readBinaryShapeFile,
@@ -7,10 +7,10 @@ import {
     getPointsForGrassland,
     getCenterByPoints,
 } from "./dbf";
-import messages from "../mixins/messages";
-import crud from "../mixins/crud";
-import FileInputComponent from "../components/FileInputComponent";
-import { kml } from "../../../node_modules/@tmcw/togeojson";
+import messages from "@/mixins/messages";
+import crud from "@/mixins/crud";
+import FileInputComponent from "@/components/FileInputComponent";
+import { kml } from "@/../../node_modules/@tmcw/togeojson";
 
 let grasslandMap;
 const axios = require("axios");

@@ -2,16 +2,16 @@
  * Приложение отвечающее за внешний вид и отправку
  * запросов CRUD раздела "Сотрудники"
  */
-import { strip, clog, getFormData } from "./../misc/helpers";
-import publicAuthData from "../mixins/publicAuthData";
-import messages from "../mixins/messages";
-import MessagesComponent from "./../components/MessagesComponent/";
-import FieldComponent from "../components/inputs/FieldComponent";
-import InputComponent from "../components/inputs/InputComponent";
-import FormComponent from "./../components/inputs/FormComponent/";
-import crud from "../mixins/crud";
-import addEmployeeForm from "../formFields/employees/add";
-import editEmployeeForm from "../formFields/employees/edit";
+import { strip, clog, getFormData } from "@/misc/helpers";
+import publicAuthData from "@/mixins/publicAuthData";
+import messages from "@/mixins/messages";
+import MessagesComponent from "@/components/MessagesComponent/";
+import FieldComponent from "@/components/inputs/FieldComponent";
+import InputComponent from "@/components/inputs/InputComponent";
+import FormComponent from "@/components/inputs/FormComponent/";
+import crud from "@/mixins/crud";
+import addEmployeeForm from "@/formFields/employees/add";
+import editEmployeeForm from "@/formFields/employees/edit";
 
 const axios = require("axios");
 const appPublicEmployees = {

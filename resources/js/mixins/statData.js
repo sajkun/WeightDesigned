@@ -1,5 +1,5 @@
 //хэлперы
-import { strip, clog } from "../misc/helpers";
+import { strip, clog } from "@/misc/helpers";
 
 export default {
     data() {

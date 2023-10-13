@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import inputEvents from "../../../mixins/inputEvents";
+import inputEvents from "@/mixins/inputEvents";
 export default {
     mixins: [inputEvents],
     props: ["_info", "_value"],

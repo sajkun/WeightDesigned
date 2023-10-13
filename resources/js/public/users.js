@@ -1,16 +1,16 @@
 /**
  * работа с пользователями публичной зоны
  */
-import publicAuthData from "../mixins/publicAuthData";
-import messages from "../mixins/messages";
-import MessagesComponent from "./../components/MessagesComponent/";
-import crud from "../mixins/crud";
-import { strip, clog } from "../misc/helpers";
-import addUserForm from "../formFields/addUser";
-import editPasswordForm from "../formFields/editPwd";
-import editUserForm from "../formFields/editUser";
-import InputComponent from "../components/inputs/InputComponent";
-import FormComponent from "./../components/inputs/FormComponent/";
+import publicAuthData from "@/mixins/publicAuthData";
+import messages from "@/mixins/messages";
+import MessagesComponent from "@/components/MessagesComponent/";
+import crud from "@/mixins/crud";
+import { strip, clog } from "@/misc/helpers";
+import addUserForm from "@/formFields/addUser";
+import editPasswordForm from "@/formFields/editPwd";
+import editUserForm from "@/formFields/editUser";
+import InputComponent from "@/components/inputs/InputComponent";
+import FormComponent from "@/components/inputs/FormComponent/";
 const axios = require("axios");
 
 const appPublicUsers = {
@@ -66,7 +66,7 @@ const appPublicUsers = {
         vm.getUsers();
 
         document.addEventListener("updateList", () => {
-            console.log('updateList fired')
+            console.log("updateList fired");
             vm.getUsers();
         });
 
@@ -151,7 +151,7 @@ const appPublicUsers = {
         },
 
         getUsers() {
-            clog('%c getUser', 'color:#f7f')
+            clog("%c getUser", "color:#f7f");
             const vm = this;
 
             if (vm.$refs.organisationId < 0) {

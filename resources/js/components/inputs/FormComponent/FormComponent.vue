@@ -28,9 +28,9 @@
 </template>
 
 <script>
-import { getFormData } from "../../../misc/helpers";
-import { clog } from "../../../misc/helpers";
-import FieldComponent from "../FieldComponent";
+import { getFormData } from "@/misc/helpers";
+import { clog } from "@/misc/helpers";
+import FieldComponent from "@/components/inputs/FieldComponent";
 export default {
     props: {
         _structure: Array,
