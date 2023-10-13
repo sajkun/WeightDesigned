@@ -20,7 +20,7 @@
             <div class="row align-items-center">
                 <div class="col-auto">
                     <p class="m-0 h-6 d-inline">Статистика:</p>
-                    <select v-model='ratingBy' class='ms-2  inline-select'>
+                    <select v-model='ratingBy' :size='ratingBy' class='ms-2  inline-select'>
                         <option v-for='rate, key in ratingOptions' :key='"options" + key' :value='key'
                             :disabled="(key === '-')">
                             @{{ rate }}</option>

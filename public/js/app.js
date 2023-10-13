@@ -15694,7 +15694,7 @@ __webpack_require__.r(__webpack_exports__);
       /**
        * @see _initialDate
        */
-      initialDate: this._initialDate,
+      initialDate: "",
       startDate: false,
       // начальная дата для периода или выбранная дата для selectPeriod=false
       endDate: false,
@@ -15710,6 +15710,8 @@ __webpack_require__.r(__webpack_exports__);
 
     // если режим работы дата, задается начальная дата
     if (vm.selectPeriod) return;
+    var helper = moment__WEBPACK_IMPORTED_MODULE_0___default()(vm._initialDate);
+    vm.initialDate = helper.format("YYYY-MM-DD");
     vm.startDate = vm.initialDate;
   },
   watch: {
@@ -15719,11 +15721,12 @@ __webpack_require__.r(__webpack_exports__);
     },
     // отслеживание состояние свойства начальной даты,
     _initialDate: function _initialDate(date) {
-      this.initialDate = date;
+      var vm = this;
+      var helper = moment__WEBPACK_IMPORTED_MODULE_0___default()(date);
+      vm.initialDate = helper.format("YYYY-MM-DD");
     },
     // отслеживание дат
     _period: function _period(period) {
-      console.log(period);
       if (!vm.startDate) {
         var date = new Date(period.start);
         vm.startDate = moment__WEBPACK_IMPORTED_MODULE_0___default()(date).format("YYYY-MM-DD");
@@ -15868,7 +15871,7 @@ __webpack_require__.r(__webpack_exports__);
      * Формирует данные о месяце
      *
      * @returns [{
-    *           day: <int|string>день в месяце,
+            *           day: <int|string>день в месяце,
         date: <String> стрка даты Y-m-d,
         last: <boolean>признак последнего выбранного дня,
         first: <boolean>признак первого выбранного дня,
@@ -16323,14 +16326,204 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _misc_helpers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/misc/helpers */ "./resources/js/misc/helpers.js");
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _mixins_momentFormats__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @/mixins/momentFormats */ "./resources/js/mixins/momentFormats.js");
+/* harmony import */ var _components_CalendarComponent__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @/components/CalendarComponent */ "./resources/js/components/CalendarComponent/index.js");
 //хэлперы
 
 
+
+//миксины
+
+
+//компоненты
+
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  data: function data() {
-    return {};
+  watch: {
+    /**
+     * Наследование параметра от родителя при смене свойства (props)
+     *
+     * @param {String} date
+     */
+    _date: function _date(date) {
+      this.date = new Date(date).toISOString();
+    },
+    /**
+     * Наследование параметра от родителя при смене свойства (props)
+     *
+     * @param {String} format
+     */
+    _format: function _format(format) {
+      this.format = format;
+    },
+    /**
+     * Отслеживание состояния параметра date
+     *
+     * @param {String} date Iso format
+     */
+    date: function date(_date2) {
+      var vm = this;
+      // передает на уровень родительского элемента изменившуюся дату
+      vm.$emit("dateChanged", {
+        date: _date2
+      });
+    }
   },
-  methods: {}
+  props: {
+    /**
+     * Начальная дата от родителя
+     */
+    _date: {
+      type: String,
+      "default": null,
+      required: false
+    },
+    /**
+     * Формат отображения данных.
+     * Используется синтаксис библиотеки moment.js
+     */
+    _format: {
+      type: String,
+      "default": "DD.MM.YYYY",
+      required: false
+    }
+  },
+  created: function created() {
+    var vm = this;
+    // формируется начальное значение даты, если не задано, то сегодняшняя
+    var date = Boolean(vm._date) ? new Date(vm._date) : new Date();
+    vm.date = date.toISOString();
+  },
+  computed: {
+    /**
+     * форматированный вид даты
+     *
+     * @returns {String} дата на основе формата
+     */
+    dateFormatted: function dateFormatted() {
+      var vm = this;
+      var date = new Date(vm.date);
+      var helper = moment__WEBPACK_IMPORTED_MODULE_1___default()(date);
+      return helper.format(vm.format);
+    },
+    /**
+     * Вычисляет длину строки даты для того, чтобы
+     * задать атрибут size поля ввода календаря размера
+     * Точки не учитываются в вычилсении длины
+     *
+     * @returns {Integer}
+     */
+    inputSize: function inputSize() {
+      var vm = this;
+      var date = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.dateFormatted);
+      var size = date.split("").filter(function (symbol) {
+        return symbol !== ".";
+      }).length;
+      return size - 1;
+    },
+    formatComment: function formatComment() {
+      var vm = this;
+      var formatDescription = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.momentJsFormats);
+      var data = new Map();
+      var format = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.format);
+      for (var part in formatDescription) {
+        if (1 === format.split(part).length - 1) {
+          data.set(part, formatDescription[part]);
+        }
+      }
+      return Object.fromEntries(data);
+    }
+  },
+  data: function data() {
+    return {
+      date: "",
+      //дата в формате ISO
+      format: this._format,
+      // формат данных в синтаксисе moment.js
+      focused: false,
+      showDropdown: false
+    };
+  },
+  methods: {
+    /**
+     * Коллбэк для ввода в поле редактирования даты
+     *
+     *
+     * @param {InputEvent} event
+     * @param {Boolean} fix вносить ли правки если поле ввода неверно
+     *
+     * @returns {String} date последняя корректно введенная дата
+     */
+    fixInput: function fixInput(event, fix) {
+      var vm = this;
+      var text = event.target.value;
+      var mayBeDate = moment__WEBPACK_IMPORTED_MODULE_1___default()(text, vm.format, true);
+      var date = vm.date;
+      vm.showDropdown = false;
+      vm.focused = true;
+
+      /**
+       * обновление даты, если ввод корректен
+       */
+      if (mayBeDate.isValid()) {
+        date = mayBeDate.toISOString();
+      }
+
+      /**
+       * Откат на последюю валидную дату
+       */
+      if (fix) {
+        event.target.value = moment__WEBPACK_IMPORTED_MODULE_1___default()(date).format(vm.format);
+      }
+
+      /**
+       * обновление значение данных, если менялось
+       */
+      if (date !== vm.date) {
+        vm.date = date;
+      }
+      return date;
+    },
+    selectDateCb: function selectDateCb(data) {
+      var vm = this;
+      var newDate = moment__WEBPACK_IMPORTED_MODULE_1___default()(data.date).toISOString();
+      if (vm.date !== newDate && vm.showDropdown) {
+        vm.showDropdown = false;
+        vm.date = newDate;
+      }
+    },
+    /**
+     * Явно задает признак есть ли фокус на поле ввода даты
+     *
+     * @param {Boolean} focused
+     *
+     * @return {Void}
+     */
+    setFocus: function setFocus(focused) {
+      var vm = this;
+      vm.focused = focused;
+      vm.showDropdown = false;
+      return;
+    },
+    /**
+     * Показывает или скрывает календарь в выпадающем
+     *
+     * @param {Boolean} toggle
+     *
+     * @return {Void}
+     */
+    toggleDropdown: function toggleDropdown(toggle) {
+      var vm = this;
+      vm.showDropdown = toggle;
+      if (toggle) {
+        vm.focused = false;
+      }
+      return;
+    }
+  },
+  components: {
+    Calendar: _components_CalendarComponent__WEBPACK_IMPORTED_MODULE_3__["default"]
+  },
+  mixins: [_mixins_momentFormats__WEBPACK_IMPORTED_MODULE_2__["default"]]
 });
 
 /***/ }),
@@ -17182,14 +17375,88 @@ __webpack_require__.r(__webpack_exports__);
 var _withScopeId = function _withScopeId(n) {
   return (0,vue__WEBPACK_IMPORTED_MODULE_0__.pushScopeId)("data-v-16f6f858"), n = n(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.popScopeId)(), n;
 };
-var _hoisted_1 = /*#__PURE__*/_withScopeId(function () {
-  return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
-    type: "text"
+var _hoisted_1 = {
+  key: 0,
+  "class": "comment p-2"
+};
+var _hoisted_2 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" Вводите пожалуйста данные в виде:");
+var _hoisted_3 = /*#__PURE__*/_withScopeId(function () {
+  return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("br", null, null, -1 /* HOISTED */);
+});
+var _hoisted_4 = /*#__PURE__*/_withScopeId(function () {
+  return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
+    "class": "mt-2"
   }, null, -1 /* HOISTED */);
 });
-var _hoisted_2 = [_hoisted_1];
+var _hoisted_5 = ["value", "placeholder", "size"];
+var _hoisted_6 = /*#__PURE__*/_withScopeId(function () {
+  return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("i", {
+    "class": "fa fa-calendar"
+  }, null, -1 /* HOISTED */);
+});
+var _hoisted_7 = [_hoisted_6];
+var _hoisted_8 = {
+  "class": "calendar-dropdown p-2"
+};
 function render(_ctx, _cache, $props, $setup, $data, $options) {
-  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", null, _hoisted_2);
+  var _component_Calendar = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("Calendar");
+  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", {
+    "class": "component-holder",
+    onKeydown: _cache[5] || (_cache[5] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.withKeys)(function ($event) {
+      $options.setFocus(false);
+      $data.showDropdown = false;
+    }, ["esc"]))
+  }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(vue__WEBPACK_IMPORTED_MODULE_0__.Transition, {
+    name: "fade"
+  }, {
+    "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
+      return [$data.focused ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, [_hoisted_2, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("b", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.format) + ",для выбора из календаря нажмите ctrl+пробел", 1 /* TEXT */), _hoisted_3, _hoisted_4, ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($options.formatComment, function (text, key) {
+        return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("p", {
+          "class": "m-0",
+          key: 'comment' + key
+        }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(key) + ":" + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(text), 1 /* TEXT */);
+      }), 128 /* KEYED_FRAGMENT */))])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)];
+    }),
+    _: 1 /* STABLE */
+  }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
+    "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)(["wrapper-input pe-2", {
+      shifted: $data.focused
+    }])
+  }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
+    type: "text",
+    value: $options.dateFormatted,
+    placeholder: $data.format,
+    size: $options.inputSize,
+    onFocus: _cache[0] || (_cache[0] = function ($event) {
+      return $options.setFocus(true);
+    }),
+    onInput: _cache[1] || (_cache[1] = function ($event) {
+      return $options.fixInput($event, false);
+    }),
+    onBlur: _cache[2] || (_cache[2] = function ($event) {
+      $options.fixInput($event, true);
+      $options.setFocus(false);
+    }),
+    onKeydown: _cache[3] || (_cache[3] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.withKeys)((0,vue__WEBPACK_IMPORTED_MODULE_0__.withModifiers)(function ($event) {
+      return $options.toggleDropdown(true);
+    }, ["ctrl", "prevent"]), ["space"]))
+  }, null, 40 /* PROPS, HYDRATE_EVENTS */, _hoisted_5), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+    "class": "btn p-0",
+    type: "button",
+    onClick: _cache[4] || (_cache[4] = function ($event) {
+      return $options.toggleDropdown(true);
+    })
+  }, _hoisted_7)], 2 /* CLASS */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(vue__WEBPACK_IMPORTED_MODULE_0__.Transition, {
+    name: "fade"
+  }, {
+    "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
+      return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_8, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Calendar, {
+        onSelectedDate: $options.selectDateCb,
+        "_initial-date": $data.date
+      }, null, 8 /* PROPS */, ["onSelectedDate", "_initial-date"])])];
+    }),
+    _: 1 /* STABLE */
+  }, 512 /* NEED_PATCH */), [[vue__WEBPACK_IMPORTED_MODULE_0__.vShow, $data.showDropdown]])], 32 /* HYDRATE_EVENTS */);
 }
 
 /***/ }),
@@ -18497,6 +18764,49 @@ __webpack_require__.r(__webpack_exports__);
       if (confirm) {
         this.messages.confirm = null;
       }
+    }
+  }
+});
+
+/***/ }),
+
+/***/ "./resources/js/mixins/momentFormats.js":
+/*!**********************************************!*\
+  !*** ./resources/js/mixins/momentFormats.js ***!
+  \**********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  computed: {
+    /**
+     * Описание форматов для даты в календаре
+     * Синтаксис moment.js
+     *
+     * @returns {Object}
+     */
+    momentJsFormats: function momentJsFormats() {
+      var formats = {
+        YYYY: "4х значное обозначение года",
+        YY: "2х значное обозначение года",
+        Y: "Любой понятный формат года, 2 или 4 цифры",
+        // Q: "Номер квартала года",
+        M: "Номер месяца без ведущего нуля",
+        MM: "Номер месяца с ведущим нулем",
+        MMM: "Сокращенное название месяца: Янв. и т.п.",
+        MMMM: "Название месяца",
+        D: "Номер дня",
+        DD: "Номер дня с ведущим нулём",
+        DDD: "Номер дня в году",
+        DDDD: "Номер дня в году с 2 ведущими нулями",
+        X: "Unix timestamp",
+        x: "Unix ms timestamp"
+      };
+      return formats;
     }
   }
 });
@@ -20069,6 +20379,7 @@ var appPublicRating = {
     }
   },
   mounted: function mounted() {
+    var vm = this;
     vm.$el.parentNode.classList.add("d-flex");
   },
   methods: {
@@ -21236,6 +21547,30 @@ ___CSS_LOADER_EXPORT___.push([module.id, ".error[data-v-3aaf0140] {\n  color: va
 
 /***/ }),
 
+/***/ "./node_modules/css-loader/dist/cjs.js??clonedRuleSet-12.use[1]!./node_modules/vue-loader/dist/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-12.use[2]!./node_modules/sass-loader/dist/cjs.js??clonedRuleSet-12.use[3]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/components/inputs/DatepickerComponent/DatepickerComponent.vue?vue&type=style&index=1&id=16f6f858&lang=scss":
+/*!************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js??clonedRuleSet-12.use[1]!./node_modules/vue-loader/dist/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-12.use[2]!./node_modules/sass-loader/dist/cjs.js??clonedRuleSet-12.use[3]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/components/inputs/DatepickerComponent/DatepickerComponent.vue?vue&type=style&index=1&id=16f6f858&lang=scss ***!
+  \************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/***/ ((module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0__);
+// Imports
+
+var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
+// Module
+___CSS_LOADER_EXPORT___.push([module.id, ".calendar-dropdown .btn {\n  padding: 0 !important;\n}", ""]);
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
+
+
+/***/ }),
+
 /***/ "./node_modules/css-loader/dist/cjs.js??clonedRuleSet-12.use[1]!./node_modules/vue-loader/dist/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-12.use[2]!./node_modules/sass-loader/dist/cjs.js??clonedRuleSet-12.use[3]!./resources/js/components/BvsMapComponent/style/index.scss?vue&type=style&index=0&lang=scss&external":
 /*!****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/css-loader/dist/cjs.js??clonedRuleSet-12.use[1]!./node_modules/vue-loader/dist/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-12.use[2]!./node_modules/sass-loader/dist/cjs.js??clonedRuleSet-12.use[3]!./resources/js/components/BvsMapComponent/style/index.scss?vue&type=style&index=0&lang=scss&external ***!
@@ -21373,7 +21708,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, ".component-holder[data-v-16f6f858] {\n  position: relative;\n}\n.wrapper-input[data-v-16f6f858] {\n  position: relative;\n  text-align: center;\n  border-radius: var(--brs-small);\n  border: 1px solid var(--grey-light);\n  background-color: transparent;\n  font-size: inherit;\n  overflow: hidden;\n  display: flex;\n  transition: border-color var(--fast), box-shadow var(--fast);\n}\n.wrapper-input[data-v-16f6f858]:hover {\n  border-color: var(--green-medium);\n}\n.wrapper-input[data-v-16f6f858]:focus-within {\n  box-shadow: 0 0 2px 2px var(--green-medium);\n}\n.wrapper-input input[data-v-16f6f858] {\n  position: relative;\n  text-align: center;\n  background-color: transparent;\n  border: 0;\n  outline: 0;\n  transition: transform var(--fast);\n}\n.wrapper-input i.fa-calendar[data-v-16f6f858] {\n  font-size: inherit;\n  transition: transform var(--slow);\n  animation-delay: 0.1s;\n}\n.wrapper-input.shifted input[data-v-16f6f858] {\n  transform: translateX(0.625rem);\n}\n.wrapper-input.shifted i.fa-calendar[data-v-16f6f858] {\n  transform: translateX(200%);\n}\n.wrapper-input button[data-v-16f6f858] {\n  width: 1.25rem;\n  font-size: 1.25rem;\n  text-align: center;\n  border: 0 !important;\n  outline: 0 !important;\n  transition: transform var(--fast), color var(--fast);\n}\n.wrapper-input button[data-v-16f6f858]:hover {\n  transform: scale(1.05);\n}\n.wrapper-input button[data-v-16f6f858]:focus {\n  color: var(--green);\n}\n.wrapper-input button[data-v-16f6f858]:active {\n  transition: transform 0;\n  transform: scale(0.95);\n}\n.comment[data-v-16f6f858] {\n  top: 100%;\n  position: absolute;\n  left: 50%;\n  width: 16rem;\n  text-align: left;\n  font-size: var(--text-small);\n  border-radius: var(--brs-small);\n  background-color: var(--lightest);\n  transform: translate(-50%, 1px);\n  box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);\n}\n.calendar-dropdown[data-v-16f6f858] {\n  z-index: 1000;\n  width: 20rem;\n  max-width: 100vh;\n  position: absolute;\n  top: 100%;\n  left: 0;\n  box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);\n  border-radius: var(--brs);\n  background-color: var(--lightest);\n}", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -49296,6 +49631,36 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
 
 /***/ }),
 
+/***/ "./node_modules/style-loader/dist/cjs.js!./node_modules/css-loader/dist/cjs.js??clonedRuleSet-12.use[1]!./node_modules/vue-loader/dist/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-12.use[2]!./node_modules/sass-loader/dist/cjs.js??clonedRuleSet-12.use[3]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/components/inputs/DatepickerComponent/DatepickerComponent.vue?vue&type=style&index=1&id=16f6f858&lang=scss":
+/*!****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/style-loader/dist/cjs.js!./node_modules/css-loader/dist/cjs.js??clonedRuleSet-12.use[1]!./node_modules/vue-loader/dist/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-12.use[2]!./node_modules/sass-loader/dist/cjs.js??clonedRuleSet-12.use[3]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/components/inputs/DatepickerComponent/DatepickerComponent.vue?vue&type=style&index=1&id=16f6f858&lang=scss ***!
+  \****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! !../../../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_css_loader_dist_cjs_js_clonedRuleSet_12_use_1_node_modules_vue_loader_dist_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_12_use_2_node_modules_sass_loader_dist_cjs_js_clonedRuleSet_12_use_3_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_DatepickerComponent_vue_vue_type_style_index_1_id_16f6f858_lang_scss__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! !!../../../../../node_modules/css-loader/dist/cjs.js??clonedRuleSet-12.use[1]!../../../../../node_modules/vue-loader/dist/stylePostLoader.js!../../../../../node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-12.use[2]!../../../../../node_modules/sass-loader/dist/cjs.js??clonedRuleSet-12.use[3]!../../../../../node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./DatepickerComponent.vue?vue&type=style&index=1&id=16f6f858&lang=scss */ "./node_modules/css-loader/dist/cjs.js??clonedRuleSet-12.use[1]!./node_modules/vue-loader/dist/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-12.use[2]!./node_modules/sass-loader/dist/cjs.js??clonedRuleSet-12.use[3]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/components/inputs/DatepickerComponent/DatepickerComponent.vue?vue&type=style&index=1&id=16f6f858&lang=scss");
+
+            
+
+var options = {};
+
+options.insert = "head";
+options.singleton = false;
+
+var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default()(_node_modules_css_loader_dist_cjs_js_clonedRuleSet_12_use_1_node_modules_vue_loader_dist_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_12_use_2_node_modules_sass_loader_dist_cjs_js_clonedRuleSet_12_use_3_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_DatepickerComponent_vue_vue_type_style_index_1_id_16f6f858_lang_scss__WEBPACK_IMPORTED_MODULE_1__["default"], options);
+
+
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_css_loader_dist_cjs_js_clonedRuleSet_12_use_1_node_modules_vue_loader_dist_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_12_use_2_node_modules_sass_loader_dist_cjs_js_clonedRuleSet_12_use_3_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_DatepickerComponent_vue_vue_type_style_index_1_id_16f6f858_lang_scss__WEBPACK_IMPORTED_MODULE_1__["default"].locals || {});
+
+/***/ }),
+
 /***/ "./node_modules/style-loader/dist/cjs.js!./node_modules/css-loader/dist/cjs.js??clonedRuleSet-12.use[1]!./node_modules/vue-loader/dist/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-12.use[2]!./node_modules/sass-loader/dist/cjs.js??clonedRuleSet-12.use[3]!./resources/js/components/BvsMapComponent/style/index.scss?vue&type=style&index=0&lang=scss&external":
 /*!********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/style-loader/dist/cjs.js!./node_modules/css-loader/dist/cjs.js??clonedRuleSet-12.use[1]!./node_modules/vue-loader/dist/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-12.use[2]!./node_modules/sass-loader/dist/cjs.js??clonedRuleSet-12.use[3]!./resources/js/components/BvsMapComponent/style/index.scss?vue&type=style&index=0&lang=scss&external ***!
@@ -50096,7 +50461,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _DatepickerComponent_vue_vue_type_template_id_16f6f858_scoped_true__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./DatepickerComponent.vue?vue&type=template&id=16f6f858&scoped=true */ "./resources/js/components/inputs/DatepickerComponent/DatepickerComponent.vue?vue&type=template&id=16f6f858&scoped=true");
 /* harmony import */ var _DatepickerComponent_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./DatepickerComponent.vue?vue&type=script&lang=js */ "./resources/js/components/inputs/DatepickerComponent/DatepickerComponent.vue?vue&type=script&lang=js");
 /* harmony import */ var _style_index_scss_vue_type_style_index_0_id_16f6f858_scoped_true_lang_scss_external__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./style/index.scss?vue&type=style&index=0&id=16f6f858&scoped=true&lang=scss&external */ "./resources/js/components/inputs/DatepickerComponent/style/index.scss?vue&type=style&index=0&id=16f6f858&scoped=true&lang=scss&external");
-/* harmony import */ var _node_modules_vue_loader_dist_exportHelper_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../../../node_modules/vue-loader/dist/exportHelper.js */ "./node_modules/vue-loader/dist/exportHelper.js");
+/* harmony import */ var _DatepickerComponent_vue_vue_type_style_index_1_id_16f6f858_lang_scss__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./DatepickerComponent.vue?vue&type=style&index=1&id=16f6f858&lang=scss */ "./resources/js/components/inputs/DatepickerComponent/DatepickerComponent.vue?vue&type=style&index=1&id=16f6f858&lang=scss");
+/* harmony import */ var _node_modules_vue_loader_dist_exportHelper_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../../../node_modules/vue-loader/dist/exportHelper.js */ "./node_modules/vue-loader/dist/exportHelper.js");
 
 
 
@@ -50104,7 +50470,8 @@ __webpack_require__.r(__webpack_exports__);
 ;
 
 
-const __exports__ = /*#__PURE__*/(0,_node_modules_vue_loader_dist_exportHelper_js__WEBPACK_IMPORTED_MODULE_3__["default"])(_DatepickerComponent_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__["default"], [['render',_DatepickerComponent_vue_vue_type_template_id_16f6f858_scoped_true__WEBPACK_IMPORTED_MODULE_0__.render],['__scopeId',"data-v-16f6f858"],['__file',"resources/js/components/inputs/DatepickerComponent/DatepickerComponent.vue"]])
+
+const __exports__ = /*#__PURE__*/(0,_node_modules_vue_loader_dist_exportHelper_js__WEBPACK_IMPORTED_MODULE_4__["default"])(_DatepickerComponent_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__["default"], [['render',_DatepickerComponent_vue_vue_type_template_id_16f6f858_scoped_true__WEBPACK_IMPORTED_MODULE_0__.render],['__scopeId',"data-v-16f6f858"],['__file',"resources/js/components/inputs/DatepickerComponent/DatepickerComponent.vue"]])
 /* hot reload */
 if (false) {}
 
@@ -50864,6 +51231,19 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _node_modules_style_loader_dist_cjs_js_node_modules_css_loader_dist_cjs_js_clonedRuleSet_12_use_1_node_modules_vue_loader_dist_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_12_use_2_node_modules_sass_loader_dist_cjs_js_clonedRuleSet_12_use_3_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_BvsOperationComponent_vue_vue_type_style_index_0_id_3aaf0140_scoped_true_lang_scss__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/style-loader/dist/cjs.js!../../../../node_modules/css-loader/dist/cjs.js??clonedRuleSet-12.use[1]!../../../../node_modules/vue-loader/dist/stylePostLoader.js!../../../../node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-12.use[2]!../../../../node_modules/sass-loader/dist/cjs.js??clonedRuleSet-12.use[3]!../../../../node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./BvsOperationComponent.vue?vue&type=style&index=0&id=3aaf0140&scoped=true&lang=scss */ "./node_modules/style-loader/dist/cjs.js!./node_modules/css-loader/dist/cjs.js??clonedRuleSet-12.use[1]!./node_modules/vue-loader/dist/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-12.use[2]!./node_modules/sass-loader/dist/cjs.js??clonedRuleSet-12.use[3]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/components/BvsOperationComponent/BvsOperationComponent.vue?vue&type=style&index=0&id=3aaf0140&scoped=true&lang=scss");
+
+
+/***/ }),
+
+/***/ "./resources/js/components/inputs/DatepickerComponent/DatepickerComponent.vue?vue&type=style&index=1&id=16f6f858&lang=scss":
+/*!*********************************************************************************************************************************!*\
+  !*** ./resources/js/components/inputs/DatepickerComponent/DatepickerComponent.vue?vue&type=style&index=1&id=16f6f858&lang=scss ***!
+  \*********************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_style_loader_dist_cjs_js_node_modules_css_loader_dist_cjs_js_clonedRuleSet_12_use_1_node_modules_vue_loader_dist_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_12_use_2_node_modules_sass_loader_dist_cjs_js_clonedRuleSet_12_use_3_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_DatepickerComponent_vue_vue_type_style_index_1_id_16f6f858_lang_scss__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/style-loader/dist/cjs.js!../../../../../node_modules/css-loader/dist/cjs.js??clonedRuleSet-12.use[1]!../../../../../node_modules/vue-loader/dist/stylePostLoader.js!../../../../../node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-12.use[2]!../../../../../node_modules/sass-loader/dist/cjs.js??clonedRuleSet-12.use[3]!../../../../../node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./DatepickerComponent.vue?vue&type=style&index=1&id=16f6f858&lang=scss */ "./node_modules/style-loader/dist/cjs.js!./node_modules/css-loader/dist/cjs.js??clonedRuleSet-12.use[1]!./node_modules/vue-loader/dist/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-12.use[2]!./node_modules/sass-loader/dist/cjs.js??clonedRuleSet-12.use[3]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/components/inputs/DatepickerComponent/DatepickerComponent.vue?vue&type=style&index=1&id=16f6f858&lang=scss");
 
 
 /***/ }),

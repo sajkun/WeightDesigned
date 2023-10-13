@@ -60,6 +60,7 @@ const appPublicRating = {
     },
 
     mounted() {
+        const vm = this;
         vm.$el.parentNode.classList.add("d-flex");
     },
 

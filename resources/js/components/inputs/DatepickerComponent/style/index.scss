@@ -1,0 +1,96 @@
+.component-holder {
+    position: relative;
+}
+
+.wrapper-input {
+    $icon-size: 1.25rem;
+    position: relative;
+    text-align: center;
+    border-radius: var(--brs-small);
+    border: 1px solid var(--grey-light);
+    background-color: transparent;
+    font-size: inherit;
+    overflow: hidden;
+    display: flex;
+    transition: border-color var(--fast), box-shadow var(--fast);
+
+    &:hover {
+        border-color: var(--green-medium);
+    }
+
+    &:focus-within {
+        box-shadow: 0 0 2px 2px var(--green-medium);
+    }
+
+    input {
+        position: relative;
+        text-align: center;
+        background-color: transparent;
+        border: 0;
+        outline: 0;
+        transition: transform var(--fast);
+    }
+
+    i.fa-calendar {
+        font-size: inherit;
+        transition: transform var(--slow);
+        animation-delay: 0.1s;
+    }
+
+    &.shifted {
+        input {
+            transform: translateX($icon-size/2);
+        }
+
+        i.fa-calendar {
+            transform: translateX(200%);
+        }
+    }
+
+    button {
+        width: $icon-size;
+        font-size: $icon-size;
+        text-align: center;
+        border: 0 !important;
+        outline: 0 !important;
+        transition: transform var(--fast), color var(--fast);
+
+        &:hover {
+            transform: scale(1.05);
+        }
+
+        &:focus {
+            color: var(--green);
+        }
+
+        &:active {
+            transition: transform 0;
+            transform: scale(0.95);
+        }
+    }
+}
+
+.comment {
+    top: 100%;
+    position: absolute;
+    left: 50%;
+    width: 16rem;
+    text-align: left;
+    font-size: var(--text-small);
+    border-radius: var(--brs-small);
+    background-color: var(--lightest);
+    transform: translate(-50%, 1px);
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+}
+
+.calendar-dropdown {
+    z-index: 1000;
+    width: 20rem;
+    max-width: 100vh;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+    border-radius: var(--brs);
+    background-color: var(--lightest);
+}

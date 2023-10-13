@@ -21,9 +21,7 @@
                     <div class="mt-4"></div>
 
                     {{-- компонент Календарь --}}
-                    <calendar :_initial-date='today' :_disabled='calendarState' :_period="period"
-                        :_select-period='selectPeriod' :_marked-days="markedDays" @selected-date='selectDateCb'
-                        @selected-period='selectPeriodCb'>
+                    <calendar :_initial-date='today'>
                     </calendar>
 
                     {{-- кпопка перехода к режиму просмотра в разрезе БВС --}}

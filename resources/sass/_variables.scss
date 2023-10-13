@@ -3,10 +3,11 @@ $body-bg: #f8fafc;
 
 // Typography
 $font-family-sans-serif: "Nunito", sans-serif;
-$font-size-base: 0.9rem;
+$font-size-base: 1rem;
 $line-height-base: 1.6;
 
 body {
+    // цветовая схема
     --red-ultralight: #ffeaeb;
     --red-light: #f8c4c6;
     --red-medium: #f1898e;
@@ -34,13 +35,22 @@ body {
     --link-color-active: var(--grey);
     --contrast: #fff;
 
+    // тайминги для анимаций
     --fast: 0.15s;
     --slow: 0.6s;
 
+    // скругления
     --brs: 0.5rem;
+    --brs-small: 0.25rem;
     --brs-lg: 1rem;
     --brs-max: 9999rem;
 
+    // отступы
     --gap-x: 1rem;
     --gap-y: 0.5rem;
+
+    // размер текста
+    --text-small: 0.75rem;
+    --text-regular: 1rem;
+    --text-large: 1.25rem;
 }
