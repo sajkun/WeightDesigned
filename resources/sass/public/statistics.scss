@@ -1,6 +1,13 @@
+.statistics-details,
 .statistics-list {
     background-color: var(--lightest);
     border-radius: var(--brs);
+}
+
+.statistics-details {
+    .row {
+        --bs-gutter-x: 0.5rem;
+    }
 }
 
 .statistics-header {
@@ -18,5 +25,62 @@
         width: 1rem;
         max-width: 1rem;
         margin-right: 0.25rem;
+    }
+}
+
+.statistics-data {
+    padding: 0.5rem;
+    border-radius: var(--brs);
+    border: 2px solid var(--grey-light, #dfe6fa);
+    background: var(--lightest);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+
+    &__label {
+        font-size: 1rem;
+        font-weight: 400;
+        color: var(--grey-medium);
+        margin: 0;
+        flex-grow: 1;
+    }
+
+    &__value {
+        font-weight: 700;
+        margin: 0.25em 0 0;
+        color: var(--dark);
+        font-size: 1.25rem;
+
+        &_secondary {
+            font-size: 1rem;
+            font-weight: 400;
+            color: var(--grey-medium);
+        }
+    }
+}
+
+.statistics-best-item {
+    display: grid;
+    grid-template-columns: 1rem auto 2rem;
+    align-items: center;
+    gap: 0.25rem;
+    margin-top: 0.5rem;
+
+    &__icon {
+        border-radius: var(--brs-max);
+        display: block;
+        width: 0.75rem;
+        height: 0.75rem;
+        background-color: var(--grey-medium);
+    }
+
+    &__name {
+        margin: 0;
+        font-size: 0.75rem;
+    }
+
+    &__persantage {
+        margin: 0;
+        font-size: 0.75rem;
     }
 }

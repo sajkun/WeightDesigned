@@ -18,6 +18,7 @@ import vehicleTypes from "@/mixins/vehicleTypes";
 
 // компоненты
 import MessagesComponent from "@/components/MessagesComponent";
+import GraphicComponent from "@/components/GraphicComponent";
 import MonthPickerComponent from "@/components/inputs/MonthPickerComponent";
 import DatepickerComponent from "@/components/inputs/DatepickerComponent";
 
@@ -37,6 +38,7 @@ const appPublicStatistics = {
         MessagesComponent,
         MonthPicker: MonthPickerComponent,
         Datepicker: DatepickerComponent,
+        Graph: GraphicComponent,
     },
 
     data() {
@@ -45,7 +47,31 @@ const appPublicStatistics = {
 
     watch: {},
 
-    computed: {},
+    computed: {
+        testInfo() {
+            const info = {
+                axis: {
+                    x: {
+                        maxValue: 100,
+                        label: "туц",
+                    },
+
+                    y: {
+                        maxValue: 100,
+                        label: "бам",
+                    },
+                },
+                values: [
+                    { x: 1, y: 1 },
+                    { x: 2, y: 2 },
+                    { x: 3, y: 6 },
+                    { x: 5, y: 12 },
+                    { x: 6, y: 4 },
+                ],
+            };
+            return info;
+        },
+    },
 
     mounted() {
         const vm = this;

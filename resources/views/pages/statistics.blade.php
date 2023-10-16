@@ -51,34 +51,115 @@
         <div class="row flex-grow-1">
             {{-- Список отфильтрованных данных --}}
             {{-- ************************************************ --}}
-            <div class='col-12 col-md-6 statistics-list' v-show='ratingData.length'>
-                <transition-group :css="false" v-on:before-enter="onBeforeEnter" v-on:enter="onEnter"
-                    v-on:leave="onLeave" name='sort'>
-                    <div v-for='data, key in ratingData' :data-index='key' :key='data.pid'>
-                        <div class='statistics-row' :class="'statistics' + (key + 1)">
-                            <div class='d-flex'>
-                                <div class="flex-shrink-0 statistics-row__number-cell me-4">
-                                    @{{ key + 1 }}
-                                </div>
-                                <div class="col-4">
-                                    @{{ data.name }}
-                                </div>
-                                <div class="col-5">
-                                    @{{ data.type }}
-                                </div>
-                                <div class="col text-end">
-                                    @{{ data.amount }}
+            <Transition name='fade'>
+                <div class='col-12 col-md-6 statistics-list' v-show='ratingData.length'>
+                    <transition-group :css="false" v-on:before-enter="onBeforeEnter" v-on:enter="onEnter"
+                        v-on:leave="onLeave" name='sort'>
+                        <div v-for='data, key in ratingData' :data-index='key' :key='data.pid'>
+                            <div class='statistics-row' :class="'statistics' + (key + 1)">
+                                <div class='d-flex'>
+                                    <div class="flex-shrink-0 statistics-row__number-cell me-4">
+                                        @{{ key + 1 }}
+                                    </div>
+                                    <div class="col-4">
+                                        @{{ data.name }}
+                                    </div>
+                                    <div class="col-5">
+                                        @{{ data.type }}
+                                    </div>
+                                    <div class="col text-end">
+                                        @{{ data.amount }}
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </transition-group>
-            </div>
+                    </transition-group>
+                </div>
+            </Transition>
             {{-- ************************************************ --}}
-            <div class="col-12 col-md-6">
-                <div class="d-flex flex-column h-100" style='background-color: #fff; border-radius: var(--brs)'></div>
 
-            </div>
+            {{-- аналитические данные об урожает в выбранный период --}}
+            {{-- ************************************************ --}}
+            <Transition name='fade'>
+                <div class="col-12 col-md-6" v-show='ratingData.length'>
+                    <div class="d-flex flex-column h-100 statistics-details p-4">
+
+                        {{-- Ряд с данными:
+                         - собрано урожая,
+                         - всего рабочих дней,
+                         - лучший сбор за день
+                    --}}
+                        {{-- ************************************************ --}}
+                        <div class="row">
+                            <div class="col-12 col-md-4">
+                                <div class="statistics-data">
+                                    <h3 class="statistics-data__label">Собрано урожая</h3>
+                                    <p class="statistics-data__value">
+                                        135 т.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-4 mt-2 mt-md-0">
+                                <div class="statistics-data">
+                                    <h3 class="statistics-data__label">Рабочих дней</h3>
+                                    <p class="statistics-data__value">
+                                        26
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-4 mt-2 mt-md-0">
+                                <div class="statistics-data">
+                                    <h3 class="statistics-data__label">Лучший сбор за день</h3>
+                                    <p class="statistics-data__value">
+                                        30 т.
+                                        <span class="statistics-data__value_secondary">18 фев.</span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        {{-- ************************************************ --}}
+                        {{-- график динамики уборки  --}}
+                        {{-- ************************************************ --}}
+                        <div class="flex-grow-1 mt-2 d-flex flex-column">
+                            <h3 class="h6 m-0">
+                                Динамика уборки урожая за февраль
+                            </h3>
+
+                            <div class="graph-body flex-grow-1">
+                                <Graph :_info='testInfo'></Graph>
+                            </div>
+                        </div>
+                        {{-- ************************************************ --}}
+
+                        {{-- 5 лучших за период --}}
+                        {{-- ************************************************ --}}
+                        <div>
+                            <h3 class="h6 m-0">
+                                5 лучших бункеров-перегрузчиков за февраль
+                            </h3>
+                            <div class="row">
+                                <div class="col-7">
+                                    <div class="statistics-best-item">
+                                        <i class="statistics-best-item__icon"></i>
+                                        <h4 class="statistics-best-item__name">фамилия имя отчество</h4>
+                                        <p class="statistics-best-item__persantage text-end">15%</p>
+                                    </div>
+
+                                    <div class="statistics-best-item statistics-best-item_others">
+                                        <i class="statistics-best-item__icon"></i>
+                                        <h4 class="statistics-best-item__name">остальные(8)</h4>
+                                        <p class="statistics-best-item__persantage text-end">45%</p>
+                                    </div>
+                                </div>
+                                <div class="col-5">
+                                    <div class="diagram"></div>
+                                </div>
+                            </div>
+                        </div>
+                        {{-- ************************************************ --}}
+                    </div>
+                </div>
+            </Transition>
         </div>
     </div>
 @endsection

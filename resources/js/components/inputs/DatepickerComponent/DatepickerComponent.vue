@@ -90,7 +90,6 @@ export default {
          */
         date(date) {
             const vm = this;
-            clog(date);
             // передает на уровень родительского элемента изменившуюся дату
             vm.$emit("dateChanged", { date: date });
         },
