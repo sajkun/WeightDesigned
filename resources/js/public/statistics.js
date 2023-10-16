@@ -62,11 +62,11 @@ const appPublicStatistics = {
                     },
                 },
                 points: [
-                    { x: 1, y: 1 },
-                    { x: 2, y: 2 },
-                    { x: 3, y: 6 },
-                    { x: 5, y: 12 },
-                    { x: 6, y: 4 },
+                    { x: 1, y: 1000 },
+                    { x: 2, y: 2500 },
+                    { x: 3, y: 6000 },
+                    { x: 5, y: 12000 },
+                    { x: 6, y: 4000 },
                 ],
             };
             return info;

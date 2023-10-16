@@ -16073,10 +16073,23 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
      * @returns {Object}
      */
     step: function step() {
-      return {
-        x: 20,
-        y: 20
+      var vm = this;
+      var info = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.info);
+      if (!info) {
+        return {
+          x: 20,
+          y: 20
+        };
+      }
+      var _this$getCnv = _slicedToArray(this.getCnv, 2),
+        cnvs = _this$getCnv[0],
+        ctx = _this$getCnv[1];
+      var _return = {
+        x: cnvs.width / info.axis.x.maxValue,
+        y: cnvs.height / info.axis.y.maxValue
       };
+      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)(info);
+      return _return;
     },
     /**
      * подготовочные данны для канвас
@@ -16096,8 +16109,8 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
      */
     zero: function zero() {
       return {
-        x: this.step.x * 2,
-        y: this.step.y * 2
+        x: 40,
+        y: 40
       };
     }
   },
@@ -16141,12 +16154,12 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
      */
     drawGraph: function drawGraph(points) {
       var vm = this;
-      var _this$getCnv = _slicedToArray(this.getCnv, 2),
-        cnvs = _this$getCnv[0],
-        ctx = _this$getCnv[1];
+      var _this$getCnv2 = _slicedToArray(this.getCnv, 2),
+        cnvs = _this$getCnv2[0],
+        ctx = _this$getCnv2[1];
       var step = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.step);
       var _points = Object.values(points).map(function (d) {
-        return [d.y * step.y + vm.zero.y, d.x * step.x + vm.zero.x];
+        return [d.y / step.y + vm.zero.y, d.x * step.x + vm.zero.x];
       });
       ctx.strokeStyle = "#007e3c";
       ctx.lineWidth = 2;
@@ -16165,18 +16178,21 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
      * @returns {Void}
      */
     drawGrid: function drawGrid(step) {
-      var _this$getCnv2 = _slicedToArray(this.getCnv, 2),
-        cnvs = _this$getCnv2[0],
-        ctx = _this$getCnv2[1];
+      var vm = this;
+      var _vm$getCnv = _slicedToArray(vm.getCnv, 2),
+        cnvs = _vm$getCnv[0],
+        ctx = _vm$getCnv[1];
+      var zero = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.zero);
+      var info = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.info);
       ctx.strokeStyle = "#ccc";
       ctx.lineWidth = 0.5;
-      for (var i = step.y; i < cnvs.width; i += step.y) {
+      for (var i = step.x; i < cnvs.width; i += step.x) {
         //вертикальные
-        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.polyline)(ctx, [[0, i], [cnvs.height, i]]);
+        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.polyline)(ctx, [[zero.y, i + zero.x], [cnvs.height, i + zero.x]]);
       }
-      for (var i = step.x; i < cnvs.height; i += step.x) {
+      for (var i = step.y; i < cnvs.height; i += step.y) {
         //Горизонтальные
-        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.polyline)(ctx, [[i, 0], [i, cnvs.width]]);
+        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.polyline)(ctx, [[i + zero.y, zero.x], [i + zero.y, cnvs.width]]);
       }
       return;
     },
@@ -20755,19 +20771,19 @@ var appPublicStatistics = {
         },
         points: [{
           x: 1,
-          y: 1
+          y: 1000
         }, {
           x: 2,
-          y: 2
+          y: 2500
         }, {
           x: 3,
-          y: 6
+          y: 6000
         }, {
           x: 5,
-          y: 12
+          y: 12000
         }, {
           x: 6,
-          y: 4
+          y: 4000
         }]
       };
       return info;

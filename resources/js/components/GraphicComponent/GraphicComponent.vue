@@ -50,10 +50,24 @@ export default {
          * @returns {Object}
          */
         step() {
-            return {
-                x: 20,
-                y: 20,
+            const vm = this;
+            const info = strip(vm.info);
+            if (!info) {
+                return {
+                    x: 20,
+                    y: 20,
+                };
+            }
+            const [cnvs, ctx] = this.getCnv;
+
+            const _return = {
+                x: cnvs.width / info.axis.x.maxValue,
+                y: cnvs.height / info.axis.y.maxValue,
             };
+
+            clog(info);
+
+            return _return;
         },
 
         /**
@@ -76,8 +90,8 @@ export default {
          */
         zero() {
             return {
-                x: this.step.x * 2,
-                y: this.step.y * 2,
+                x: 40,
+                y: 40,
             };
         },
     },
@@ -144,7 +158,7 @@ export default {
             const step = strip(vm.step);
 
             let _points = Object.values(points).map((d) => [
-                d.y * step.y + vm.zero.y,
+                d.y / step.y + vm.zero.y,
                 d.x * step.x + vm.zero.x,
             ]);
 
@@ -169,24 +183,27 @@ export default {
          * @returns {Void}
          */
         drawGrid(step) {
-            const [cnvs, ctx] = this.getCnv;
+            const vm = this;
+            const [cnvs, ctx] = vm.getCnv;
+            const zero = strip(vm.zero);
+            const info = strip(vm.info);
 
             ctx.strokeStyle = "#ccc";
             ctx.lineWidth = 0.5;
 
-            for (var i = step.y; i < cnvs.width; i += step.y) {
+            for (var i = step.x; i < cnvs.width; i += step.x) {
                 //вертикальные
                 polyline(ctx, [
-                    [0, i],
-                    [cnvs.height, i],
+                    [zero.y, i + zero.x],
+                    [cnvs.height, i + zero.x],
                 ]);
             }
 
-            for (var i = step.x; i < cnvs.height; i += step.x) {
+            for (var i = step.y; i < cnvs.height; i += step.y) {
                 //Горизонтальные
                 polyline(ctx, [
-                    [i, 0],
-                    [i, cnvs.width],
+                    [i + zero.y, zero.x],
+                    [i + zero.y, cnvs.width],
                 ]);
             }
 
