@@ -52,16 +52,16 @@ const appPublicStatistics = {
             const info = {
                 axis: {
                     x: {
-                        maxValue: 100,
+                        maxValue: 6,
                         label: "туц",
                     },
 
                     y: {
-                        maxValue: 100,
+                        maxValue: 12,
                         label: "бам",
                     },
                 },
-                values: [
+                points: [
                     { x: 1, y: 1 },
                     { x: 2, y: 2 },
                     { x: 3, y: 6 },

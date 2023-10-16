@@ -16037,12 +16037,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _misc_helpers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/misc/helpers */ "./resources/js/misc/helpers.js");
-function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
-function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
-function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+// хэлперы
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   watch: {
@@ -16062,60 +16063,149 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
   },
   data: function data() {
     return {
-      info: {},
-      zeroX: 20,
-      zeroY: 20
+      info: this._info
     };
   },
-  methods: {
-    drawGrid: function drawGrid(step) {
+  computed: {
+    /**
+     * Шаг сетки
+     *
+     * @returns {Object}
+     */
+    step: function step() {
+      return {
+        x: 20,
+        y: 20
+      };
+    },
+    /**
+     * подготовочные данны для канвас
+     *
+     * @returns {Array}
+     */
+    getCnv: function getCnv() {
       var vm = this;
       var cnvs = vm.$refs.canvas;
       var ctx = cnvs.getContext("2d");
-      ctx.translate(0, cnvs.height);
-      ctx.rotate(-Math.PI / 2);
+      return [cnvs, ctx];
+    },
+    /**
+     * координаты точки отсчёта
+     *
+     * @returns {Object} {x<Int>, y<Int>}
+     */
+    zero: function zero() {
+      return {
+        x: this.step.x * 2,
+        y: this.step.y * 2
+      };
+    }
+  },
+  methods: {
+    /**
+     * Рисует оси абсцисс и ординат
+     * Координаты задавать в формате (y, x)
+     *
+     * @returns  {Void}
+     */
+    drawAxis: function drawAxis() {
+      var vm = this;
+      var cnvs = vm.$refs.canvas;
+      var ctx = cnvs.getContext("2d");
+      var zeroPoint = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.zero);
+      ctx.strokeStyle = "#000";
+      ctx.lineWidth = 0.5;
+
+      //ось обсциc
+      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.polyline)(ctx, [[zeroPoint.y, zeroPoint.x], [zeroPoint.y, cnvs.width]]);
+
+      //ось ординат
+
+      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.polyline)(ctx, [[zeroPoint.y, zeroPoint.x], [cnvs.height, zeroPoint.x]]);
+
+      //стрелка оси ординат
+      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.polyline)(ctx, [[cnvs.height, zeroPoint.x], [cnvs.height - 15, zeroPoint.x - 5], [cnvs.height - 15, zeroPoint.x + 5], [cnvs.height, zeroPoint.x]]);
+      ctx.fill();
+
+      //стрелка оси обсциc
+      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.polyline)(ctx, [[zeroPoint.y, cnvs.width], [zeroPoint.y - 5, cnvs.width - 15], [zeroPoint.y + 5, cnvs.width - 15], [zeroPoint.y, cnvs.width]]);
+      ctx.fill();
+      return;
+    },
+    /**
+     * Отрисовка графика
+     *
+     * @param {Array<Object>} points
+     *
+     * @returns {Void}
+     */
+    drawGraph: function drawGraph(points) {
+      var vm = this;
+      var _this$getCnv = _slicedToArray(this.getCnv, 2),
+        cnvs = _this$getCnv[0],
+        ctx = _this$getCnv[1];
+      var step = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.step);
+      var _points = Object.values(points).map(function (d) {
+        return [d.y * step.y + vm.zero.y, d.x * step.x + vm.zero.x];
+      });
+      ctx.strokeStyle = "#007e3c";
+      ctx.lineWidth = 2;
+      _points.unshift(Object.values(vm.zero));
+      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)(_points);
+      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.polyline)(ctx, _points);
+      return;
+    },
+    /**
+     * Рисует сетку
+     * Координаты задавать в формате (y, x)
+     * из-за поворота канваc
+     *
+     * @param {Integer} step шаг отрисовки
+     *
+     * @returns {Void}
+     */
+    drawGrid: function drawGrid(step) {
+      var _this$getCnv2 = _slicedToArray(this.getCnv, 2),
+        cnvs = _this$getCnv2[0],
+        ctx = _this$getCnv2[1];
       ctx.strokeStyle = "#ccc";
       ctx.lineWidth = 0.5;
-      for (var i = step; i < cnvs.width; i += step) {
+      for (var i = step.y; i < cnvs.width; i += step.y) {
         //вертикальные
-        ctx.beginPath();
-        ctx.moveTo(i, 0);
-        ctx.lineTo(i, cnvs.height);
-        ctx.closePath();
-        ctx.stroke();
+        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.polyline)(ctx, [[0, i], [cnvs.height, i]]);
       }
-      for (var i = step; i < cnvs.height; i += step) {
+      for (var i = step.x; i < cnvs.height; i += step.x) {
         //Горизонтальные
-        ctx.beginPath();
-        ctx.moveTo(0, i);
-        ctx.lineTo(cnvs.width + step, i);
-        ctx.closePath();
-        ctx.stroke();
+        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.polyline)(ctx, [[i, 0], [i, cnvs.width]]);
       }
+      return;
+    },
+    /**
+     * Задает размер и стартовую точку канвас
+     *
+     * @returns {Void}
+     */
+    prepareCanvas: function prepareCanvas() {
+      var vm = this;
+      var _this$getCnv3 = _slicedToArray(this.getCnv, 2),
+        cnvs = _this$getCnv3[0],
+        ctx = _this$getCnv3[1];
+      cnvs.width = vm.$refs.root.offsetWidth;
+      cnvs.height = vm.$refs.root.offsetHeight - 50;
+      ctx.translate(0, cnvs.height);
+      ctx.rotate(-Math.PI / 2);
+      return;
     }
   },
   mounted: function mounted() {
-    var _this = this;
-    (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("mounted");
     var vm = this;
-    var polyline = function polyline(color, pts) {
-      var vm = _this;
-      var cnvs = vm.$refs.canvas;
-      var ctx = cnvs.getContext("2d");
-      ctx.strokeStyle = color;
-      ctx.beginPath();
-      pts.forEach(function (p, i) {
-        return i ? ctx.lineTo.apply(ctx, _toConsumableArray(p)) : ctx.moveTo.apply(ctx, _toConsumableArray(p));
-      });
-      ctx.stroke();
-    };
     setTimeout(function () {
-      var cnvs = vm.$refs.canvas;
-      var step = 20;
-      cnvs.width = vm.$refs.root.offsetWidth - vm.$refs.root.offsetWidth % step + step;
-      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)();
-      cnvs.height = vm.$refs.root.offsetHeight - vm.$refs.root.offsetHeight % step + step;
+      var step = vm.step;
+      var info = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.info);
+      vm.prepareCanvas();
       vm.drawGrid(step);
+      vm.drawAxis();
+      vm.drawGraph(info.points);
     }, 1000);
   }
 });
@@ -18633,8 +18723,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   clog: () => (/* binding */ clog),
 /* harmony export */   getFormData: () => (/* binding */ getFormData),
+/* harmony export */   polyline: () => (/* binding */ polyline),
 /* harmony export */   strip: () => (/* binding */ strip)
 /* harmony export */ });
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
@@ -18671,6 +18766,13 @@ var clog = function clog() {
   var show = Boolean(debug);
   if (!show) return;
   (_console = console).log.apply(_console, arguments);
+};
+var polyline = function polyline(ctx, pts) {
+  ctx.beginPath();
+  pts.forEach(function (p, i) {
+    return i ? ctx.lineTo.apply(ctx, _toConsumableArray(p)) : ctx.moveTo.apply(ctx, _toConsumableArray(p));
+  });
+  ctx.stroke();
 };
 
 /***/ }),
@@ -20643,15 +20745,15 @@ var appPublicStatistics = {
       var info = {
         axis: {
           x: {
-            maxValue: 100,
+            maxValue: 6,
             label: "туц"
           },
           y: {
-            maxValue: 100,
+            maxValue: 12,
             label: "бам"
           }
         },
-        values: [{
+        points: [{
           x: 1,
           y: 1
         }, {
@@ -21864,7 +21966,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "canvas[data-v-013f9ad8] {\n  width: 100%;\n  height: 100%;\n}", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, ".component-root[data-v-013f9ad8] {\n  overflow: hidden;\n}\ncanvas[data-v-013f9ad8] {\n  width: 100%;\n  height: 100%;\n}", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 

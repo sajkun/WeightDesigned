@@ -22,3 +22,9 @@ export const clog = (...data) => {
     if (!show) return;
     console.log(...data);
 };
+
+export const polyline = (ctx, pts) => {
+    ctx.beginPath();
+    pts.forEach((p, i) => (i ? ctx.lineTo(...p) : ctx.moveTo(...p)));
+    ctx.stroke();
+};

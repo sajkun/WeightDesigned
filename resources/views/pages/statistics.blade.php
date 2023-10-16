@@ -88,7 +88,7 @@
                          - собрано урожая,
                          - всего рабочих дней,
                          - лучший сбор за день
-                    --}}
+                        --}}
                         {{-- ************************************************ --}}
                         <div class="row">
                             <div class="col-12 col-md-4">
@@ -125,7 +125,7 @@
                                 Динамика уборки урожая за февраль
                             </h3>
 
-                            <div class="graph-body flex-grow-1">
+                            <div class="graph-body flex-grow-1 mt-4">
                                 <Graph :_info='testInfo'></Graph>
                             </div>
                         </div>
