@@ -16096,8 +16096,8 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
      */
     zero: function zero() {
       return {
-        x: 0,
-        y: 40
+        y: 40,
+        x: 50
       };
     }
   },
@@ -16114,6 +16114,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
       var ctx = cnvs.getContext("2d");
       var zeroPoint = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.zero);
       ctx.strokeStyle = "#000";
+      ctx.fillStyle = "#000";
       ctx.lineWidth = 0.5;
 
       //ось обсциc
@@ -16151,8 +16152,11 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
       ctx.strokeStyle = "#007e3c";
       ctx.lineWidth = 2;
       _points.unshift(Object.values(vm.zero));
-      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)(_points);
+      var endPoint = _points[_points.length - 1];
+      _points.push([vm.zero.y, endPoint[1]]);
       (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.polyline)(ctx, _points);
+      ctx.fillStyle = "#E1F3EA55";
+      ctx.fill();
       return;
     },
     /**
@@ -16170,15 +16174,32 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
       var zero = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.zero);
       var step = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.getStepsData());
       var info = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.info);
-      ctx.strokeStyle = "#ccc";
+      ctx.font = "0.75rem sans-serif";
       ctx.lineWidth = 0.5;
-      for (var i = step.x; i < cnvs.width; i += step.x) {
+      ctx.strokeStyle = "#ccc";
+      ctx.fillStyle = "#999";
+      var label = 0;
+      for (var i = 0; i < cnvs.width; i += step.x) {
         //вертикальные
         (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.polyline)(ctx, [[zero.y, i + zero.x], [cnvs.height, i + zero.x]]);
+        if (i) {
+          label += step.perStepX;
+          ctx.rotate(Math.PI / 2);
+          ctx.fillText(label, i + zero.x, -15);
+          ctx.rotate(-Math.PI / 2);
+        }
       }
-      for (var i = step.y; i < cnvs.height; i += step.y) {
+      label = 0;
+      for (var _i = 0; _i < cnvs.height; _i += step.y) {
         //Горизонтальные
-        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.polyline)(ctx, [[i + zero.y, zero.x], [i + zero.y, cnvs.width]]);
+        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.polyline)(ctx, [[_i + zero.y, zero.x], [_i + zero.y, cnvs.width]]);
+        if (_i) {
+          (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)(label);
+          label += step.perStepY;
+          ctx.rotate(Math.PI / 2);
+          ctx.fillText(label, 0, -1 * (_i + zero.y));
+          ctx.rotate(-Math.PI / 2);
+        }
       }
       return;
     },
@@ -16197,39 +16218,45 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
         cnvs = _vm$getCnv2[0];
 
       /**
-       *  Вычислить максимальное количество отрезков по осям
+       *
+       * @param {Enum} type x | y
+       *
+       * @returns {Array[lengthPart, perStepX ]} длина шага сетки, количествое единиц графика в шаге сетки
        */
-      // длина оси абсцисс
-      var lengthX = cnvs.width;
-      // длина оси ординат
-      var lengthY = cnvs.height;
-      // минимально возможный шаг сетки по оси ОХ
-      var maxStepsNumberX = Math.ceil(lengthX / vm.minStep.x);
-      // минимально возможный шаг сетки по оси ОУ
-      var maxStepsNumberY = Math.ceil(lengthY / vm.minStep.y);
+      var getAxisData = function getAxisData(type) {
+        // длина оси
+        var _length = type === "x" ? cnvs.width - vm.zero[type] : cnvs.height - vm.zero[type];
 
-      /**
-       * Вычислить максимальное округленное значение  отрезков по осям
-       */
+        // максимальное округленное значение
+        var _max = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.getRoundedValue)(vm.info.axis[type].maxValue, "ceil");
 
-      // максимальное округленное значение оси OX
-      var maxX = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.getRoundedValue)(vm.info.axis.x.maxValue, "ceil");
-      var maxY = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.getRoundedValue)(vm.info.axis.y.maxValue, "ceil");
-      maxStepsNumberX = Math.min(maxStepsNumberX, maxX);
-      maxStepsNumberY = Math.min(maxStepsNumberY, maxY);
-      var lengthPartX = Math.floor(lengthX / maxStepsNumberX);
-      var lengthPartY = Math.floor(lengthY / maxStepsNumberY);
-      lengthPartX = Math.max(lengthPartX, 20);
-      lengthPartY = Math.max(lengthPartY, 20);
-      var perStepX = Math.ceil(maxX * lengthPartX / lengthX);
-      var perStepY = Math.ceil(maxY * lengthPartY / lengthY);
+        // максимальное количество разбиение
+        var _maxStepsNumber = Math.ceil(_length / vm.minStep[type]);
+        _maxStepsNumber = Math.min(_maxStepsNumber, _max);
+        var _orderValue = _max.toString().length - 1;
+        _orderValue = Math.max(0, _orderValue);
+        var _perStepX = Math.pow(10, _orderValue);
+        var _lengthPart = _perStepX * _length / _max;
+        return [_lengthPart, _perStepX, _max];
+      };
+      var _getAxisData = getAxisData("x"),
+        _getAxisData2 = _slicedToArray(_getAxisData, 3),
+        lengthPartX = _getAxisData2[0],
+        perStepX = _getAxisData2[1],
+        maxX = _getAxisData2[2];
+      var _getAxisData3 = getAxisData("y"),
+        _getAxisData4 = _slicedToArray(_getAxisData3, 3),
+        lengthPartY = _getAxisData4[0],
+        perStepY = _getAxisData4[1],
+        maxY = _getAxisData4[2];
       var _return = {
         x: lengthPartX,
         y: lengthPartY,
         perStepX: perStepX,
-        perStepY: perStepY
+        perStepY: perStepY,
+        maxX: maxX,
+        maxY: maxY
       };
-      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)(_return);
       return _return;
     },
     /**
@@ -20824,25 +20851,25 @@ var appPublicStatistics = {
         axis: {
           x: {
             maxValue: 7,
-            label: "туц"
+            label: ""
           },
           y: {
-            maxValue: 16000,
-            label: "бам"
+            maxValue: 4000,
+            label: ""
           }
         },
         points: [{
           x: 1,
-          y: 1000
+          y: 2000
         }, {
           x: 2,
           y: 2500
         }, {
           x: 3,
-          y: 16000
+          y: 1650
         }, {
           x: 4,
-          y: 13000
+          y: 1300
         }, {
           x: 5,
           y: 1200

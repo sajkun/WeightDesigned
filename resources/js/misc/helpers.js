@@ -45,6 +45,7 @@ export const get1stDigit = (number) => {
 export const getRoundedValue = (value, type) => {
     const delta = type === "ceil" ? 1 : -1;
     let valueOrder = Math.floor(value).toString().length - 1;
+
     let firstDigit;
 
     if (get1stDigit(value) + delta <= 0) {

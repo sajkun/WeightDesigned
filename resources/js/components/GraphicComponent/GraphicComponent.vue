@@ -76,8 +76,8 @@ export default {
          */
         zero() {
             return {
-                x: 0,
                 y: 40,
+                x: 50,
             };
         },
     },
@@ -95,6 +95,7 @@ export default {
             const ctx = cnvs.getContext("2d");
             const zeroPoint = strip(vm.zero);
             ctx.strokeStyle = "#000";
+            ctx.fillStyle = "#000";
             ctx.lineWidth = 0.5;
 
             //ось обсциc
@@ -153,9 +154,12 @@ export default {
 
             _points.unshift(Object.values(vm.zero));
 
-            clog(_points);
-
+            const endPoint = _points[_points.length - 1];
+            _points.push([vm.zero.y, endPoint[1]]);
             polyline(ctx, _points);
+            ctx.fillStyle = "#E1F3EA55";
+            ctx.fill();
+
             return;
         },
 
@@ -173,23 +177,42 @@ export default {
             const step = strip(vm.getStepsData());
             const info = strip(vm.info);
 
-            ctx.strokeStyle = "#ccc";
+            ctx.font = "0.75rem sans-serif";
             ctx.lineWidth = 0.5;
+            ctx.strokeStyle = "#ccc";
+            ctx.fillStyle = "#999";
 
-            for (var i = step.x; i < cnvs.width; i += step.x) {
+            let label = 0;
+            for (var i = 0; i < cnvs.width; i += step.x) {
                 //вертикальные
                 polyline(ctx, [
                     [zero.y, i + zero.x],
                     [cnvs.height, i + zero.x],
                 ]);
+
+                if (i) {
+                    label += step.perStepX;
+                    ctx.rotate(Math.PI / 2);
+                    ctx.fillText(label, i + zero.x, -15);
+                    ctx.rotate(-Math.PI / 2);
+                }
             }
 
-            for (var i = step.y; i < cnvs.height; i += step.y) {
+            label = 0;
+            for (let i = 0; i < cnvs.height; i += step.y) {
                 //Горизонтальные
                 polyline(ctx, [
                     [i + zero.y, zero.x],
                     [i + zero.y, cnvs.width],
                 ]);
+
+                if (i) {
+                    clog(label);
+                    label += step.perStepY;
+                    ctx.rotate(Math.PI / 2);
+                    ctx.fillText(label, 0, -1 * (i + zero.y));
+                    ctx.rotate(-Math.PI / 2);
+                }
             }
 
             return;
@@ -210,45 +233,50 @@ export default {
             const [cnvs] = vm.getCnv;
 
             /**
-             *  Вычислить максимальное количество отрезков по осям
+             *
+             * @param {Enum} type x | y
+             *
+             * @returns {Array[lengthPart, perStepX ]} длина шага сетки, количествое единиц графика в шаге сетки
              */
-            // длина оси абсцисс
-            const lengthX = cnvs.width;
-            // длина оси ординат
-            const lengthY = cnvs.height;
-            // минимально возможный шаг сетки по оси ОХ
-            let maxStepsNumberX = Math.ceil(lengthX / vm.minStep.x);
-            // минимально возможный шаг сетки по оси ОУ
-            let maxStepsNumberY = Math.ceil(lengthY / vm.minStep.y);
+            const getAxisData = (type) => {
+                // длина оси
+                const _length =
+                    type === "x"
+                        ? cnvs.width - vm.zero[type]
+                        : cnvs.height - vm.zero[type];
 
-            /**
-             * Вычислить максимальное округленное значение  отрезков по осям
-             */
+                // максимальное округленное значение
+                const _max = getRoundedValue(
+                    vm.info.axis[type].maxValue,
+                    "ceil"
+                );
 
-            // максимальное округленное значение оси OX
-            const maxX = getRoundedValue(vm.info.axis.x.maxValue, "ceil");
-            const maxY = getRoundedValue(vm.info.axis.y.maxValue, "ceil");
+                // максимальное количество разбиение
+                let _maxStepsNumber = Math.ceil(_length / vm.minStep[type]);
 
-            maxStepsNumberX = Math.min(maxStepsNumberX, maxX);
-            maxStepsNumberY = Math.min(maxStepsNumberY, maxY);
+                _maxStepsNumber = Math.min(_maxStepsNumber, _max);
 
-            let lengthPartX = Math.floor(lengthX / maxStepsNumberX);
-            let lengthPartY = Math.floor(lengthY / maxStepsNumberY);
+                let _orderValue = _max.toString().length - 1;
+                _orderValue = Math.max(0, _orderValue);
 
-            lengthPartX = Math.max(lengthPartX, 20);
-            lengthPartY = Math.max(lengthPartY, 20);
+                const _perStepX = Math.pow(10, _orderValue);
 
-            const perStepX = Math.ceil((maxX * lengthPartX) / lengthX);
-            const perStepY = Math.ceil((maxY * lengthPartY) / lengthY);
+                const _lengthPart = (_perStepX * _length) / _max;
+
+                return [_lengthPart, _perStepX, _max];
+            };
+
+            const [lengthPartX, perStepX, maxX] = getAxisData("x");
+            const [lengthPartY, perStepY, maxY] = getAxisData("y");
 
             const _return = {
                 x: lengthPartX,
                 y: lengthPartY,
                 perStepX,
                 perStepY,
+                maxX,
+                maxY,
             };
-
-            clog(_return);
 
             return _return;
         },
