@@ -19,7 +19,7 @@
 
 <script>
 // хэлперы
-import { strip, clog, polyline } from "@/misc/helpers";
+import { strip, clog, polyline, getRoundedValue } from "@/misc/helpers";
 
 export default {
     watch: {
@@ -45,32 +45,6 @@ export default {
 
     computed: {
         /**
-         * Шаг сетки
-         *
-         * @returns {Object}
-         */
-        step() {
-            const vm = this;
-            const info = strip(vm.info);
-            if (!info) {
-                return {
-                    x: 20,
-                    y: 20,
-                };
-            }
-            const [cnvs, ctx] = this.getCnv;
-
-            const _return = {
-                x: cnvs.width / info.axis.x.maxValue,
-                y: cnvs.height / info.axis.y.maxValue,
-            };
-
-            clog(info);
-
-            return _return;
-        },
-
-        /**
          * подготовочные данны для канвас
          *
          * @returns {Array}
@@ -84,13 +58,25 @@ export default {
         },
 
         /**
+         * Минимально визуально распозноваемая длина отрезка на оси
+         *
+         * @returns {Object} {x<Int>, y<Int>}
+         */
+        minStep() {
+            return {
+                x: 20,
+                y: 20,
+            };
+        },
+
+        /**
          * координаты точки отсчёта
          *
          * @returns {Object} {x<Int>, y<Int>}
          */
         zero() {
             return {
-                x: 40,
+                x: 0,
                 y: 40,
             };
         },
@@ -103,7 +89,7 @@ export default {
          *
          * @returns  {Void}
          */
-        drawAxis() {
+        drawAxises() {
             const vm = this;
             const cnvs = vm.$refs.canvas;
             const ctx = cnvs.getContext("2d");
@@ -155,11 +141,11 @@ export default {
         drawGraph(points) {
             const vm = this;
             const [cnvs, ctx] = this.getCnv;
-            const step = strip(vm.step);
+            const step = vm.getStepsData();
 
             let _points = Object.values(points).map((d) => [
-                d.y / step.y + vm.zero.y,
-                d.x * step.x + vm.zero.x,
+                (d.y / step.perStepY) * step.y + vm.zero.y,
+                (d.x / step.perStepX) * step.x + vm.zero.x,
             ]);
 
             ctx.strokeStyle = "#007e3c";
@@ -178,14 +164,13 @@ export default {
          * Координаты задавать в формате (y, x)
          * из-за поворота канваc
          *
-         * @param {Integer} step шаг отрисовки
-         *
          * @returns {Void}
          */
-        drawGrid(step) {
+        drawGrid() {
             const vm = this;
             const [cnvs, ctx] = vm.getCnv;
             const zero = strip(vm.zero);
+            const step = strip(vm.getStepsData());
             const info = strip(vm.info);
 
             ctx.strokeStyle = "#ccc";
@@ -211,6 +196,64 @@ export default {
         },
 
         /**
+         * Возвращает шаг сетки
+         *
+         * @returns {Object}
+         */
+        getStepsData() {
+            const vm = this;
+            const info = strip(vm.info);
+
+            if (!info) {
+                return vm.minStep;
+            }
+            const [cnvs] = vm.getCnv;
+
+            /**
+             *  Вычислить максимальное количество отрезков по осям
+             */
+            // длина оси абсцисс
+            const lengthX = cnvs.width;
+            // длина оси ординат
+            const lengthY = cnvs.height;
+            // минимально возможный шаг сетки по оси ОХ
+            let maxStepsNumberX = Math.ceil(lengthX / vm.minStep.x);
+            // минимально возможный шаг сетки по оси ОУ
+            let maxStepsNumberY = Math.ceil(lengthY / vm.minStep.y);
+
+            /**
+             * Вычислить максимальное округленное значение  отрезков по осям
+             */
+
+            // максимальное округленное значение оси OX
+            const maxX = getRoundedValue(vm.info.axis.x.maxValue, "ceil");
+            const maxY = getRoundedValue(vm.info.axis.y.maxValue, "ceil");
+
+            maxStepsNumberX = Math.min(maxStepsNumberX, maxX);
+            maxStepsNumberY = Math.min(maxStepsNumberY, maxY);
+
+            let lengthPartX = Math.floor(lengthX / maxStepsNumberX);
+            let lengthPartY = Math.floor(lengthY / maxStepsNumberY);
+
+            lengthPartX = Math.max(lengthPartX, 20);
+            lengthPartY = Math.max(lengthPartY, 20);
+
+            const perStepX = Math.ceil((maxX * lengthPartX) / lengthX);
+            const perStepY = Math.ceil((maxY * lengthPartY) / lengthY);
+
+            const _return = {
+                x: lengthPartX,
+                y: lengthPartY,
+                perStepX,
+                perStepY,
+            };
+
+            clog(_return);
+
+            return _return;
+        },
+
+        /**
          * Задает размер и стартовую точку канвас
          *
          * @returns {Void}
@@ -231,12 +274,10 @@ export default {
         const vm = this;
 
         setTimeout(() => {
-            const step = vm.step;
             const info = strip(vm.info);
-
             vm.prepareCanvas();
-            vm.drawGrid(step);
-            vm.drawAxis();
+            vm.drawGrid();
+            vm.drawAxises();
             vm.drawGraph(info.points);
         }, 1000);
     },

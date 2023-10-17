@@ -16068,30 +16068,6 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
   },
   computed: {
     /**
-     * Шаг сетки
-     *
-     * @returns {Object}
-     */
-    step: function step() {
-      var vm = this;
-      var info = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.info);
-      if (!info) {
-        return {
-          x: 20,
-          y: 20
-        };
-      }
-      var _this$getCnv = _slicedToArray(this.getCnv, 2),
-        cnvs = _this$getCnv[0],
-        ctx = _this$getCnv[1];
-      var _return = {
-        x: cnvs.width / info.axis.x.maxValue,
-        y: cnvs.height / info.axis.y.maxValue
-      };
-      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)(info);
-      return _return;
-    },
-    /**
      * подготовочные данны для канвас
      *
      * @returns {Array}
@@ -16103,13 +16079,24 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
       return [cnvs, ctx];
     },
     /**
+     * Минимально визуально распозноваемая длина отрезка на оси
+     *
+     * @returns {Object} {x<Int>, y<Int>}
+     */
+    minStep: function minStep() {
+      return {
+        x: 20,
+        y: 20
+      };
+    },
+    /**
      * координаты точки отсчёта
      *
      * @returns {Object} {x<Int>, y<Int>}
      */
     zero: function zero() {
       return {
-        x: 40,
+        x: 0,
         y: 40
       };
     }
@@ -16121,7 +16108,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
      *
      * @returns  {Void}
      */
-    drawAxis: function drawAxis() {
+    drawAxises: function drawAxises() {
       var vm = this;
       var cnvs = vm.$refs.canvas;
       var ctx = cnvs.getContext("2d");
@@ -16154,12 +16141,12 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
      */
     drawGraph: function drawGraph(points) {
       var vm = this;
-      var _this$getCnv2 = _slicedToArray(this.getCnv, 2),
-        cnvs = _this$getCnv2[0],
-        ctx = _this$getCnv2[1];
-      var step = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.step);
+      var _this$getCnv = _slicedToArray(this.getCnv, 2),
+        cnvs = _this$getCnv[0],
+        ctx = _this$getCnv[1];
+      var step = vm.getStepsData();
       var _points = Object.values(points).map(function (d) {
-        return [d.y / step.y + vm.zero.y, d.x * step.x + vm.zero.x];
+        return [d.y / step.perStepY * step.y + vm.zero.y, d.x / step.perStepX * step.x + vm.zero.x];
       });
       ctx.strokeStyle = "#007e3c";
       ctx.lineWidth = 2;
@@ -16173,16 +16160,15 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
      * Координаты задавать в формате (y, x)
      * из-за поворота канваc
      *
-     * @param {Integer} step шаг отрисовки
-     *
      * @returns {Void}
      */
-    drawGrid: function drawGrid(step) {
+    drawGrid: function drawGrid() {
       var vm = this;
       var _vm$getCnv = _slicedToArray(vm.getCnv, 2),
         cnvs = _vm$getCnv[0],
         ctx = _vm$getCnv[1];
       var zero = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.zero);
+      var step = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.getStepsData());
       var info = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.info);
       ctx.strokeStyle = "#ccc";
       ctx.lineWidth = 0.5;
@@ -16197,15 +16183,65 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
       return;
     },
     /**
+     * Возвращает шаг сетки
+     *
+     * @returns {Object}
+     */
+    getStepsData: function getStepsData() {
+      var vm = this;
+      var info = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.info);
+      if (!info) {
+        return vm.minStep;
+      }
+      var _vm$getCnv2 = _slicedToArray(vm.getCnv, 1),
+        cnvs = _vm$getCnv2[0];
+
+      /**
+       *  Вычислить максимальное количество отрезков по осям
+       */
+      // длина оси абсцисс
+      var lengthX = cnvs.width;
+      // длина оси ординат
+      var lengthY = cnvs.height;
+      // минимально возможный шаг сетки по оси ОХ
+      var maxStepsNumberX = Math.ceil(lengthX / vm.minStep.x);
+      // минимально возможный шаг сетки по оси ОУ
+      var maxStepsNumberY = Math.ceil(lengthY / vm.minStep.y);
+
+      /**
+       * Вычислить максимальное округленное значение  отрезков по осям
+       */
+
+      // максимальное округленное значение оси OX
+      var maxX = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.getRoundedValue)(vm.info.axis.x.maxValue, "ceil");
+      var maxY = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.getRoundedValue)(vm.info.axis.y.maxValue, "ceil");
+      maxStepsNumberX = Math.min(maxStepsNumberX, maxX);
+      maxStepsNumberY = Math.min(maxStepsNumberY, maxY);
+      var lengthPartX = Math.floor(lengthX / maxStepsNumberX);
+      var lengthPartY = Math.floor(lengthY / maxStepsNumberY);
+      lengthPartX = Math.max(lengthPartX, 20);
+      lengthPartY = Math.max(lengthPartY, 20);
+      var perStepX = Math.ceil(maxX * lengthPartX / lengthX);
+      var perStepY = Math.ceil(maxY * lengthPartY / lengthY);
+      var _return = {
+        x: lengthPartX,
+        y: lengthPartY,
+        perStepX: perStepX,
+        perStepY: perStepY
+      };
+      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)(_return);
+      return _return;
+    },
+    /**
      * Задает размер и стартовую точку канвас
      *
      * @returns {Void}
      */
     prepareCanvas: function prepareCanvas() {
       var vm = this;
-      var _this$getCnv3 = _slicedToArray(this.getCnv, 2),
-        cnvs = _this$getCnv3[0],
-        ctx = _this$getCnv3[1];
+      var _this$getCnv2 = _slicedToArray(this.getCnv, 2),
+        cnvs = _this$getCnv2[0],
+        ctx = _this$getCnv2[1];
       cnvs.width = vm.$refs.root.offsetWidth;
       cnvs.height = vm.$refs.root.offsetHeight - 50;
       ctx.translate(0, cnvs.height);
@@ -16216,11 +16252,10 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
   mounted: function mounted() {
     var vm = this;
     setTimeout(function () {
-      var step = vm.step;
       var info = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.info);
       vm.prepareCanvas();
-      vm.drawGrid(step);
-      vm.drawAxis();
+      vm.drawGrid();
+      vm.drawAxises();
       vm.drawGraph(info.points);
     }, 1000);
   }
@@ -18738,7 +18773,9 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   clog: () => (/* binding */ clog),
+/* harmony export */   get1stDigit: () => (/* binding */ get1stDigit),
 /* harmony export */   getFormData: () => (/* binding */ getFormData),
+/* harmony export */   getRoundedValue: () => (/* binding */ getRoundedValue),
 /* harmony export */   polyline: () => (/* binding */ polyline),
 /* harmony export */   strip: () => (/* binding */ strip)
 /* harmony export */ });
@@ -18789,6 +18826,31 @@ var polyline = function polyline(ctx, pts) {
     return i ? ctx.lineTo.apply(ctx, _toConsumableArray(p)) : ctx.moveTo.apply(ctx, _toConsumableArray(p));
   });
   ctx.stroke();
+};
+var get1stDigit = function get1stDigit(number) {
+  var symbol = Array.from(number.toString())[0];
+  return Number(symbol);
+};
+
+/**
+ * Получает ближайшее максимальное значение того же порядка, что и значение
+ *
+ * @param {Number} value округляемое значение
+ * @param {Enum} type  floor | ceil
+ *
+ * @returns {Number} округленное значение
+ */
+var getRoundedValue = function getRoundedValue(value, type) {
+  var delta = type === "ceil" ? 1 : -1;
+  var valueOrder = Math.floor(value).toString().length - 1;
+  var firstDigit;
+  if (get1stDigit(value) + delta <= 0) {
+    firstDigit = 1;
+  } else {
+    firstDigit = get1stDigit(value) + delta;
+  }
+  var _return = firstDigit * Math.pow(10, valueOrder);
+  return _return;
 };
 
 /***/ }),
@@ -20761,11 +20823,11 @@ var appPublicStatistics = {
       var info = {
         axis: {
           x: {
-            maxValue: 6,
+            maxValue: 7,
             label: "туц"
           },
           y: {
-            maxValue: 12,
+            maxValue: 16000,
             label: "бам"
           }
         },
@@ -20777,12 +20839,15 @@ var appPublicStatistics = {
           y: 2500
         }, {
           x: 3,
-          y: 6000
+          y: 16000
+        }, {
+          x: 4,
+          y: 13000
         }, {
           x: 5,
-          y: 12000
+          y: 1200
         }, {
-          x: 6,
+          x: 7,
           y: 4000
         }]
       };

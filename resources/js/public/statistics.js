@@ -52,23 +52,25 @@ const appPublicStatistics = {
             const info = {
                 axis: {
                     x: {
-                        maxValue: 6,
+                        maxValue: 7,
                         label: "туц",
                     },
 
                     y: {
-                        maxValue: 12,
+                        maxValue: 16000,
                         label: "бам",
                     },
                 },
                 points: [
                     { x: 1, y: 1000 },
                     { x: 2, y: 2500 },
-                    { x: 3, y: 6000 },
-                    { x: 5, y: 12000 },
-                    { x: 6, y: 4000 },
+                    { x: 3, y: 16000 },
+                    { x: 4, y: 13000 },
+                    { x: 5, y: 1200 },
+                    { x: 7, y: 4000 },
                 ],
             };
+
             return info;
         },
     },
