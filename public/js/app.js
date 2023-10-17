@@ -20121,7 +20121,7 @@ var appPublicGrasslands = {
     },
     createGrassland: function createGrassland() {
       var vm = this;
-      var grasslandData = vm.getFormData(vm.$refs.formCreateGrassland);
+      var grasslandData = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.getFormData)(vm.$refs.formCreateGrassland);
       grasslandData.geo_json = grasslandData.geo_json ? JSON.parse(grasslandData.geo_json) : "";
       var postData = {
         user_id: vm.userId,
