@@ -6,6 +6,9 @@
 import { strip, clog } from "@/misc/helpers";
 import moment from "moment";
 
+//классы
+import BvsData from "@/misc/BvsDataClass";
+
 //миксины
 import axiosRequests from "@/mixins/axiosRequests";
 import crud from "@/mixins/crud";
@@ -48,28 +51,78 @@ const appPublicStatistics = {
     watch: {},
 
     computed: {
-        testInfo() {
+        bvsInfo() {
+            const vm = this;
+            const harvestData = new BvsData(
+                strip(vm.bvsData),
+                strip(vm.dateRange)
+            );
+
+            let type;
+            if (harvestData.parsedData.periods.days <= 31) {
+                type = "day";
+            } else if (harvestData.parsedData.periods.months < 12) {
+                type = "month";
+            } else {
+                type = "year";
+            }
+
+            const rawData = harvestData.parsedData.data[type];
+
             const info = {
                 axis: {
                     x: {
-                        maxValue: 7,
+                        maxValue: 0,
                         label: "",
+                        after: "кг",
                     },
 
                     y: {
-                        maxValue: 4000,
+                        maxValue: 0,
                         label: "",
+                        after: "",
                     },
                 },
-                points: [
-                    { x: 1, y: 2000 },
-                    { x: 2, y: 2500 },
-                    { x: 3, y: 1650 },
-                    { x: 4, y: 1300 },
-                    { x: 5, y: 1200 },
-                    { x: 7, y: 4000 },
-                ],
+                points: {},
+
+                labels: {
+                    x: {},
+                },
             };
+
+            if (!rawData?.items) {
+                return info;
+            }
+            let xValue = 0;
+
+            rawData.items.forEach((value, key, map) => {
+                let newKey;
+                const date = moment(key, rawData.format);
+                xValue++;
+                switch (type) {
+                    case "day":
+                        newKey = date.format("D");
+                        break;
+                    case "month":
+                        newKey = date.format("MMM");
+                        break;
+                    case "year":
+                        newKey = date.format("YYYY");
+                        break;
+                }
+
+                const newValue = value > 1000 ? value / 1000 : value;
+
+                info.axis.x.after = value > 1000 ? "т." : info.axis.x.after;
+
+                info.axis.y.maxValue = Math.max(info.axis.y.maxValue, newValue);
+
+                info.labels.x[parseInt(xValue)] = newKey;
+
+                info.points[newKey] = { x: parseInt(xValue), y: newValue };
+            });
+
+            info.axis.x.maxValue = Object.values(info.points).length + 1;
 
             return info;
         },

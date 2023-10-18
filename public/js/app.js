@@ -16051,6 +16051,10 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
     _info: function _info(newValue) {
       this.info = newValue;
       return null;
+    },
+    info: function info(_info2) {
+      if (!_info2) return;
+      this.draw();
     }
   },
   props: {
@@ -16102,6 +16106,14 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
     }
   },
   methods: {
+    draw: function draw() {
+      var vm = this;
+      var info = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.info);
+      vm.prepareCanvas();
+      vm.drawGrid();
+      vm.drawAxises();
+      vm.drawGraph(info.points);
+    },
     /**
      * Рисует оси абсцисс и ординат
      * Координаты задавать в формате (y, x)
@@ -16152,6 +16164,8 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
       ctx.strokeStyle = "#007e3c";
       ctx.lineWidth = 2;
       _points.unshift(Object.values(vm.zero));
+      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.polyline)(ctx, _points);
+      ctx.strokeStyle = "#E1F3EA55";
       var endPoint = _points[_points.length - 1];
       _points.push([vm.zero.y, endPoint[1]]);
       (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.polyline)(ctx, _points);
@@ -16174,31 +16188,37 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
       var zero = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.zero);
       var step = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.getStepsData());
       var info = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.info);
-      ctx.font = "0.75rem sans-serif";
+      ctx.font = "0.7rem sans-serif";
       ctx.lineWidth = 0.5;
       ctx.strokeStyle = "#ccc";
       ctx.fillStyle = "#999";
       var label = 0;
-      for (var i = 0; i < cnvs.width; i += step.x) {
-        //вертикальные
-        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.polyline)(ctx, [[zero.y, i + zero.x], [cnvs.height, i + zero.x]]);
-        if (i) {
-          label += step.perStepX;
-          ctx.rotate(Math.PI / 2);
-          ctx.fillText(label, i + zero.x, -15);
-          ctx.rotate(-Math.PI / 2);
+      if (step.x) {
+        //вертикальные линии и метки к ним
+        for (var i = 0; i < cnvs.width; i += step.x) {
+          (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.polyline)(ctx, [[zero.y, i + zero.x], [cnvs.height, i + zero.x]]);
+          if (i) {
+            label += step.perStepX;
+            var text = info.labels.x[label] ? info.labels.x[label] : "";
+            var textWidth = ctx.measureText(text).width;
+            ctx.rotate(Math.PI / 2);
+            ctx.fillText(text, i + zero.x - textWidth / 2, -15);
+            ctx.rotate(-Math.PI / 2);
+          }
         }
       }
       label = 0;
-      for (var _i = 0; _i < cnvs.height; _i += step.y) {
-        //Горизонтальные
-        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.polyline)(ctx, [[_i + zero.y, zero.x], [_i + zero.y, cnvs.width]]);
-        if (_i) {
-          (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)(label);
-          label += step.perStepY;
-          ctx.rotate(Math.PI / 2);
-          ctx.fillText(label, 0, -1 * (_i + zero.y));
-          ctx.rotate(-Math.PI / 2);
+      if (step.y) {
+        //Горизонтальные линии и метки к ним
+        for (var _i = 0; _i < cnvs.height; _i += step.y) {
+          (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.polyline)(ctx, [[_i + zero.y, zero.x], [_i + zero.y, cnvs.width]]);
+          if (_i) {
+            label += step.perStepY;
+            var _text = "".concat(label).concat(info.axis.x.after);
+            ctx.rotate(Math.PI / 2);
+            ctx.fillText(_text, 0, -1 * (_i + zero.y));
+            ctx.rotate(-Math.PI / 2);
+          }
         }
       }
       return;
@@ -16220,26 +16240,30 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
       /**
        *
        * @param {Enum} type x | y
+       * @param {Boolean} every признак чтто нужно учитывать каждый элемент, не нужно укрупнять
        *
        * @returns {Array[lengthPart, perStepX ]} длина шага сетки, количествое единиц графика в шаге сетки
        */
-      var getAxisData = function getAxisData(type) {
+      var getAxisData = function getAxisData(type, every) {
         // длина оси
         var _length = type === "x" ? cnvs.width - vm.zero[type] : cnvs.height - vm.zero[type];
 
         // максимальное округленное значение
-        var _max = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.getRoundedValue)(vm.info.axis[type].maxValue, "ceil");
+        var _max = vm.info.axis[type].maxValue;
 
         // максимальное количество разбиение
         var _maxStepsNumber = Math.ceil(_length / vm.minStep[type]);
+
+        // проверка, чтобы количество
         _maxStepsNumber = Math.min(_maxStepsNumber, _max);
         var _orderValue = _max.toString().length - 1;
         _orderValue = Math.max(0, _orderValue);
+        _orderValue = every ? 0 : _orderValue;
         var _perStepX = Math.pow(10, _orderValue);
         var _lengthPart = _perStepX * _length / _max;
         return [_lengthPart, _perStepX, _max];
       };
-      var _getAxisData = getAxisData("x"),
+      var _getAxisData = getAxisData("x", true),
         _getAxisData2 = _slicedToArray(_getAxisData, 3),
         lengthPartX = _getAxisData2[0],
         perStepX = _getAxisData2[1],
@@ -16250,8 +16274,8 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
         perStepY = _getAxisData4[1],
         maxY = _getAxisData4[2];
       var _return = {
-        x: lengthPartX,
-        y: lengthPartY,
+        x: parseInt(lengthPartX),
+        y: parseInt(lengthPartY),
         perStepX: perStepX,
         perStepY: perStepY,
         maxX: maxX,
@@ -16279,11 +16303,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
   mounted: function mounted() {
     var vm = this;
     setTimeout(function () {
-      var info = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.info);
-      vm.prepareCanvas();
-      vm.drawGrid();
-      vm.drawAxises();
-      vm.drawGraph(info.points);
+      vm.draw();
     }, 1000);
   }
 });
@@ -18790,6 +18810,189 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/misc/BvsDataClass.js":
+/*!*******************************************!*\
+  !*** ./resources/js/misc/BvsDataClass.js ***!
+  \*******************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_0__);
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
+function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
+function _classPrivateMethodInitSpec(obj, privateSet) { _checkPrivateRedeclaration(obj, privateSet); privateSet.add(obj); }
+function _classPrivateFieldInitSpec(obj, privateMap, value) { _checkPrivateRedeclaration(obj, privateMap); privateMap.set(obj, value); }
+function _checkPrivateRedeclaration(obj, privateCollection) { if (privateCollection.has(obj)) { throw new TypeError("Cannot initialize the same private elements twice on an object"); } }
+function _classPrivateFieldGet(receiver, privateMap) { var descriptor = _classExtractFieldDescriptor(receiver, privateMap, "get"); return _classApplyDescriptorGet(receiver, descriptor); }
+function _classApplyDescriptorGet(receiver, descriptor) { if (descriptor.get) { return descriptor.get.call(receiver); } return descriptor.value; }
+function _classPrivateMethodGet(receiver, privateSet, fn) { if (!privateSet.has(receiver)) { throw new TypeError("attempted to get private field on non-instance"); } return fn; }
+function _classPrivateFieldSet(receiver, privateMap, value) { var descriptor = _classExtractFieldDescriptor(receiver, privateMap, "set"); _classApplyDescriptorSet(receiver, descriptor, value); return value; }
+function _classExtractFieldDescriptor(receiver, privateMap, action) { if (!privateMap.has(receiver)) { throw new TypeError("attempted to " + action + " private field on non-instance"); } return privateMap.get(receiver); }
+function _classApplyDescriptorSet(receiver, descriptor, value) { if (descriptor.set) { descriptor.set.call(receiver, value); } else { if (!descriptor.writable) { throw new TypeError("attempted to set read only private field"); } descriptor.value = value; } }
+
+var _data2 = /*#__PURE__*/new WeakMap();
+var _dates = /*#__PURE__*/new WeakMap();
+var _parseData = /*#__PURE__*/new WeakSet();
+var _groupDataByPeriods = /*#__PURE__*/new WeakSet();
+var _parseDiffDates = /*#__PURE__*/new WeakSet();
+var BvsDataClass = /*#__PURE__*/function () {
+  /**
+   * Конструктор класса
+   *
+   * @param {Array} data массив данных от бвс @see Laravel model BvsData
+   * @param {Object} dates даты начала и конца
+   */
+  function BvsDataClass(data, dates) {
+    _classCallCheck(this, BvsDataClass);
+    /**
+     * выдает разницу между датами в днях, месяцах и годах
+     *
+     * @returns {Object}
+     */
+    _classPrivateMethodInitSpec(this, _parseDiffDates);
+    /**
+     * Заполнение пустых элементов в объекте полученном через #parseData в зависимости от заданного периода
+     *
+     * @returns {Object}
+     */
+    _classPrivateMethodInitSpec(this, _groupDataByPeriods);
+    /**
+     * Группировка имеющихся данных о собранном урожае
+     * с разбивкой по дням, месяцам и годам
+     *
+     * @returns {Object}
+     */
+    _classPrivateMethodInitSpec(this, _parseData);
+    _classPrivateFieldInitSpec(this, _data2, {
+      writable: true,
+      value: void 0
+    });
+    _classPrivateFieldInitSpec(this, _dates, {
+      writable: true,
+      value: void 0
+    });
+    _classPrivateFieldSet(this, _data2, data);
+    _classPrivateFieldSet(this, _dates, dates);
+  }
+
+  /**
+   * Выдача  данных по дням
+   *
+   * @returns {Map}
+   */
+  _createClass(BvsDataClass, [{
+    key: "parsedData",
+    get: function get() {
+      return {
+        data: _classPrivateMethodGet(this, _groupDataByPeriods, _groupDataByPeriods2).call(this),
+        periods: _classPrivateMethodGet(this, _parseDiffDates, _parseDiffDates2).call(this)
+      };
+    }
+  }]);
+  return BvsDataClass;
+}();
+function _parseData2() {
+  var harvestData = {
+    YYYY: {
+      format: "YYYY",
+      items: new Map()
+    },
+    "YYYY-MM": {
+      format: "YYYY-MM",
+      items: new Map()
+    },
+    "YYYY-MM-DD": {
+      format: "YYYY-MM-DD",
+      items: new Map()
+    }
+  };
+  var _iterator = _createForOfIteratorHelper(_classPrivateFieldGet(this, _data2)),
+    _step;
+  try {
+    for (_iterator.s(); !(_step = _iterator.n()).done;) {
+      var _harvestData = _step.value;
+      var date = moment__WEBPACK_IMPORTED_MODULE_0___default()(_harvestData.operation_time);
+      for (var period in harvestData) {
+        var _data = harvestData[period];
+        var idx = date.format(_data.format);
+        if (!_data.items.has(idx)) {
+          _data.items.set(idx, 0);
+        }
+        var newValue = _data.items.get(idx) + _harvestData.amount_transfered;
+        harvestData[period].items.set(idx, newValue);
+      }
+    }
+  } catch (err) {
+    _iterator.e(err);
+  } finally {
+    _iterator.f();
+  }
+  return harvestData;
+}
+function _groupDataByPeriods2() {
+  var parsedData = _classPrivateMethodGet(this, _parseData, _parseData2).call(this);
+  var diff = _classPrivateMethodGet(this, _parseDiffDates, _parseDiffDates2).call(this);
+  var date = moment__WEBPACK_IMPORTED_MODULE_0___default()(_classPrivateFieldGet(this, _dates).start);
+  var groupedData = {
+    year: {
+      format: "YYYY",
+      items: new Map()
+    },
+    month: {
+      format: "YYYY-MM",
+      items: new Map()
+    },
+    day: {
+      format: "YYYY-MM-DD",
+      items: new Map()
+    }
+  };
+  if (!diff.days) {
+    return groupedData;
+  }
+  for (var i = 0; i <= diff.days; i++) {
+    for (var period in groupedData) {
+      var _parsedData$groupedDa;
+      var idx = date.format(groupedData[period].format);
+      if (!groupedData[period].items.has(idx)) {
+        groupedData[period].items.set(idx, 0);
+      }
+      if ((_parsedData$groupedDa = parsedData[groupedData[period].format]) !== null && _parsedData$groupedDa !== void 0 && _parsedData$groupedDa.items.has(idx)) {
+        var value = parsedData[groupedData[period].format].items.get(idx);
+        groupedData[period].items.set(idx, value);
+      }
+    }
+    date.add(1, "days");
+  }
+  return groupedData;
+}
+function _parseDiffDates2() {
+  var start = moment__WEBPACK_IMPORTED_MODULE_0___default()(_classPrivateFieldGet(this, _dates).start);
+  var end = moment__WEBPACK_IMPORTED_MODULE_0___default()(_classPrivateFieldGet(this, _dates).end);
+  return {
+    days: end.diff(start, "days"),
+    months: end.diff(start, "months"),
+    years: end.diff(start, "years")
+  };
+}
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (function (data, dates) {
+  return new BvsDataClass(data, dates);
+});
+
+/***/ }),
+
 /***/ "./resources/js/misc/helpers.js":
 /*!**************************************!*\
   !*** ./resources/js/misc/helpers.js ***!
@@ -18817,6 +19020,11 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
+/**
+ * переменная для включения и выключения
+ *
+ * @param {Boolean} debug
+ */
 var debug = true;
 
 /**
@@ -18874,7 +19082,7 @@ var clog = function clog() {
 };
 
 /**
- * Рисует ломанную линию
+ * Рисует ломанную линию в canvas
  *
  * @param {CanvasRenderingContext2D} ctx
  * @param {Array<Array<Int,Int>>} pts
@@ -18884,7 +19092,11 @@ var clog = function clog() {
 var polyline = function polyline(ctx, pts) {
   ctx.beginPath();
   pts.forEach(function (p, i) {
-    return i ? ctx.lineTo.apply(ctx, _toConsumableArray(p)) : ctx.moveTo.apply(ctx, _toConsumableArray(p));
+    if (i) {
+      ctx.lineTo.apply(ctx, _toConsumableArray(p));
+    } else {
+      ctx.moveTo.apply(ctx, _toConsumableArray(p));
+    }
   });
   ctx.stroke();
   return;
@@ -18903,7 +19115,8 @@ var get1stDigit = function get1stDigit(number) {
 };
 
 /**
- * Получает ближайшее максимальное значение того же порядка, что и значение
+ * Получает ближайшее максимальное значение того же порядка,
+ * что и значение
  *
  * @param {Number} value округляемое значение
  * @param {Enum} type  floor | ceil
@@ -20841,24 +21054,28 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _misc_helpers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/misc/helpers */ "./resources/js/misc/helpers.js");
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _mixins_axiosRequests__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @/mixins/axiosRequests */ "./resources/js/mixins/axiosRequests.js");
-/* harmony import */ var _mixins_crud__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @/mixins/crud */ "./resources/js/mixins/crud.js");
-/* harmony import */ var _mixins_messages__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @/mixins/messages */ "./resources/js/mixins/messages.js");
-/* harmony import */ var _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @/mixins/publicAuthData */ "./resources/js/mixins/publicAuthData.js");
-/* harmony import */ var _mixins_sortAnimation__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @/mixins/sortAnimation */ "./resources/js/mixins/sortAnimation.js");
-/* harmony import */ var _mixins_professions__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @/mixins/professions */ "./resources/js/mixins/professions.js");
-/* harmony import */ var _mixins_statData__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @/mixins/statData */ "./resources/js/mixins/statData.js");
-/* harmony import */ var _mixins_vehicleTypes__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @/mixins/vehicleTypes */ "./resources/js/mixins/vehicleTypes.js");
-/* harmony import */ var _components_MessagesComponent__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @/components/MessagesComponent */ "./resources/js/components/MessagesComponent/index.js");
-/* harmony import */ var _components_GraphicComponent__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! @/components/GraphicComponent */ "./resources/js/components/GraphicComponent/index.js");
-/* harmony import */ var _components_inputs_MonthPickerComponent__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! @/components/inputs/MonthPickerComponent */ "./resources/js/components/inputs/MonthPickerComponent/index.js");
-/* harmony import */ var _components_inputs_DatepickerComponent__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! @/components/inputs/DatepickerComponent */ "./resources/js/components/inputs/DatepickerComponent/index.js");
+/* harmony import */ var _misc_BvsDataClass__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @/misc/BvsDataClass */ "./resources/js/misc/BvsDataClass.js");
+/* harmony import */ var _mixins_axiosRequests__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @/mixins/axiosRequests */ "./resources/js/mixins/axiosRequests.js");
+/* harmony import */ var _mixins_crud__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @/mixins/crud */ "./resources/js/mixins/crud.js");
+/* harmony import */ var _mixins_messages__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @/mixins/messages */ "./resources/js/mixins/messages.js");
+/* harmony import */ var _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @/mixins/publicAuthData */ "./resources/js/mixins/publicAuthData.js");
+/* harmony import */ var _mixins_sortAnimation__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @/mixins/sortAnimation */ "./resources/js/mixins/sortAnimation.js");
+/* harmony import */ var _mixins_professions__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @/mixins/professions */ "./resources/js/mixins/professions.js");
+/* harmony import */ var _mixins_statData__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @/mixins/statData */ "./resources/js/mixins/statData.js");
+/* harmony import */ var _mixins_vehicleTypes__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @/mixins/vehicleTypes */ "./resources/js/mixins/vehicleTypes.js");
+/* harmony import */ var _components_MessagesComponent__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! @/components/MessagesComponent */ "./resources/js/components/MessagesComponent/index.js");
+/* harmony import */ var _components_GraphicComponent__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! @/components/GraphicComponent */ "./resources/js/components/GraphicComponent/index.js");
+/* harmony import */ var _components_inputs_MonthPickerComponent__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! @/components/inputs/MonthPickerComponent */ "./resources/js/components/inputs/MonthPickerComponent/index.js");
+/* harmony import */ var _components_inputs_DatepickerComponent__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! @/components/inputs/DatepickerComponent */ "./resources/js/components/inputs/DatepickerComponent/index.js");
 /**
  * приложение отображение статистики публичного раздела
  */
 
 //хэлперы
 
+
+
+//классы
 
 
 //миксины
@@ -20877,50 +21094,77 @@ __webpack_require__.r(__webpack_exports__);
 
 
 var appPublicStatistics = {
-  mixins: [_mixins_axiosRequests__WEBPACK_IMPORTED_MODULE_2__["default"], _mixins_crud__WEBPACK_IMPORTED_MODULE_3__["default"], _mixins_messages__WEBPACK_IMPORTED_MODULE_4__["default"], _mixins_professions__WEBPACK_IMPORTED_MODULE_7__["default"], _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_5__["default"], _mixins_statData__WEBPACK_IMPORTED_MODULE_8__["default"], _mixins_sortAnimation__WEBPACK_IMPORTED_MODULE_6__["default"], _mixins_vehicleTypes__WEBPACK_IMPORTED_MODULE_9__["default"]],
+  mixins: [_mixins_axiosRequests__WEBPACK_IMPORTED_MODULE_3__["default"], _mixins_crud__WEBPACK_IMPORTED_MODULE_4__["default"], _mixins_messages__WEBPACK_IMPORTED_MODULE_5__["default"], _mixins_professions__WEBPACK_IMPORTED_MODULE_8__["default"], _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_6__["default"], _mixins_statData__WEBPACK_IMPORTED_MODULE_9__["default"], _mixins_sortAnimation__WEBPACK_IMPORTED_MODULE_7__["default"], _mixins_vehicleTypes__WEBPACK_IMPORTED_MODULE_10__["default"]],
   components: {
-    MessagesComponent: _components_MessagesComponent__WEBPACK_IMPORTED_MODULE_10__["default"],
-    MonthPicker: _components_inputs_MonthPickerComponent__WEBPACK_IMPORTED_MODULE_12__["default"],
-    Datepicker: _components_inputs_DatepickerComponent__WEBPACK_IMPORTED_MODULE_13__["default"],
-    Graph: _components_GraphicComponent__WEBPACK_IMPORTED_MODULE_11__["default"]
+    MessagesComponent: _components_MessagesComponent__WEBPACK_IMPORTED_MODULE_11__["default"],
+    MonthPicker: _components_inputs_MonthPickerComponent__WEBPACK_IMPORTED_MODULE_13__["default"],
+    Datepicker: _components_inputs_DatepickerComponent__WEBPACK_IMPORTED_MODULE_14__["default"],
+    Graph: _components_GraphicComponent__WEBPACK_IMPORTED_MODULE_12__["default"]
   },
   data: function data() {
     return {};
   },
   watch: {},
   computed: {
-    testInfo: function testInfo() {
+    bvsInfo: function bvsInfo() {
+      var vm = this;
+      var harvestData = new _misc_BvsDataClass__WEBPACK_IMPORTED_MODULE_2__["default"]((0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.bvsData), (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.dateRange));
+      var type;
+      if (harvestData.parsedData.periods.days <= 31) {
+        type = "day";
+      } else if (harvestData.parsedData.periods.months < 12) {
+        type = "month";
+      } else {
+        type = "year";
+      }
+      var rawData = harvestData.parsedData.data[type];
       var info = {
         axis: {
           x: {
-            maxValue: 7,
-            label: ""
+            maxValue: 0,
+            label: "",
+            after: "кг"
           },
           y: {
-            maxValue: 4000,
-            label: ""
+            maxValue: 0,
+            label: "",
+            after: ""
           }
         },
-        points: [{
-          x: 1,
-          y: 2000
-        }, {
-          x: 2,
-          y: 2500
-        }, {
-          x: 3,
-          y: 1650
-        }, {
-          x: 4,
-          y: 1300
-        }, {
-          x: 5,
-          y: 1200
-        }, {
-          x: 7,
-          y: 4000
-        }]
+        points: {},
+        labels: {
+          x: {}
+        }
       };
+      if (!(rawData !== null && rawData !== void 0 && rawData.items)) {
+        return info;
+      }
+      var xValue = 0;
+      rawData.items.forEach(function (value, key, map) {
+        var newKey;
+        var date = moment__WEBPACK_IMPORTED_MODULE_1___default()(key, rawData.format);
+        xValue++;
+        switch (type) {
+          case "day":
+            newKey = date.format("D");
+            break;
+          case "month":
+            newKey = date.format("MMM");
+            break;
+          case "year":
+            newKey = date.format("YYYY");
+            break;
+        }
+        var newValue = value > 1000 ? value / 1000 : value;
+        info.axis.x.after = value > 1000 ? "т." : info.axis.x.after;
+        info.axis.y.maxValue = Math.max(info.axis.y.maxValue, newValue);
+        info.labels.x[parseInt(xValue)] = newKey;
+        info.points[newKey] = {
+          x: parseInt(xValue),
+          y: newValue
+        };
+      });
+      info.axis.x.maxValue = Object.values(info.points).length + 1;
       return info;
     }
   },

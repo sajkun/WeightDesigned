@@ -1,3 +1,8 @@
+/**
+ * переменная для включения и выключения
+ *
+ * @param {Boolean} debug
+ */
 var debug = true;
 
 /**
@@ -9,7 +14,6 @@ var debug = true;
  */
 export const getFormData = (form) => {
     const formData = new FormData(form);
-
     let data = {};
 
     for (const [key, value] of formData) {
@@ -46,7 +50,7 @@ export const clog = (...data) => {
 };
 
 /**
- * Рисует ломанную линию
+ * Рисует ломанную линию в canvas
  *
  * @param {CanvasRenderingContext2D} ctx
  * @param {Array<Array<Int,Int>>} pts
@@ -55,7 +59,13 @@ export const clog = (...data) => {
  */
 export const polyline = (ctx, pts) => {
     ctx.beginPath();
-    pts.forEach((p, i) => (i ? ctx.lineTo(...p) : ctx.moveTo(...p)));
+    pts.forEach((p, i) => {
+        if (i) {
+            ctx.lineTo(...p);
+        } else {
+            ctx.moveTo(...p);
+        }
+    });
     ctx.stroke();
     return;
 };
@@ -73,7 +83,8 @@ export const get1stDigit = (number) => {
 };
 
 /**
- * Получает ближайшее максимальное значение того же порядка, что и значение
+ * Получает ближайшее максимальное значение того же порядка,
+ * что и значение
  *
  * @param {Number} value округляемое значение
  * @param {Enum} type  floor | ceil

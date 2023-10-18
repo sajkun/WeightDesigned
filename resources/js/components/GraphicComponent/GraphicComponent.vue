@@ -28,6 +28,11 @@ export default {
             this.info = newValue;
             return null;
         },
+
+        info(info) {
+            if (!info) return;
+            this.draw();
+        },
     },
     props: {
         // Базовые данные для графика
@@ -83,6 +88,15 @@ export default {
     },
 
     methods: {
+        draw() {
+            const vm = this;
+            const info = strip(vm.info);
+            vm.prepareCanvas();
+            vm.drawGrid();
+            vm.drawAxises();
+            vm.drawGraph(info.points);
+        },
+
         /**
          * Рисует оси абсцисс и ординат
          * Координаты задавать в формате (y, x)
@@ -141,6 +155,7 @@ export default {
          */
         drawGraph(points) {
             const vm = this;
+
             const [cnvs, ctx] = this.getCnv;
             const step = vm.getStepsData();
 
@@ -153,7 +168,9 @@ export default {
             ctx.lineWidth = 2;
 
             _points.unshift(Object.values(vm.zero));
+            polyline(ctx, _points);
 
+            ctx.strokeStyle = "#E1F3EA55";
             const endPoint = _points[_points.length - 1];
             _points.push([vm.zero.y, endPoint[1]]);
             polyline(ctx, _points);
@@ -174,47 +191,57 @@ export default {
             const vm = this;
             const [cnvs, ctx] = vm.getCnv;
             const zero = strip(vm.zero);
+
             const step = strip(vm.getStepsData());
             const info = strip(vm.info);
 
-            ctx.font = "0.75rem sans-serif";
+            ctx.font = "0.7rem sans-serif";
             ctx.lineWidth = 0.5;
             ctx.strokeStyle = "#ccc";
             ctx.fillStyle = "#999";
 
             let label = 0;
-            for (var i = 0; i < cnvs.width; i += step.x) {
-                //вертикальные
-                polyline(ctx, [
-                    [zero.y, i + zero.x],
-                    [cnvs.height, i + zero.x],
-                ]);
 
-                if (i) {
-                    label += step.perStepX;
-                    ctx.rotate(Math.PI / 2);
-                    ctx.fillText(label, i + zero.x, -15);
-                    ctx.rotate(-Math.PI / 2);
+            if (step.x) {
+                //вертикальные линии и метки к ним
+                for (var i = 0; i < cnvs.width; i += step.x) {
+                    polyline(ctx, [
+                        [zero.y, i + zero.x],
+                        [cnvs.height, i + zero.x],
+                    ]);
+
+                    if (i) {
+                        label += step.perStepX;
+
+                        const text = info.labels.x[label]
+                            ? info.labels.x[label]
+                            : "";
+                        const textWidth = ctx.measureText(text).width;
+                        ctx.rotate(Math.PI / 2);
+                        ctx.fillText(text, i + zero.x - textWidth / 2, -15);
+                        ctx.rotate(-Math.PI / 2);
+                    }
                 }
             }
 
             label = 0;
-            for (let i = 0; i < cnvs.height; i += step.y) {
-                //Горизонтальные
-                polyline(ctx, [
-                    [i + zero.y, zero.x],
-                    [i + zero.y, cnvs.width],
-                ]);
 
-                if (i) {
-                    clog(label);
-                    label += step.perStepY;
-                    ctx.rotate(Math.PI / 2);
-                    ctx.fillText(label, 0, -1 * (i + zero.y));
-                    ctx.rotate(-Math.PI / 2);
+            if (step.y) {
+                //Горизонтальные линии и метки к ним
+                for (let i = 0; i < cnvs.height; i += step.y) {
+                    polyline(ctx, [
+                        [i + zero.y, zero.x],
+                        [i + zero.y, cnvs.width],
+                    ]);
+                    if (i) {
+                        label += step.perStepY;
+                        const text = `${label}${info.axis.x.after}`;
+                        ctx.rotate(Math.PI / 2);
+                        ctx.fillText(text, 0, -1 * (i + zero.y));
+                        ctx.rotate(-Math.PI / 2);
+                    }
                 }
             }
-
             return;
         },
 
@@ -235,10 +262,11 @@ export default {
             /**
              *
              * @param {Enum} type x | y
+             * @param {Boolean} every признак чтто нужно учитывать каждый элемент, не нужно укрупнять
              *
              * @returns {Array[lengthPart, perStepX ]} длина шага сетки, количествое единиц графика в шаге сетки
              */
-            const getAxisData = (type) => {
+            const getAxisData = (type, every) => {
                 // длина оси
                 const _length =
                     type === "x"
@@ -246,18 +274,17 @@ export default {
                         : cnvs.height - vm.zero[type];
 
                 // максимальное округленное значение
-                const _max = getRoundedValue(
-                    vm.info.axis[type].maxValue,
-                    "ceil"
-                );
+                const _max = vm.info.axis[type].maxValue;
 
                 // максимальное количество разбиение
                 let _maxStepsNumber = Math.ceil(_length / vm.minStep[type]);
 
+                // проверка, чтобы количество
                 _maxStepsNumber = Math.min(_maxStepsNumber, _max);
 
                 let _orderValue = _max.toString().length - 1;
                 _orderValue = Math.max(0, _orderValue);
+                _orderValue = every ? 0 : _orderValue;
 
                 const _perStepX = Math.pow(10, _orderValue);
 
@@ -266,12 +293,12 @@ export default {
                 return [_lengthPart, _perStepX, _max];
             };
 
-            const [lengthPartX, perStepX, maxX] = getAxisData("x");
+            const [lengthPartX, perStepX, maxX] = getAxisData("x", true);
             const [lengthPartY, perStepY, maxY] = getAxisData("y");
 
             const _return = {
-                x: lengthPartX,
-                y: lengthPartY,
+                x: parseInt(lengthPartX),
+                y: parseInt(lengthPartY),
                 perStepX,
                 perStepY,
                 maxX,
@@ -302,11 +329,7 @@ export default {
         const vm = this;
 
         setTimeout(() => {
-            const info = strip(vm.info);
-            vm.prepareCanvas();
-            vm.drawGrid();
-            vm.drawAxises();
-            vm.drawGraph(info.points);
+            vm.draw();
         }, 1000);
     },
 };

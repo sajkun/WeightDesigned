@@ -126,7 +126,7 @@
                             </h3>
 
                             <div class="graph-body flex-grow-1 mt-4">
-                                <Graph :_info='testInfo'></Graph>
+                                <Graph :_info='bvsInfo'></Graph>
                             </div>
                         </div>
                         {{-- ************************************************ --}}
