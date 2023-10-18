@@ -17359,7 +17359,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)(["w-100 calendar", {
       disabled: $data.disabled
     }])
-  }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" НАЧАЛО БЛОКА\n                 кнопки управления месяцами "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [$options.showButtons.prevMonth ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("button", {
+  }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" НАЧАЛО БЛОКА\r\n                 кнопки управления месяцами "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [$options.showButtons.prevMonth ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("button", {
     key: 0,
     "class": "btn btn-controls",
     type: "button",
@@ -17375,12 +17375,12 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       return $options.changeMonth(1);
     }),
     disabled: $data.disabled
-  }, _hoisted_9, 8 /* PROPS */, _hoisted_7)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" КОНЕЦ БЛОКА\n                кнопки управления месяцами "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" НАЧАЛО БЛОКА\n                 дни недели "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_10, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($options.days, function (d, key) {
+  }, _hoisted_9, 8 /* PROPS */, _hoisted_7)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" КОНЕЦ БЛОКА\r\n                кнопки управления месяцами "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" НАЧАЛО БЛОКА\r\n                 дни недели "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_10, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($options.days, function (d, key) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", {
       "class": "flex-grow-1 text-center day-name",
       key: 'day' + key
     }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(d), 1 /* TEXT */);
-  }), 128 /* KEYED_FRAGMENT */))]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" КОНЕЦ БЛОКА\n                 дни недели "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" НАЧАЛО БЛОКА\n                дни календаря "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_11, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($options.month, function (day, key) {
+  }), 128 /* KEYED_FRAGMENT */))]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" КОНЕЦ БЛОКА\r\n                 дни недели "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" НАЧАЛО БЛОКА\r\n                дни календаря "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_11, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($options.month, function (day, key) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", {
       "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)(["day-cell", {
         active: day.selected,
@@ -17398,7 +17398,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
         return $options.selectDay(day.date);
       }
     }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(day.day), 9 /* TEXT, PROPS */, _hoisted_12)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)], 2 /* CLASS */);
-  }), 128 /* KEYED_FRAGMENT */))]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" КОНЕЦ БЛОКА\n                 дни календаря "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" НАЧАЛО БЛОКА\n                кнопки управления "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_13, [$options.showButtons.clear ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("button", {
+  }), 128 /* KEYED_FRAGMENT */))]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" КОНЕЦ БЛОКА\r\n                 дни календаря "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" НАЧАЛО БЛОКА\r\n                кнопки управления "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_13, [$options.showButtons.clear ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("button", {
     key: 0,
     "class": "btn btn-link",
     type: "button",
@@ -17406,7 +17406,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     onClick: _cache[2] || (_cache[2] = function () {
       return $options.clearDates && $options.clearDates.apply($options, arguments);
     })
-  }, " Очистить даты ", 8 /* PROPS */, _hoisted_14)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" КОНЕЦ БЛОКА\n                 кнопки управления ")])], 2 /* CLASS */);
+  }, " Очистить даты ", 8 /* PROPS */, _hoisted_14)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" КОНЕЦ БЛОКА\r\n                 кнопки управления ")])], 2 /* CLASS */);
 }
 
 /***/ }),
@@ -18818,6 +18818,14 @@ function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol 
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
 var debug = true;
+
+/**
+ * Получает данные от переданной формы
+ *
+ * @param {HTMLFormElement} form
+ *
+ * @returns {Object} пара ключ значение, где ключ имя поля
+ */
 var getFormData = function getFormData(form) {
   var formData = new FormData(form);
   var data = {};
@@ -18837,23 +18845,58 @@ var getFormData = function getFormData(form) {
   }
   return data;
 };
+
+/**
+ * Удаляет все методы и наследование объектов Vue
+ *
+ * @param {Any} data
+ *
+ * @returns {*} примитив JS
+ */
 var strip = function strip(data) {
   if (!Boolean(data)) return "";
   return JSON.parse(JSON.stringify(data));
 };
+
+/**
+ * Выводит в консоль данные
+ *
+ * @param  {...any} data строки
+ *
+ * @returns {Void}
+ */
 var clog = function clog() {
   var _console;
   var show = Boolean(debug);
   if (!show) return;
   (_console = console).log.apply(_console, arguments);
+  return;
 };
+
+/**
+ * Рисует ломанную линию
+ *
+ * @param {CanvasRenderingContext2D} ctx
+ * @param {Array<Array<Int,Int>>} pts
+ *
+ * @returns void
+ */
 var polyline = function polyline(ctx, pts) {
   ctx.beginPath();
   pts.forEach(function (p, i) {
     return i ? ctx.lineTo.apply(ctx, _toConsumableArray(p)) : ctx.moveTo.apply(ctx, _toConsumableArray(p));
   });
   ctx.stroke();
+  return;
 };
+
+/**
+ * Получает первую цифру числа
+ *
+ * @param {Number} number
+ *
+ * @returns {Ineger}
+ */
 var get1stDigit = function get1stDigit(number) {
   var symbol = Array.from(number.toString())[0];
   return Number(symbol);
