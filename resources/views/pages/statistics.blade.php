@@ -95,7 +95,7 @@
                                 <div class="statistics-data">
                                     <h3 class="statistics-data__label">Собрано урожая</h3>
                                     <p class="statistics-data__value">
-                                        135 т.
+                                        @{{ statData.collected }}
                                     </p>
                                 </div>
                             </div>
@@ -103,7 +103,7 @@
                                 <div class="statistics-data">
                                     <h3 class="statistics-data__label">Рабочих дней</h3>
                                     <p class="statistics-data__value">
-                                        26
+                                        @{{ statData.daysCount }}
                                     </p>
                                 </div>
                             </div>
@@ -111,8 +111,8 @@
                                 <div class="statistics-data">
                                     <h3 class="statistics-data__label">Лучший сбор за день</h3>
                                     <p class="statistics-data__value">
-                                        30 т.
-                                        <span class="statistics-data__value_secondary">18 фев.</span>
+                                        @{{ statData.bestDay.collected }}
+                                        <span class="statistics-data__value_secondary">@{{ statData.bestDay.date }}</span>
                                     </p>
                                 </div>
                             </div>

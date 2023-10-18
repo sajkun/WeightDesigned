@@ -18842,8 +18842,13 @@ function _classPrivateFieldSet(receiver, privateMap, value) { var descriptor = _
 function _classExtractFieldDescriptor(receiver, privateMap, action) { if (!privateMap.has(receiver)) { throw new TypeError("attempted to " + action + " private field on non-instance"); } return privateMap.get(receiver); }
 function _classApplyDescriptorSet(receiver, descriptor, value) { if (descriptor.set) { descriptor.set.call(receiver, value); } else { if (!descriptor.writable) { throw new TypeError("attempted to set read only private field"); } descriptor.value = value; } }
 
+
+/**
+ * Форматирование массива данных от бвс
+ */
 var _data2 = /*#__PURE__*/new WeakMap();
 var _dates = /*#__PURE__*/new WeakMap();
+var _groupedDataEmpty = /*#__PURE__*/new WeakMap();
 var _parseData = /*#__PURE__*/new WeakSet();
 var _groupDataByPeriods = /*#__PURE__*/new WeakSet();
 var _parseDiffDates = /*#__PURE__*/new WeakSet();
@@ -18883,14 +18888,31 @@ var BvsDataClass = /*#__PURE__*/function () {
       writable: true,
       value: void 0
     });
+    _classPrivateFieldInitSpec(this, _groupedDataEmpty, {
+      writable: true,
+      value: {
+        year: {
+          format: "YYYY",
+          items: new Map()
+        },
+        month: {
+          format: "YYYY-MM",
+          items: new Map()
+        },
+        day: {
+          format: "YYYY-MM-DD",
+          items: new Map()
+        }
+      }
+    });
     _classPrivateFieldSet(this, _data2, data);
     _classPrivateFieldSet(this, _dates, dates);
   }
 
   /**
-   * Выдача  данных по дням
+   * Выдача  данных по дням, годам и месяца
    *
-   * @returns {Map}
+   * @returns {Object}
    */
   _createClass(BvsDataClass, [{
     key: "parsedData",
@@ -18898,6 +18920,51 @@ var BvsDataClass = /*#__PURE__*/function () {
       return {
         data: _classPrivateMethodGet(this, _groupDataByPeriods, _groupDataByPeriods2).call(this),
         periods: _classPrivateMethodGet(this, _parseDiffDates, _parseDiffDates2).call(this)
+      };
+    }
+
+    /**
+     * Выводит всего зерна за период
+     * Количество рабочих дней
+     * Данные о лучше дне сбора
+     *
+     * @returns {Object}
+     */
+  }, {
+    key: "statistics",
+    get: function get() {
+      var _classPrivateMethodGe;
+      var data = (_classPrivateMethodGe = _classPrivateMethodGet(this, _parseData, _parseData2).call(this)["YYYY-MM-DD"]) === null || _classPrivateMethodGe === void 0 ? void 0 : _classPrivateMethodGe.items;
+      var daysCount = _classPrivateMethodGet(this, _parseDiffDates, _parseDiffDates2).call(this)["days"];
+      if (!data || !daysCount) {
+        return {
+          collected: "-",
+          daysCount: 0,
+          bestDay: {
+            collected: "-",
+            date: "-"
+          }
+        };
+      }
+      var collected = 0;
+      var bestDay = {
+        collected: 0,
+        date: ""
+      };
+      data.forEach(function (value, key) {
+        collected += value;
+        if (bestDay.collected < value) {
+          bestDay.collected = value;
+          var date = moment__WEBPACK_IMPORTED_MODULE_0___default()(key);
+          bestDay.date = date.format("DD MMM");
+        }
+      });
+      collected = collected > 1000 ? "".concat(collected / 1000, "\u0442.") : "".concat(collected, "\u043A\u0433.");
+      bestDay.collected = bestDay.collected > 1000 ? "".concat(bestDay.collected / 1000, "\u0442.") : "".concat(bestDay.collected, "\u043A\u0433.");
+      return {
+        collected: collected,
+        daysCount: data.size,
+        bestDay: bestDay
       };
     }
   }]);
@@ -18945,33 +19012,21 @@ function _groupDataByPeriods2() {
   var parsedData = _classPrivateMethodGet(this, _parseData, _parseData2).call(this);
   var diff = _classPrivateMethodGet(this, _parseDiffDates, _parseDiffDates2).call(this);
   var date = moment__WEBPACK_IMPORTED_MODULE_0___default()(_classPrivateFieldGet(this, _dates).start);
-  var groupedData = {
-    year: {
-      format: "YYYY",
-      items: new Map()
-    },
-    month: {
-      format: "YYYY-MM",
-      items: new Map()
-    },
-    day: {
-      format: "YYYY-MM-DD",
-      items: new Map()
-    }
-  };
+  var groupedData = _classPrivateFieldGet(this, _groupedDataEmpty);
   if (!diff.days) {
     return groupedData;
   }
   for (var i = 0; i <= diff.days; i++) {
     for (var period in groupedData) {
-      var _parsedData$groupedDa;
-      var idx = date.format(groupedData[period].format);
-      if (!groupedData[period].items.has(idx)) {
-        groupedData[period].items.set(idx, 0);
+      var _parsedData$idxPeriod;
+      var idxDate = date.format(groupedData[period].format);
+      if (!groupedData[period].items.has(idxDate)) {
+        groupedData[period].items.set(idxDate, 0);
       }
-      if ((_parsedData$groupedDa = parsedData[groupedData[period].format]) !== null && _parsedData$groupedDa !== void 0 && _parsedData$groupedDa.items.has(idx)) {
-        var value = parsedData[groupedData[period].format].items.get(idx);
-        groupedData[period].items.set(idx, value);
+      var idxPeriod = groupedData[period].format;
+      if ((_parsedData$idxPeriod = parsedData[idxPeriod]) !== null && _parsedData$idxPeriod !== void 0 && _parsedData$idxPeriod.items.has(idxDate)) {
+        var value = parsedData[idxPeriod].items.get(idxDate);
+        groupedData[period].items.set(idxDate, value);
       }
     }
     date.add(1, "days");
@@ -21106,18 +21161,12 @@ var appPublicStatistics = {
   },
   watch: {},
   computed: {
-    bvsInfo: function bvsInfo() {
-      var vm = this;
-      var harvestData = new _misc_BvsDataClass__WEBPACK_IMPORTED_MODULE_2__["default"]((0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.bvsData), (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.dateRange));
-      var type;
-      if (harvestData.parsedData.periods.days <= 31) {
-        type = "day";
-      } else if (harvestData.parsedData.periods.months < 12) {
-        type = "month";
-      } else {
-        type = "year";
-      }
-      var rawData = harvestData.parsedData.data[type];
+    /**
+     * Пустой объект для формирования данных для графика
+     *
+     * @returns {Object}
+     */
+    bvsInfoBlank: function bvsInfoBlank() {
       var info = {
         axis: {
           x: {
@@ -21136,6 +21185,26 @@ var appPublicStatistics = {
           x: {}
         }
       };
+      return info;
+    },
+    /**
+     * формирует данные статистики для отображения данных
+     *
+     * @returns {Object}
+     */
+    bvsInfo: function bvsInfo() {
+      var vm = this;
+      var harvestData = new _misc_BvsDataClass__WEBPACK_IMPORTED_MODULE_2__["default"]((0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.bvsData), (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.dateRange));
+      var type;
+      if (harvestData.parsedData.periods.days <= 31) {
+        type = "day";
+      } else if (harvestData.parsedData.periods.months < 12) {
+        type = "month";
+      } else {
+        type = "year";
+      }
+      var rawData = harvestData.parsedData.data[type];
+      var info = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.bvsInfoBlank);
       if (!(rawData !== null && rawData !== void 0 && rawData.items)) {
         return info;
       }
@@ -21166,6 +21235,11 @@ var appPublicStatistics = {
       });
       info.axis.x.maxValue = Object.values(info.points).length + 1;
       return info;
+    },
+    statData: function statData() {
+      var vm = this;
+      var harvestData = new _misc_BvsDataClass__WEBPACK_IMPORTED_MODULE_2__["default"]((0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.bvsData), (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.dateRange));
+      return harvestData.statistics;
     }
   },
   mounted: function mounted() {

@@ -51,24 +51,12 @@ const appPublicStatistics = {
     watch: {},
 
     computed: {
-        bvsInfo() {
-            const vm = this;
-            const harvestData = new BvsData(
-                strip(vm.bvsData),
-                strip(vm.dateRange)
-            );
-
-            let type;
-            if (harvestData.parsedData.periods.days <= 31) {
-                type = "day";
-            } else if (harvestData.parsedData.periods.months < 12) {
-                type = "month";
-            } else {
-                type = "year";
-            }
-
-            const rawData = harvestData.parsedData.data[type];
-
+        /**
+         * Пустой объект для формирования данных для графика
+         *
+         * @returns {Object}
+         */
+        bvsInfoBlank() {
             const info = {
                 axis: {
                     x: {
@@ -90,11 +78,39 @@ const appPublicStatistics = {
                 },
             };
 
+            return info;
+        },
+
+        /**
+         * формирует данные статистики для отображения данных
+         *
+         * @returns {Object}
+         */
+        bvsInfo() {
+            const vm = this;
+            const harvestData = new BvsData(
+                strip(vm.bvsData),
+                strip(vm.dateRange)
+            );
+
+            let type;
+            if (harvestData.parsedData.periods.days <= 31) {
+                type = "day";
+            } else if (harvestData.parsedData.periods.months < 12) {
+                type = "month";
+            } else {
+                type = "year";
+            }
+
+            const rawData = harvestData.parsedData.data[type];
+
+            const info = strip(vm.bvsInfoBlank);
+
             if (!rawData?.items) {
                 return info;
             }
-            let xValue = 0;
 
+            let xValue = 0;
             rawData.items.forEach((value, key, map) => {
                 let newKey;
                 const date = moment(key, rawData.format);
@@ -125,6 +141,15 @@ const appPublicStatistics = {
             info.axis.x.maxValue = Object.values(info.points).length + 1;
 
             return info;
+        },
+
+        statData() {
+            const vm = this;
+            const harvestData = new BvsData(
+                strip(vm.bvsData),
+                strip(vm.dateRange)
+            );
+            return harvestData.statistics;
         },
     },
 

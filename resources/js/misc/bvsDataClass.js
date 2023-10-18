@@ -1,8 +1,25 @@
 import moment from "moment";
 
+/**
+ * Форматирование массива данных от бвс
+ */
 class BvsDataClass {
     #data;
     #dates;
+    #groupedDataEmpty = {
+        year: {
+            format: "YYYY",
+            items: new Map(),
+        },
+        month: {
+            format: "YYYY-MM",
+            items: new Map(),
+        },
+        day: {
+            format: "YYYY-MM-DD",
+            items: new Map(),
+        },
+    };
 
     /**
      * Конструктор класса
@@ -16,14 +33,67 @@ class BvsDataClass {
     }
 
     /**
-     * Выдача  данных по дням
+     * Выдача  данных по дням, годам и месяца
      *
-     * @returns {Map}
+     * @returns {Object}
      */
     get parsedData() {
         return {
             data: this.#groupDataByPeriods(),
             periods: this.#parseDiffDates(),
+        };
+    }
+
+    /**
+     * Выводит всего зерна за период
+     * Количество рабочих дней
+     * Данные о лучше дне сбора
+     *
+     * @returns {Object}
+     */
+    get statistics() {
+        const data = this.#parseData()["YYYY-MM-DD"]?.items;
+        const daysCount = this.#parseDiffDates()["days"];
+
+        if (!data || !daysCount) {
+            return {
+                collected: "-",
+                daysCount: 0,
+                bestDay: {
+                    collected: "-",
+                    date: "-",
+                },
+            };
+        }
+
+        let collected = 0;
+        let bestDay = {
+            collected: 0,
+            date: "",
+        };
+
+        data.forEach((value, key) => {
+            collected += value;
+
+            if (bestDay.collected < value) {
+                bestDay.collected = value;
+                const date = moment(key);
+                bestDay.date = date.format("DD MMM");
+            }
+        });
+
+        collected =
+            collected > 1000 ? `${collected / 1000}т.` : `${collected}кг.`;
+
+        bestDay.collected =
+            bestDay.collected > 1000
+                ? `${bestDay.collected / 1000}т.`
+                : `${bestDay.collected}кг.`;
+
+        return {
+            collected,
+            daysCount: data.size,
+            bestDay,
         };
     }
 
@@ -77,38 +147,23 @@ class BvsDataClass {
         const parsedData = this.#parseData();
         const diff = this.#parseDiffDates();
         const date = moment(this.#dates.start);
-
-        let groupedData = {
-            year: {
-                format: "YYYY",
-                items: new Map(),
-            },
-            month: {
-                format: "YYYY-MM",
-                items: new Map(),
-            },
-            day: {
-                format: "YYYY-MM-DD",
-                items: new Map(),
-            },
-        };
+        let groupedData = this.#groupedDataEmpty;
 
         if (!diff.days) {
             return groupedData;
         }
 
         for (let i = 0; i <= diff.days; i++) {
-            for (let period in groupedData) {
-                const idx = date.format(groupedData[period].format);
-
-                if (!groupedData[period].items.has(idx)) {
-                    groupedData[period].items.set(idx, 0);
+            for (const period in groupedData) {
+                const idxDate = date.format(groupedData[period].format);
+                if (!groupedData[period].items.has(idxDate)) {
+                    groupedData[period].items.set(idxDate, 0);
                 }
 
-                if (parsedData[groupedData[period].format]?.items.has(idx)) {
-                    const value =
-                        parsedData[groupedData[period].format].items.get(idx);
-                    groupedData[period].items.set(idx, value);
+                const idxPeriod = groupedData[period].format;
+                if (parsedData[idxPeriod]?.items.has(idxDate)) {
+                    const value = parsedData[idxPeriod].items.get(idxDate);
+                    groupedData[period].items.set(idxDate, value);
                 }
             }
 
