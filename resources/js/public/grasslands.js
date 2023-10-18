@@ -66,7 +66,7 @@ const appPublicGrasslands = {
         createGrassland() {
             const vm = this;
 
-            let grasslandData = vm.getFormData(vm.$refs.formCreateGrassland);
+            let grasslandData = getFormData(vm.$refs.formCreateGrassland);
 
             grasslandData.geo_json = grasslandData.geo_json
                 ? JSON.parse(grasslandData.geo_json)
