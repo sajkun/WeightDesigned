@@ -31,7 +31,12 @@ export default {
 
         info(info) {
             if (!info) return;
-            this.draw();
+            const vm = this;
+
+            setTimeout(() => {
+                vm.prepareCanvas();
+                vm.draw();
+            }, 1000);
         },
     },
     props: {
@@ -91,7 +96,7 @@ export default {
         draw() {
             const vm = this;
             const info = strip(vm.info);
-            vm.prepareCanvas();
+
             vm.drawGrid();
             vm.drawAxises();
             vm.drawGraph(info.points);
@@ -329,6 +334,7 @@ export default {
         const vm = this;
 
         setTimeout(() => {
+            vm.prepareCanvas();
             vm.draw();
         }, 1000);
     },

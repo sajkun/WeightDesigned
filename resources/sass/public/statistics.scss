@@ -72,6 +72,23 @@
         width: 0.75rem;
         height: 0.75rem;
         background-color: var(--grey-medium);
+        transition: background-color var(--slow);
+
+        &0 {
+            background-color: var(--green);
+        }
+        &1 {
+            background-color: var(--yellow);
+        }
+        &2 {
+            background-color: var(--red-medium);
+        }
+        &3 {
+            background-color: var(--blue);
+        }
+        &4 {
+            background-color: var(--violet);
+        }
     }
 
     &__name {

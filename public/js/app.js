@@ -16053,7 +16053,11 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
     },
     info: function info(_info2) {
       if (!_info2) return;
-      this.draw();
+      var vm = this;
+      setTimeout(function () {
+        vm.prepareCanvas();
+        vm.draw();
+      }, 1000);
     }
   },
   props: {
@@ -16108,7 +16112,6 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
     draw: function draw() {
       var vm = this;
       var info = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.info);
-      vm.prepareCanvas();
       vm.drawGrid();
       vm.drawAxises();
       vm.drawGraph(info.points);
@@ -16302,6 +16305,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
   mounted: function mounted() {
     var vm = this;
     setTimeout(function () {
+      vm.prepareCanvas();
       vm.draw();
     }, 1000);
   }
@@ -18820,9 +18824,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   BvsData: () => (/* binding */ BvsData)
 /* harmony export */ });
-/* harmony import */ var _misc_helpers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/misc/helpers */ "./resources/js/misc/helpers.js");
-/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
-/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_0__);
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
@@ -18846,7 +18849,6 @@ function _classPrivateFieldSet(receiver, privateMap, value) { var descriptor = _
 function _classExtractFieldDescriptor(receiver, privateMap, action) { if (!privateMap.has(receiver)) { throw new TypeError("attempted to " + action + " private field on non-instance"); } return privateMap.get(receiver); }
 function _classApplyDescriptorSet(receiver, descriptor, value) { if (descriptor.set) { descriptor.set.call(receiver, value); } else { if (!descriptor.writable) { throw new TypeError("attempted to set read only private field"); } descriptor.value = value; } }
 //хэлперы
-
 
 
 /**
@@ -19040,15 +19042,15 @@ function _getStatisticsData2(rawData, dates) {
   }
 
   // начальные значения искомых данных
-  var start = moment__WEBPACK_IMPORTED_MODULE_1___default()(dates.start);
-  var end = moment__WEBPACK_IMPORTED_MODULE_1___default()(dates.end);
+  var start = moment__WEBPACK_IMPORTED_MODULE_0___default()(dates.start);
+  var end = moment__WEBPACK_IMPORTED_MODULE_0___default()(dates.end);
 
   // получение искомы данных
   Object.entries(rawData).forEach(function (_ref) {
     var _ref2 = _slicedToArray(_ref, 2),
       dateStr = _ref2[0],
       value = _ref2[1];
-    var date = moment__WEBPACK_IMPORTED_MODULE_1___default()(dateStr);
+    var date = moment__WEBPACK_IMPORTED_MODULE_0___default()(dateStr);
     if (date <= end && date >= start) {
       _result.collected += value;
       _result.daysCount++;
@@ -19065,7 +19067,7 @@ function _getStatisticsData2(rawData, dates) {
 function _groupDataByPeriods2() {
   var parsedData = _classPrivateMethodGet(this, _parseData, _parseData2).call(this);
   var diff = _classPrivateMethodGet(this, _parseDiffDates, _parseDiffDates2).call(this);
-  var date = moment__WEBPACK_IMPORTED_MODULE_1___default()(_classPrivateFieldGet(this, _dates).start);
+  var date = moment__WEBPACK_IMPORTED_MODULE_0___default()(_classPrivateFieldGet(this, _dates).start);
   var groupedData = _classPrivateFieldGet(this, _groupedDataEmpty);
   if (!_classPrivateMethodGet(this, _validate, _validate2).call(this, diff.days)) {
     return groupedData;
@@ -19105,7 +19107,7 @@ function _parseData2() {
   try {
     for (_iterator.s(); !(_step = _iterator.n()).done;) {
       var _harvestData = _step.value;
-      var date = moment__WEBPACK_IMPORTED_MODULE_1___default()(_harvestData.operation_time);
+      var date = moment__WEBPACK_IMPORTED_MODULE_0___default()(_harvestData.operation_time);
       for (var period in harvestData) {
         var _data = harvestData[period];
         var idx = date.format(_data.format);
@@ -19124,8 +19126,8 @@ function _parseData2() {
   return harvestData;
 }
 function _parseDiffDates2() {
-  var start = moment__WEBPACK_IMPORTED_MODULE_1___default()(_classPrivateFieldGet(this, _dates).start);
-  var end = moment__WEBPACK_IMPORTED_MODULE_1___default()(_classPrivateFieldGet(this, _dates).end);
+  var start = moment__WEBPACK_IMPORTED_MODULE_0___default()(_classPrivateFieldGet(this, _dates).start);
+  var end = moment__WEBPACK_IMPORTED_MODULE_0___default()(_classPrivateFieldGet(this, _dates).end);
   return {
     days: end.diff(start, "days"),
     months: end.diff(start, "months"),
@@ -21266,6 +21268,35 @@ var appPublicStatistics = {
   },
   watch: {},
   computed: {
+    bests: function bests() {
+      var vm = this;
+      var total = 0;
+      var othersCount = 0;
+      var othersTotal = 0;
+      var top = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.ratingData).reduce(function (acc, val, key) {
+        total += val.amount;
+        if (key < 5) {
+          acc.push(val);
+        } else {
+          othersCount++;
+          othersTotal += val.amount;
+        }
+        return acc;
+      }, []);
+      if (othersCount) {
+        top.push({
+          name: "\u043E\u0441\u0442\u0430\u043B\u044C\u043D\u044B\u0435(".concat(othersCount, ")"),
+          amount: othersTotal,
+          pid: 9999999
+        });
+      }
+      top = top.map(function (t) {
+        t.amount = total ? "".concat((t.amount * 100 / total).toFixed(1), "%") : t.amount;
+        return t;
+      });
+      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)(top);
+      return top;
+    },
     /**
      * Пустой объект для формирования данных для графика
      *

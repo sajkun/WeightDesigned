@@ -51,6 +51,44 @@ const appPublicStatistics = {
     watch: {},
 
     computed: {
+        bests() {
+            const vm = this;
+
+            let total = 0;
+            let othersCount = 0;
+            let othersTotal = 0;
+
+            let top = strip(vm.ratingData).reduce((acc, val, key) => {
+                total += val.amount;
+                if (key < 5) {
+                    acc.push(val);
+                } else {
+                    othersCount++;
+                    othersTotal += val.amount;
+                }
+                return acc;
+            }, []);
+
+            if (othersCount) {
+                top.push({
+                    name: `остальные(${othersCount})`,
+                    amount: othersTotal,
+                    pid: 9999999,
+                });
+            }
+
+            top = top.map((t) => {
+                t.amount = total
+                    ? `${((t.amount * 100) / total).toFixed(1)}%`
+                    : t.amount;
+                return t;
+            });
+
+            clog(top);
+
+            return top;
+        },
+
         /**
          * Пустой объект для формирования данных для графика
          *

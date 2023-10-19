@@ -1,5 +1,4 @@
 //хэлперы
-import { strip, clog } from "@/misc/helpers";
 import moment from "moment";
 
 /**

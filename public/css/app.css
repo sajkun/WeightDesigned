@@ -2335,10 +2335,11 @@ body {
   --yellow-light: #fff1b8;
   --yellow-medium: #ffe370;
   --yellow: #ffd111;
+  --cooper: #b18a4b;
+  --violet: #b275e2;
   --lightest: #fff;
   --dark: #292e3a;
   --darkest: #000;
-  --cooper: #b18a4b;
   --link-color: #fff;
   --link-color-active: var(--grey);
   --contrast: #fff;
@@ -14071,6 +14072,22 @@ body.auth #app {
   width: 0.75rem;
   height: 0.75rem;
   background-color: var(--grey-medium);
+  transition: background-color var(--slow);
+}
+.statistics-best-item__icon0 {
+  background-color: var(--green);
+}
+.statistics-best-item__icon1 {
+  background-color: var(--yellow);
+}
+.statistics-best-item__icon2 {
+  background-color: var(--red-medium);
+}
+.statistics-best-item__icon3 {
+  background-color: var(--blue);
+}
+.statistics-best-item__icon4 {
+  background-color: var(--violet);
 }
 .statistics-best-item__name {
   margin: 0;

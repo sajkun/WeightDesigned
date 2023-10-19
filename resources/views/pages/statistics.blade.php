@@ -94,26 +94,32 @@
                             <div class="col-12 col-md-4">
                                 <div class="statistics-data">
                                     <h3 class="statistics-data__label">Собрано урожая</h3>
-                                    <p class="statistics-data__value">
-                                        @{{ statData.collected }}
-                                    </p>
+                                    <Transition name='fade'>
+                                        <p class="statistics-data__value">
+                                            @{{ statData.collected }}
+                                        </p>
+                                    </Transition>
                                 </div>
                             </div>
                             <div class="col-12 col-md-4 mt-2 mt-md-0">
                                 <div class="statistics-data">
                                     <h3 class="statistics-data__label">Рабочих дней</h3>
-                                    <p class="statistics-data__value">
-                                        @{{ statData.daysCount }}
-                                    </p>
+                                    <Transition name='fade'>
+                                        <p class="statistics-data__value">
+                                            @{{ statData.daysCount }}
+                                        </p>
+                                    </Transition>
                                 </div>
                             </div>
                             <div class="col-12 col-md-4 mt-2 mt-md-0">
                                 <div class="statistics-data">
                                     <h3 class="statistics-data__label">Лучший сбор за день</h3>
-                                    <p class="statistics-data__value">
-                                        @{{ statData.bestDay.collected }}
-                                        <span class="statistics-data__value_secondary">@{{ statData.bestDay.date }}</span>
-                                    </p>
+                                    <Transition name='fade'>
+                                        <p class="statistics-data__value">
+                                            @{{ statData.bestDay.collected }}
+                                            <span class="statistics-data__value_secondary">@{{ statData.bestDay.date }}</span>
+                                        </p>
+                                    </Transition>
                                 </div>
                             </div>
                         </div>
@@ -139,17 +145,16 @@
                             </h3>
                             <div class="row">
                                 <div class="col-7">
-                                    <div class="statistics-best-item">
-                                        <i class="statistics-best-item__icon"></i>
-                                        <h4 class="statistics-best-item__name">фамилия имя отчество</h4>
-                                        <p class="statistics-best-item__persantage text-end">15%</p>
-                                    </div>
-
-                                    <div class="statistics-best-item statistics-best-item_others">
-                                        <i class="statistics-best-item__icon"></i>
-                                        <h4 class="statistics-best-item__name">остальные(8)</h4>
-                                        <p class="statistics-best-item__persantage text-end">45%</p>
-                                    </div>
+                                    <transition-group :css="false" v-on:before-enter="onBeforeEnter"
+                                        v-on:enter="onEnter" v-on:leave="onLeave" name='sort'>
+                                        <div class="statistics-best-item" v-for='item,key in bests'
+                                            :key='"bests" + item.pid' :data-index='key'>
+                                            <i class="statistics-best-item__icon"
+                                                :class='"statistics-best-item__icon" + key'></i>
+                                            <h4 class="statistics-best-item__name">@{{ item.name }}</h4>
+                                            <p class="statistics-best-item__persantage text-end">@{{ item.amount }}</p>
+                                        </div>
+                                    </transition-group>
                                 </div>
                                 <div class="col-5">
                                     <div class="diagram"></div>
