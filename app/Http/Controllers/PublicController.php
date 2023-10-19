@@ -51,5 +51,15 @@ class PublicController extends Controller
         view()->share('users', $organisation->users()->get());
         view()->share('employees', $organisation->employees()->get());
         view()->share('grasslands', $organisation->grasslands()->get());
+        view()->share('useYamap', $this->useYamap());
+    }
+
+
+    /**
+     * Метод определяющий нужно ли использовать яндекс карты
+     */
+    public function useYamap()
+    {
+        return false;
     }
 }
