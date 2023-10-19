@@ -21,6 +21,7 @@
 // хэлперы
 import { strip, clog, polyline, getRoundedValue } from "@/misc/helpers";
 
+let drawTimeout;
 export default {
     watch: {
         // Интерактивность обновления базовых данных длдя графика
@@ -29,14 +30,19 @@ export default {
             return null;
         },
 
-        info(info) {
-            if (!info) return;
+        info(info, oldVal) {
+            if (drawTimeout) {
+                clearTimeout(drawTimeout);
+            }
+
+            clog(strip(info));
+
+            if (!info || info === oldVal) return;
+
             const vm = this;
 
-            setTimeout(() => {
-                vm.prepareCanvas();
-                vm.draw();
-            }, 1000);
+            vm.prepareCanvas();
+            vm.draw();
         },
     },
     props: {
@@ -97,9 +103,17 @@ export default {
             const vm = this;
             const info = strip(vm.info);
 
+            if (drawTimeout) {
+                clearTimeout(drawTimeout);
+            }
+
+            vm.prepareCanvas();
             vm.drawGrid();
             vm.drawAxises();
-            vm.drawGraph(info.points);
+
+            drawTimeout = setTimeout(() => {
+                vm.drawGraph(info.points);
+            }, 250);
         },
 
         /**
@@ -173,14 +187,18 @@ export default {
             ctx.lineWidth = 2;
 
             _points.unshift(Object.values(vm.zero));
-            polyline(ctx, _points);
-
             ctx.strokeStyle = "#E1F3EA55";
             const endPoint = _points[_points.length - 1];
             _points.push([vm.zero.y, endPoint[1]]);
             polyline(ctx, _points);
             ctx.fillStyle = "#E1F3EA55";
             ctx.fill();
+
+            _points.pop();
+
+            ctx.strokeStyle = "#007e3c";
+            ctx.lineWidth = 2;
+            polyline(ctx, _points, true);
 
             return;
         },
@@ -325,6 +343,7 @@ export default {
             cnvs.height = vm.$refs.root.offsetHeight - 50;
             ctx.translate(0, cnvs.height);
             ctx.rotate(-Math.PI / 2);
+            ctx.clearRect(0, 0, cnvs.width, cnvs.height);
 
             return;
         },
@@ -332,11 +351,8 @@ export default {
 
     mounted() {
         const vm = this;
-
-        setTimeout(() => {
-            vm.prepareCanvas();
-            vm.draw();
-        }, 1000);
+        vm.prepareCanvas();
+        vm.draw();
     },
 };
 </script>

@@ -49,16 +49,9 @@ export const clog = (...data) => {
     return;
 };
 
-/**
- * Рисует ломанную линию в canvas
- *
- * @param {CanvasRenderingContext2D} ctx
- * @param {Array<Array<Int,Int>>} pts
- *
- * @returns void
- */
-export const polyline = (ctx, pts) => {
+const polylineCb = (ctx, pts) => {
     ctx.beginPath();
+
     pts.forEach((p, i) => {
         if (i) {
             ctx.lineTo(...p);
@@ -67,6 +60,45 @@ export const polyline = (ctx, pts) => {
         }
     });
     ctx.stroke();
+    return;
+};
+
+const animatePolylineCb = (ctx, pts, draw) => {
+    let points = pts;
+    let iterator = 0;
+    const animate = () => {
+        const pointFrom = points[iterator];
+        iterator++;
+        if (!pointFrom) {
+            return;
+        }
+        const pointTo = points[iterator];
+        if (!pointTo) {
+            return;
+        }
+
+        ctx.beginPath();
+        ctx.moveTo(...pointFrom);
+        ctx.lineTo(...pointTo);
+        ctx.stroke();
+        setTimeout(() => {
+            requestAnimationFrame(animate);
+        }, 30);
+    };
+
+    animate();
+};
+
+/**
+ * Рисует ломанную линию в canvas
+ *
+ * @param {CanvasRenderingContext2D} ctx
+ * @param {Array<Array<Int,Int>>} pts
+ *
+ * @returns void
+ */
+export const polyline = (ctx, pts, animate) => {
+    animate ? animatePolylineCb(ctx, pts) : polylineCb(ctx, pts);
     return;
 };
 
