@@ -18850,14 +18850,18 @@ function _classApplyDescriptorSet(receiver, descriptor, value) { if (descriptor.
 
 
 /**
- * Форматирование массива данных от бвс
+ * Форматирование массива данных от бвс для страницы статистики
  */
 var _data2 = /*#__PURE__*/new WeakMap();
 var _dates = /*#__PURE__*/new WeakMap();
 var _groupedDataEmpty = /*#__PURE__*/new WeakMap();
-var _parseData = /*#__PURE__*/new WeakSet();
+var _harvestData2 = /*#__PURE__*/new WeakMap();
+var _formatWeight = /*#__PURE__*/new WeakSet();
+var _getStatisticsData = /*#__PURE__*/new WeakSet();
 var _groupDataByPeriods = /*#__PURE__*/new WeakSet();
+var _parseData = /*#__PURE__*/new WeakSet();
 var _parseDiffDates = /*#__PURE__*/new WeakSet();
+var _validate = /*#__PURE__*/new WeakSet();
 var BvsData = /*#__PURE__*/function () {
   /**
    * Конструктор класса
@@ -18865,8 +18869,16 @@ var BvsData = /*#__PURE__*/function () {
    * @param {Array} data массив данных от бвс @see Laravel model BvsData
    * @param {Object} dates даты начала и конца
    */
-  function BvsData(data, dates) {
+  function BvsData(data, _dates2) {
     _classCallCheck(this, BvsData);
+    /**
+     * валидатор существования данных
+     *
+     * @param  {...any} данные которые нужно проверить на существование
+     *
+     * @returns {Boolean}
+     */
+    _classPrivateMethodInitSpec(this, _validate);
     /**
      * выдает разницу между датами в днях, месяцах и годах
      *
@@ -18874,18 +18886,40 @@ var BvsData = /*#__PURE__*/function () {
      */
     _classPrivateMethodInitSpec(this, _parseDiffDates);
     /**
-     * Заполнение пустых элементов в объекте полученном через #parseData в зависимости от заданного периода
-     *
-     * @returns {Object}
-     */
-    _classPrivateMethodInitSpec(this, _groupDataByPeriods);
-    /**
      * Группировка имеющихся данных о собранном урожае
      * с разбивкой по дням, месяцам и годам
      *
      * @returns {Object}
      */
     _classPrivateMethodInitSpec(this, _parseData);
+    /**
+     * Заполнение пустых элементов в объекте полученном через #parseData в зависимости от заданного периода
+     *
+     * @returns {Object}
+     */
+    _classPrivateMethodInitSpec(this, _groupDataByPeriods);
+    /**
+     * Рассчитывает:
+     * Общее количество собранного зерна за период
+     * Количество рабочих дней
+     * Дату в которую собрано максимальное количество зерна
+     *
+     * @param {Object} dates данные о временном диапазоне
+     * @param {Object} rawData данные статистики
+     *
+     * @returns {Object}
+     */
+    _classPrivateMethodInitSpec(this, _getStatisticsData);
+    /**
+     * Форматирует вес
+     * Добавляет единицы измерения киллограммы или тонны
+     * делит значение на 1000, если это тонны
+     *
+     * @param {Number} number
+     *
+     * @returns {String}
+     */
+    _classPrivateMethodInitSpec(this, _formatWeight);
     /**
      * данные от БВС в виде полученном от сервера
      * {Array}
@@ -18903,7 +18937,12 @@ var BvsData = /*#__PURE__*/function () {
       value: void 0
     });
     /**
-     * Начальные значения сгруппированных данных
+     * Сформатированные данные о весе
+     * Сгрупированны по годам, месяцам, неделям
+     * Отфильтрованы по дипазону да this.#dates
+     * пустые значения заполнены нулевым весом
+     *
+     * @see this.#groupDataByPeriods
      */
     _classPrivateFieldInitSpec(this, _groupedDataEmpty, {
       writable: true,
@@ -18922,8 +18961,31 @@ var BvsData = /*#__PURE__*/function () {
         }
       }
     });
+    /**
+     * Сформатированные данные о весе
+     * Сгрупированны по годам, месяцам, неделям
+     *
+     * @see this.#parseData
+     */
+    _classPrivateFieldInitSpec(this, _harvestData2, {
+      writable: true,
+      value: {
+        year: {
+          format: "YYYY",
+          items: new Map()
+        },
+        month: {
+          format: "YYYY-MM",
+          items: new Map()
+        },
+        day: {
+          format: "YYYY-MM-DD",
+          items: new Map()
+        }
+      }
+    });
     _classPrivateFieldSet(this, _data2, data);
-    _classPrivateFieldSet(this, _dates, dates);
+    _classPrivateFieldSet(this, _dates, _dates2);
   }
 
   /**
@@ -18952,74 +19014,92 @@ var BvsData = /*#__PURE__*/function () {
     key: "statistics",
     get: function get() {
       var _classPrivateMethodGe;
-      var rawData = Object.fromEntries((_classPrivateMethodGe = _classPrivateMethodGet(this, _parseData, _parseData2).call(this)["YYYY-MM-DD"]) === null || _classPrivateMethodGe === void 0 ? void 0 : _classPrivateMethodGe.items);
-      var dates = _classPrivateFieldGet(this, _dates);
-
-      // ранний выход, если не хватает данных
-      if (!rawData || !dates) {
-        return {
-          collected: "-",
-          daysCount: 0,
-          bestDay: {
-            collected: "-",
-            date: "-"
-          }
-        };
-      }
-
-      //начальные данные переменных для результирующего ответа
-      var collected = 0;
-      var daysCount = 0;
-      var bestDay = {
-        collected: 0,
-        date: ""
-      };
-      var start = moment__WEBPACK_IMPORTED_MODULE_1___default()(dates.start);
-      var end = moment__WEBPACK_IMPORTED_MODULE_1___default()(dates.end);
-
-      // получение искомы данных
-      Object.entries(rawData).forEach(function (_ref) {
-        var _ref2 = _slicedToArray(_ref, 2),
-          dateStr = _ref2[0],
-          value = _ref2[1];
-        var date = moment__WEBPACK_IMPORTED_MODULE_1___default()(dateStr);
-        if (date <= end && date >= start) {
-          collected += value;
-          daysCount++;
-          if (bestDay.collected < value) {
-            bestDay.collected = value;
-            bestDay.date = date.format("DD MMM");
-          }
-        }
-      });
-
-      // форматирование значений количества собранного зерна
-      collected = collected > 1000 ? "".concat(collected / 1000, "\u0442.") : "".concat(collected, "\u043A\u0433.");
-      bestDay.collected = bestDay.collected > 1000 ? "".concat(bestDay.collected / 1000, "\u0442.") : "".concat(bestDay.collected, "\u043A\u0433.");
-      return {
-        collected: collected,
-        daysCount: daysCount,
-        bestDay: bestDay
-      };
+      var rawData = Object.fromEntries((_classPrivateMethodGe = _classPrivateMethodGet(this, _parseData, _parseData2).call(this).day) === null || _classPrivateMethodGe === void 0 ? void 0 : _classPrivateMethodGe.items);
+      return _classPrivateMethodGet(this, _getStatisticsData, _getStatisticsData2).call(this, rawData, _classPrivateFieldGet(this, _dates));
     }
   }]);
   return BvsData;
 }();
-function _parseData2() {
-  var harvestData = {
-    YYYY: {
-      format: "YYYY",
-      items: new Map()
-    },
-    "YYYY-MM": {
-      format: "YYYY-MM",
-      items: new Map()
-    },
-    "YYYY-MM-DD": {
-      format: "YYYY-MM-DD",
-      items: new Map()
+function _formatWeight2(number) {
+  return number > 1000 ? "".concat(number / 1000, "\u0442.") : "".concat(number, "\u043A\u0433.");
+}
+function _getStatisticsData2(rawData, dates) {
+  //начальные данные переменных для результирующего ответа
+  var _result = {
+    collected: 0,
+    daysCount: 0,
+    bestDay: {
+      collected: 0,
+      date: "-"
     }
   };
+
+  // ранний выход, если не хватает данных
+  if (!_classPrivateMethodGet(this, _validate, _validate2).call(this, rawData, dates)) {
+    return _result;
+  }
+
+  // начальные значения искомых данных
+  var start = moment__WEBPACK_IMPORTED_MODULE_1___default()(dates.start);
+  var end = moment__WEBPACK_IMPORTED_MODULE_1___default()(dates.end);
+
+  // получение искомы данных
+  Object.entries(rawData).forEach(function (_ref) {
+    var _ref2 = _slicedToArray(_ref, 2),
+      dateStr = _ref2[0],
+      value = _ref2[1];
+    var date = moment__WEBPACK_IMPORTED_MODULE_1___default()(dateStr);
+    if (date <= end && date >= start) {
+      _result.collected += value;
+      _result.daysCount++;
+      if (_result.bestDay.collected < value) {
+        _result.bestDay.collected = value;
+        _result.bestDay.date = date.format("DD MMM");
+      }
+    }
+  });
+  _result.collected = _classPrivateMethodGet(this, _formatWeight, _formatWeight2).call(this, _result.collected);
+  _result.bestDay.collected = _classPrivateMethodGet(this, _formatWeight, _formatWeight2).call(this, _result.bestDay.collected);
+  return _result;
+}
+function _groupDataByPeriods2() {
+  var parsedData = _classPrivateMethodGet(this, _parseData, _parseData2).call(this);
+  var diff = _classPrivateMethodGet(this, _parseDiffDates, _parseDiffDates2).call(this);
+  var date = moment__WEBPACK_IMPORTED_MODULE_1___default()(_classPrivateFieldGet(this, _dates).start);
+  var groupedData = _classPrivateFieldGet(this, _groupedDataEmpty);
+  if (!_classPrivateMethodGet(this, _validate, _validate2).call(this, diff.days)) {
+    return groupedData;
+  }
+  /**
+   * по каждому дню начиная с this.#dates.start добавляется
+   * элемент в Map каждой группы день, месяц год.
+   * Если существует ненулевое значение собранного зерна в этот день,
+   * добавляется значение
+   *
+   * @param diff.days - количество дней
+   * @param groupedData - объект с незаполненными данными
+   * @param parsedData - имеющиеся данные о собранной культуре
+   * @param {Enum} period day|month|year
+   */
+  for (var i = 0; i <= diff.days; i++) {
+    for (var period in groupedData) {
+      var _parsedData$idxPeriod;
+      var idxDate = date.format(groupedData[period].format);
+      if (!groupedData[period].items.has(idxDate)) {
+        groupedData[period].items.set(idxDate, 0);
+      }
+      var idxPeriod = period;
+      if ((_parsedData$idxPeriod = parsedData[idxPeriod]) !== null && _parsedData$idxPeriod !== void 0 && _parsedData$idxPeriod.items.has(idxDate)) {
+        var value = parsedData[idxPeriod].items.get(idxDate);
+        groupedData[period].items.set(idxDate, value);
+      }
+    }
+    date.add(1, "days");
+  }
+  return groupedData;
+}
+function _parseData2() {
+  var harvestData = _classPrivateFieldGet(this, _harvestData2);
   var _iterator = _createForOfIteratorHelper(_classPrivateFieldGet(this, _data2)),
     _step;
   try {
@@ -19043,34 +19123,6 @@ function _parseData2() {
   }
   return harvestData;
 }
-function _groupDataByPeriods2() {
-  var parsedData = _classPrivateMethodGet(this, _parseData, _parseData2).call(this);
-  var diff = _classPrivateMethodGet(this, _parseDiffDates, _parseDiffDates2).call(this);
-  var date = moment__WEBPACK_IMPORTED_MODULE_1___default()(_classPrivateFieldGet(this, _dates).start);
-  var groupedData = _classPrivateFieldGet(this, _groupedDataEmpty);
-  if (!diff.days) {
-    return groupedData;
-  }
-  /**
-   *
-   */
-  for (var i = 0; i <= diff.days; i++) {
-    for (var period in groupedData) {
-      var _parsedData$idxPeriod;
-      var idxDate = date.format(groupedData[period].format);
-      if (!groupedData[period].items.has(idxDate)) {
-        groupedData[period].items.set(idxDate, 0);
-      }
-      var idxPeriod = groupedData[period].format;
-      if ((_parsedData$idxPeriod = parsedData[idxPeriod]) !== null && _parsedData$idxPeriod !== void 0 && _parsedData$idxPeriod.items.has(idxDate)) {
-        var value = parsedData[idxPeriod].items.get(idxDate);
-        groupedData[period].items.set(idxDate, value);
-      }
-    }
-    date.add(1, "days");
-  }
-  return groupedData;
-}
 function _parseDiffDates2() {
   var start = moment__WEBPACK_IMPORTED_MODULE_1___default()(_classPrivateFieldGet(this, _dates).start);
   var end = moment__WEBPACK_IMPORTED_MODULE_1___default()(_classPrivateFieldGet(this, _dates).end);
@@ -19079,6 +19131,23 @@ function _parseDiffDates2() {
     months: end.diff(start, "months"),
     years: end.diff(start, "years")
   };
+}
+function _validate2() {
+  var isValid = true;
+  for (var _len = arguments.length, items = new Array(_len), _key = 0; _key < _len; _key++) {
+    items[_key] = arguments[_key];
+  }
+  [].concat(items).forEach(function (val) {
+    switch (_typeof(val)) {
+      case "object":
+        isValid = !Boolean(Object.keys(val).length) ? false : isValid;
+        break;
+      default:
+        isValid = !Boolean(val) ? false : isValid;
+        break;
+    }
+  });
+  return isValid;
 }
 
 

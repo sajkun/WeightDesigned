@@ -3,7 +3,7 @@ import { strip, clog } from "@/misc/helpers";
 import moment from "moment";
 
 /**
- * Форматирование массива данных от бвс
+ * Форматирование массива данных от бвс для страницы статистики
  */
 class BvsData {
     /**
@@ -19,9 +19,34 @@ class BvsData {
     #dates;
 
     /**
-     * Начальные значения сгруппированных данных
+     * Сформатированные данные о весе
+     * Сгрупированны по годам, месяцам, неделям
+     * Отфильтрованы по дипазону да this.#dates
+     * пустые значения заполнены нулевым весом
+     *
+     * @see this.#groupDataByPeriods
      */
     #groupedDataEmpty = {
+        year: {
+            format: "YYYY",
+            items: new Map(),
+        },
+        month: {
+            format: "YYYY-MM",
+            items: new Map(),
+        },
+        day: {
+            format: "YYYY-MM-DD",
+            items: new Map(),
+        },
+    };
+    /**
+     * Сформатированные данные о весе
+     * Сгрупированны по годам, месяцам, неделям
+     *
+     * @see this.#parseData
+     */
+    #harvestData = {
         year: {
             format: "YYYY",
             items: new Map(),
@@ -68,31 +93,52 @@ class BvsData {
      * @returns {Object}
      */
     get statistics() {
-        const rawData = Object.fromEntries(
-            this.#parseData()["YYYY-MM-DD"]?.items
-        );
-        const dates = this.#dates;
+        const rawData = Object.fromEntries(this.#parseData().day?.items);
 
-        // ранний выход, если не хватает данных
-        if (!rawData || !dates) {
-            return {
-                collected: "-",
-                daysCount: 0,
-                bestDay: {
-                    collected: "-",
-                    date: "-",
-                },
-            };
-        }
+        return this.#getStatisticsData(rawData, this.#dates);
+    }
 
+    /**
+     * Форматирует вес
+     * Добавляет единицы измерения киллограммы или тонны
+     * делит значение на 1000, если это тонны
+     *
+     * @param {Number} number
+     *
+     * @returns {String}
+     */
+    #formatWeight(number) {
+        return number > 1000 ? `${number / 1000}т.` : `${number}кг.`;
+    }
+
+    /**
+     * Рассчитывает:
+     * Общее количество собранного зерна за период
+     * Количество рабочих дней
+     * Дату в которую собрано максимальное количество зерна
+     *
+     * @param {Object} dates данные о временном диапазоне
+     * @param {Object} rawData данные статистики
+     *
+     * @returns {Object}
+     */
+    #getStatisticsData(rawData, dates) {
         //начальные данные переменных для результирующего ответа
-        let collected = 0;
-        let daysCount = 0;
-        let bestDay = {
+        let _result = {
             collected: 0,
-            date: "",
+            daysCount: 0,
+            bestDay: {
+                collected: 0,
+                date: "-",
+            },
         };
 
+        // ранний выход, если не хватает данных
+        if (!this.#validate(rawData, dates)) {
+            return _result;
+        }
+
+        // начальные значения искомых данных
         const start = moment(dates.start);
         const end = moment(dates.end);
 
@@ -100,30 +146,66 @@ class BvsData {
         Object.entries(rawData).forEach(([dateStr, value]) => {
             const date = moment(dateStr);
             if (date <= end && date >= start) {
-                collected += value;
-                daysCount++;
+                _result.collected += value;
+                _result.daysCount++;
 
-                if (bestDay.collected < value) {
-                    bestDay.collected = value;
-                    bestDay.date = date.format("DD MMM");
+                if (_result.bestDay.collected < value) {
+                    _result.bestDay.collected = value;
+                    _result.bestDay.date = date.format("DD MMM");
                 }
             }
         });
 
-        // форматирование значений количества собранного зерна
-        collected =
-            collected > 1000 ? `${collected / 1000}т.` : `${collected}кг.`;
+        _result.collected = this.#formatWeight(_result.collected);
+        _result.bestDay.collected = this.#formatWeight(
+            _result.bestDay.collected
+        );
 
-        bestDay.collected =
-            bestDay.collected > 1000
-                ? `${bestDay.collected / 1000}т.`
-                : `${bestDay.collected}кг.`;
+        return _result;
+    }
 
-        return {
-            collected,
-            daysCount,
-            bestDay,
-        };
+    /**
+     * Заполнение пустых элементов в объекте полученном через #parseData в зависимости от заданного периода
+     *
+     * @returns {Object}
+     */
+    #groupDataByPeriods() {
+        const parsedData = this.#parseData();
+        const diff = this.#parseDiffDates();
+        const date = moment(this.#dates.start);
+        let groupedData = this.#groupedDataEmpty;
+
+        if (!this.#validate(diff.days)) {
+            return groupedData;
+        }
+        /**
+         * по каждому дню начиная с this.#dates.start добавляется
+         * элемент в Map каждой группы день, месяц год.
+         * Если существует ненулевое значение собранного зерна в этот день,
+         * добавляется значение
+         *
+         * @param diff.days - количество дней
+         * @param groupedData - объект с незаполненными данными
+         * @param parsedData - имеющиеся данные о собранной культуре
+         * @param {Enum} period day|month|year
+         */
+        for (let i = 0; i <= diff.days; i++) {
+            for (const period in groupedData) {
+                const idxDate = date.format(groupedData[period].format);
+                if (!groupedData[period].items.has(idxDate)) {
+                    groupedData[period].items.set(idxDate, 0);
+                }
+
+                const idxPeriod = period;
+                if (parsedData[idxPeriod]?.items.has(idxDate)) {
+                    const value = parsedData[idxPeriod].items.get(idxDate);
+                    groupedData[period].items.set(idxDate, value);
+                }
+            }
+
+            date.add(1, "days");
+        }
+        return groupedData;
     }
 
     /**
@@ -133,20 +215,7 @@ class BvsData {
      * @returns {Object}
      */
     #parseData() {
-        let harvestData = {
-            YYYY: {
-                format: "YYYY",
-                items: new Map(),
-            },
-            "YYYY-MM": {
-                format: "YYYY-MM",
-                items: new Map(),
-            },
-            "YYYY-MM-DD": {
-                format: "YYYY-MM-DD",
-                items: new Map(),
-            },
-        };
+        let harvestData = this.#harvestData;
 
         for (const _harvestData of this.#data) {
             const date = moment(_harvestData.operation_time);
@@ -168,42 +237,6 @@ class BvsData {
     }
 
     /**
-     * Заполнение пустых элементов в объекте полученном через #parseData в зависимости от заданного периода
-     *
-     * @returns {Object}
-     */
-    #groupDataByPeriods() {
-        const parsedData = this.#parseData();
-        const diff = this.#parseDiffDates();
-        const date = moment(this.#dates.start);
-        let groupedData = this.#groupedDataEmpty;
-
-        if (!diff.days) {
-            return groupedData;
-        }
-        /**
-         *
-         */
-        for (let i = 0; i <= diff.days; i++) {
-            for (const period in groupedData) {
-                const idxDate = date.format(groupedData[period].format);
-                if (!groupedData[period].items.has(idxDate)) {
-                    groupedData[period].items.set(idxDate, 0);
-                }
-
-                const idxPeriod = groupedData[period].format;
-                if (parsedData[idxPeriod]?.items.has(idxDate)) {
-                    const value = parsedData[idxPeriod].items.get(idxDate);
-                    groupedData[period].items.set(idxDate, value);
-                }
-            }
-
-            date.add(1, "days");
-        }
-        return groupedData;
-    }
-
-    /**
      * выдает разницу между датами в днях, месяцах и годах
      *
      * @returns {Object}
@@ -218,6 +251,31 @@ class BvsData {
             years: end.diff(start, "years"),
         };
     }
-}
 
+    /**
+     * валидатор существования данных
+     *
+     * @param  {...any} данные которые нужно проверить на существование
+     *
+     * @returns {Boolean}
+     */
+    #validate(...items) {
+        let isValid = true;
+        [...items].forEach((val) => {
+            switch (typeof val) {
+                case "object":
+                    isValid = !Boolean(Object.keys(val).length)
+                        ? false
+                        : isValid;
+
+                    break;
+                default:
+                    isValid = !Boolean(val) ? false : isValid;
+                    break;
+            }
+        });
+
+        return isValid;
+    }
+}
 export { BvsData };
