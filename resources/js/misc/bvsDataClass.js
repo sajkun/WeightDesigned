@@ -18,49 +18,6 @@ class BvsData {
     #dates;
 
     /**
-     * Сформатированные данные о весе
-     * Сгрупированны по годам, месяцам, неделям
-     * Отфильтрованы по дипазону да this.#dates
-     * пустые значения заполнены нулевым весом
-     *
-     * @see this.#groupDataByPeriods
-     */
-    #groupedDataEmpty = {
-        year: {
-            format: "YYYY",
-            items: new Map(),
-        },
-        month: {
-            format: "YYYY-MM",
-            items: new Map(),
-        },
-        day: {
-            format: "YYYY-MM-DD",
-            items: new Map(),
-        },
-    };
-    /**
-     * Сформатированные данные о весе
-     * Сгрупированны по годам, месяцам, неделям
-     *
-     * @see this.#parseData
-     */
-    #harvestData = {
-        year: {
-            format: "YYYY",
-            items: new Map(),
-        },
-        month: {
-            format: "YYYY-MM",
-            items: new Map(),
-        },
-        day: {
-            format: "YYYY-MM-DD",
-            items: new Map(),
-        },
-    };
-
-    /**
      * Конструктор класса
      *
      * @param {Array} data массив данных от бвс @see Laravel model BvsData
@@ -78,7 +35,7 @@ class BvsData {
      */
     get parsedData() {
         return {
-            data: this.#groupDataByPeriods(),
+            data: this.#getGroupDataByPeriods(),
             periods: this.#parseDiffDates(),
         };
     }
@@ -168,11 +125,11 @@ class BvsData {
      *
      * @returns {Object}
      */
-    #groupDataByPeriods() {
+    #getGroupDataByPeriods() {
         const parsedData = this.#parseData();
         const diff = this.#parseDiffDates();
         const date = moment(this.#dates.start);
-        let groupedData = this.#groupedDataEmpty;
+        let groupedData = this.#groupedDataEmpty();
 
         if (!this.#validate(diff.days)) {
             return groupedData;
@@ -208,13 +165,60 @@ class BvsData {
     }
 
     /**
+     * Структура данных сгруппированных данных о весе с
+     * заполненными периодами в которых не было сбора
+     * Начальные значения
+     *
+     * @see this.#getGroupDataByPeriods
+     */
+    #groupedDataEmpty() {
+        return {
+            year: {
+                format: "YYYY",
+                items: new Map(),
+            },
+            month: {
+                format: "YYYY-MM",
+                items: new Map(),
+            },
+            day: {
+                format: "YYYY-MM-DD",
+                items: new Map(),
+            },
+        };
+    }
+
+    /**
+     * Структура данных о весе
+     * Начальные значения
+     *
+     * @see this.#parseData
+     */
+    #harvestDataEmpty() {
+        return {
+            year: {
+                format: "YYYY",
+                items: new Map(),
+            },
+            month: {
+                format: "YYYY-MM",
+                items: new Map(),
+            },
+            day: {
+                format: "YYYY-MM-DD",
+                items: new Map(),
+            },
+        };
+    }
+
+    /**
      * Группировка имеющихся данных о собранном урожае
      * с разбивкой по дням, месяцам и годам
      *
      * @returns {Object}
      */
     #parseData() {
-        let harvestData = this.#harvestData;
+        let harvestData = this.#harvestDataEmpty();
 
         for (const _harvestData of this.#data) {
             const date = moment(_harvestData.operation_time);
@@ -277,4 +281,5 @@ class BvsData {
         return isValid;
     }
 }
+
 export { BvsData };
