@@ -7,7 +7,7 @@ import { strip, clog } from "@/misc/helpers";
 import moment from "moment";
 
 //классы
-import BvsData from "@/misc/BvsDataClass";
+import { BvsData } from "@/misc/BvsDataClass";
 
 //миксины
 import axiosRequests from "@/mixins/axiosRequests";

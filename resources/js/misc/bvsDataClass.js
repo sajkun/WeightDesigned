@@ -1,9 +1,11 @@
+//хэлперы
+import { strip, clog } from "@/misc/helpers";
 import moment from "moment";
 
 /**
  * Форматирование массива данных от бвс
  */
-class BvsDataClass {
+class BvsData {
     #data;
     #dates;
     #groupedDataEmpty = {
@@ -45,15 +47,18 @@ class BvsDataClass {
     }
 
     /**
-     * Выводит всего зерна за период
+     * Рассчитывает:
+     * Общее количество собранного зерна за период
      * Количество рабочих дней
-     * Данные о лучше дне сбора
+     * Дату в которую собрано максимальное количество зерна
      *
      * @returns {Object}
      */
     get statistics() {
         const data = this.#parseData()["YYYY-MM-DD"]?.items;
         const daysCount = this.#parseDiffDates()["days"];
+
+        clog();
 
         if (!data || !daysCount) {
             return {
@@ -190,6 +195,8 @@ class BvsDataClass {
     }
 }
 
-export default (data, dates) => {
-    return new BvsDataClass(data, dates);
-};
+// export default (data, dates) => {
+//     return new BvsDataClass(data, dates);
+// };
+
+export { BvsData };
