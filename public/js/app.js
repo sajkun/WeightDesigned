@@ -18825,8 +18825,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_1__);
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
@@ -18882,14 +18886,25 @@ var BvsData = /*#__PURE__*/function () {
      * @returns {Object}
      */
     _classPrivateMethodInitSpec(this, _parseData);
+    /**
+     * данные от БВС в виде полученном от сервера
+     * {Array}
+     */
     _classPrivateFieldInitSpec(this, _data2, {
       writable: true,
       value: void 0
     });
+    /**
+     * даты начала и конца периода отображения в формаите ISO
+     * {Object}
+     */
     _classPrivateFieldInitSpec(this, _dates, {
       writable: true,
       value: void 0
     });
+    /**
+     * Начальные значения сгруппированных данных
+     */
     _classPrivateFieldInitSpec(this, _groupedDataEmpty, {
       writable: true,
       value: {
@@ -18937,10 +18952,11 @@ var BvsData = /*#__PURE__*/function () {
     key: "statistics",
     get: function get() {
       var _classPrivateMethodGe;
-      var data = (_classPrivateMethodGe = _classPrivateMethodGet(this, _parseData, _parseData2).call(this)["YYYY-MM-DD"]) === null || _classPrivateMethodGe === void 0 ? void 0 : _classPrivateMethodGe.items;
-      var daysCount = _classPrivateMethodGet(this, _parseDiffDates, _parseDiffDates2).call(this)["days"];
-      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)();
-      if (!data || !daysCount) {
+      var rawData = Object.fromEntries((_classPrivateMethodGe = _classPrivateMethodGet(this, _parseData, _parseData2).call(this)["YYYY-MM-DD"]) === null || _classPrivateMethodGe === void 0 ? void 0 : _classPrivateMethodGe.items);
+      var dates = _classPrivateFieldGet(this, _dates);
+
+      // ранний выход, если не хватает данных
+      if (!rawData || !dates) {
         return {
           collected: "-",
           daysCount: 0,
@@ -18950,32 +18966,45 @@ var BvsData = /*#__PURE__*/function () {
           }
         };
       }
+
+      //начальные данные переменных для результирующего ответа
       var collected = 0;
+      var daysCount = 0;
       var bestDay = {
         collected: 0,
         date: ""
       };
-      data.forEach(function (value, key) {
-        collected += value;
-        if (bestDay.collected < value) {
-          bestDay.collected = value;
-          var date = moment__WEBPACK_IMPORTED_MODULE_1___default()(key);
-          bestDay.date = date.format("DD MMM");
+      var start = moment__WEBPACK_IMPORTED_MODULE_1___default()(dates.start);
+      var end = moment__WEBPACK_IMPORTED_MODULE_1___default()(dates.end);
+
+      // получение искомы данных
+      Object.entries(rawData).forEach(function (_ref) {
+        var _ref2 = _slicedToArray(_ref, 2),
+          dateStr = _ref2[0],
+          value = _ref2[1];
+        var date = moment__WEBPACK_IMPORTED_MODULE_1___default()(dateStr);
+        if (date <= end && date >= start) {
+          collected += value;
+          daysCount++;
+          if (bestDay.collected < value) {
+            bestDay.collected = value;
+            bestDay.date = date.format("DD MMM");
+          }
         }
       });
+
+      // форматирование значений количества собранного зерна
       collected = collected > 1000 ? "".concat(collected / 1000, "\u0442.") : "".concat(collected, "\u043A\u0433.");
       bestDay.collected = bestDay.collected > 1000 ? "".concat(bestDay.collected / 1000, "\u0442.") : "".concat(bestDay.collected, "\u043A\u0433.");
       return {
         collected: collected,
-        daysCount: data.size,
+        daysCount: daysCount,
         bestDay: bestDay
       };
     }
   }]);
   return BvsData;
-}(); // export default (data, dates) => {
-//     return new BvsDataClass(data, dates);
-// };
+}();
 function _parseData2() {
   var harvestData = {
     YYYY: {
@@ -19022,6 +19051,9 @@ function _groupDataByPeriods2() {
   if (!diff.days) {
     return groupedData;
   }
+  /**
+   *
+   */
   for (var i = 0; i <= diff.days; i++) {
     for (var period in groupedData) {
       var _parsedData$idxPeriod;

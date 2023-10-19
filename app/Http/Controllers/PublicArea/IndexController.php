@@ -22,7 +22,7 @@ class IndexController extends PublicController
     /**
      * Метод определяющий нужно ли использовать яндекс карты
      */
-    public function useYamap()
+    protected function useYamap()
     {
         return true;
     }
