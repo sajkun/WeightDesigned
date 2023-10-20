@@ -39,7 +39,10 @@
             <nav class="tabs mt-2">
                 <div class="row">
                     <ul>
-                        <li v-for='vehicle, key in vehicleTypesList' :key='"btn" + key'>
+                        <li v-for='vehicle, key in vehicleTypesList' :key='"btn" + key'
+                            :class="{
+                                'd-none': (key === 'harvester' || key === 'transporter')
+                            }">
                             <button class="btn  btn-tab" type='button' @click='vehicleGroupType = key'
                                 :class='{ "active": vehicleGroupType === key }'>@{{ vehicle.name }}</button>
                         </li>
