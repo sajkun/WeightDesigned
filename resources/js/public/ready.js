@@ -3,3 +3,5 @@ require("@/ready/dadata");
 require("@/ready/mobileMenu");
 require("@/ready/formFields");
 require("@/ready/passwordStrength");
+
+console.log("ready js");
