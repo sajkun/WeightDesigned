@@ -43,7 +43,7 @@ class StoreController extends Controller
             $employee = null;
             if (isset($request->employee_id)) {
                 $employee = Employee::find($request->employee_id);
-                if ((int)$employee->id !== (int)$request->organisation_id) {
+                if ((int)$employee->organisation_id !== (int)$request->organisation_id) {
                     throw new \ErrorException('Ошибка добавления ответственного', 403);
                 }
             }
