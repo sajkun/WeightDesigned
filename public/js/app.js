@@ -21240,6 +21240,11 @@ var appPublicRating = {
       maxValue: 0
     };
   },
+  computed: {
+    ratingMaxValue: function ratingMaxValue() {
+      return this.getMaxValue();
+    }
+  },
   watch: {
     employees: function employees() {
       this.maxValue = this.getMaxValue();

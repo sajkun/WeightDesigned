@@ -64,7 +64,7 @@
                 <i>Нет записей </i>
             </div>
             <div class="col-12 col-md-6 col-xl-5">
-                <Columns :_info='ratingData' :_max-value='maxValue'></Columns>
+                <Columns :_info='ratingData' :_max-value='ratingMaxValue'></Columns>
             </div>
         </div>
     </div>

@@ -45,6 +45,12 @@ const appPublicRating = {
         };
     },
 
+    computed: {
+        ratingMaxValue() {
+            return this.getMaxValue();
+        },
+    },
+
     watch: {
         employees() {
             this.maxValue = this.getMaxValue();
@@ -75,7 +81,6 @@ const appPublicRating = {
             const maxValue = data.reduce((accumulator, item) => {
                 return Math.max(item.amount, accumulator);
             }, 0);
-
             return Math.max(vm.maxValue, maxValue);
         },
 
