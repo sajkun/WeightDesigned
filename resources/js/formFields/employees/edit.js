@@ -5,9 +5,9 @@ export default {
             const vm = this;
             let structure = [
                 {
-                    id: "first_name-new-employee",
-                    name: "first_name",
-                    label: "Имя",
+                    id: "last_name-new-employee",
+                    name: "last_name",
+                    label: "Фамилия",
                     type: "text",
                     required: true,
                     class: "col-md-6 col-lg-4 mt-2 ",
@@ -15,9 +15,9 @@ export default {
                     title: "Допустимы только русские буквы",
                 },
                 {
-                    id: "last_name-new-employee",
-                    name: "last_name",
-                    label: "Фамилия",
+                    id: "first_name-new-employee",
+                    name: "first_name",
+                    label: "Имя",
                     type: "text",
                     required: true,
                     class: "col-md-6 col-lg-4 mt-2 ",

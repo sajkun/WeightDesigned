@@ -18749,18 +18749,18 @@ __webpack_require__.r(__webpack_exports__);
   computed: {
     addEmployeeFormStructure: function addEmployeeFormStructure() {
       return [{
-        id: "first_name-new-employee",
-        name: "first_name",
-        label: "Имя",
+        id: "last_name-new-employee",
+        name: "last_name",
+        label: "Фамилия",
         type: "text",
         required: true,
         "class": "col-md-6 col-lg-4 mt-2 ",
         pattern: "[А-Яа-я]{1,}",
         title: "Допустимы только русские буквы"
       }, {
-        id: "last_name-new-employee",
-        name: "last_name",
-        label: "Фамилия",
+        id: "first_name-new-employee",
+        name: "first_name",
+        label: "Имя",
         type: "text",
         required: true,
         "class": "col-md-6 col-lg-4 mt-2 ",
@@ -18816,18 +18816,18 @@ __webpack_require__.r(__webpack_exports__);
     editEmployeeFormStructure: function editEmployeeFormStructure() {
       var vm = this;
       var structure = [{
-        id: "first_name-new-employee",
-        name: "first_name",
-        label: "Имя",
+        id: "last_name-new-employee",
+        name: "last_name",
+        label: "Фамилия",
         type: "text",
         required: true,
         "class": "col-md-6 col-lg-4 mt-2 ",
         pattern: "[А-Яа-я]{1,}",
         title: "Допустимы только русские буквы"
       }, {
-        id: "last_name-new-employee",
-        name: "last_name",
-        label: "Фамилия",
+        id: "first_name-new-employee",
+        name: "first_name",
+        label: "Имя",
         type: "text",
         required: true,
         "class": "col-md-6 col-lg-4 mt-2 ",
