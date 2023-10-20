@@ -128,7 +128,7 @@
                         {{-- ************************************************ --}}
                         <div class="flex-grow-1 mt-2 d-flex flex-column">
                             <h3 class="h6 m-0">
-                                Динамика уборки урожая за февраль
+                                Динамика уборки урожая за @{{ currentPeriod }}
                             </h3>
 
                             <div class="graph-body flex-grow-1 mt-4">
@@ -141,14 +141,14 @@
                         {{-- ************************************************ --}}
                         <div>
                             <h3 class="h6 m-0">
-                                5 лучших бункеров-перегрузчиков за февраль
+                                @{{ top5Title }}
                             </h3>
                             <div class="row">
                                 <div class="col-7">
                                     <transition-group :css="false" v-on:before-enter="onBeforeEnter"
                                         v-on:enter="onEnter" v-on:leave="onLeave" name='sort'>
-                                        <div class="statistics-best-item" v-for='item,key in bests'
-                                            :key='"bests" + item.pid' :data-index='key'>
+                                        <div class="statistics-best-item" v-for='item,key in top5' :key='"top5" + item.pid'
+                                            :data-index='key'>
                                             <i class="statistics-best-item__icon"
                                                 :class='"statistics-best-item__icon" + key'></i>
                                             <h4 class="statistics-best-item__name">@{{ item.name }}</h4>

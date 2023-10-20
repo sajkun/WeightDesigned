@@ -1,5 +1,7 @@
 /**
  * приложение отображение статистики публичного раздела
+ *
+ * @author Кулешов Вячеслав
  */
 
 //хэлперы
@@ -51,49 +53,13 @@ const appPublicStatistics = {
     watch: {},
 
     computed: {
-        bests() {
-            const vm = this;
-
-            let total = 0;
-            let othersCount = 0;
-            let othersTotal = 0;
-
-            let top = strip(vm.ratingData).reduce((acc, val, key) => {
-                total += val.amount;
-                if (key < 5) {
-                    acc.push(val);
-                } else {
-                    othersCount++;
-                    othersTotal += val.amount;
-                }
-                return acc;
-            }, []);
-
-            if (othersCount) {
-                top.push({
-                    name: `остальные(${othersCount})`,
-                    amount: othersTotal,
-                    pid: 9999999,
-                });
-            }
-
-            top = top.map((t) => {
-                t.amount = total
-                    ? `${((t.amount * 100) / total).toFixed(1)}%`
-                    : t.amount;
-                return t;
-            });
-
-            return top;
-        },
-
         /**
-         * Пустой объект для формирования данных для графика
+         * Пустой объект, структура данных для графика отображения урожая по датам
          *
          * @returns {Object}
          */
         bvsInfoBlank() {
-            const info = {
+            return {
                 axis: {
                     x: {
                         maxValue: 0,
@@ -113,8 +79,6 @@ const appPublicStatistics = {
                     x: {},
                 },
             };
-
-            return info;
         },
 
         /**
@@ -124,61 +88,103 @@ const appPublicStatistics = {
          */
         bvsInfo() {
             const vm = this;
+            // данные о сборе урожая, сгрупированные по разным типам периодов day|month|year
             const harvestData = new BvsData(
                 strip(vm.bvsData),
                 strip(vm.dateRange)
             );
 
-            let type;
-            if (harvestData.parsedData.periods.days <= 31) {
-                type = "day";
-            } else if (harvestData.parsedData.periods.months < 12) {
-                type = "month";
-            } else {
-                type = "year";
-            }
+            clog("%c calc bvsInfo ", "color:violet", harvestData);
 
-            const rawData = harvestData.parsedData.data[type];
+            //{Enum}  day|month|year тип периода отображения
+            const type = vm.getPeriodType(harvestData.parsedData.periods);
 
-            const info = strip(vm.bvsInfoBlank);
+            // выбор набора данных по определенному типу периода
+            const rawData = harvestData.parsedData?.data[type];
 
+            // ранний выход
             if (!rawData?.items) {
-                return info;
+                return strip(vm.bvsInfoBlank);
             }
-
-            let xValue = 0;
-            rawData.items.forEach((value, key, map) => {
-                let newKey;
-                const date = moment(key, rawData.format);
-                xValue++;
-                switch (type) {
-                    case "day":
-                        newKey = date.format("D");
-                        break;
-                    case "month":
-                        newKey = date.format("MMM");
-                        break;
-                    case "year":
-                        newKey = date.format("YYYY");
-                        break;
-                }
-
-                const newValue = value > 1000 ? value / 1000 : value;
-
-                info.axis.x.after = value > 1000 ? "т." : info.axis.x.after;
-
-                info.axis.y.maxValue = Math.max(info.axis.y.maxValue, newValue);
-
-                info.labels.x[parseInt(xValue)] = newKey;
-
-                info.points[newKey] = { x: parseInt(xValue), y: newValue };
-            });
-
-            info.axis.x.maxValue = Object.values(info.points).length + 1;
-
-            return info;
+            return vm.prepareDataForGraph(rawData, type);
         },
 
+        /**
+         * Название выбранного периода статистики
+         *
+         * @returns {String}
+         */
+        currentPeriod() {
+            const vm = this;
+            return vm.getPeriodName(vm.dateRange);
+        },
+
+        /**
+         * Данные для формирования рейтинга лучших 5
+         *
+         * @returns {Object} данные о лучших пяти сотрудниках / единиц техники и суммарном значении остальных
+         */
+        top5() {
+            const vm = this;
+
+            // начальные данные
+            let total = 0; //суммарный сбор за период
+            let othersCount = 0; // количество субьектов рейтинга свыше 5
+            let othersTotal = 0; // суммарный сбор субьектов рейтинга свыше 5
+
+            // формирование данных топ5
+            let top5 = strip(vm.ratingData).reduce((acc, val, key) => {
+                total += val.amount;
+
+                if (key < 5) {
+                    acc.push(val);
+                } else {
+                    othersCount++;
+                    othersTotal += val.amount;
+                }
+                return acc;
+            }, []);
+
+            // формирование данных о не вошедших в топ5
+            if (othersCount) {
+                top5.push({
+                    name: `остальные(${othersCount})`,
+                    amount: othersTotal,
+                    pid: 9999999,
+                });
+            }
+
+            // замена абсолютных значений сбора процентными, если рассчитано суммарное количество
+            top5 = top5.map((t) => {
+                t.amount = total
+                    ? `${((t.amount * 100) / total).toFixed(1)}%`
+                    : t.amount;
+                return t;
+            });
+
+            return top5;
+        },
+
+        /**
+         * подпись к перечню лучших 5 сборщиков
+         *
+         * @returns {String}
+         */
+        top5Title() {
+            const vm = this;
+            const subject = vm.ratingOptions[vm.ratingBy];
+            const period = vm.getPeriodName(vm.dateRange);
+
+            return `${subject}. Лучшие 5 за ${period}`;
+        },
+
+        /**
+         * Общее количество собранного зерна за период
+         * Количество отработанных дней
+         * Дата в которую собрано максимальное количество зерна
+         *
+         * @returns {Object} статистические данные
+         */
         statData() {
             const vm = this;
             const harvestData = new BvsData(
@@ -199,10 +205,113 @@ const appPublicStatistics = {
     },
 
     methods: {
-        setDate(type, event) {
-            this.dateRange[type] = event.date;
+        /**
+         * Определение типа периода в зависимости от количества дней в нем
+         *
+         * @param {Object} periods
+         * @returns {String}
+         */
+        getPeriodType(periods) {
+            let type = "year";
+            if (periods.days <= 31) {
+                type = "day";
+            } else if (periods.months < 12) {
+                type = "month";
+            }
+            return type;
         },
 
+        /**
+         *
+         * @param {*} dateRange
+         * @returns {String} год, имя месяца, диапазон дат
+         */
+        getPeriodName(dateRange) {
+            if (!dateRange.start || !dateRange.end) {
+                return "-";
+            }
+            const start = moment(dateRange.start);
+            const end = moment(dateRange.end);
+            const periodLength = end.diff(start, "days") + 1;
+            let periodName = `период с ${start.format(
+                "D MMMM YYYY"
+            )}г по ${end.format("D MMMM YYYY")}г`;
+
+            periodName =
+                start.format("MMMM") === end.format("MMMM") &&
+                periodLength === start.daysInMonth()
+                    ? start.format("MMMM YYYY года")
+                    : periodName;
+
+            periodName =
+                start.format("YYYY") === end.format("YYYY") &&
+                periodLength === 365
+                    ? start.format("YYYY год")
+                    : periodName;
+
+            return periodName;
+        },
+
+        /**
+         * Подготовление данных для отображения на графике
+         *
+         * @param {Object} rawData исходные данные
+         * @param {Enum} periodType  day|month|year тип периода отображения
+         *
+         * @returns {Object}
+         */
+        prepareDataForGraph(rawData, periodType) {
+            const vm = this;
+            let info = strip(vm.bvsInfoBlank);
+            // значение по оси OX предполагается увеличивать на 1
+            let xValue = 0;
+
+            rawData.items.forEach((value, key, map) => {
+                xValue++;
+                const date = moment(key, rawData.format);
+                const formats = {
+                    day: date.format("D"),
+                    month: date.format("MMM"),
+                    year: date.format("YYYY"),
+                };
+                const format = formats[periodType];
+
+                // модификация данных в случае, если сбор измеряется в тоннах
+                const newValue = value > 1000 ? value / 1000 : value;
+                info.axis.x.after = value > 1000 ? "т." : info.axis.x.after;
+
+                // обновление  максимального значения по оси OY
+                info.axis.y.maxValue = Math.max(info.axis.y.maxValue, newValue);
+
+                // метки по оси Х задаются в зависимости от выбранного периода, они могу быть и строка и число
+                info.labels.x[parseInt(xValue)] = format;
+
+                info.points[format] = {
+                    x: parseInt(xValue),
+                    y: newValue,
+                };
+            });
+
+            info.axis.x.maxValue = Object.values(info.points).length + 1;
+
+            return info;
+        },
+
+        /**
+         * Обработчик события изменения дата компонента datepicker
+         *
+         * @param {Enum} type  start | end
+         * @param {Object} passedData переданные данные от дочернего элемента
+         */
+        setDate(type, passedData) {
+            this.dateRange[type] = passedData.date;
+        },
+
+        /**
+         * Обработчик кликов на кнопку с заранее заданными типами периодов
+         *
+         * @param {Enum} type month | quarter | year
+         */
         setPeriod(type) {
             const vm = this;
             const today = new Date();
@@ -233,6 +342,8 @@ const appPublicStatistics = {
                         .toISOString();
                     break;
             }
+
+            return;
         },
     },
 };

@@ -31,16 +31,12 @@ export default {
         },
 
         info(info, oldVal) {
+            const vm = this;
             if (drawTimeout) {
                 clearTimeout(drawTimeout);
             }
 
-            clog(strip(info));
-
             if (!info || info === oldVal) return;
-
-            const vm = this;
-
             vm.prepareCanvas();
             vm.draw();
         },

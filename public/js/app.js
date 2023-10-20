@@ -16053,12 +16053,11 @@ var drawTimeout;
       return null;
     },
     info: function info(_info2, oldVal) {
+      var vm = this;
       if (drawTimeout) {
         clearTimeout(drawTimeout);
       }
-      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)((0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(_info2));
       if (!_info2 || _info2 === oldVal) return;
-      var vm = this;
       vm.prepareCanvas();
       vm.draw();
     }
@@ -18859,6 +18858,16 @@ function _classPrivateMethodGet(receiver, privateSet, fn) { if (!privateSet.has(
 function _classPrivateFieldSet(receiver, privateMap, value) { var descriptor = _classExtractFieldDescriptor(receiver, privateMap, "set"); _classApplyDescriptorSet(receiver, descriptor, value); return value; }
 function _classExtractFieldDescriptor(receiver, privateMap, action) { if (!privateMap.has(receiver)) { throw new TypeError("attempted to " + action + " private field on non-instance"); } return privateMap.get(receiver); }
 function _classApplyDescriptorSet(receiver, descriptor, value) { if (descriptor.set) { descriptor.set.call(receiver, value); } else { if (!descriptor.writable) { throw new TypeError("attempted to set read only private field"); } descriptor.value = value; } }
+/**
+ * Класс, принимающий данный о транзакциях бвс
+ * и форматирующий их в представление, используемое
+ * для отображения графика сбора урожая
+ * и статистических данных
+ *
+ *
+ * @author Кулешов Вячеслав
+ */
+
 //хэлперы
 
 
@@ -18985,7 +18994,7 @@ var BvsData = /*#__PURE__*/function () {
     /**
      * Рассчитывает:
      * Общее количество собранного зерна за период
-     * Количество рабочих дней
+     * Количество отработанных дней
      * Дату в которую собрано максимальное количество зерна
      *
      * @returns {Object}
@@ -21268,6 +21277,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_inputs_DatepickerComponent__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! @/components/inputs/DatepickerComponent */ "./resources/js/components/inputs/DatepickerComponent/index.js");
 /**
  * приложение отображение статистики публичного раздела
+ *
+ * @author Кулешов Вячеслав
  */
 
 //хэлперы
@@ -21305,41 +21316,13 @@ var appPublicStatistics = {
   },
   watch: {},
   computed: {
-    bests: function bests() {
-      var vm = this;
-      var total = 0;
-      var othersCount = 0;
-      var othersTotal = 0;
-      var top = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.ratingData).reduce(function (acc, val, key) {
-        total += val.amount;
-        if (key < 5) {
-          acc.push(val);
-        } else {
-          othersCount++;
-          othersTotal += val.amount;
-        }
-        return acc;
-      }, []);
-      if (othersCount) {
-        top.push({
-          name: "\u043E\u0441\u0442\u0430\u043B\u044C\u043D\u044B\u0435(".concat(othersCount, ")"),
-          amount: othersTotal,
-          pid: 9999999
-        });
-      }
-      top = top.map(function (t) {
-        t.amount = total ? "".concat((t.amount * 100 / total).toFixed(1), "%") : t.amount;
-        return t;
-      });
-      return top;
-    },
     /**
-     * Пустой объект для формирования данных для графика
+     * Пустой объект, структура данных для графика отображения урожая по датам
      *
      * @returns {Object}
      */
     bvsInfoBlank: function bvsInfoBlank() {
-      var info = {
+      return {
         axis: {
           x: {
             maxValue: 0,
@@ -21357,7 +21340,6 @@ var appPublicStatistics = {
           x: {}
         }
       };
-      return info;
     },
     /**
      * формирует данные статистики для отображения данных
@@ -21365,49 +21347,92 @@ var appPublicStatistics = {
      * @returns {Object}
      */
     bvsInfo: function bvsInfo() {
+      var _harvestData$parsedDa;
       var vm = this;
+      // данные о сборе урожая, сгрупированные по разным типам периодов day|month|year
       var harvestData = new _misc_BvsDataClass__WEBPACK_IMPORTED_MODULE_2__.BvsData((0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.bvsData), (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.dateRange));
-      var type;
-      if (harvestData.parsedData.periods.days <= 31) {
-        type = "day";
-      } else if (harvestData.parsedData.periods.months < 12) {
-        type = "month";
-      } else {
-        type = "year";
-      }
-      var rawData = harvestData.parsedData.data[type];
-      var info = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.bvsInfoBlank);
+      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c calc bvsInfo ", "color:violet", harvestData);
+
+      //{Enum}  day|month|year тип периода отображения
+      var type = vm.getPeriodType(harvestData.parsedData.periods);
+
+      // выбор набора данных по определенному типу периода
+      var rawData = (_harvestData$parsedDa = harvestData.parsedData) === null || _harvestData$parsedDa === void 0 ? void 0 : _harvestData$parsedDa.data[type];
+
+      // ранний выход
       if (!(rawData !== null && rawData !== void 0 && rawData.items)) {
-        return info;
+        return (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.bvsInfoBlank);
       }
-      var xValue = 0;
-      rawData.items.forEach(function (value, key, map) {
-        var newKey;
-        var date = moment__WEBPACK_IMPORTED_MODULE_1___default()(key, rawData.format);
-        xValue++;
-        switch (type) {
-          case "day":
-            newKey = date.format("D");
-            break;
-          case "month":
-            newKey = date.format("MMM");
-            break;
-          case "year":
-            newKey = date.format("YYYY");
-            break;
-        }
-        var newValue = value > 1000 ? value / 1000 : value;
-        info.axis.x.after = value > 1000 ? "т." : info.axis.x.after;
-        info.axis.y.maxValue = Math.max(info.axis.y.maxValue, newValue);
-        info.labels.x[parseInt(xValue)] = newKey;
-        info.points[newKey] = {
-          x: parseInt(xValue),
-          y: newValue
-        };
-      });
-      info.axis.x.maxValue = Object.values(info.points).length + 1;
-      return info;
+      return vm.prepareDataForGraph(rawData, type);
     },
+    /**
+     * Название выбранного периода статистики
+     *
+     * @returns {String}
+     */
+    currentPeriod: function currentPeriod() {
+      var vm = this;
+      return vm.getPeriodName(vm.dateRange);
+    },
+    /**
+     * Данные для формирования рейтинга лучших 5
+     *
+     * @returns {Object} данные о лучших пяти сотрудниках / единиц техники и суммарном значении остальных
+     */
+    top5: function top5() {
+      var vm = this;
+
+      // начальные данные
+      var total = 0; //суммарный сбор за период
+      var othersCount = 0; // количество субьектов рейтинга свыше 5
+      var othersTotal = 0; // суммарный сбор субьектов рейтинга свыше 5
+
+      // формирование данных топ5
+      var top5 = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.ratingData).reduce(function (acc, val, key) {
+        total += val.amount;
+        if (key < 5) {
+          acc.push(val);
+        } else {
+          othersCount++;
+          othersTotal += val.amount;
+        }
+        return acc;
+      }, []);
+
+      // формирование данных о не вошедших в топ5
+      if (othersCount) {
+        top5.push({
+          name: "\u043E\u0441\u0442\u0430\u043B\u044C\u043D\u044B\u0435(".concat(othersCount, ")"),
+          amount: othersTotal,
+          pid: 9999999
+        });
+      }
+
+      // замена абсолютных значений сбора процентными, если рассчитано суммарное количество
+      top5 = top5.map(function (t) {
+        t.amount = total ? "".concat((t.amount * 100 / total).toFixed(1), "%") : t.amount;
+        return t;
+      });
+      return top5;
+    },
+    /**
+     * подпись к перечню лучших 5 сборщиков
+     *
+     * @returns {String}
+     */
+    top5Title: function top5Title() {
+      var vm = this;
+      var subject = vm.ratingOptions[vm.ratingBy];
+      var period = vm.getPeriodName(vm.dateRange);
+      return "".concat(subject, ". \u041B\u0443\u0447\u0448\u0438\u0435 5 \u0437\u0430 ").concat(period);
+    },
+    /**
+     * Общее количество собранного зерна за период
+     * Количество отработанных дней
+     * Дата в которую собрано максимальное количество зерна
+     *
+     * @returns {Object} статистические данные
+     */
     statData: function statData() {
       var vm = this;
       var harvestData = new _misc_BvsDataClass__WEBPACK_IMPORTED_MODULE_2__.BvsData((0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.bvsData), (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.dateRange));
@@ -21422,9 +21447,92 @@ var appPublicStatistics = {
     vm.dateRange.end = moment__WEBPACK_IMPORTED_MODULE_1___default()(today).toISOString();
   },
   methods: {
-    setDate: function setDate(type, event) {
-      this.dateRange[type] = event.date;
+    /**
+     * Определение типа периода в зависимости от количества дней в нем
+     *
+     * @param {Object} periods
+     * @returns {String}
+     */
+    getPeriodType: function getPeriodType(periods) {
+      var type = "year";
+      if (periods.days <= 31) {
+        type = "day";
+      } else if (periods.months < 12) {
+        type = "month";
+      }
+      return type;
     },
+    /**
+     *
+     * @param {*} dateRange
+     * @returns {String} год, имя месяца, диапазон дат
+     */
+    getPeriodName: function getPeriodName(dateRange) {
+      if (!dateRange.start || !dateRange.end) {
+        return "-";
+      }
+      var start = moment__WEBPACK_IMPORTED_MODULE_1___default()(dateRange.start);
+      var end = moment__WEBPACK_IMPORTED_MODULE_1___default()(dateRange.end);
+      var periodLength = end.diff(start, "days") + 1;
+      var periodName = "\u043F\u0435\u0440\u0438\u043E\u0434 \u0441 ".concat(start.format("D MMMM YYYY"), "\u0433 \u043F\u043E ").concat(end.format("D MMMM YYYY"), "\u0433");
+      periodName = start.format("MMMM") === end.format("MMMM") && periodLength === start.daysInMonth() ? start.format("MMMM YYYY года") : periodName;
+      periodName = start.format("YYYY") === end.format("YYYY") && periodLength === 365 ? start.format("YYYY год") : periodName;
+      return periodName;
+    },
+    /**
+     * Подготовление данных для отображения на графике
+     *
+     * @param {Object} rawData исходные данные
+     * @param {Enum} periodType  day|month|year тип периода отображения
+     *
+     * @returns {Object}
+     */
+    prepareDataForGraph: function prepareDataForGraph(rawData, periodType) {
+      var vm = this;
+      var info = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.bvsInfoBlank);
+      // значение по оси OX предполагается увеличивать на 1
+      var xValue = 0;
+      rawData.items.forEach(function (value, key, map) {
+        xValue++;
+        var date = moment__WEBPACK_IMPORTED_MODULE_1___default()(key, rawData.format);
+        var formats = {
+          day: date.format("D"),
+          month: date.format("MMM"),
+          year: date.format("YYYY")
+        };
+        var format = formats[periodType];
+
+        // модификация данных в случае, если сбор измеряется в тоннах
+        var newValue = value > 1000 ? value / 1000 : value;
+        info.axis.x.after = value > 1000 ? "т." : info.axis.x.after;
+
+        // обновление  максимального значения по оси OY
+        info.axis.y.maxValue = Math.max(info.axis.y.maxValue, newValue);
+
+        // метки по оси Х задаются в зависимости от выбранного периода, они могу быть и строка и число
+        info.labels.x[parseInt(xValue)] = format;
+        info.points[format] = {
+          x: parseInt(xValue),
+          y: newValue
+        };
+      });
+      info.axis.x.maxValue = Object.values(info.points).length + 1;
+      return info;
+    },
+    /**
+     * Обработчик события изменения дата компонента datepicker
+     *
+     * @param {Enum} type  start | end
+     * @param {Object} passedData переданные данные от дочернего элемента
+     */
+    setDate: function setDate(type, passedData) {
+      this.dateRange[type] = passedData.date;
+    },
+    /**
+     * Обработчик кликов на кнопку с заранее заданными типами периодов
+     *
+     * @param {Enum} type month | quarter | year
+     */
     setPeriod: function setPeriod(type) {
       var vm = this;
       var today = new Date();
@@ -21442,6 +21550,7 @@ var appPublicStatistics = {
           vm.dateRange.end = moment__WEBPACK_IMPORTED_MODULE_1___default()(today).endOf("year").toISOString();
           break;
       }
+      return;
     }
   }
 };
