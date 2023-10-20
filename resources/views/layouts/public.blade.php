@@ -17,13 +17,16 @@
     @endforeach
 
     <!-- Scripts -->
-    <script src="{{ asset('js/app.js') }}" defer></script>
+    <script src="{{ mix('js/manifest.js') }}" defer></script>
+    <script src="{{ mix('js/vendor.js') }}" defer></script>
+    <script src="{{ mix('js/app.js') }}" defer></script>
 
     <!-- Styles -->
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-
-    <script src="https://api-maps.yandex.ru/2.1?apikey=164d5998-e082-4c46-9a64-fbb2f9725c6c&load=package.full&lang=ru_RU">
-    </script>
+    <link href="{{ mix('css/app.css') }}" rel="stylesheet">
+    @if ($useYamap)
+        <script src="https://api-maps.yandex.ru/2.1?apikey=164d5998-e082-4c46-9a64-fbb2f9725c6c&load=package.full&lang=ru_RU">
+        </script>
+    @endif
 </head>
 
 <body class="">
@@ -80,9 +83,11 @@
                                 @can('viewAny', [App\Models\User::class, $organisation_id])
                                     <li><a href="{{ route('public.users.index') }}">Пользователи</a></li>
                                 @endcan
-                                <li class='ms-md-2 d-flex align-items-center'><span class="icon-holder me-2">
-                                        <i class="fa fa-star"></i></span> <a class='ps-0'
+                                <li class='ms-md-2 d-flex align-items-center'><span
+                                        class="icon-holder me-2 d-none d-md-flex">
+                                        <i class="fa fa-star"></i></span> <a class='ps-md-0'
                                         href="{{ route('public.data.rating') }}">Рейтинг</a></li>
+                                <li> <a href="{{ route('public.data.statistics') }}">Статистика</a></li>
                             </ul>
                         </div>
                         <div class="col flex-grow-1 align-self-center">

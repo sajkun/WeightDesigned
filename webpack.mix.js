@@ -1,4 +1,5 @@
 const mix = require("laravel-mix");
+const path = require("path");
 const webpack = require("webpack");
 mix.webpackConfig({
     plugins: [
@@ -7,6 +8,12 @@ mix.webpackConfig({
             __VUE_PROD_DEVTOOLS__: true,
         }),
     ],
+
+    resolve: {
+        alias: {
+            "@": path.resolve(__dirname, "resources/js/"),
+        },
+    },
 });
 /*
  |--------------------------------------------------------------------------
@@ -21,6 +28,9 @@ mix.webpackConfig({
 
 mix.js("resources/js/app.js", "public/js")
     .vue()
-    .sass("resources/sass/app.scss", "public/css");
+    .version()
+    .extract(["vue", "bootstrap"]);
+
+mix.sass("resources/sass/app.scss", "public/css").version();
 
 mix.copyDirectory("resources/js/libs/", "public/js/libs");

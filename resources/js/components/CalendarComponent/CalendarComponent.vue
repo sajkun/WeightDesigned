@@ -1,4 +1,16 @@
-<!-- Компонент отображения календаря -->
+<!-- Компонент отображения календаря
+
+    если режим работы дата
+    @emit selectedDate: {
+                date: string,
+             }
+
+    если режим работы период
+    @emit selectedPeriod: {
+                start:  string,
+                end:  string,
+             }
+-->
 <template>
     <div class="w-100 calendar" :class="{ disabled: disabled }">
         <div class="d-flex flex-column w-100">
@@ -97,7 +109,7 @@
 
 <script>
 import moment from "moment";
-import { strip, clog } from "../../misc/helpers";
+import { strip, clog } from "@/misc/helpers";
 export default {
     props: {
         _period: {
@@ -151,7 +163,7 @@ export default {
             /**
              * @see _initialDate
              */
-            initialDate: this._initialDate,
+            initialDate: "",
             startDate: false, // начальная дата для периода или выбранная дата для selectPeriod=false
             endDate: false, // завершающая дата периода
             clickMode: "startDate", //какую дату выбираем, нужен для чередования при selectPeriod=true
@@ -165,6 +177,9 @@ export default {
 
         // если режим работы дата, задается начальная дата
         if (vm.selectPeriod) return;
+
+        const helper = moment(vm._initialDate);
+        vm.initialDate = helper.format("YYYY-MM-DD");
         vm.startDate = vm.initialDate;
     },
 
@@ -176,12 +191,14 @@ export default {
 
         // отслеживание состояние свойства начальной даты,
         _initialDate(date) {
-            this.initialDate = date;
+            const vm = this;
+            const helper = moment(date);
+            vm.initialDate = helper.format("YYYY-MM-DD");
+            vm.startDate = vm.initialDate;
         },
 
         // отслеживание дат
         _period(period) {
-            console.log(period);
             if (!vm.startDate) {
                 const date = new Date(period.start);
                 vm.startDate = moment(date).format("YYYY-MM-DD");
@@ -358,7 +375,7 @@ export default {
          * Формирует данные о месяце
          *
          * @returns [{
-*           day: <int|string>день в месяце,
+                *           day: <int|string>день в месяце,
             date: <String> стрка даты Y-m-d,
             last: <boolean>признак последнего выбранного дня,
             first: <boolean>признак первого выбранного дня,

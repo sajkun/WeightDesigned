@@ -1,6 +1,6 @@
-import messages from "../mixins/messages";
-import { strip, clog } from "./../misc/helpers";
-import publicAuthData from "../mixins/publicAuthData";
+import messages from "@/mixins/messages";
+import { strip, clog } from "@/misc/helpers";
+import publicAuthData from "@/mixins/publicAuthData";
 
 const axios = require("axios");
 const appPublicVehicles = {

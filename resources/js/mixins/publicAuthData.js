@@ -1,4 +1,4 @@
-import { clog } from "./../misc/helpers";
+import { clog } from "@/misc/helpers";
 export default {
     data() {
         return {

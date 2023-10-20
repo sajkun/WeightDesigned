@@ -1,13 +1,13 @@
 <?php
 /**
- * Отображение статистики предприятия
+ * Контроллер отображения страницы статистики публичного раздела
  */
 namespace App\Http\Controllers\PublicArea\Info;
 
-use App\Http\Controllers\PublicController;
 use Illuminate\Http\Request;
+use App\Http\Controllers\PublicController;
 
-class RatingController extends PublicController
+class StatisticsController extends PublicController
 {
     /**
      * Handle the incoming request.
@@ -18,6 +18,6 @@ class RatingController extends PublicController
     public function __invoke(Request $request)
     {
         $this->prepareData();
-        return view('pages.rating');
+        return view('pages.statistics');
     }
 }

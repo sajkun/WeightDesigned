@@ -1,6 +1,8 @@
 {
-    "/js/app.js": "/js/app.js",
-    "/css/app.css": "/css/app.css",
-    "/js/libs/jszip-utils.js": "/js/libs/jszip-utils.js",
-    "/js/libs/jszip.min.js": "/js/libs/jszip.min.js"
+    "/js/app.js": "/js/app.js?id=b04ea0ff168b49c1e288",
+    "/js/manifest.js": "/js/manifest.js?id=ab5bc54df953e31e833d",
+    "/css/app.css": "/css/app.css?id=7dcf0a170bf35d676a1d",
+    "/js/vendor.js": "/js/vendor.js?id=fec750a4fc020c0103d0",
+    "/js/libs/jszip-utils.js": "/js/libs/jszip-utils.js?id=e76c50dc4600be8d16b3",
+    "/js/libs/jszip.min.js": "/js/libs/jszip.min.js?id=c5c09151e8d01307219d"
 }

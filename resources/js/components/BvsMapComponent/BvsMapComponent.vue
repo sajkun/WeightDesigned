@@ -5,8 +5,8 @@
 </template>
 
 <script>
-import { strip, clog } from "../../misc/helpers";
-import bvs from "../svg/bvs.js";
+import { strip, clog } from "@/misc/helpers";
+import bvs from "@/components/svg/bvs.js";
 
 // переменная для хранения карты
 let grasslandMap;

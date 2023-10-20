@@ -9,7 +9,6 @@ use App\Models\User;
 use App\Models\Organisation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\File;
 
 class PublicController extends Controller
 {
@@ -30,12 +29,8 @@ class PublicController extends Controller
      */
     public function prepareData()
     {
-        // получение всех js файлов и формирование массива путей
-        $path = public_path('/js/libs');
-        $jslibs = array_map(function ($f) {
-            return "/js/libs/{$f->getRelativePathname()}";
-        }, File::allFiles($path));
-        view()->share('jslibs', $jslibs);
+
+        $this->applyExternalJsLibs();
 
         // получение данные об авторизованном пользователе и его организации
         $user = Auth::user();
@@ -51,5 +46,24 @@ class PublicController extends Controller
         view()->share('users', $organisation->users()->get());
         view()->share('employees', $organisation->employees()->get());
         view()->share('grasslands', $organisation->grasslands()->get());
+        view()->share('useYamap', $this->useYamap());
+    }
+
+
+    /**
+     * Метод определяющий нужно ли использовать яндекс карты
+     */
+    protected function useYamap()
+    {
+        return false;
+    }
+
+    /**
+     * Определяет для view массив путей сторонних библиотек
+     */
+    protected function applyExternalJsLibs()
+    {
+        view()->share('jslibs', []);
+        return ;
     }
 }

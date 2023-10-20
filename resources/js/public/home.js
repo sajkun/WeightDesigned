@@ -2,16 +2,16 @@
  * Домашняя страница
  */
 
-import messages from "../mixins/messages";
-import publicAuthData from "../mixins/publicAuthData";
-import MessagesComponent from "../components/MessagesComponent/";
-import BvsMapComponent from "../components/BvsMapComponent/";
-import SwitcherComponent from "../components/SwitcherComponent";
-import CalendarComponent from "../components/CalendarComponent";
-import BvsShortComponent from "../components/BvsShortComponent";
-import BvsOperationComponent from "../components/BvsOperationComponent";
-import { strip, clog } from "../misc/helpers";
-import crud from "../mixins/crud";
+import messages from "@/mixins/messages";
+import publicAuthData from "@/mixins/publicAuthData";
+import MessagesComponent from "@/components/MessagesComponent/";
+import BvsMapComponent from "@/components/BvsMapComponent/";
+import SwitcherComponent from "@/components/SwitcherComponent";
+import CalendarComponent from "@/components/CalendarComponent";
+import BvsShortComponent from "@/components/BvsShortComponent";
+import BvsOperationComponent from "@/components/BvsOperationComponent";
+import { strip, clog } from "@/misc/helpers";
+import crud from "@/mixins/crud";
 import moment from "moment";
 
 const axios = require("axios");

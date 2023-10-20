@@ -18,4 +18,12 @@ class IndexController extends PublicController
         $this->prepareData();
         return view('pages.main');
     }
+
+    /**
+     * Метод определяющий нужно ли использовать яндекс карты
+     */
+    protected function useYamap()
+    {
+        return true;
+    }
 }

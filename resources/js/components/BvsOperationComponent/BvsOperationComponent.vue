@@ -33,7 +33,7 @@
 <script>
 import moment from "moment";
 import "moment/locale/ru";
-import { strip, clog } from "../../misc/helpers";
+import { strip, clog } from "@/misc/helpers";
 export default {
     watch: {
         /**

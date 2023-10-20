@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import { strip, clog } from "../../misc/helpers";
+import { strip, clog } from "@/misc/helpers";
 export default {
     props: {
         // данные от БВС

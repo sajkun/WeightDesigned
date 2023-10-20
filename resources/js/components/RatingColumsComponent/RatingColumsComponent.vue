@@ -68,9 +68,9 @@
 </template>
 
 <script>
-import { strip, clog } from "../../misc/helpers";
+import { strip, clog } from "@/misc/helpers";
 
-import sortAnimation from "../../mixins/sortAnimation";
+import sortAnimation from "@/mixins/sortAnimation";
 export default {
     mixins: [sortAnimation],
     watch: {

@@ -1,51 +1,103 @@
-@use "sass:map";
-.rating2,
-.rating4,
-.rating3 {
-    margin-top: 0.5rem;
+.statistics-details,
+.statistics-list {
+    background-color: var(--lightest);
+    border-radius: var(--brs);
 }
 
-.rating-row {
-    padding: 0.25rem 1rem;
-    border-radius: var(--brs);
-    background-color: var(--lightest);
-    border: 2px solid var(--lightest);
-    transition: background-color var(--fast);
+.statistics-details {
+    .row {
+        --bs-gutter-x: 0.5rem;
+    }
+}
+
+.statistics-header {
+    font-size: 1rem;
+}
+
+.statistics-row {
+    padding: var(--gap-y) var(--gap-x);
+
+    :not(:last-child) > & {
+        border-bottom: 1px solid var(--grey-light);
+    }
 
     &__number-cell {
-        width: 1.5rem;
-        min-width: 1.5rem;
+        width: 1rem;
+        max-width: 1rem;
+        margin-right: 0.25rem;
+    }
+}
+
+.statistics-data {
+    padding: 0.5rem;
+    border-radius: var(--brs);
+    border: 2px solid var(--grey-light, #dfe6fa);
+    background: var(--lightest);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+
+    &__label {
+        font-size: 1rem;
+        font-weight: 400;
+        color: var(--grey-medium);
+        margin: 0;
+        flex-grow: 1;
     }
 
-    &:hover {
-        background-color: var(--grey-lightest);
-    }
+    &__value {
+        font-weight: 700;
+        margin: 0.25em 0 0;
+        color: var(--dark);
+        font-size: 1.25rem;
 
-    .fa-star {
-        color: var(--green-medium);
-    }
-
-    $colors: var(--yellow), var(--grey), var(--cooper);
-
-    @each $color in $colors {
-        &.rating#{index($colors, $color)} {
-            .fa-star {
-                color: $color;
-            }
+        &_secondary {
+            font-size: 1rem;
+            font-weight: 400;
+            color: var(--grey-medium);
         }
     }
 }
 
-#public-rating {
-    .rating-list {
-        @media (max-width: map.get($grid-breakpoints, "md")) {
-            display: none !important;
+.statistics-best-item {
+    display: grid;
+    grid-template-columns: 1rem auto 2rem;
+    align-items: center;
+    gap: 0.25rem;
+    margin-top: 0.5rem;
+
+    &__icon {
+        border-radius: var(--brs-max);
+        display: block;
+        width: 0.75rem;
+        height: 0.75rem;
+        background-color: var(--grey-medium);
+        transition: background-color var(--slow);
+
+        &0 {
+            background-color: var(--green);
+        }
+        &1 {
+            background-color: var(--yellow);
+        }
+        &2 {
+            background-color: var(--red-medium);
+        }
+        &3 {
+            background-color: var(--blue);
+        }
+        &4 {
+            background-color: var(--violet);
         }
     }
 
-    .rating-nolist {
-        @media (max-width: map.get($grid-breakpoints, "md")) {
-            display: none !important;
-        }
+    &__name {
+        margin: 0;
+        font-size: 0.75rem;
+    }
+
+    &__persantage {
+        margin: 0;
+        font-size: 0.75rem;
     }
 }
