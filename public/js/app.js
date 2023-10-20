@@ -16054,9 +16054,6 @@ var drawTimeout;
     },
     info: function info(_info2, oldVal) {
       var vm = this;
-      if (drawTimeout) {
-        clearTimeout(drawTimeout);
-      }
       if (!_info2 || _info2 === oldVal) return;
       vm.prepareCanvas();
       vm.draw();
@@ -16118,9 +16115,6 @@ var drawTimeout;
         cnvs = _vm$getCnv[0],
         ctx = _vm$getCnv[1];
       ctx.clearRect(0, 0, cnvs.width, cnvs.height);
-      if (drawTimeout) {
-        clearTimeout(drawTimeout);
-      }
       vm.prepareCanvas();
       vm.drawGrid();
       vm.drawAxises();
@@ -16355,8 +16349,8 @@ var drawTimeout;
       var _this$getCnv = _slicedToArray(this.getCnv, 2),
         cnvs = _this$getCnv[0],
         ctx = _this$getCnv[1];
-      cnvs.width = vm.$refs.root.offsetWidth;
-      cnvs.height = vm.$refs.root.offsetHeight - 50;
+      cnvs.width = vm.$refs.root.offsetWidth ? vm.$refs.root.offsetWidth : 500;
+      cnvs.height = vm.$refs.root.offsetHeight - 50 ? vm.$refs.root.offsetHeight - 50 : 500;
       ctx.translate(0, cnvs.height);
       ctx.rotate(-Math.PI / 2);
       return;

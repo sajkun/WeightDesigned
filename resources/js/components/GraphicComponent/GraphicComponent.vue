@@ -32,9 +32,6 @@ export default {
 
         info(info, oldVal) {
             const vm = this;
-            if (drawTimeout) {
-                clearTimeout(drawTimeout);
-            }
 
             if (!info || info === oldVal) return;
             vm.prepareCanvas();
@@ -101,10 +98,6 @@ export default {
             const [cnvs, ctx] = vm.getCnv;
 
             ctx.clearRect(0, 0, cnvs.width, cnvs.height);
-
-            if (drawTimeout) {
-                clearTimeout(drawTimeout);
-            }
 
             vm.prepareCanvas();
             vm.drawGrid();
@@ -385,8 +378,13 @@ export default {
         prepareCanvas() {
             const vm = this;
             const [cnvs, ctx] = this.getCnv;
-            cnvs.width = vm.$refs.root.offsetWidth;
-            cnvs.height = vm.$refs.root.offsetHeight - 50;
+            cnvs.width = vm.$refs.root.offsetWidth
+                ? vm.$refs.root.offsetWidth
+                : 500;
+            cnvs.height =
+                vm.$refs.root.offsetHeight - 50
+                    ? vm.$refs.root.offsetHeight - 50
+                    : 500;
             ctx.translate(0, cnvs.height);
             ctx.rotate(-Math.PI / 2);
 
