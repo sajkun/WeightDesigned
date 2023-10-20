@@ -39,4 +39,12 @@ class IndexController extends PublicController
 
         return ;
     }
+
+    /**
+     * Метод определяющий нужно ли использовать яндекс карты
+     */
+    protected function useYamap()
+    {
+        return true;
+    }
 }
