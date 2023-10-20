@@ -49,6 +49,11 @@
         {{-- заголовок с выбором периода --}}
         {{-- ************************************************ --}}
         <div class="row flex-grow-1">
+            <div class="align-self-start mt-5 text-center d-none" ref='emptyMessage' v-show='!ratingData.length'>
+                <p class="h3 error mt-5">
+                    Данные не обнаружены
+                </p>
+            </div>
             {{-- Список отфильтрованных данных --}}
             {{-- ************************************************ --}}
             <Transition name='fade'>

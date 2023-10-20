@@ -16114,15 +16114,17 @@ var drawTimeout;
     draw: function draw() {
       var vm = this;
       var info = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.info);
+      var _vm$getCnv = _slicedToArray(vm.getCnv, 2),
+        cnvs = _vm$getCnv[0],
+        ctx = _vm$getCnv[1];
+      ctx.clearRect(0, 0, cnvs.width, cnvs.height);
       if (drawTimeout) {
         clearTimeout(drawTimeout);
       }
       vm.prepareCanvas();
       vm.drawGrid();
       vm.drawAxises();
-      drawTimeout = setTimeout(function () {
-        vm.drawGraph(info.points);
-      }, 250);
+      vm.drawGraph(info.points);
     },
     /**
      * Рисует оси абсцисс и ординат
@@ -16156,6 +16158,64 @@ var drawTimeout;
       return;
     },
     /**
+     * Получение методов отрисовки графика
+     */
+    getDrawMethods: function getDrawMethods() {
+      var vm = this;
+      var _vm$getCnv2 = _slicedToArray(vm.getCnv, 2),
+        cnvs = _vm$getCnv2[0],
+        ctx = _vm$getCnv2[1];
+      /**
+       * Приводит массив точек к виду, необходимому для отрисовки
+       * @param {Array} points
+       */
+      var preparePoints = function preparePoints(points, zero) {
+        var step = vm.getStepsData();
+        var _points = Object.values(points).map(function (d) {
+          return [d.y / step.perStepY * step.y + vm.zero.y, d.x / step.perStepX * step.x + vm.zero.x];
+        });
+        _points.unshift(zero);
+        return _points;
+      };
+
+      /**
+       * Крайняя точка для области залития
+       * @param {*} points
+       *
+       * @returns {Array}
+       */
+      var generateLastPoint = function generateLastPoint(points, zero) {
+        var endPoint = points[points.length - 1];
+        return [zero.y, endPoint[1]];
+      };
+
+      /**
+       * Отрисовка графика
+       *
+       * @param {Array} points массив подготовленных для отрисовки точек
+       * @param {String} strokeStyle строка hex код цвета
+       * @param {Integer} lineWidth ширина линии
+       * @param {Boolean} animate анимировать ли отрисовку
+       *
+       * @returns {Void}
+       */
+      var drawGraph = function drawGraph(points, strokeStyle, lineWidth, animate) {
+        var _points = points;
+        ctx.strokeStyle = strokeStyle ? strokeStyle : "#000";
+        ctx.lineWidth = lineWidth ? lineWidth : 1;
+        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.polyline)(ctx, _points, animate);
+        return;
+      };
+      var drawShape = function drawShape(points, strokeStyle, lineWidth, animate, zero) {
+        var _points = points;
+        _points.push(generateLastPoint(_points, zero));
+        ctx.fillStyle = strokeStyle;
+        drawGraph(_points, strokeStyle, lineWidth, animate);
+        ctx.fill();
+      };
+      return [preparePoints, drawGraph, drawShape];
+    },
+    /**
      * Отрисовка графика
      *
      * @param {Array<Object>} points
@@ -16164,26 +16224,15 @@ var drawTimeout;
      */
     drawGraph: function drawGraph(points) {
       var vm = this;
-      var _this$getCnv = _slicedToArray(this.getCnv, 2),
-        cnvs = _this$getCnv[0],
-        ctx = _this$getCnv[1];
-      var step = vm.getStepsData();
-      var _points = Object.values(points).map(function (d) {
-        return [d.y / step.perStepY * step.y + vm.zero.y, d.x / step.perStepX * step.x + vm.zero.x];
-      });
-      ctx.strokeStyle = "#007e3c";
-      ctx.lineWidth = 2;
-      _points.unshift(Object.values(vm.zero));
-      ctx.strokeStyle = "#E1F3EA55";
-      var endPoint = _points[_points.length - 1];
-      _points.push([vm.zero.y, endPoint[1]]);
-      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.polyline)(ctx, _points);
-      ctx.fillStyle = "#E1F3EA55";
-      ctx.fill();
-      _points.pop();
-      ctx.strokeStyle = "#007e3c";
-      ctx.lineWidth = 2;
-      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.polyline)(ctx, _points, true);
+      var zero = Object.values(vm.zero);
+      var _vm$getDrawMethods = vm.getDrawMethods(),
+        _vm$getDrawMethods2 = _slicedToArray(_vm$getDrawMethods, 3),
+        preparePoints = _vm$getDrawMethods2[0],
+        drawGraph = _vm$getDrawMethods2[1],
+        drawShape = _vm$getDrawMethods2[2];
+      var _points = preparePoints(points, zero);
+      drawShape(_points, "#E1F3EA55", 1, false, zero);
+      drawGraph(_points, "#007e3c", 2, true);
       return;
     },
     /**
@@ -16195,9 +16244,9 @@ var drawTimeout;
      */
     drawGrid: function drawGrid() {
       var vm = this;
-      var _vm$getCnv = _slicedToArray(vm.getCnv, 2),
-        cnvs = _vm$getCnv[0],
-        ctx = _vm$getCnv[1];
+      var _vm$getCnv3 = _slicedToArray(vm.getCnv, 2),
+        cnvs = _vm$getCnv3[0],
+        ctx = _vm$getCnv3[1];
       var zero = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.zero);
       var step = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.getStepsData());
       var info = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.info);
@@ -16247,8 +16296,8 @@ var drawTimeout;
       if (!info) {
         return vm.minStep;
       }
-      var _vm$getCnv2 = _slicedToArray(vm.getCnv, 1),
-        cnvs = _vm$getCnv2[0];
+      var _vm$getCnv4 = _slicedToArray(vm.getCnv, 1),
+        cnvs = _vm$getCnv4[0];
 
       /**
        *
@@ -16303,14 +16352,13 @@ var drawTimeout;
      */
     prepareCanvas: function prepareCanvas() {
       var vm = this;
-      var _this$getCnv2 = _slicedToArray(this.getCnv, 2),
-        cnvs = _this$getCnv2[0],
-        ctx = _this$getCnv2[1];
+      var _this$getCnv = _slicedToArray(this.getCnv, 2),
+        cnvs = _this$getCnv[0],
+        ctx = _this$getCnv[1];
       cnvs.width = vm.$refs.root.offsetWidth;
       cnvs.height = vm.$refs.root.offsetHeight - 50;
       ctx.translate(0, cnvs.height);
       ctx.rotate(-Math.PI / 2);
-      ctx.clearRect(0, 0, cnvs.width, cnvs.height);
       return;
     }
   },
@@ -19261,6 +19309,15 @@ var clog = function clog() {
   (_console = console).log.apply(_console, arguments);
   return;
 };
+
+/**
+ * Отрисовка ломанной линии в канвас без анимации
+ *
+ * @param {CanvasRenderingContext2D} ctx
+ * @param {Array<Array<Int,Int>>} pts
+ *
+ * @returns void
+ */
 var polylineCb = function polylineCb(ctx, pts) {
   ctx.beginPath();
   pts.forEach(function (p, i) {
@@ -19271,28 +19328,36 @@ var polylineCb = function polylineCb(ctx, pts) {
     }
   });
   ctx.stroke();
-  return;
+  return -1;
 };
-var animatePolylineCb = function animatePolylineCb(ctx, pts, draw) {
+
+/**
+ * Анимаированная отрисовка ломанной линии в канвас
+ *
+ * @param {CanvasRenderingContext2D} ctx
+ * @param {Array<Array<Int,Int>>} pts
+ * @param {Boolean} draw - для рекурсивного вызова
+ *
+ * @returns void
+ */
+var animatePolylineCb = function animatePolylineCb(ctx, pts) {
   var points = pts;
   var iterator = 0;
   var animate = function animate() {
     var pointFrom = points[iterator];
     iterator++;
     if (!pointFrom) {
-      return;
+      return -1;
     }
     var pointTo = points[iterator];
     if (!pointTo) {
-      return;
+      return -1;
     }
     ctx.beginPath();
     ctx.moveTo.apply(ctx, _toConsumableArray(pointFrom));
     ctx.lineTo.apply(ctx, _toConsumableArray(pointTo));
     ctx.stroke();
-    setTimeout(function () {
-      requestAnimationFrame(animate);
-    }, 30);
+    return requestAnimationFrame(animate);
   };
   animate();
 };
@@ -19306,8 +19371,7 @@ var animatePolylineCb = function animatePolylineCb(ctx, pts, draw) {
  * @returns void
  */
 var polyline = function polyline(ctx, pts, animate) {
-  animate ? animatePolylineCb(ctx, pts) : polylineCb(ctx, pts);
-  return;
+  return animate ? animatePolylineCb(ctx, pts) : polylineCb(ctx, pts);
 };
 
 /**
@@ -21314,7 +21378,6 @@ var appPublicStatistics = {
   data: function data() {
     return {};
   },
-  watch: {},
   computed: {
     /**
      * Пустой объект, структура данных для графика отображения урожая по датам
@@ -21351,7 +21414,6 @@ var appPublicStatistics = {
       var vm = this;
       // данные о сборе урожая, сгрупированные по разным типам периодов day|month|year
       var harvestData = new _misc_BvsDataClass__WEBPACK_IMPORTED_MODULE_2__.BvsData((0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.bvsData), (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.dateRange));
-      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c calc bvsInfo ", "color:violet", harvestData);
 
       //{Enum}  day|month|year тип периода отображения
       var type = vm.getPeriodType(harvestData.parsedData.periods);
@@ -21440,11 +21502,15 @@ var appPublicStatistics = {
     }
   },
   mounted: function mounted() {
+    var _this = this;
     var vm = this;
     vm.$el.parentNode.classList.add("d-flex");
     var today = new Date();
     vm.dateRange.start = moment__WEBPACK_IMPORTED_MODULE_1___default()(today).set("date", 1).toISOString();
     vm.dateRange.end = moment__WEBPACK_IMPORTED_MODULE_1___default()(today).toISOString();
+    setTimeout(function () {
+      _this.$refs.emptyMessage.classList.remove("d-none");
+    }, 1500);
   },
   methods: {
     /**

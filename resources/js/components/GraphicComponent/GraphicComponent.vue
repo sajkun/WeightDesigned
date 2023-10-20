@@ -98,6 +98,9 @@ export default {
         draw() {
             const vm = this;
             const info = strip(vm.info);
+            const [cnvs, ctx] = vm.getCnv;
+
+            ctx.clearRect(0, 0, cnvs.width, cnvs.height);
 
             if (drawTimeout) {
                 clearTimeout(drawTimeout);
@@ -106,10 +109,7 @@ export default {
             vm.prepareCanvas();
             vm.drawGrid();
             vm.drawAxises();
-
-            drawTimeout = setTimeout(() => {
-                vm.drawGraph(info.points);
-            }, 250);
+            vm.drawGraph(info.points);
         },
 
         /**
@@ -162,6 +162,76 @@ export default {
         },
 
         /**
+         * Получение методов отрисовки графика
+         */
+        getDrawMethods() {
+            const vm = this;
+            const [cnvs, ctx] = vm.getCnv;
+            /**
+             * Приводит массив точек к виду, необходимому для отрисовки
+             * @param {Array} points
+             */
+            const preparePoints = (points, zero) => {
+                const step = vm.getStepsData();
+
+                let _points = Object.values(points).map((d) => [
+                    (d.y / step.perStepY) * step.y + vm.zero.y,
+                    (d.x / step.perStepX) * step.x + vm.zero.x,
+                ]);
+
+                _points.unshift(zero);
+
+                return _points;
+            };
+
+            /**
+             * Крайняя точка для области залития
+             * @param {*} points
+             *
+             * @returns {Array}
+             */
+            const generateLastPoint = (points, zero) => {
+                const endPoint = points[points.length - 1];
+                return [zero.y, endPoint[1]];
+            };
+
+            /**
+             * Отрисовка графика
+             *
+             * @param {Array} points массив подготовленных для отрисовки точек
+             * @param {String} strokeStyle строка hex код цвета
+             * @param {Integer} lineWidth ширина линии
+             * @param {Boolean} animate анимировать ли отрисовку
+             *
+             * @returns {Void}
+             */
+            const drawGraph = (points, strokeStyle, lineWidth, animate) => {
+                const _points = points;
+                ctx.strokeStyle = strokeStyle ? strokeStyle : "#000";
+                ctx.lineWidth = lineWidth ? lineWidth : 1;
+
+                polyline(ctx, _points, animate);
+                return;
+            };
+
+            const drawShape = (
+                points,
+                strokeStyle,
+                lineWidth,
+                animate,
+                zero
+            ) => {
+                let _points = points;
+                _points.push(generateLastPoint(_points, zero));
+                ctx.fillStyle = strokeStyle;
+                drawGraph(_points, strokeStyle, lineWidth, animate);
+                ctx.fill();
+            };
+
+            return [preparePoints, drawGraph, drawShape];
+        },
+
+        /**
          * Отрисовка графика
          *
          * @param {Array<Object>} points
@@ -170,32 +240,12 @@ export default {
          */
         drawGraph(points) {
             const vm = this;
+            const zero = Object.values(vm.zero);
+            const [preparePoints, drawGraph, drawShape] = vm.getDrawMethods();
 
-            const [cnvs, ctx] = this.getCnv;
-            const step = vm.getStepsData();
-
-            let _points = Object.values(points).map((d) => [
-                (d.y / step.perStepY) * step.y + vm.zero.y,
-                (d.x / step.perStepX) * step.x + vm.zero.x,
-            ]);
-
-            ctx.strokeStyle = "#007e3c";
-            ctx.lineWidth = 2;
-
-            _points.unshift(Object.values(vm.zero));
-            ctx.strokeStyle = "#E1F3EA55";
-            const endPoint = _points[_points.length - 1];
-            _points.push([vm.zero.y, endPoint[1]]);
-            polyline(ctx, _points);
-            ctx.fillStyle = "#E1F3EA55";
-            ctx.fill();
-
-            _points.pop();
-
-            ctx.strokeStyle = "#007e3c";
-            ctx.lineWidth = 2;
-            polyline(ctx, _points, true);
-
+            let _points = preparePoints(points, zero);
+            drawShape(_points, "#E1F3EA55", 1, false, zero);
+            drawGraph(_points, "#007e3c", 2, true);
             return;
         },
 
@@ -339,7 +389,6 @@ export default {
             cnvs.height = vm.$refs.root.offsetHeight - 50;
             ctx.translate(0, cnvs.height);
             ctx.rotate(-Math.PI / 2);
-            ctx.clearRect(0, 0, cnvs.width, cnvs.height);
 
             return;
         },

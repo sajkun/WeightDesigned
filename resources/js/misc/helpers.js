@@ -49,6 +49,14 @@ export const clog = (...data) => {
     return;
 };
 
+/**
+ * Отрисовка ломанной линии в канвас без анимации
+ *
+ * @param {CanvasRenderingContext2D} ctx
+ * @param {Array<Array<Int,Int>>} pts
+ *
+ * @returns void
+ */
 const polylineCb = (ctx, pts) => {
     ctx.beginPath();
 
@@ -60,30 +68,38 @@ const polylineCb = (ctx, pts) => {
         }
     });
     ctx.stroke();
-    return;
+    return -1;
 };
 
-const animatePolylineCb = (ctx, pts, draw) => {
+/**
+ * Анимаированная отрисовка ломанной линии в канвас
+ *
+ * @param {CanvasRenderingContext2D} ctx
+ * @param {Array<Array<Int,Int>>} pts
+ * @param {Boolean} draw - для рекурсивного вызова
+ *
+ * @returns void
+ */
+const animatePolylineCb = (ctx, pts) => {
     let points = pts;
     let iterator = 0;
     const animate = () => {
         const pointFrom = points[iterator];
         iterator++;
         if (!pointFrom) {
-            return;
+            return -1;
         }
         const pointTo = points[iterator];
         if (!pointTo) {
-            return;
+            return -1;
         }
 
         ctx.beginPath();
         ctx.moveTo(...pointFrom);
         ctx.lineTo(...pointTo);
         ctx.stroke();
-        setTimeout(() => {
-            requestAnimationFrame(animate);
-        }, 30);
+
+        return requestAnimationFrame(animate);
     };
 
     animate();
@@ -98,8 +114,7 @@ const animatePolylineCb = (ctx, pts, draw) => {
  * @returns void
  */
 export const polyline = (ctx, pts, animate) => {
-    animate ? animatePolylineCb(ctx, pts) : polylineCb(ctx, pts);
-    return;
+    return animate ? animatePolylineCb(ctx, pts) : polylineCb(ctx, pts);
 };
 
 /**

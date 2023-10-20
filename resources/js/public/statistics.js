@@ -50,8 +50,6 @@ const appPublicStatistics = {
         return {};
     },
 
-    watch: {},
-
     computed: {
         /**
          * Пустой объект, структура данных для графика отображения урожая по датам
@@ -93,8 +91,6 @@ const appPublicStatistics = {
                 strip(vm.bvsData),
                 strip(vm.dateRange)
             );
-
-            clog("%c calc bvsInfo ", "color:violet", harvestData);
 
             //{Enum}  day|month|year тип периода отображения
             const type = vm.getPeriodType(harvestData.parsedData.periods);
@@ -202,6 +198,10 @@ const appPublicStatistics = {
         const today = new Date();
         vm.dateRange.start = moment(today).set("date", 1).toISOString();
         vm.dateRange.end = moment(today).toISOString();
+
+        setTimeout(() => {
+            this.$refs.emptyMessage.classList.remove("d-none");
+        }, 1500);
     },
 
     methods: {
