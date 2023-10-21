@@ -116,6 +116,23 @@ const appPublicStatistics = {
         },
 
         /**
+         * Общее количество собранного зерна за период
+         * Количество отработанных дней
+         * Дата в которую собрано максимальное количество зерна
+         *
+         * @returns {Object} статистические данные
+         */
+        statData() {
+            const vm = this;
+            const harvestData = new BvsData(
+                strip(vm.bvsData),
+                strip(vm.dateRange)
+            );
+
+            return harvestData.statistics;
+        },
+
+        /**
          * Данные для формирования рейтинга лучших 5
          *
          * @returns {Object} данные о лучших пяти сотрудниках / единиц техники и суммарном значении остальных
@@ -172,23 +189,6 @@ const appPublicStatistics = {
             const period = vm.getPeriodName(vm.dateRange);
 
             return `${subject}. Лучшие 5 за ${period}`;
-        },
-
-        /**
-         * Общее количество собранного зерна за период
-         * Количество отработанных дней
-         * Дата в которую собрано максимальное количество зерна
-         *
-         * @returns {Object} статистические данные
-         */
-        statData() {
-            const vm = this;
-            const harvestData = new BvsData(
-                strip(vm.bvsData),
-                strip(vm.dateRange)
-            );
-
-            return harvestData.statistics;
         },
     },
 
@@ -281,7 +281,8 @@ const appPublicStatistics = {
                 info.axis.x.after = value > 1000 ? "т." : info.axis.x.after;
 
                 // обновление  максимального значения по оси OY
-                info.axis.y.maxValue = Math.max(info.axis.y.maxValue, newValue);
+                info.axis.y.maxValue =
+                    Math.max(info.axis.y.maxValue, newValue) * 1.1;
 
                 // метки по оси Х задаются в зависимости от выбранного периода, они могу быть и строка и число
                 info.labels.x[parseInt(xValue)] = format;

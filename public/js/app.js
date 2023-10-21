@@ -21437,6 +21437,18 @@ var appPublicStatistics = {
       return vm.getPeriodName(vm.dateRange);
     },
     /**
+     * Общее количество собранного зерна за период
+     * Количество отработанных дней
+     * Дата в которую собрано максимальное количество зерна
+     *
+     * @returns {Object} статистические данные
+     */
+    statData: function statData() {
+      var vm = this;
+      var harvestData = new _misc_BvsDataClass__WEBPACK_IMPORTED_MODULE_2__.BvsData((0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.bvsData), (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.dateRange));
+      return harvestData.statistics;
+    },
+    /**
      * Данные для формирования рейтинга лучших 5
      *
      * @returns {Object} данные о лучших пяти сотрудниках / единиц техники и суммарном значении остальных
@@ -21487,18 +21499,6 @@ var appPublicStatistics = {
       var subject = vm.ratingOptions[vm.ratingBy];
       var period = vm.getPeriodName(vm.dateRange);
       return "".concat(subject, ". \u041B\u0443\u0447\u0448\u0438\u0435 5 \u0437\u0430 ").concat(period);
-    },
-    /**
-     * Общее количество собранного зерна за период
-     * Количество отработанных дней
-     * Дата в которую собрано максимальное количество зерна
-     *
-     * @returns {Object} статистические данные
-     */
-    statData: function statData() {
-      var vm = this;
-      var harvestData = new _misc_BvsDataClass__WEBPACK_IMPORTED_MODULE_2__.BvsData((0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.bvsData), (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.dateRange));
-      return harvestData.statistics;
     }
   },
   mounted: function mounted() {
@@ -21573,7 +21573,7 @@ var appPublicStatistics = {
         info.axis.x.after = value > 1000 ? "т." : info.axis.x.after;
 
         // обновление  максимального значения по оси OY
-        info.axis.y.maxValue = Math.max(info.axis.y.maxValue, newValue);
+        info.axis.y.maxValue = Math.max(info.axis.y.maxValue, newValue) * 1.1;
 
         // метки по оси Х задаются в зависимости от выбранного периода, они могу быть и строка и число
         info.labels.x[parseInt(xValue)] = format;
