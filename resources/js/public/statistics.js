@@ -281,8 +281,7 @@ const appPublicStatistics = {
                 info.axis.x.after = value > 1000 ? "т." : info.axis.x.after;
 
                 // обновление  максимального значения по оси OY
-                info.axis.y.maxValue =
-                    Math.max(info.axis.y.maxValue, newValue) * 1.1;
+                info.axis.y.maxValue = Math.max(info.axis.y.maxValue, newValue);
 
                 // метки по оси Х задаются в зависимости от выбранного периода, они могу быть и строка и число
                 info.labels.x[parseInt(xValue)] = format;
