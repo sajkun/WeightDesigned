@@ -19457,7 +19457,7 @@ var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
       });
     },
     /**
-     * запрос перечня сотрудников
+     * запрос списка сотрудников
      *
      * @return {Promise}
      */
@@ -19477,7 +19477,7 @@ var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
       });
     },
     /**
-     * запрос перечня полей
+     * запрос списка полей
      *
      * @return {Promise}
      */
@@ -19499,7 +19499,7 @@ var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
       });
     },
     /**
-     * запрос перечня техники
+     * запрос списка техники
      *
      * @return {Promise}
      */
@@ -20629,9 +20629,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _node_modules_tmcw_togeojson__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_tmcw_togeojson__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _dbf__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./dbf */ "./resources/js/public/dbf.js");
 /* harmony import */ var _mixins_axiosRequests__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @/mixins/axiosRequests */ "./resources/js/mixins/axiosRequests.js");
-/* harmony import */ var _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @/mixins/publicAuthData */ "./resources/js/mixins/publicAuthData.js");
+/* harmony import */ var _mixins_crud__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @/mixins/crud */ "./resources/js/mixins/crud.js");
 /* harmony import */ var _mixins_messages__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @/mixins/messages */ "./resources/js/mixins/messages.js");
-/* harmony import */ var _mixins_crud__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @/mixins/crud */ "./resources/js/mixins/crud.js");
+/* harmony import */ var _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @/mixins/publicAuthData */ "./resources/js/mixins/publicAuthData.js");
 /* harmony import */ var _components_FileInputComponent__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @/components/FileInputComponent */ "./resources/js/components/FileInputComponent/index.js");
 /**
  *
@@ -20653,7 +20653,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var grasslandMap;
 var appPublicGrasslands = {
-  mixins: [_mixins_axiosRequests__WEBPACK_IMPORTED_MODULE_3__["default"], _mixins_messages__WEBPACK_IMPORTED_MODULE_5__["default"], _mixins_crud__WEBPACK_IMPORTED_MODULE_6__["default"], _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_4__["default"]],
+  mixins: [_mixins_axiosRequests__WEBPACK_IMPORTED_MODULE_3__["default"], _mixins_messages__WEBPACK_IMPORTED_MODULE_5__["default"], _mixins_crud__WEBPACK_IMPORTED_MODULE_4__["default"], _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_6__["default"]],
   components: {
     file: _components_FileInputComponent__WEBPACK_IMPORTED_MODULE_7__["default"]
   },
@@ -20892,40 +20892,44 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _mixins_axiosRequests__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/mixins/axiosRequests */ "./resources/js/mixins/axiosRequests.js");
-/* harmony import */ var _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @/mixins/publicAuthData */ "./resources/js/mixins/publicAuthData.js");
-/* harmony import */ var _components_BvsMapComponent___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @/components/BvsMapComponent/ */ "./resources/js/components/BvsMapComponent/index.js");
-/* harmony import */ var _components_SwitcherComponent__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @/components/SwitcherComponent */ "./resources/js/components/SwitcherComponent/index.js");
-/* harmony import */ var _components_CalendarComponent__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @/components/CalendarComponent */ "./resources/js/components/CalendarComponent/index.js");
-/* harmony import */ var _components_BvsShortComponent__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @/components/BvsShortComponent */ "./resources/js/components/BvsShortComponent/index.js");
-/* harmony import */ var _components_BvsOperationComponent__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @/components/BvsOperationComponent */ "./resources/js/components/BvsOperationComponent/index.js");
-/* harmony import */ var _misc_helpers__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @/misc/helpers */ "./resources/js/misc/helpers.js");
-/* harmony import */ var _mixins_crud__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @/mixins/crud */ "./resources/js/mixins/crud.js");
-/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
-/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_9__);
+/* harmony import */ var _misc_helpers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/misc/helpers */ "./resources/js/misc/helpers.js");
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _mixins_axiosRequests__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @/mixins/axiosRequests */ "./resources/js/mixins/axiosRequests.js");
+/* harmony import */ var _mixins_crud__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @/mixins/crud */ "./resources/js/mixins/crud.js");
+/* harmony import */ var _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @/mixins/publicAuthData */ "./resources/js/mixins/publicAuthData.js");
+/* harmony import */ var _components_BvsMapComponent___WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @/components/BvsMapComponent/ */ "./resources/js/components/BvsMapComponent/index.js");
+/* harmony import */ var _components_CalendarComponent__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @/components/CalendarComponent */ "./resources/js/components/CalendarComponent/index.js");
+/* harmony import */ var _components_BvsShortComponent__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @/components/BvsShortComponent */ "./resources/js/components/BvsShortComponent/index.js");
+/* harmony import */ var _components_BvsOperationComponent__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @/components/BvsOperationComponent */ "./resources/js/components/BvsOperationComponent/index.js");
+/* harmony import */ var _components_SwitcherComponent__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @/components/SwitcherComponent */ "./resources/js/components/SwitcherComponent/index.js");
 /**
  * Домашняя страница
  */
 
+//хэлперы
+
+
+
+//миксины
+
+
+
+
+//компоненты
 
 
 
 
 
-
-
-
-
-
-var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 var homePage = {
-  mixins: [_mixins_axiosRequests__WEBPACK_IMPORTED_MODULE_0__["default"], _mixins_crud__WEBPACK_IMPORTED_MODULE_8__["default"], _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_1__["default"]],
+  mixins: [_mixins_axiosRequests__WEBPACK_IMPORTED_MODULE_2__["default"], _mixins_crud__WEBPACK_IMPORTED_MODULE_3__["default"], _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_4__["default"]],
   components: {
-    BvsShortComponent: _components_BvsShortComponent__WEBPACK_IMPORTED_MODULE_5__["default"],
-    SwitcherComponent: _components_SwitcherComponent__WEBPACK_IMPORTED_MODULE_3__["default"],
-    Calendar: _components_CalendarComponent__WEBPACK_IMPORTED_MODULE_4__["default"],
-    BvsMap: _components_BvsMapComponent___WEBPACK_IMPORTED_MODULE_2__["default"],
-    BvsOperation: _components_BvsOperationComponent__WEBPACK_IMPORTED_MODULE_6__["default"]
+    BvsShortComponent: _components_BvsShortComponent__WEBPACK_IMPORTED_MODULE_7__["default"],
+    SwitcherComponent: _components_SwitcherComponent__WEBPACK_IMPORTED_MODULE_9__["default"],
+    Calendar: _components_CalendarComponent__WEBPACK_IMPORTED_MODULE_6__["default"],
+    BvsMap: _components_BvsMapComponent___WEBPACK_IMPORTED_MODULE_5__["default"],
+    BvsOperation: _components_BvsOperationComponent__WEBPACK_IMPORTED_MODULE_8__["default"]
   },
   data: function data() {
     return {
@@ -20965,7 +20969,7 @@ var homePage = {
       vm.bvsData = response.bvs_data;
     });
     vm.getGrasslands(function (response) {
-      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_7__.clog)(response.grasslands);
+      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)(response.grasslands);
       vm.grasslands = response.grasslands;
     });
   },
@@ -21024,7 +21028,7 @@ var homePage = {
      */
     bvsDataFiltered: function bvsDataFiltered() {
       var vm = this;
-      var data = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_7__.strip)(vm.bvsData);
+      var data = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.bvsData);
       if (vm.period.start && vm.period.end) {
         var start = new Date(vm.period.start);
         var end = new Date(vm.period.end);
@@ -21042,7 +21046,7 @@ var homePage = {
      */
     bsvFilteredByUnit: function bsvFilteredByUnit() {
       var vm = this;
-      var dataRaw = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_7__.strip)(vm.bvsDataFiltered);
+      var dataRaw = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.bvsDataFiltered);
       var initialValue = {};
       var data = dataRaw.reduce(function (accumulator, val) {
         var idx = val.bvs_name;
@@ -21053,7 +21057,7 @@ var homePage = {
             selected: false
           };
         }
-        accumulator[idx].selected = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_7__.strip)(vm.selectedBvs).indexOf(idx) >= 0;
+        accumulator[idx].selected = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.selectedBvs).indexOf(idx) >= 0;
         accumulator[idx].items.push(val);
         return accumulator;
       }, initialValue);
@@ -21066,9 +21070,9 @@ var homePage = {
      */
     bvsFilteredByOperations: function bvsFilteredByOperations() {
       var vm = this;
-      var data = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_7__.strip)(vm.bvsOperations);
+      var data = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.bvsOperations);
       if (vm.selectedOperationsIds.length) {
-        var items = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_7__.strip)(vm.selectedOperationsIds);
+        var items = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.selectedOperationsIds);
         data = data.filter(function (d) {
           return items.indexOf(d.id) >= 0;
         });
@@ -21082,13 +21086,13 @@ var homePage = {
      */
     bvsOperations: function bvsOperations() {
       var vm = this;
-      var dataRaw = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_7__.strip)(vm.bvsDataFiltered);
-      var names = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_7__.strip)(vm.selectedBvs);
+      var dataRaw = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.bvsDataFiltered);
+      var names = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.selectedBvs);
       var data;
       data = names.length > 0 ? dataRaw.filter(function (d) {
         return names.indexOf(d.bvs_name) >= 0;
       }) : dataRaw;
-      var operations = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_7__.strip)(vm.selectedOperationsIds);
+      var operations = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.selectedOperationsIds);
       data = data.map(function (d) {
         d.selected = operations.indexOf(d.id) >= 0;
         return d;
@@ -21112,9 +21116,9 @@ var homePage = {
       var vm = this;
       if (vm.period.start) {
         var date = new Date(vm.period.start);
-        return moment__WEBPACK_IMPORTED_MODULE_9___default()(date).format("YYYY-MM-DD");
+        return moment__WEBPACK_IMPORTED_MODULE_1___default()(date).format("YYYY-MM-DD");
       }
-      return moment__WEBPACK_IMPORTED_MODULE_9___default()().format("YYYY-MM-DD");
+      return moment__WEBPACK_IMPORTED_MODULE_1___default()().format("YYYY-MM-DD");
     },
     /**
      *
@@ -21122,9 +21126,9 @@ var homePage = {
      */
     markedDays: function markedDays() {
       var vm = this;
-      var data = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_7__.strip)(vm.bvsData);
+      var data = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.bvsData);
       var dates = data.map(function (d) {
-        var day = moment__WEBPACK_IMPORTED_MODULE_9___default()(d.operation_time);
+        var day = moment__WEBPACK_IMPORTED_MODULE_1___default()(d.operation_time);
         return day.format("YYYY-MM-DD");
       });
       return dates;
@@ -21185,7 +21189,7 @@ var homePage = {
      */
     selectBvsCb: function selectBvsCb(data) {
       var vm = this;
-      var idx = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_7__.strip)(vm.selectedBvs).indexOf(data.name);
+      var idx = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.selectedBvs).indexOf(data.name);
       if (idx >= 0) {
         vm.selectedBvs.splice(idx, 1);
       } else {
@@ -21199,7 +21203,7 @@ var homePage = {
      *
      */
     selectDateCb: function selectDateCb(data) {
-      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_7__.clog)("%c selectDateCb", "color: blue", data);
+      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c selectDateCb", "color: blue", data);
       var vm = this;
       vm.period.start = "".concat(data.date, "T00:00:00");
       vm.period.end = "".concat(data.date, "T23:59:59");
@@ -21229,7 +21233,7 @@ var homePage = {
      *   }
      */
     selectPeriodCb: function selectPeriodCb(data) {
-      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_7__.clog)("%c selectPeriodCb", "color: blue", data);
+      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c selectPeriodCb", "color: blue", data);
       var vm = this;
       vm.period.start = "".concat(data.start, "T00:00:00");
       vm.period.end = "".concat(data.end, "T23:59:59");

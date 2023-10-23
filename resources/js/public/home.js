@@ -2,18 +2,21 @@
  * Домашняя страница
  */
 
+//хэлперы
+import { strip, clog } from "@/misc/helpers";
+import moment from "moment";
+
+//миксины
 import axiosRequests from "@/mixins/axiosRequests";
+import crud from "@/mixins/crud";
 import publicAuthData from "@/mixins/publicAuthData";
+
+//компоненты
 import BvsMapComponent from "@/components/BvsMapComponent/";
-import SwitcherComponent from "@/components/SwitcherComponent";
 import CalendarComponent from "@/components/CalendarComponent";
 import BvsShortComponent from "@/components/BvsShortComponent";
 import BvsOperationComponent from "@/components/BvsOperationComponent";
-import { strip, clog } from "@/misc/helpers";
-import crud from "@/mixins/crud";
-import moment from "moment";
-
-const axios = require("axios");
+import SwitcherComponent from "@/components/SwitcherComponent";
 
 const homePage = {
     mixins: [axiosRequests, crud, publicAuthData],

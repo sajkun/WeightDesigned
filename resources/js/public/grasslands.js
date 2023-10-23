@@ -15,9 +15,9 @@ import {
 
 // миксины
 import axiosRequests from "@/mixins/axiosRequests";
-import publicAuthData from "@/mixins/publicAuthData";
-import messages from "@/mixins/messages";
 import crud from "@/mixins/crud";
+import messages from "@/mixins/messages";
+import publicAuthData from "@/mixins/publicAuthData";
 
 //компоненты
 import FileInputComponent from "@/components/FileInputComponent";
