@@ -2,9 +2,7 @@
  * Домашняя страница
  */
 
-import messages from "@/mixins/messages";
 import publicAuthData from "@/mixins/publicAuthData";
-import MessagesComponent from "@/components/MessagesComponent/";
 import BvsMapComponent from "@/components/BvsMapComponent/";
 import SwitcherComponent from "@/components/SwitcherComponent";
 import CalendarComponent from "@/components/CalendarComponent";
@@ -17,10 +15,9 @@ import moment from "moment";
 const axios = require("axios");
 
 const homePage = {
-    mixins: [messages, crud, publicAuthData],
+    mixins: [crud, publicAuthData],
 
     components: {
-        MessagesComponent,
         BvsShortComponent,
         SwitcherComponent,
         Calendar: CalendarComponent,
