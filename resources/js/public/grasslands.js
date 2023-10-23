@@ -1,21 +1,30 @@
-import { strip, clog, getFormData } from "@/misc/helpers";
-import publicAuthData from "@/mixins/publicAuthData";
+/**
+ *
+ * @author Кулешов Вячеслав Евгеньевич
+ */
 
+//хэлперы
+import { strip, clog, getFormData } from "@/misc/helpers";
+import { kml } from "@/../../node_modules/@tmcw/togeojson";
 import {
     readBinaryShapeFile,
     getShapeFileCenter,
     getPointsForGrassland,
     getCenterByPoints,
 } from "./dbf";
+
+// миксины
+import axiosRequests from "@/mixins/axiosRequests";
+import publicAuthData from "@/mixins/publicAuthData";
 import messages from "@/mixins/messages";
 import crud from "@/mixins/crud";
+
+//компоненты
 import FileInputComponent from "@/components/FileInputComponent";
-import { kml } from "@/../../node_modules/@tmcw/togeojson";
 
 let grasslandMap;
-const axios = require("axios");
 const appPublicGrasslands = {
-    mixins: [messages, crud, publicAuthData],
+    mixins: [axiosRequests, messages, crud, publicAuthData],
     components: {
         file: FileInputComponent,
     },
@@ -29,9 +38,14 @@ const appPublicGrasslands = {
     mounted() {
         const vm = this;
 
-        vm.getGrasslands();
+        vm.getGrasslands().then((r) => {
+            vm.grasslands = r.grasslands;
+        });
+
         document.addEventListener("updateList", () => {
-            vm.getGrasslands();
+            vm.getGrasslands().then((r) => {
+                vm.grasslands = r.grasslands;
+            });
         });
     },
 
@@ -182,25 +196,6 @@ const appPublicGrasslands = {
                     }
                 });
             });
-        },
-
-        getGrasslands() {
-            const vm = this;
-            if (vm.$refs.organisationId < 0) {
-                return;
-            }
-            axios
-                .get("/grasslands/list", {
-                    user_id: vm.userId,
-                })
-                .then((response) => {
-                    clog("%c getGrasslands", "color: green", response);
-                    vm.grasslands = strip(response.data.grasslands);
-                })
-                .catch((e) => {
-                    clog("%c getGrasslands error", "color: red", e.response);
-                    vm.messages.error = `${e.response.status} ${e.response.statusText} : ${e.response.data.message}`;
-                });
         },
 
         initMap(selector) {

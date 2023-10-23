@@ -2,6 +2,7 @@
  * Домашняя страница
  */
 
+import axiosRequests from "@/mixins/axiosRequests";
 import publicAuthData from "@/mixins/publicAuthData";
 import BvsMapComponent from "@/components/BvsMapComponent/";
 import SwitcherComponent from "@/components/SwitcherComponent";
@@ -15,7 +16,7 @@ import moment from "moment";
 const axios = require("axios");
 
 const homePage = {
-    mixins: [crud, publicAuthData],
+    mixins: [axiosRequests, crud, publicAuthData],
 
     components: {
         BvsShortComponent,
@@ -32,14 +33,29 @@ const homePage = {
 
             // тип детализации отображенния данных
             display: "calendar", // calendar | list | items
+
+            // исходные данные от БВС
             bvsData: [],
+
+            // перечень полей хозяйства
+            grasslands: [],
+
+            // период отображения данных
             period: {
                 start: null,
                 end: null,
             },
+
+            // список выбранных весовых для отображения на карте
             selectedBvs: [],
+
+            // список выбранных операций весовых для отображения на карте
             selectedOperationsIds: [],
+
+            // ширина окна браузера
             windowWidth: window.innerWidth,
+
+            //Признак отображения/скрытия компонента карты
             showMap: true,
         };
     },
@@ -50,7 +66,14 @@ const homePage = {
             window.addEventListener("resize", vm.onResize);
         });
 
-        vm.getBvsData();
+        vm.getBvsData().then((response) => {
+            vm.bvsData = response.bvs_data;
+        });
+
+        vm.getGrasslands((response) => {
+            clog(response.grasslands);
+            vm.grasslands = response.grasslands;
+        });
     },
 
     watch: {
@@ -286,31 +309,6 @@ const homePage = {
             const vm = this;
             vm.mode = data.mode;
             vm.display = vm.mode === "all" ? "list" : "calendar";
-        },
-
-        /**
-         * запрос в базу данных информации от БВС о собранном урожае.
-         * Назначение полученных данных переменной bvsData
-         *
-         * @returns {Void}
-         */
-        getBvsData() {
-            const vm = this;
-            const postData = {
-                user_id: vm.userId,
-                organisation_id: vm.organisationId,
-            };
-
-            axios
-                .post(`/bvsdata/list`, postData)
-                .then((response) => {
-                    clog("%c getBvsData response", "color:green", response);
-
-                    vm.bvsData = response.data.bvs_data;
-                })
-                .catch((e) => {
-                    clog("%c getBvsData error", "color: red", e.response);
-                });
         },
 
         /**

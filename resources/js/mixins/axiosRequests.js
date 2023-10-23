@@ -58,6 +58,35 @@ export default {
         },
 
         /**
+         * запрос перечня полей
+         *
+         * @return {Promise}
+         */
+        getGrasslands() {
+            const vm = this;
+            if (vm.$refs.organisationId < 0) {
+                return;
+            }
+            return axios
+                .get("/grasslands/list", {
+                    user_id: vm.userId,
+                })
+                .then((response) => {
+                    clog("%c getGrasslands", "color: green", response);
+                    vm.grasslands = strip(response.data.grasslands);
+
+                    return strip(response.data);
+                })
+                .catch((e) => {
+                    clog("%c getGrasslands error", "color: red", e.response);
+
+                    vm.messages.error = `${e.response.status} ${e.response.statusText} : ${e.response.data.message}`;
+
+                    return e.response;
+                });
+        },
+
+        /**
          * запрос перечня техники
          *
          * @return {Promise}

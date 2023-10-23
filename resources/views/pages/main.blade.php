@@ -15,9 +15,7 @@
                     </switcher-component>
                 </div>
                 <div class="px-4 py-2" v-if='display==="calendar"'>
-
                     <div class="mt-4"></div>
-
                     {{-- компонент Календарь --}}
                     <calendar :_initial-date='today' :_disabled='calendarState' :_period="period"
                         :_select-period='selectPeriod' :_marked-days="markedDays" @selected-date='selectDateCb'
