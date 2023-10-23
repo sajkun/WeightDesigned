@@ -18217,6 +18217,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _public_statistics_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./public/statistics.js */ "./resources/js/public/statistics.js");
 /**
  * Основной файл, собирающий весь скрипт приложения
+ *
+ * @author Кулешов Вячеслав <sajkunrnd@gmail.com>
  */
 
 
@@ -18946,9 +18948,6 @@ function _classApplyDescriptorSet(receiver, descriptor, value) { if (descriptor.
  * и форматирующий их в представление, используемое
  * для отображения графика сбора урожая
  * и статистических данных
- *
- *
- * @author Кулешов Вячеслав
  */
 
 //хэлперы
@@ -19729,6 +19728,67 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/mixins/fixedRightCol.js":
+/*!**********************************************!*\
+  !*** ./resources/js/mixins/fixedRightCol.js ***!
+  \**********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _misc_helpers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/misc/helpers */ "./resources/js/misc/helpers.js");
+/**
+ *
+ */
+
+//хэлперы
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  data: function data() {
+    return {
+      classes: {
+        checked: false
+      }
+    };
+  },
+  mounted: function mounted() {
+    (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("test fixed scroll");
+  },
+  methods: {
+    checkClasses: function checkClasses(el) {
+      var vm = this;
+      if (vm.classes.checked) return;
+      for (var _class in vm.classes) {
+        vm.classes[_class] = el.classList.contains(_class);
+      }
+      vm.classes.checked = true;
+    },
+    fixWidthnPosition: function fixWidthnPosition(el) {
+      this.checkClasses(el);
+      var rect = el.getBoundingClientRect();
+      el.style.width = "".concat(rect.width, "px");
+      el.style.height = "".concat(rect.height, "px");
+      el.style.top = "".concat(rect.top, "px");
+      el.style.right = "".concat(rect.top, "px");
+      el.style.position = "fixed";
+      el.classList.remove("w-100");
+      el.classList.remove("h-100");
+    },
+    restoreClasses: function restoreClasses(el) {
+      var vm = this;
+      for (var _class in vm.classes) {
+        vm.classes[_class] = el.classList.contains(_class);
+      }
+    },
+    makeTargetFixed: function makeTargetFixed(el) {}
+  }
+});
+
+/***/ }),
+
 /***/ "./resources/js/mixins/inputEvents.js":
 /*!********************************************!*\
   !*** ./resources/js/mixins/inputEvents.js ***!
@@ -20495,37 +20555,46 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _misc_helpers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/misc/helpers */ "./resources/js/misc/helpers.js");
-/* harmony import */ var _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @/mixins/publicAuthData */ "./resources/js/mixins/publicAuthData.js");
-/* harmony import */ var _mixins_messages__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @/mixins/messages */ "./resources/js/mixins/messages.js");
-/* harmony import */ var _components_MessagesComponent___WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @/components/MessagesComponent/ */ "./resources/js/components/MessagesComponent/index.js");
-/* harmony import */ var _components_inputs_FieldComponent__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @/components/inputs/FieldComponent */ "./resources/js/components/inputs/FieldComponent/index.js");
-/* harmony import */ var _components_inputs_InputComponent__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @/components/inputs/InputComponent */ "./resources/js/components/inputs/InputComponent/index.js");
-/* harmony import */ var _components_inputs_FormComponent___WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @/components/inputs/FormComponent/ */ "./resources/js/components/inputs/FormComponent/index.js");
-/* harmony import */ var _mixins_crud__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @/mixins/crud */ "./resources/js/mixins/crud.js");
-/* harmony import */ var _formFields_employees_add__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @/formFields/employees/add */ "./resources/js/formFields/employees/add.js");
-/* harmony import */ var _formFields_employees_edit__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @/formFields/employees/edit */ "./resources/js/formFields/employees/edit.js");
+/* harmony import */ var _formFields_employees_add__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @/formFields/employees/add */ "./resources/js/formFields/employees/add.js");
+/* harmony import */ var _mixins_crud__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @/mixins/crud */ "./resources/js/mixins/crud.js");
+/* harmony import */ var _formFields_employees_edit__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @/formFields/employees/edit */ "./resources/js/formFields/employees/edit.js");
+/* harmony import */ var _mixins_fixedRightCol__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @/mixins/fixedRightCol */ "./resources/js/mixins/fixedRightCol.js");
+/* harmony import */ var _mixins_messages__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @/mixins/messages */ "./resources/js/mixins/messages.js");
+/* harmony import */ var _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @/mixins/publicAuthData */ "./resources/js/mixins/publicAuthData.js");
+/* harmony import */ var _components_inputs_FieldComponent__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @/components/inputs/FieldComponent */ "./resources/js/components/inputs/FieldComponent/index.js");
+/* harmony import */ var _components_inputs_FormComponent___WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @/components/inputs/FormComponent/ */ "./resources/js/components/inputs/FormComponent/index.js");
+/* harmony import */ var _components_inputs_InputComponent__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @/components/inputs/InputComponent */ "./resources/js/components/inputs/InputComponent/index.js");
+/* harmony import */ var _components_MessagesComponent___WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @/components/MessagesComponent/ */ "./resources/js/components/MessagesComponent/index.js");
 /**
+ *
  * Приложение отвечающее за внешний вид и отправку
  * запросов CRUD раздела "Сотрудники"
  */
 
+//хэлперы
+
+
+//миксины
 
 
 
 
 
+
+
+//компоненты
 
 
 
 
 var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 var appPublicEmployees = {
-  mixins: [_mixins_messages__WEBPACK_IMPORTED_MODULE_2__["default"], _mixins_crud__WEBPACK_IMPORTED_MODULE_7__["default"], _formFields_employees_add__WEBPACK_IMPORTED_MODULE_8__["default"], _formFields_employees_edit__WEBPACK_IMPORTED_MODULE_9__["default"], _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_1__["default"]],
+  mixins: [_formFields_employees_add__WEBPACK_IMPORTED_MODULE_1__["default"], _mixins_crud__WEBPACK_IMPORTED_MODULE_2__["default"], _formFields_employees_edit__WEBPACK_IMPORTED_MODULE_3__["default"], _mixins_fixedRightCol__WEBPACK_IMPORTED_MODULE_4__["default"], _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_6__["default"], _mixins_messages__WEBPACK_IMPORTED_MODULE_5__["default"]],
   components: {
-    FieldComponent: _components_inputs_FieldComponent__WEBPACK_IMPORTED_MODULE_4__["default"],
-    Field: _components_inputs_InputComponent__WEBPACK_IMPORTED_MODULE_5__["default"],
-    TheForm: _components_inputs_FormComponent___WEBPACK_IMPORTED_MODULE_6__["default"],
-    MessagesComponent: _components_MessagesComponent___WEBPACK_IMPORTED_MODULE_3__["default"]
+    FieldComponent: _components_inputs_FieldComponent__WEBPACK_IMPORTED_MODULE_7__["default"],
+    Field: _components_inputs_InputComponent__WEBPACK_IMPORTED_MODULE_9__["default"],
+    TheForm: _components_inputs_FormComponent___WEBPACK_IMPORTED_MODULE_8__["default"],
+    MessagesComponent: _components_MessagesComponent___WEBPACK_IMPORTED_MODULE_10__["default"]
   },
   data: function data() {
     return {
@@ -20765,7 +20834,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_FileInputComponent__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @/components/FileInputComponent */ "./resources/js/components/FileInputComponent/index.js");
 /**
  *
- * @author Кулешов Вячеслав Евгеньевич
  */
 
 //хэлперы
@@ -20967,12 +21035,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _mixins_axiosRequests__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @/mixins/axiosRequests */ "./resources/js/mixins/axiosRequests.js");
 /* harmony import */ var _mixins_crud__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @/mixins/crud */ "./resources/js/mixins/crud.js");
-/* harmony import */ var _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @/mixins/publicAuthData */ "./resources/js/mixins/publicAuthData.js");
-/* harmony import */ var _components_BvsMapComponent___WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @/components/BvsMapComponent/ */ "./resources/js/components/BvsMapComponent/index.js");
-/* harmony import */ var _components_CalendarComponent__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @/components/CalendarComponent */ "./resources/js/components/CalendarComponent/index.js");
-/* harmony import */ var _components_BvsShortComponent__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @/components/BvsShortComponent */ "./resources/js/components/BvsShortComponent/index.js");
-/* harmony import */ var _components_BvsOperationComponent__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @/components/BvsOperationComponent */ "./resources/js/components/BvsOperationComponent/index.js");
-/* harmony import */ var _components_SwitcherComponent__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @/components/SwitcherComponent */ "./resources/js/components/SwitcherComponent/index.js");
+/* harmony import */ var _mixins_fixedRightCol__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @/mixins/fixedRightCol */ "./resources/js/mixins/fixedRightCol.js");
+/* harmony import */ var _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @/mixins/publicAuthData */ "./resources/js/mixins/publicAuthData.js");
+/* harmony import */ var _components_BvsMapComponent___WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @/components/BvsMapComponent/ */ "./resources/js/components/BvsMapComponent/index.js");
+/* harmony import */ var _components_CalendarComponent__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @/components/CalendarComponent */ "./resources/js/components/CalendarComponent/index.js");
+/* harmony import */ var _components_BvsShortComponent__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @/components/BvsShortComponent */ "./resources/js/components/BvsShortComponent/index.js");
+/* harmony import */ var _components_BvsOperationComponent__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @/components/BvsOperationComponent */ "./resources/js/components/BvsOperationComponent/index.js");
+/* harmony import */ var _components_SwitcherComponent__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @/components/SwitcherComponent */ "./resources/js/components/SwitcherComponent/index.js");
 /**
  * Домашняя страница
  */
@@ -20986,6 +21055,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
 //компоненты
 
 
@@ -20993,13 +21063,13 @@ __webpack_require__.r(__webpack_exports__);
 
 
 var homePage = {
-  mixins: [_mixins_axiosRequests__WEBPACK_IMPORTED_MODULE_2__["default"], _mixins_crud__WEBPACK_IMPORTED_MODULE_3__["default"], _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_4__["default"]],
+  mixins: [_mixins_axiosRequests__WEBPACK_IMPORTED_MODULE_2__["default"], _mixins_crud__WEBPACK_IMPORTED_MODULE_3__["default"], _mixins_fixedRightCol__WEBPACK_IMPORTED_MODULE_4__["default"], _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_5__["default"]],
   components: {
-    BvsShortComponent: _components_BvsShortComponent__WEBPACK_IMPORTED_MODULE_7__["default"],
-    SwitcherComponent: _components_SwitcherComponent__WEBPACK_IMPORTED_MODULE_9__["default"],
-    Calendar: _components_CalendarComponent__WEBPACK_IMPORTED_MODULE_6__["default"],
-    BvsMap: _components_BvsMapComponent___WEBPACK_IMPORTED_MODULE_5__["default"],
-    BvsOperation: _components_BvsOperationComponent__WEBPACK_IMPORTED_MODULE_8__["default"]
+    BvsShortComponent: _components_BvsShortComponent__WEBPACK_IMPORTED_MODULE_8__["default"],
+    SwitcherComponent: _components_SwitcherComponent__WEBPACK_IMPORTED_MODULE_10__["default"],
+    Calendar: _components_CalendarComponent__WEBPACK_IMPORTED_MODULE_7__["default"],
+    BvsMap: _components_BvsMapComponent___WEBPACK_IMPORTED_MODULE_6__["default"],
+    BvsOperation: _components_BvsOperationComponent__WEBPACK_IMPORTED_MODULE_9__["default"]
   },
   data: function data() {
     return {
@@ -21041,6 +21111,10 @@ var homePage = {
     vm.getGrasslands(function (response) {
       (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)(response.grasslands);
       vm.grasslands = response.grasslands;
+    });
+    var el = this.$refs.fixposition;
+    vm.$nextTick(function () {
+      vm.fixWidthnPosition(el);
     });
   },
   watch: {
@@ -21479,7 +21553,6 @@ __webpack_require__.r(__webpack_exports__);
 /**
  * приложение отображение статистики публичного раздела
  *
- * @author Кулешов Вячеслав
  */
 
 //хэлперы

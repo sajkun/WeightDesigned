@@ -1,5 +1,7 @@
 /**
  * Основной файл, собирающий весь скрипт приложения
+ *
+ * @author Кулешов Вячеслав <sajkunrnd@gmail.com>
  */
 
 import { createApp } from "vue";

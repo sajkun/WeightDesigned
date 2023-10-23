@@ -9,6 +9,7 @@ import moment from "moment";
 //миксины
 import axiosRequests from "@/mixins/axiosRequests";
 import crud from "@/mixins/crud";
+import fixedRightCol from "@/mixins/fixedRightCol";
 import publicAuthData from "@/mixins/publicAuthData";
 
 //компоненты
@@ -19,7 +20,7 @@ import BvsOperationComponent from "@/components/BvsOperationComponent";
 import SwitcherComponent from "@/components/SwitcherComponent";
 
 const homePage = {
-    mixins: [axiosRequests, crud, publicAuthData],
+    mixins: [axiosRequests, crud, fixedRightCol, publicAuthData],
 
     components: {
         BvsShortComponent,
@@ -76,6 +77,12 @@ const homePage = {
         vm.getGrasslands((response) => {
             clog(response.grasslands);
             vm.grasslands = response.grasslands;
+        });
+
+        const el = this.$refs.fixposition;
+
+        vm.$nextTick(() => {
+            vm.fixWidthnPosition(el);
         });
     },
 
