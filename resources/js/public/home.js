@@ -94,6 +94,13 @@ const homePage = {
             return null;
         },
 
+        /**
+         * скрытие и отображение карты для мобильных устройств
+         *
+         * @param {Integer} newWidth
+         *
+         * @returns {Void}
+         */
         windowWidth(newWidth) {
             const vm = this;
             const breakpoint = 768;
@@ -154,6 +161,11 @@ const homePage = {
             return data;
         },
 
+        /**
+         * отфильтрованные значения данных от БВС в разрезе операций
+         *
+         * @returns {Array} массив данных о БВС
+         */
         bvsFilteredByOperations() {
             const vm = this;
             let data = strip(vm.bvsOperations);
@@ -195,7 +207,7 @@ const homePage = {
         },
 
         /**
-         * Признак активности календаря
+         * Ключ, определюящий надо ли отображать календарь в зависимости от типа выбранного периода
          *
          * @returns {Boolean}
          */
@@ -206,7 +218,7 @@ const homePage = {
         /**
          * Форматированная строка текущей даты
          *
-         * @returns String D-m-y
+         * @returns {String} пример  YYYY-MM-DD (1900-10-23). Нумерация месмыцев начитнается с 1, т.е.  январь <-> 1 и т.д.
          */
         today() {
             const vm = this;
@@ -218,6 +230,10 @@ const homePage = {
             return moment().format("YYYY-MM-DD");
         },
 
+        /**
+         *
+         * @returns {Array<String>} возвращает массив строк. Строки то даты в формате YYYY-MM-DD (1900-10-23).  Нумерация месмыцев начитнается с 1, т.е.  январь <-> 1 и т.д.
+         */
         markedDays() {
             const vm = this;
             let data = strip(vm.bvsData);
@@ -230,7 +246,12 @@ const homePage = {
             return dates;
         },
 
-        // режимы выбора даты
+        /**
+         * режимы выбора даты
+         *
+         * @returns {Object}
+         */
+
         modes() {
             const modes = {
                 all: "За все время",
@@ -240,7 +261,10 @@ const homePage = {
             return modes;
         },
 
-        // признак режима работы календаря выбор периода или нет
+        /** признак режима работы календаря. Включен ли выбор периода или нет
+         *
+         *  @returns {Boolean}
+         */
         selectPeriod() {
             return this.mode === "period";
         },
@@ -259,7 +283,7 @@ const homePage = {
         /**
          * смена режима выбора отображения даты
          *
-         * @param {Enum} display :// all | day | period
+         * @param {Enum} display  all | day | period
          */
         changeMode(data) {
             const vm = this;
@@ -267,10 +291,14 @@ const homePage = {
             vm.display = vm.mode === "all" ? "list" : "calendar";
         },
 
-        // запрос данных БВС
+        /**
+         * запрос в базу данных информации от БВС о собранном урожае.
+         * Назначение полученных данных переменной bvsData
+         *
+         * @returns {Void}
+         */
         getBvsData() {
             const vm = this;
-
             const postData = {
                 user_id: vm.userId,
                 organisation_id: vm.organisationId,
@@ -282,24 +310,24 @@ const homePage = {
                     clog("%c getBvsData response", "color:green", response);
 
                     vm.bvsData = response.data.bvs_data;
-                    // vm.messages[response.data.type] = response?.data?.message;
                 })
                 .catch((e) => {
                     clog("%c getBvsData error", "color: red", e.response);
-                    // vm.messages.error = e.response.data.message;
                 });
         },
 
         /**
          * Коллбэк для события изменения размеров окна браузера
          * Обновляет значение переменной ширины окна
+         *
+         * @returns {Void}
          */
         onResize() {
             this.windowWidth = window.innerWidth;
         },
 
         /**
-         * обработчик события выбора БВС
+         * обработчик события клика на элемент из списка БВС
          *
          * @param {Object} data
          */
@@ -314,7 +342,7 @@ const homePage = {
         },
 
         /**
-         * обработчик события календаря. Выбор 1 даты
+         * обработчик события выбора единичной даты на  календаре.
          *
          * @param {Object} data {date: ISO date string}
          *
@@ -327,7 +355,7 @@ const homePage = {
         },
 
         /**
-         * обработчик события выбора операции БВС
+         * обработчик события клика на элементе из списка операций БВС
          *
          * @param {Object} data BvsData object @see BvsData Laravel Model BvsData
          *
@@ -343,7 +371,7 @@ const homePage = {
         },
 
         /**
-         * обработчик события календаря. Выбор диапазона дат
+         * обработчик события выбора диапазона дат на  календаре.
          *
          * @param {Object} data
          *   {

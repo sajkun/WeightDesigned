@@ -20968,6 +20968,13 @@ var homePage = {
       }
       return null;
     },
+    /**
+     * скрытие и отображение карты для мобильных устройств
+     *
+     * @param {Integer} newWidth
+     *
+     * @returns {Void}
+     */
     windowWidth: function windowWidth(newWidth) {
       var vm = this;
       var breakpoint = 768;
@@ -21018,6 +21025,11 @@ var homePage = {
       }, initialValue);
       return data;
     },
+    /**
+     * отфильтрованные значения данных от БВС в разрезе операций
+     *
+     * @returns {Array} массив данных о БВС
+     */
     bvsFilteredByOperations: function bvsFilteredByOperations() {
       var vm = this;
       var data = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_8__.strip)(vm.bvsOperations);
@@ -21050,7 +21062,7 @@ var homePage = {
       return data;
     },
     /**
-     * Признак активности календаря
+     * Ключ, определюящий надо ли отображать календарь в зависимости от типа выбранного периода
      *
      * @returns {Boolean}
      */
@@ -21060,7 +21072,7 @@ var homePage = {
     /**
      * Форматированная строка текущей даты
      *
-     * @returns String D-m-y
+     * @returns {String} пример  YYYY-MM-DD (1900-10-23). Нумерация месмыцев начитнается с 1, т.е.  январь <-> 1 и т.д.
      */
     today: function today() {
       var vm = this;
@@ -21070,6 +21082,10 @@ var homePage = {
       }
       return moment__WEBPACK_IMPORTED_MODULE_10___default()().format("YYYY-MM-DD");
     },
+    /**
+     *
+     * @returns {Array<String>} возвращает массив строк. Строки то даты в формате YYYY-MM-DD (1900-10-23).  Нумерация месмыцев начитнается с 1, т.е.  январь <-> 1 и т.д.
+     */
     markedDays: function markedDays() {
       var vm = this;
       var data = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_8__.strip)(vm.bvsData);
@@ -21079,7 +21095,11 @@ var homePage = {
       });
       return dates;
     },
-    // режимы выбора даты
+    /**
+     * режимы выбора даты
+     *
+     * @returns {Object}
+     */
     modes: function modes() {
       var modes = {
         all: "За все время",
@@ -21088,7 +21108,10 @@ var homePage = {
       };
       return modes;
     },
-    // признак режима работы календаря выбор периода или нет
+    /** признак режима работы календаря. Включен ли выбор периода или нет
+     *
+     *  @returns {Boolean}
+     */
     selectPeriod: function selectPeriod() {
       return this.mode === "period";
     }
@@ -21105,14 +21128,19 @@ var homePage = {
     /**
      * смена режима выбора отображения даты
      *
-     * @param {Enum} display :// all | day | period
+     * @param {Enum} display  all | day | period
      */
     changeMode: function changeMode(data) {
       var vm = this;
       vm.mode = data.mode;
       vm.display = vm.mode === "all" ? "list" : "calendar";
     },
-    // запрос данных БВС
+    /**
+     * запрос в базу данных информации от БВС о собранном урожае.
+     * Назначение полученных данных переменной bvsData
+     *
+     * @returns {Void}
+     */
     getBvsData: function getBvsData() {
       var vm = this;
       var postData = {
@@ -21122,21 +21150,21 @@ var homePage = {
       axios.post("/bvsdata/list", postData).then(function (response) {
         (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_8__.clog)("%c getBvsData response", "color:green", response);
         vm.bvsData = response.data.bvs_data;
-        // vm.messages[response.data.type] = response?.data?.message;
       })["catch"](function (e) {
         (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_8__.clog)("%c getBvsData error", "color: red", e.response);
-        // vm.messages.error = e.response.data.message;
       });
     },
     /**
      * Коллбэк для события изменения размеров окна браузера
      * Обновляет значение переменной ширины окна
+     *
+     * @returns {Void}
      */
     onResize: function onResize() {
       this.windowWidth = window.innerWidth;
     },
     /**
-     * обработчик события выбора БВС
+     * обработчик события клика на элемент из списка БВС
      *
      * @param {Object} data
      */
@@ -21150,7 +21178,7 @@ var homePage = {
       }
     },
     /**
-     * обработчик события календаря. Выбор 1 даты
+     * обработчик события выбора единичной даты на  календаре.
      *
      * @param {Object} data {date: ISO date string}
      *
@@ -21162,7 +21190,7 @@ var homePage = {
       vm.period.end = "".concat(data.date, "T23:59:59");
     },
     /**
-     * обработчик события выбора операции БВС
+     * обработчик события клика на элементе из списка операций БВС
      *
      * @param {Object} data BvsData object @see BvsData Laravel Model BvsData
      *
@@ -21177,7 +21205,7 @@ var homePage = {
       }
     },
     /**
-     * обработчик события календаря. Выбор диапазона дат
+     * обработчик события выбора диапазона дат на  календаре.
      *
      * @param {Object} data
      *   {
