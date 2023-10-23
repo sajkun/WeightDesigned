@@ -265,7 +265,6 @@ export default {
             const vm = this;
             const [cnvs, ctx] = vm.getCnv;
             const zero = strip(vm.zero);
-
             const step = strip(vm.getStepsData());
             const info = strip(vm.info);
 
