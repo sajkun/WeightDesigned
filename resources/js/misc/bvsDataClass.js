@@ -237,6 +237,10 @@ class BvsData {
                 const _data = harvestData[period];
                 const idx = date.format(_data.format);
 
+                if (_harvestData.bvs_name !== _harvestData.to) {
+                    continue;
+                }
+
                 if (!_data.items.has(idx)) {
                     _data.items.set(idx, 0);
                 }

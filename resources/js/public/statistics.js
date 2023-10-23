@@ -102,6 +102,7 @@ const appPublicStatistics = {
             if (!rawData?.items) {
                 return strip(vm.bvsInfoBlank);
             }
+
             return vm.prepareDataForGraph(rawData, type);
         },
 
@@ -265,6 +266,8 @@ const appPublicStatistics = {
             let info = strip(vm.bvsInfoBlank);
             // значение по оси OX предполагается увеличивать на 1
             let xValue = 0;
+
+            clog("%c prepareDataForGraph", "color: violet", rawData);
 
             rawData.items.forEach((value, key, map) => {
                 xValue++;
