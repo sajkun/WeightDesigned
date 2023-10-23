@@ -238,6 +238,12 @@ const homePage = {
             return this.mode === "all";
         },
 
+        grasslandsData() {
+            const vm = this;
+            const grasslands = strip(vm.grasslands);
+            return grasslands;
+        },
+
         /**
          * Форматированная строка текущей даты
          *

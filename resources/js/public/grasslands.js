@@ -6,16 +6,12 @@
 //хэлперы
 import { strip, clog, getFormData } from "@/misc/helpers";
 import { kml } from "@/../../node_modules/@tmcw/togeojson";
-import {
-    readBinaryShapeFile,
-    getShapeFileCenter,
-    getPointsForGrassland,
-    getCenterByPoints,
-} from "./dbf";
+import { readBinaryShapeFile, getPointsForGrassland } from "@/public/dbf";
 
 // миксины
 import axiosRequests from "@/mixins/axiosRequests";
 import crud from "@/mixins/crud";
+import drawGrassland from "@/mixins/drawGrassland";
 import messages from "@/mixins/messages";
 import publicAuthData from "@/mixins/publicAuthData";
 
@@ -24,7 +20,7 @@ import FileInputComponent from "@/components/FileInputComponent";
 
 let grasslandMap;
 const appPublicGrasslands = {
-    mixins: [axiosRequests, messages, crud, publicAuthData],
+    mixins: [axiosRequests, drawGrassland, crud, messages, publicAuthData],
     components: {
         file: FileInputComponent,
     },
@@ -93,82 +89,6 @@ const appPublicGrasslands = {
             };
 
             vm.createEntity(postData, "/grasslands/store");
-        },
-
-        drawGrassland(points) {
-            const vm = this;
-            const center = getCenterByPoints(points);
-
-            if (vm.$refs?.geo_json) {
-                vm.$refs.geo_json.value = JSON.stringify(points);
-            }
-
-            grasslandMap.setCenter(center);
-            grasslandMap.geoObjects.removeAll();
-
-            vm.drawGrasslandCb(points, grasslandMap);
-        },
-
-        drawGrasslandCb(coordinates, map) {
-            let grasslandGeoObject = new ymaps.GeoObject(
-                {
-                    // Описываем геометрию геообъекта.
-                    geometry: {
-                        // Тип геометрии - "Многоугольник".
-                        type: "Polygon",
-                        // Указываем координаты вершин многоугольника.
-                        coordinates: [coordinates],
-                        // Задаем правило заливки внутренних контуров по алгоритму "nonZero".
-                        fillRule: "nonZero",
-                    },
-                    // Описываем свойства геообъекта.
-                    properties: {
-                        // Содержимое балуна.
-                        // balloonContent: item.name,
-                    },
-                },
-                {
-                    // Описываем опции геообъекта.
-                    // Цвет заливки.
-                    fillColor: "rgba(143, 113, 43,0.1)",
-                    // Цвет обводки.
-                    strokeColor: "#c48e1a",
-                    // Общая прозрачность (как для заливки, так и для обводки).
-                    // opacity: 0.5,
-                    // Ширина обводки.
-                    strokeWidth: 3,
-                    // Стиль обводки.
-                    strokeStyle: "solid",
-                }
-            );
-
-            // Добавляем многоугольник на карту.
-            map.geoObjects.add(grasslandGeoObject);
-        },
-
-        drawKmlShape(geoJsonObject) {
-            const vm = this;
-            const geometry = geoJsonObject?.features.pop()?.geometry;
-
-            if (!geometry) {
-                vm.messages.error = `В файле не найдена разметка`;
-                return;
-            }
-
-            const type = geometry?.type;
-
-            const allowedTypes = ["LineString", "Polygon"];
-
-            if (!type || allowedTypes.indexOf(type) < 0) {
-                vm.messages.error = `Недопустимая геометрия разметки файла - (${type})`;
-                return;
-            }
-            const points =
-                type === "Polygon"
-                    ? geometry?.coordinates.shift()
-                    : geometry?.coordinates;
-
-            vm.drawGrassland(points);
         },
 
         deleteGrassland(item) {
@@ -246,10 +166,9 @@ const appPublicGrasslands = {
                         })
 
                         .then((shpData) => {
-                            clog(shpData);
-                            const center = getShapeFileCenter(shpData);
                             const points = getPointsForGrassland(shpData);
-                            vm.drawGrassland(points);
+                            grasslandMap.geoObjects.removeAll();
+                            vm.drawGrassland(points, grasslandMap);
                         });
                     break;
                 case "kml":
@@ -292,7 +211,8 @@ const appPublicGrasslands = {
             vm.$nextTick(() => {
                 vm.enableInputs();
                 grasslandMap = vm.initMap("map-container");
-                vm.drawGrassland(points);
+                grasslandMap.geoObjects.removeAll();
+                vm.drawGrassland(points, grasslandMap);
             });
         },
 

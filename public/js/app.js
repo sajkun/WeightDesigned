@@ -15193,9 +15193,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _misc_helpers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/misc/helpers */ "./resources/js/misc/helpers.js");
 /* harmony import */ var _components_svg_bvs_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @/components/svg/bvs.js */ "./resources/js/components/svg/bvs.js");
+/* harmony import */ var _mixins_drawGrassland__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @/mixins/drawGrassland */ "./resources/js/mixins/drawGrassland.js");
 function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
+
 
 
 
@@ -15206,11 +15208,13 @@ var grasslandMap;
     return {
       id: this._id,
       // HTML id атрибут
-      bvsData: this._bvsData // данные от бвс
+      bvsData: this._bvsData,
+      // данные от бвс
+      grasslandsData: this._grasslandsData // данные о полях
     };
   },
 
-  mixins: [_components_svg_bvs_js__WEBPACK_IMPORTED_MODULE_1__["default"]],
+  mixins: [_components_svg_bvs_js__WEBPACK_IMPORTED_MODULE_1__["default"], _mixins_drawGrassland__WEBPACK_IMPORTED_MODULE_2__["default"]],
   watch: {
     // обновление данных от родителя
     _bvsData: function _bvsData(data) {
@@ -15226,11 +15230,22 @@ var grasslandMap;
       if (grasslandMap.geoObjects.getLength()) {
         grasslandMap.setBounds(grasslandMap.geoObjects.getBounds());
       }
+    },
+    // обновление данных от родителя
+    _grasslandsData: function _grasslandsData(data) {
+      var vm = this;
+      vm.grasslandsData = data;
     }
   },
   props: {
     // данные от бвс
     _bvsData: {
+      type: Array,
+      "default": [],
+      required: false
+    },
+    // данные о полях
+    _grasslandsData: {
       type: Array,
       "default": [],
       required: false
@@ -15252,6 +15267,19 @@ var grasslandMap;
         vm.drawBvsData(data);
         if (grasslandMap.geoObjects.getLength()) {
           grasslandMap.setBounds(grasslandMap.geoObjects.getBounds());
+        }
+        var _iterator = _createForOfIteratorHelper(vm.grasslandsData),
+          _step;
+        try {
+          for (_iterator.s(); !(_step = _iterator.n()).done;) {
+            var _grassland = _step.value;
+            var points = JSON.parse(_grassland.geo_json);
+            vm.drawGrassland(points, grasslandMap);
+          }
+        } catch (err) {
+          _iterator.e(err);
+        } finally {
+          _iterator.f();
         }
       });
     });
@@ -15298,11 +15326,11 @@ var grasslandMap;
         clusterDisableClickZoom: true
       });
       var placemarks = [];
-      var _iterator = _createForOfIteratorHelper((0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(data)),
-        _step;
+      var _iterator2 = _createForOfIteratorHelper((0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(data)),
+        _step2;
       try {
-        for (_iterator.s(); !(_step = _iterator.n()).done;) {
-          var bvsData = _step.value;
+        for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+          var bvsData = _step2.value;
           // вычисление размера метки
           var newDiv = document.createElement("div");
           newDiv.setAttribute("id", "check");
@@ -15353,9 +15381,9 @@ var grasslandMap;
           placemarks.push(point);
         }
       } catch (err) {
-        _iterator.e(err);
+        _iterator2.e(err);
       } finally {
-        _iterator.f();
+        _iterator2.f();
       }
       clusterer.add(placemarks);
       grasslandMap.geoObjects.add(clusterer);
@@ -19600,6 +19628,107 @@ var crud = {
 
 /***/ }),
 
+/***/ "./resources/js/mixins/drawGrassland.js":
+/*!**********************************************!*\
+  !*** ./resources/js/mixins/drawGrassland.js ***!
+  \**********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _public_dbf__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/public/dbf */ "./resources/js/public/dbf.js");
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  methods: {
+    /**
+     *
+     * @param {*} points
+     *
+     * @returns {Void}
+     */
+    drawGrassland: function drawGrassland(points, grasslandMap) {
+      var _vm$$refs;
+      var vm = this;
+      var center = (0,_public_dbf__WEBPACK_IMPORTED_MODULE_0__.getCenterByPoints)(points);
+      if ((_vm$$refs = vm.$refs) !== null && _vm$$refs !== void 0 && _vm$$refs.geo_json) {
+        vm.$refs.geo_json.value = JSON.stringify(points);
+      }
+      grasslandMap.setCenter(center);
+      vm.execDrawGrassland(points, grasslandMap);
+    },
+    /**
+     * отрисовывает контур на яндекс карте по kml файлу
+     *
+     * @param {Object} geoJsonObject
+     *
+     * @returns {Void}
+     */
+    drawKmlShape: function drawKmlShape(geoJsonObject) {
+      var _geoJsonObject$featur;
+      var vm = this;
+      var geometry = geoJsonObject === null || geoJsonObject === void 0 || (_geoJsonObject$featur = geoJsonObject.features.pop()) === null || _geoJsonObject$featur === void 0 ? void 0 : _geoJsonObject$featur.geometry;
+      if (!geometry) {
+        vm.messages.error = "\u0412 \u0444\u0430\u0439\u043B\u0435 \u043D\u0435 \u043D\u0430\u0439\u0434\u0435\u043D\u0430 \u0440\u0430\u0437\u043C\u0435\u0442\u043A\u0430";
+        return;
+      }
+      var type = geometry === null || geometry === void 0 ? void 0 : geometry.type;
+      var allowedTypes = ["LineString", "Polygon"];
+      if (!type || allowedTypes.indexOf(type) < 0) {
+        vm.messages.error = "\u041D\u0435\u0434\u043E\u043F\u0443\u0441\u0442\u0438\u043C\u0430\u044F \u0433\u0435\u043E\u043C\u0435\u0442\u0440\u0438\u044F \u0440\u0430\u0437\u043C\u0435\u0442\u043A\u0438 \u0444\u0430\u0439\u043B\u0430 - (".concat(type, ")");
+        return;
+      }
+      var points = type === "Polygon" ? geometry === null || geometry === void 0 ? void 0 : geometry.coordinates.shift() : geometry === null || geometry === void 0 ? void 0 : geometry.coordinates;
+      vm.drawGrassland(points);
+    },
+    /**
+     * добавление объекта полигона по заданным точкам на карту
+     *
+     * @param {Arrya<float, float>} coordinates массив точек lat, long
+     * @param {Object} map объект ymap карта
+     *
+     * @returns {Void}
+     */
+    execDrawGrassland: function execDrawGrassland(coordinates, map) {
+      var grasslandGeoObject = new ymaps.GeoObject({
+        // Описываем геометрию геообъекта.
+        geometry: {
+          // Тип геометрии - "Многоугольник".
+          type: "Polygon",
+          // Указываем координаты вершин многоугольника.
+          coordinates: [coordinates],
+          // Задаем правило заливки внутренних контуров по алгоритму "nonZero".
+          fillRule: "nonZero"
+        },
+        // Описываем свойства геообъекта.
+        properties: {
+          // Содержимое балуна.
+          // balloonContent: item.name,
+        }
+      }, {
+        // Описываем опции геообъекта.
+        // Цвет заливки.
+        fillColor: "rgba(143, 113, 43,0.1)",
+        // Цвет обводки.
+        strokeColor: "#c48e1a",
+        // Общая прозрачность (как для заливки, так и для обводки).
+        // opacity: 0.5,
+        // Ширина обводки.
+        strokeWidth: 3,
+        // Стиль обводки.
+        strokeStyle: "solid"
+      });
+
+      // Добавляем многоугольник на карту.
+      map.geoObjects.add(grasslandGeoObject);
+    }
+  }
+});
+
+/***/ }),
+
 /***/ "./resources/js/mixins/inputEvents.js":
 /*!********************************************!*\
   !*** ./resources/js/mixins/inputEvents.js ***!
@@ -20627,12 +20756,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _misc_helpers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/misc/helpers */ "./resources/js/misc/helpers.js");
 /* harmony import */ var _node_modules_tmcw_togeojson__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @/../../node_modules/@tmcw/togeojson */ "./node_modules/@tmcw/togeojson/dist/togeojson.umd.js");
 /* harmony import */ var _node_modules_tmcw_togeojson__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_tmcw_togeojson__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _dbf__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./dbf */ "./resources/js/public/dbf.js");
+/* harmony import */ var _public_dbf__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @/public/dbf */ "./resources/js/public/dbf.js");
 /* harmony import */ var _mixins_axiosRequests__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @/mixins/axiosRequests */ "./resources/js/mixins/axiosRequests.js");
 /* harmony import */ var _mixins_crud__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @/mixins/crud */ "./resources/js/mixins/crud.js");
-/* harmony import */ var _mixins_messages__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @/mixins/messages */ "./resources/js/mixins/messages.js");
-/* harmony import */ var _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @/mixins/publicAuthData */ "./resources/js/mixins/publicAuthData.js");
-/* harmony import */ var _components_FileInputComponent__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @/components/FileInputComponent */ "./resources/js/components/FileInputComponent/index.js");
+/* harmony import */ var _mixins_drawGrassland__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @/mixins/drawGrassland */ "./resources/js/mixins/drawGrassland.js");
+/* harmony import */ var _mixins_messages__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @/mixins/messages */ "./resources/js/mixins/messages.js");
+/* harmony import */ var _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @/mixins/publicAuthData */ "./resources/js/mixins/publicAuthData.js");
+/* harmony import */ var _components_FileInputComponent__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @/components/FileInputComponent */ "./resources/js/components/FileInputComponent/index.js");
 /**
  *
  * @author Кулешов Вячеслав Евгеньевич
@@ -20649,13 +20779,14 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
 //компоненты
 
 var grasslandMap;
 var appPublicGrasslands = {
-  mixins: [_mixins_axiosRequests__WEBPACK_IMPORTED_MODULE_3__["default"], _mixins_messages__WEBPACK_IMPORTED_MODULE_5__["default"], _mixins_crud__WEBPACK_IMPORTED_MODULE_4__["default"], _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_6__["default"]],
+  mixins: [_mixins_axiosRequests__WEBPACK_IMPORTED_MODULE_3__["default"], _mixins_drawGrassland__WEBPACK_IMPORTED_MODULE_5__["default"], _mixins_crud__WEBPACK_IMPORTED_MODULE_4__["default"], _mixins_messages__WEBPACK_IMPORTED_MODULE_6__["default"], _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_7__["default"]],
   components: {
-    file: _components_FileInputComponent__WEBPACK_IMPORTED_MODULE_7__["default"]
+    file: _components_FileInputComponent__WEBPACK_IMPORTED_MODULE_8__["default"]
   },
   data: {
     mode: "list",
@@ -20704,67 +20835,6 @@ var appPublicGrasslands = {
         grassland_data: grasslandData
       };
       vm.createEntity(postData, "/grasslands/store");
-    },
-    drawGrassland: function drawGrassland(points) {
-      var _vm$$refs;
-      var vm = this;
-      var center = (0,_dbf__WEBPACK_IMPORTED_MODULE_2__.getCenterByPoints)(points);
-      if ((_vm$$refs = vm.$refs) !== null && _vm$$refs !== void 0 && _vm$$refs.geo_json) {
-        vm.$refs.geo_json.value = JSON.stringify(points);
-      }
-      grasslandMap.setCenter(center);
-      grasslandMap.geoObjects.removeAll();
-      vm.drawGrasslandCb(points, grasslandMap);
-    },
-    drawGrasslandCb: function drawGrasslandCb(coordinates, map) {
-      var grasslandGeoObject = new ymaps.GeoObject({
-        // Описываем геометрию геообъекта.
-        geometry: {
-          // Тип геометрии - "Многоугольник".
-          type: "Polygon",
-          // Указываем координаты вершин многоугольника.
-          coordinates: [coordinates],
-          // Задаем правило заливки внутренних контуров по алгоритму "nonZero".
-          fillRule: "nonZero"
-        },
-        // Описываем свойства геообъекта.
-        properties: {
-          // Содержимое балуна.
-          // balloonContent: item.name,
-        }
-      }, {
-        // Описываем опции геообъекта.
-        // Цвет заливки.
-        fillColor: "rgba(143, 113, 43,0.1)",
-        // Цвет обводки.
-        strokeColor: "#c48e1a",
-        // Общая прозрачность (как для заливки, так и для обводки).
-        // opacity: 0.5,
-        // Ширина обводки.
-        strokeWidth: 3,
-        // Стиль обводки.
-        strokeStyle: "solid"
-      });
-
-      // Добавляем многоугольник на карту.
-      map.geoObjects.add(grasslandGeoObject);
-    },
-    drawKmlShape: function drawKmlShape(geoJsonObject) {
-      var _geoJsonObject$featur;
-      var vm = this;
-      var geometry = geoJsonObject === null || geoJsonObject === void 0 || (_geoJsonObject$featur = geoJsonObject.features.pop()) === null || _geoJsonObject$featur === void 0 ? void 0 : _geoJsonObject$featur.geometry;
-      if (!geometry) {
-        vm.messages.error = "\u0412 \u0444\u0430\u0439\u043B\u0435 \u043D\u0435 \u043D\u0430\u0439\u0434\u0435\u043D\u0430 \u0440\u0430\u0437\u043C\u0435\u0442\u043A\u0430";
-        return;
-      }
-      var type = geometry === null || geometry === void 0 ? void 0 : geometry.type;
-      var allowedTypes = ["LineString", "Polygon"];
-      if (!type || allowedTypes.indexOf(type) < 0) {
-        vm.messages.error = "\u041D\u0435\u0434\u043E\u043F\u0443\u0441\u0442\u0438\u043C\u0430\u044F \u0433\u0435\u043E\u043C\u0435\u0442\u0440\u0438\u044F \u0440\u0430\u0437\u043C\u0435\u0442\u043A\u0438 \u0444\u0430\u0439\u043B\u0430 - (".concat(type, ")");
-        return;
-      }
-      var points = type === "Polygon" ? geometry === null || geometry === void 0 ? void 0 : geometry.coordinates.shift() : geometry === null || geometry === void 0 ? void 0 : geometry.coordinates;
-      vm.drawGrassland(points);
     },
     deleteGrassland: function deleteGrassland(item) {
       var vm = this;
@@ -20820,13 +20890,12 @@ var appPublicGrasslands = {
       };
       switch (ext) {
         case "shp":
-          (0,_dbf__WEBPACK_IMPORTED_MODULE_2__.readBinaryShapeFile)(data.file)["catch"](function (error) {
+          (0,_public_dbf__WEBPACK_IMPORTED_MODULE_2__.readBinaryShapeFile)(data.file)["catch"](function (error) {
             console.error("Error reading file:", error);
           }).then(function (shpData) {
-            (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)(shpData);
-            var center = (0,_dbf__WEBPACK_IMPORTED_MODULE_2__.getShapeFileCenter)(shpData);
-            var points = (0,_dbf__WEBPACK_IMPORTED_MODULE_2__.getPointsForGrassland)(shpData);
-            vm.drawGrassland(points);
+            var points = (0,_public_dbf__WEBPACK_IMPORTED_MODULE_2__.getPointsForGrassland)(shpData);
+            grasslandMap.geoObjects.removeAll();
+            vm.drawGrassland(points, grasslandMap);
           });
           break;
         case "kml":
@@ -20861,7 +20930,8 @@ var appPublicGrasslands = {
       vm.$nextTick(function () {
         vm.enableInputs();
         grasslandMap = vm.initMap("map-container");
-        vm.drawGrassland(points);
+        grasslandMap.geoObjects.removeAll();
+        vm.drawGrassland(points, grasslandMap);
       });
     },
     editGrassland: function editGrassland() {
@@ -21106,6 +21176,11 @@ var homePage = {
      */
     calendarState: function calendarState() {
       return this.mode === "all";
+    },
+    grasslandsData: function grasslandsData() {
+      var vm = this;
+      var grasslands = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.grasslands);
+      return grasslands;
     },
     /**
      * Форматированная строка текущей даты
@@ -21371,7 +21446,6 @@ __webpack_require__(/*! @/ready/dadata */ "./resources/js/ready/dadata.js");
 __webpack_require__(/*! @/ready/mobileMenu */ "./resources/js/ready/mobileMenu.js");
 __webpack_require__(/*! @/ready/formFields */ "./resources/js/ready/formFields.js");
 __webpack_require__(/*! @/ready/passwordStrength */ "./resources/js/ready/passwordStrength.js");
-console.log("ready js");
 
 /***/ }),
 

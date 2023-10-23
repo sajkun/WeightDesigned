@@ -8,6 +8,8 @@
 import { strip, clog } from "@/misc/helpers";
 import bvs from "@/components/svg/bvs.js";
 
+import drawGrassland from "@/mixins/drawGrassland";
+
 // переменная для хранения карты
 let grasslandMap;
 
@@ -16,10 +18,11 @@ export default {
         return {
             id: this._id, // HTML id атрибут
             bvsData: this._bvsData, // данные от бвс
+            grasslandsData: this._grasslandsData, // данные о полях
         };
     },
 
-    mixins: [bvs],
+    mixins: [bvs, drawGrassland],
     watch: {
         // обновление данных от родителя
         _bvsData(data) {
@@ -39,11 +42,23 @@ export default {
                 grasslandMap.setBounds(grasslandMap.geoObjects.getBounds());
             }
         },
+
+        // обновление данных от родителя
+        _grasslandsData(data) {
+            const vm = this;
+            vm.grasslandsData = data;
+        },
     },
 
     props: {
         // данные от бвс
         _bvsData: {
+            type: Array,
+            default: [],
+            required: false,
+        },
+        // данные о полях
+        _grasslandsData: {
             type: Array,
             default: [],
             required: false,
@@ -65,8 +80,14 @@ export default {
                 const data = strip(vm.bvsData);
                 grasslandMap = vm.initMap(vm.id);
                 vm.drawBvsData(data);
+
                 if (grasslandMap.geoObjects.getLength()) {
                     grasslandMap.setBounds(grasslandMap.geoObjects.getBounds());
+                }
+
+                for (const _grassland of vm.grasslandsData) {
+                    const points = JSON.parse(_grassland.geo_json);
+                    vm.drawGrassland(points, grasslandMap);
                 }
             });
         });
