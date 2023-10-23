@@ -208,6 +208,17 @@ export default {
                 return;
             };
 
+            /**
+             * Отрисовывает график с залитым фоном
+             *
+             * @param {Array} points массив подготовленных для отрисовки точек
+             * @param {String} strokeStyle строка hex код цвета
+             * @param {Integer} lineWidth ширина линии
+             * @param {Boolean} animate анимировать ли отрисовку
+             * @param {Array} zero zero[1] == vm.zero.x , zero[0] = vm.zero.x
+             *
+             * @returns {Void}
+             */
             const drawShape = (
                 points,
                 strokeStyle,

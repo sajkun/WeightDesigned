@@ -16201,6 +16201,18 @@ var drawTimeout;
         (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.polyline)(ctx, _points, animate);
         return;
       };
+
+      /**
+       * Отрисовывает график с залитым фоном
+       *
+       * @param {Array} points массив подготовленных для отрисовки точек
+       * @param {String} strokeStyle строка hex код цвета
+       * @param {Integer} lineWidth ширина линии
+       * @param {Boolean} animate анимировать ли отрисовку
+       * @param {Array} zero zero[1] == vm.zero.x , zero[0] = vm.zero.x
+       *
+       * @returns {Void}
+       */
       var drawShape = function drawShape(points, strokeStyle, lineWidth, animate, zero) {
         var _points = points;
         _points.push(generateLastPoint(_points, zero));
@@ -21533,8 +21545,10 @@ var appPublicStatistics = {
       return type;
     },
     /**
+     * Название выбранного периода отображения результатов фборки
      *
-     * @param {*} dateRange
+     * @param {Object} dateRange
+     *
      * @returns {String} год, имя месяца, диапазон дат
      */
     getPeriodName: function getPeriodName(dateRange) {
@@ -21544,8 +21558,13 @@ var appPublicStatistics = {
       var start = moment__WEBPACK_IMPORTED_MODULE_1___default()(dateRange.start);
       var end = moment__WEBPACK_IMPORTED_MODULE_1___default()(dateRange.end);
       var periodLength = end.diff(start, "days") + 1;
+      // начальное значение периода
       var periodName = "\u043F\u0435\u0440\u0438\u043E\u0434 \u0441 ".concat(start.format("D MMMM YYYY"), "\u0433 \u043F\u043E ").concat(end.format("D MMMM YYYY"), "\u0433");
+
+      // является ли период одним месяцем
       periodName = start.format("MMMM") === end.format("MMMM") && periodLength === start.daysInMonth() ? start.format("MMMM YYYY года") : periodName;
+
+      // является ли период одним годом
       periodName = start.format("YYYY") === end.format("YYYY") && periodLength === 365 ? start.format("YYYY год") : periodName;
       return periodName;
     },
@@ -21562,7 +21581,6 @@ var appPublicStatistics = {
       var info = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.bvsInfoBlank);
       // значение по оси OX предполагается увеличивать на 1
       var xValue = 0;
-      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c prepareDataForGraph", "color: violet", rawData);
       rawData.items.forEach(function (value, key, map) {
         xValue++;
         var date = moment__WEBPACK_IMPORTED_MODULE_1___default()(key, rawData.format);
@@ -21578,7 +21596,7 @@ var appPublicStatistics = {
         info.axis.x.after = value > 1000 ? "т." : info.axis.x.after;
 
         // обновление  максимального значения по оси OY
-        info.axis.y.maxValue = Math.max(info.axis.y.maxValue, newValue);
+        info.axis.y.maxValue = parseInt(Math.max(info.axis.y.maxValue, newValue) * 1.05);
 
         // метки по оси Х задаются в зависимости от выбранного периода, они могу быть и строка и число
         info.labels.x[parseInt(xValue)] = format;
@@ -21588,6 +21606,7 @@ var appPublicStatistics = {
         };
       });
       info.axis.x.maxValue = Object.values(info.points).length + 1;
+      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)(info);
       return info;
     },
     /**

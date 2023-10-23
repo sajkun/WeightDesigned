@@ -223,8 +223,10 @@ const appPublicStatistics = {
         },
 
         /**
+         * Название выбранного периода отображения результатов фборки
          *
-         * @param {*} dateRange
+         * @param {Object} dateRange
+         *
          * @returns {String} год, имя месяца, диапазон дат
          */
         getPeriodName(dateRange) {
@@ -234,16 +236,19 @@ const appPublicStatistics = {
             const start = moment(dateRange.start);
             const end = moment(dateRange.end);
             const periodLength = end.diff(start, "days") + 1;
+            // начальное значение периода
             let periodName = `период с ${start.format(
                 "D MMMM YYYY"
             )}г по ${end.format("D MMMM YYYY")}г`;
 
+            // является ли период одним месяцем
             periodName =
                 start.format("MMMM") === end.format("MMMM") &&
                 periodLength === start.daysInMonth()
                     ? start.format("MMMM YYYY года")
                     : periodName;
 
+            // является ли период одним годом
             periodName =
                 start.format("YYYY") === end.format("YYYY") &&
                 periodLength === 365
@@ -267,8 +272,6 @@ const appPublicStatistics = {
             // значение по оси OX предполагается увеличивать на 1
             let xValue = 0;
 
-            clog("%c prepareDataForGraph", "color: violet", rawData);
-
             rawData.items.forEach((value, key, map) => {
                 xValue++;
                 const date = moment(key, rawData.format);
@@ -284,7 +287,9 @@ const appPublicStatistics = {
                 info.axis.x.after = value > 1000 ? "т." : info.axis.x.after;
 
                 // обновление  максимального значения по оси OY
-                info.axis.y.maxValue = Math.max(info.axis.y.maxValue, newValue);
+                info.axis.y.maxValue = parseInt(
+                    Math.max(info.axis.y.maxValue, newValue) * 1.05
+                );
 
                 // метки по оси Х задаются в зависимости от выбранного периода, они могу быть и строка и число
                 info.labels.x[parseInt(xValue)] = format;
@@ -296,6 +301,8 @@ const appPublicStatistics = {
             });
 
             info.axis.x.maxValue = Object.values(info.points).length + 1;
+
+            clog(info);
 
             return info;
         },
