@@ -16174,13 +16174,14 @@ var drawTimeout;
 
       /**
        * Крайняя точка для области залития
-       * @param {*} points
+       * @param {Array} points
+       * @param {Array} zero zero[1] == vm.zero.x , zero[0] = vm.zero.x
        *
        * @returns {Array}
        */
       var generateLastPoint = function generateLastPoint(points, zero) {
         var endPoint = points[points.length - 1];
-        return [zero.y, endPoint[1]];
+        return [zero[0], endPoint[1]];
       };
 
       /**
