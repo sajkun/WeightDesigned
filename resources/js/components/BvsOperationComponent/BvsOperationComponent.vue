@@ -1,31 +1,39 @@
 <!-- отображение данных об операции бвс -->
 <template>
-    <div class="row" @click="clickCb" :class="{ selected: info.selected }">
-        <div class="col-6">
-            <b>Операция №{{ info.id }}</b>
-        </div>
-        <div class="col-6 text-end">
-            <span class="label">{{ operationTime.formatted }}</span>
-        </div>
-        <div class="col-4">
-            <p class="m-0 label">Статус:</p>
-            <span>{{ operationInfo.formatted }}</span>
-        </div>
-        <div class="col-4">
-            <p class="m-0 label">{{ operationInfo.type }}:</p>
-            <span>{{ operationInfo.object }}</span>
-        </div>
-        <div class="col-4">
-            <p class="m-0 label">Вес в бункере:</p>
-            <span>{{ operationInfo.ammountInBunker }}</span>
-        </div>
-        <div class="col-4">
-            <p class="m-0 label">Статус чека:</p>
-            <span :class="status.check.status">{{ status.check.text }}</span>
-        </div>
-        <div class="col-8">
-            <p class="m-0 label">RFID:</p>
-            <span :class="status.rfid.status">{{ status.rfid.text }}</span>
+    <div
+        class="root-wrapper py-2"
+        @click="clickCb"
+        :class="{ selected: info.selected }"
+    >
+        <div class="row">
+            <div class="col-6">
+                <b>Операция №{{ info.id }}</b>
+            </div>
+            <div class="col-6 text-end">
+                <span class="label">{{ operationTime.formatted }}</span>
+            </div>
+            <div class="col-4">
+                <p class="m-0 label">Статус:</p>
+                <span>{{ operationInfo.formatted }}</span>
+            </div>
+            <div class="col-4">
+                <p class="m-0 label">{{ operationInfo.type }}:</p>
+                <span>{{ operationInfo.object }}</span>
+            </div>
+            <div class="col-4">
+                <p class="m-0 label">Вес в бункере:</p>
+                <span>{{ operationInfo.ammountInBunker }}</span>
+            </div>
+            <div class="col-4">
+                <p class="m-0 label">Статус чека:</p>
+                <span :class="status.check.status">{{
+                    status.check.text
+                }}</span>
+            </div>
+            <div class="col-8">
+                <p class="m-0 label">RFID:</p>
+                <span :class="status.rfid.status">{{ status.rfid.text }}</span>
+            </div>
         </div>
     </div>
 </template>
@@ -183,6 +191,19 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.root-wrapper {
+    padding-right: calc(0.5 * var(--bs-gutter-x));
+    padding-left: calc(0.5 * var(--bs-gutter-x));
+    background-color: var(--lightest);
+    transition: background-color var(--fast);
+
+    &:hover {
+        background-color: var(--grey-light);
+    }
+    &.selected {
+        box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.3);
+    }
+}
 .error {
     color: var(--red);
 }
@@ -191,14 +212,5 @@ export default {
 }
 
 .row {
-    background-color: var(--lightest);
-
-    &:hover {
-        background-color: var(--grey-light);
-    }
-
-    &.selected {
-        box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.3);
-    }
 }
 </style>

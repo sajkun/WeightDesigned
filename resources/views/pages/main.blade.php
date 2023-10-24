@@ -21,7 +21,7 @@
 
                     {{-- кпопка перехода к режиму просмотра в разрезе БВС --}}
                     <div class="div" v-if='bvsDataFiltered.length'>
-                        <button class="btn btn-primary-alt w-100 text-center mt-4" type='button'
+                        <button class="btn btn-primary-alt w-100 text-center mt-2" type='button'
                             @click='changeDisplay("list")'>Продолжить</button>
                     </div>
                 </div>
@@ -30,7 +30,7 @@
                 {{-- НАЧАЛО БЛОКА  отображения списка БВС  --}}
                 <div class="py-2  px-1" v-if='display==="list"'>
 
-                    <button class="btn btn-primary-alt w-100 text-center mb-4" type='button' v-if='mode!== "all"'
+                    <button class="btn btn-primary-alt w-100 text-center mb-1" type='button' v-if='mode!== "all"'
                         @click='changeDisplay("calendar")'>Выбрать другие даты</button>
 
                     {{-- превью с данными БВС  --}}
@@ -39,7 +39,7 @@
 
                     {{-- Кнопка перехода к режиму просмотра отдельных транзакций бвс --}}
                     <div class="div" v-if='selectedBvs.length > 0'>
-                        <button class="btn btn-primary-alt w-100 text-center mt-4" type='button'
+                        <button class="btn btn-primary-alt w-100 text-center mt-2" type='button'
                             @click='changeDisplay("items")'>Продолжить</button>
                     </div>
                 </div>
@@ -47,9 +47,9 @@
 
                 {{-- НАЧАЛО БЛОКА  отображения списка операций --}}
                 <div class="py-2 ps-4 pe-1" v-if='display==="items"'>
-                    <button class="btn btn-primary-alt w-100 text-center mt-4" type='button' v-if='mode!== "all"'
+                    <button class="btn btn-primary-alt w-100 text-center mt-2" type='button' v-if='mode!== "all"'
                         @click='changeDisplay("calendar")'>Выбрать другие даты</button>
-                    <button class="btn btn-primary-alt w-100 text-center mt-4" type='button' v-if='mode === "all"'
+                    <button class="btn btn-primary-alt w-100 text-center mt-2" type='button' v-if='mode === "all"'
                         @click='changeDisplay("list")'>Выбрать другие БВС</button>
                     {{-- операции БВС --}}
                     <bvs-operation :_info='info' :key='"operation" + key' v-for='info,key in bvsOperations'
@@ -57,10 +57,10 @@
                     </bvs-operation>
 
                     <div class="div">
-                        <button class="btn btn-primary-alt w-100 text-center mt-4" type='button' v-if='mode!== "all"'
+                        <button class="btn btn-primary-alt w-100 text-center mt-2" type='button' v-if='mode!== "all"'
                             @click='changeDisplay("calendar")'>Выбрать другие даты</button>
 
-                        <button class="btn btn-primary-alt w-100 text-center mt-4" type='button' v-if='mode === "all"'
+                        <button class="btn btn-primary-alt w-100 text-center mt-2" type='button' v-if='mode === "all"'
                             @click='changeDisplay("list")'>Выбрать другие БВС</button>
                     </div>
                 </div>
