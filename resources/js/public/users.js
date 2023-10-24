@@ -1,26 +1,34 @@
 /**
  * работа с пользователями публичной зоны
  */
-import publicAuthData from "@/mixins/publicAuthData";
-import messages from "@/mixins/messages";
-import MessagesComponent from "@/components/MessagesComponent/";
-import crud from "@/mixins/crud";
+
+//хэлперы
 import { strip, clog } from "@/misc/helpers";
+
+//миксины
 import addUserForm from "@/formFields/addUser";
+import crud from "@/mixins/crud";
 import editPasswordForm from "@/formFields/editPwd";
 import editUserForm from "@/formFields/editUser";
-import InputComponent from "@/components/inputs/InputComponent";
-import FormComponent from "@/components/inputs/FormComponent/";
-const axios = require("axios");
+import fixedRightCol from "@/mixins/fixedRightCol";
+import messages from "@/mixins/messages";
+import publicAuthData from "@/mixins/publicAuthData";
 
+//компоненты
+import FormComponent from "@/components/inputs/FormComponent/";
+import InputComponent from "@/components/inputs/InputComponent";
+import MessagesComponent from "@/components/MessagesComponent/";
+
+const axios = require("axios");
 const appPublicUsers = {
     mixins: [
-        messages,
-        crud,
         addUserForm,
-        editUserForm,
         editPasswordForm,
+        editUserForm,
+        crud,
+        fixedRightCol,
         publicAuthData,
+        messages,
     ],
 
     components: {
@@ -92,10 +100,29 @@ const appPublicUsers = {
     watch: {
         editForm() {
             this.reset();
+            const vm = this;
+            vm.reset();
+
+            if (!vm.editMode) {
+                // обнуление фитксированного положение правой колонки
+                vm.stopFixElement();
+            } else if (vm.editMode) {
+                // применение sticky поведения для правой колонки
+                vm.startFixElement("fixposition", "observeResize");
+            }
         },
 
-        editMode() {
-            this.reset();
+        editMode(editMode) {
+            const vm = this;
+            vm.reset();
+
+            if (!editMode) {
+                // обнуление фитксированного положение правой колонки
+                vm.stopFixElement();
+            } else if (editMode) {
+                // применение sticky поведения для правой колонки
+                vm.startFixElement("fixposition", "observeResize");
+            }
         },
 
         activeTab() {

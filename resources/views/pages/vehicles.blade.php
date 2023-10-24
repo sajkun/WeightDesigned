@@ -21,10 +21,10 @@
             </div>
         </Transition>
         <div class="row h-100 position-relative" v-if='mode === "list" || mode === "details" '>
-            <div class="p-3 align-self-start">
+            <div class="px-3 align-self-start">
 
-                <div class="row h-100">
-                    <div class='' :class="columnClass.tableClass">
+                <div class="row h-100 ">
+                    <div class='py-3' :class="columnClass.tableClass">
                         <div class="d-lg-flex org-wrapper flex-column ">
                             @can('create', [App\Models\Vehicle::class, $organisation_id])
                                 <button class="btn w-100 btn-borders" type="button"
@@ -61,34 +61,36 @@
                         </div>
                     </div>
 
-                    <div class="col-12 col-md-6" v-if='mode === "details" '>
-                        <div class="org-wrapper">
-                            <div class="row ">
-                                <div class="col-10">
-                                    <h2 class="h4 m-0">
-                                        @{{ vehicleName }} @{{ editedVehicle.name }}
-                                    </h2>
+                    <Transition name='fade'>
+                        <div class="col-12 col-md-6 py-3" v-show='mode === "details" ' ref='observeResize'>
+                            <div class="org-wrapper" :ref='"fixposition"'>
+                                <div class="row ">
+                                    <div class="col-10">
+                                        <h2 class="h4 m-0">
+                                            @{{ vehicleName }} @{{ editedVehicle.name }}
+                                        </h2>
+                                    </div>
+                                    <div class="col text-end">
+                                        <button class="btn p-0  btn-close" type='button' @click='mode="list"'>
+                                        </button>
+                                    </div>
                                 </div>
-                                <div class="col text-end">
-                                    <button class="btn p-0  btn-close" type='button' @click='mode="list"'>
-                                    </button>
+
+                                <div class="row">
+                                    @include('pages.vehicles.view-tabs')
                                 </div>
+
+                                @include('pages.vehicles.view-details')
+
+                                @include('pages.vehicles.view-activity')
+
+                                @can('update', [App\Models\Vehicle::class, $organisation_id])
+                                    @include('pages.vehicles.view-settings')
+                                @endcan
+
                             </div>
-
-                            <div class="row">
-                                @include('pages.vehicles.view-tabs')
-                            </div>
-
-                            @include('pages.vehicles.view-details')
-
-                            @include('pages.vehicles.view-activity')
-
-                            @can('update', [App\Models\Vehicle::class, $organisation_id])
-                                @include('pages.vehicles.view-settings')
-                            @endcan
-
                         </div>
-                    </div>
+                    </Transition>
 
                 </div>
             </div>

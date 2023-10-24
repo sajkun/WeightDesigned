@@ -4,7 +4,6 @@
 
 //хэлперы
 import { clog, getStyle } from "@/misc/helpers";
-let test;
 export default {
     data() {
         return {
@@ -41,6 +40,10 @@ export default {
         fixData: {
             handler: function (fixData) {
                 const vm = this;
+                if (window.innerWidth < 768) {
+                    vm.resertFixedElement();
+                    return;
+                }
                 const el = vm?.$refs[vm?.targetRef];
                 if (!el || !vm.applyFixData) {
                     return;
@@ -59,6 +62,7 @@ export default {
          */
         calculatePositionData() {
             const vm = this;
+            const shiftVelocity = 30;
             const scrollY = window.scrollY;
 
             // целевой фиксируемый элемент
@@ -77,16 +81,18 @@ export default {
 
             // максимальная видимая высота элемента
             const maxHeight = window.innerHeight - paddingsParent.y() - deltaY;
+
             //*************** */
+            //сдвиг необходимый для смещения зафиксированного элемента в случаях, если его высота больше видимой высоты окна
 
             let minShiftY = Math.min(maxHeight - el.offsetHeight, 0);
             let shiftY = vm.shiftY;
 
             if (vm.getScrolldirection() === "down") {
-                shiftY -= 10;
+                shiftY -= shiftVelocity;
                 shiftY = Math.max(minShiftY, shiftY);
             } else {
-                shiftY += 10;
+                shiftY += shiftVelocity;
                 shiftY = Math.min(0, shiftY);
             }
 
@@ -175,6 +181,11 @@ export default {
             };
             const el = vm?.$refs[vm?.targetRef];
             vm.updateFixElement(el, fixData);
+            window.removeEventListener("scroll", vm.calculatePositionData);
+
+            vm.$nextTick(() => {
+                vm.observer.disconnect();
+            });
             return;
         },
 
@@ -196,15 +207,11 @@ export default {
             vm.fixData.position = "fixed";
             vm.controllHeight = controllHeight;
 
-            clog(controllHeight);
-
             vm.$nextTick(() => {
                 vm.observer.observe(observeEl);
             });
 
-            window.addEventListener("scroll", () => {
-                vm.calculatePositionData();
-            });
+            window.addEventListener("scroll", vm.calculatePositionData);
 
             return;
         },

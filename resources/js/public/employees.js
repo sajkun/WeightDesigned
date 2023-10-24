@@ -70,13 +70,28 @@ const appPublicEmployees = {
     },
 
     watch: {
+        editForm() {
+            const vm = this;
+            vm.reset();
+
+            if (!vm.editMode) {
+                // обнуление фитксированного положение правой колонки
+                vm.stopFixElement();
+            } else if (vm.editMode) {
+                // применение sticky поведения для правой колонки
+                vm.startFixElement("fixposition", "observeResize");
+            }
+        },
+
         editMode(editMode) {
             const vm = this;
 
             if (!editMode) {
                 vm.showForm = false;
+                // обнуление фитксированного положение правой колонки
                 vm.stopFixElement();
             } else if (editMode) {
+                // применение sticky поведения для правой колонки
                 vm.startFixElement("fixposition", "observeResize");
             }
 
