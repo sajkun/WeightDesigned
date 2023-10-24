@@ -4,8 +4,6 @@
     <div class="container-fluid d-flex flex-grow-1 flex-column" id='home-page'>
         <input type="hidden" ref='organisationId' value='{{ $organisation_id }}'>
         <input type="hidden" ref='userId' value='{{ $user_id }}'>
-
-
         <div class="row flex-grow-1 ">
             <div class="col-12 col-md-6">
                 {{-- НАЧАЛО БЛОКА выбора периода отображения  --}}
