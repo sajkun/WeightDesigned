@@ -24,19 +24,20 @@ export default {
                 left: "initial",
                 width: "initial",
                 maxWidth: "initial",
-                // maxHeight: "initial",
+                maxHeight: "initial",
                 position: "fixed",
             },
 
             prevScrollY: 0,
             shiftY: 0,
+            controllHeight: false,
 
             applyFixData: false,
         };
     },
 
     watch: {
-        // данные для
+        // обновление положение элемента при изменении данных
         fixData: {
             handler: function (fixData) {
                 const vm = this;
@@ -95,6 +96,10 @@ export default {
             // максимальная доступная ширина элемента
             vm.fixData.width = vm.fixData.maxWidth =
                 parentRect.width - paddingsParent.x();
+
+            if (vm.controllHeight) {
+                vm.fixData.maxHeight = maxHeight;
+            }
 
             // отступы сверху и слева
             vm.fixData.top = deltaY + paddingsParent.top + shiftY;
@@ -165,7 +170,7 @@ export default {
                 left: "initial",
                 width: "initial",
                 maxWidth: "initial",
-                // maxHeight: "initial",
+                maxHeight: "initial",
                 position: "relative",
             };
             const el = vm?.$refs[vm?.targetRef];
@@ -178,16 +183,20 @@ export default {
          *
          * @param {String} targetRef // ref фиксируемового HTML элемента
          * @param {String} observeRef // ref контейнера фиксируемового HTML элемента
+         * @param {Boolean} fixHeight // нужно ли фиксировать высоту блока
          *
          * @returns {Void}
          */
-        startFixElement(targetRef, observeRef) {
+        startFixElement(targetRef, observeRef, controllHeight) {
             const vm = this;
             const observeEl = vm.$refs[observeRef];
             vm.applyFixData = true;
             vm.observer = vm.initObserver();
             vm.targetRef = targetRef;
             vm.fixData.position = "fixed";
+            vm.controllHeight = controllHeight;
+
+            clog(controllHeight);
 
             vm.$nextTick(() => {
                 vm.observer.observe(observeEl);
@@ -196,19 +205,23 @@ export default {
             window.addEventListener("scroll", () => {
                 vm.calculatePositionData();
             });
+
             return;
         },
 
         /**
          * отключает отслеживание привязывания элемента
+         *
+         * @returns {Void}
          */
         stopFixElement() {
             const vm = this;
             vm.applyFixData = false;
-            // vm.observer.disconnect();
             vm.$nextTick(() => {
                 vm.resertFixedElement();
             });
+
+            return;
         },
 
         /**
@@ -216,6 +229,8 @@ export default {
          *
          * @param {HTMLElement} element
          * @param {Object instanceof this.fixData } data
+         *
+         * @returns {Void}
          */
         updateFixElement(element, data) {
             for (const styleProp in data) {
@@ -224,6 +239,8 @@ export default {
                         ? `${data[styleProp]}px`
                         : data[styleProp];
             }
+
+            return;
         },
     },
 };

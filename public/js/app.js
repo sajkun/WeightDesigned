@@ -19786,16 +19786,17 @@ var test;
         left: "initial",
         width: "initial",
         maxWidth: "initial",
-        // maxHeight: "initial",
+        maxHeight: "initial",
         position: "fixed"
       },
       prevScrollY: 0,
       shiftY: 0,
+      controllHeight: false,
       applyFixData: false
     };
   },
   watch: {
-    // данные для
+    // обновление положение элемента при изменении данных
     fixData: {
       handler: function handler(fixData) {
         var vm = this;
@@ -19851,6 +19852,9 @@ var test;
 
       // максимальная доступная ширина элемента
       vm.fixData.width = vm.fixData.maxWidth = parentRect.width - paddingsParent.x();
+      if (vm.controllHeight) {
+        vm.fixData.maxHeight = maxHeight;
+      }
 
       // отступы сверху и слева
       vm.fixData.top = deltaY + paddingsParent.top + shiftY;
@@ -19915,7 +19919,7 @@ var test;
         left: "initial",
         width: "initial",
         maxWidth: "initial",
-        // maxHeight: "initial",
+        maxHeight: "initial",
         position: "relative"
       };
       var el = vm === null || vm === void 0 ? void 0 : vm.$refs[vm === null || vm === void 0 ? void 0 : vm.targetRef];
@@ -19927,16 +19931,19 @@ var test;
      *
      * @param {String} targetRef // ref фиксируемового HTML элемента
      * @param {String} observeRef // ref контейнера фиксируемового HTML элемента
+     * @param {Boolean} fixHeight // нужно ли фиксировать высоту блока
      *
      * @returns {Void}
      */
-    startFixElement: function startFixElement(targetRef, observeRef) {
+    startFixElement: function startFixElement(targetRef, observeRef, controllHeight) {
       var vm = this;
       var observeEl = vm.$refs[observeRef];
       vm.applyFixData = true;
       vm.observer = vm.initObserver();
       vm.targetRef = targetRef;
       vm.fixData.position = "fixed";
+      vm.controllHeight = controllHeight;
+      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)(controllHeight);
       vm.$nextTick(function () {
         vm.observer.observe(observeEl);
       });
@@ -19947,25 +19954,30 @@ var test;
     },
     /**
      * отключает отслеживание привязывания элемента
+     *
+     * @returns {Void}
      */
     stopFixElement: function stopFixElement() {
       var vm = this;
       vm.applyFixData = false;
-      // vm.observer.disconnect();
       vm.$nextTick(function () {
         vm.resertFixedElement();
       });
+      return;
     },
     /**
      * Применение стилей к переданному объекту
      *
      * @param {HTMLElement} element
      * @param {Object instanceof this.fixData } data
+     *
+     * @returns {Void}
      */
     updateFixElement: function updateFixElement(element, data) {
       for (var styleProp in data) {
         element.style[styleProp] = typeof data[styleProp] === "number" ? "".concat(data[styleProp], "px") : data[styleProp];
       }
+      return;
     }
   }
 });
@@ -21297,7 +21309,7 @@ var homePage = {
       vm.grasslands = response.grasslands;
     });
     vm.$nextTick(function () {
-      vm.startFixElement("fixposition", "observeResize");
+      vm.startFixElement("fixposition", "observeResize", true);
     });
   },
   watch: {

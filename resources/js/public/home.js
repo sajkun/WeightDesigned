@@ -79,7 +79,7 @@ const homePage = {
         });
 
         vm.$nextTick(() => {
-            vm.startFixElement("fixposition", "observeResize");
+            vm.startFixElement("fixposition", "observeResize", true);
         });
     },
 
