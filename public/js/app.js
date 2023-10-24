@@ -15324,7 +15324,6 @@ var grasslandMap;
         clusterIconContentLayout: clusterIconContentLayout,
         clusterDisableClickZoom: true
       });
-      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)(clusterer);
       var placemarks = [];
       var _iterator2 = _createForOfIteratorHelper((0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(data)),
         _step2;
@@ -15378,7 +15377,6 @@ var grasslandMap;
               coordinates: [[0, 0], [Math.floor(rect.width + 32), Math.floor(rect.height)]]
             }
           });
-          (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)(point);
           placemarks.push(point);
           grasslandMap.geoObjects.add(point);
         }

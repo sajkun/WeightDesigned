@@ -14005,11 +14005,6 @@ body.auth #app {
   overflow: hidden;
 }
 
-#map ymaps {
-  max-width: 100% !important;
-  max-height: 100% !important;
-}
-
 .statistics-details,
 .statistics-list {
   background-color: var(--lightest);

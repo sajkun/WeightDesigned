@@ -3,7 +3,7 @@
  */
 
 //хэлперы
-import { strip, clog, getStyle } from "@/misc/helpers";
+import { getStyle } from "@/misc/helpers";
 let test;
 export default {
     data() {

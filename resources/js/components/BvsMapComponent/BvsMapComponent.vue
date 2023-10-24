@@ -146,8 +146,6 @@ export default {
                 clusterDisableClickZoom: true,
             });
 
-            clog(clusterer);
-
             let placemarks = [];
             for (let bvsData of strip(data)) {
                 // вычисление размера метки
@@ -234,7 +232,6 @@ export default {
                         },
                     }
                 );
-                clog(point);
                 placemarks.push(point);
                 grasslandMap.geoObjects.add(point);
             }
