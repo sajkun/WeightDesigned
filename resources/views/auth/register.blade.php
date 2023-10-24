@@ -33,7 +33,7 @@
                                     </div>
                                     <i class='form-control-comment'>
                                         <span>Минимум 5 символов, допустимы только буквы и цифры
-                                            цифры</span>
+                                        </span>
                                     </i>
                                     @error('login')
                                         <span class="invalid-feedback" role="alert">
