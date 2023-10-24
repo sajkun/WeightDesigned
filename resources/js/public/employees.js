@@ -72,8 +72,12 @@ const appPublicEmployees = {
     watch: {
         editMode(editMode) {
             const vm = this;
+
             if (!editMode) {
                 vm.showForm = false;
+                vm.stopFixElement();
+            } else if (editMode) {
+                vm.startFixElement("fixposition", "observeResize");
             }
 
             if (editMode && vm.editedEmployee.id < 0) {
@@ -195,7 +199,6 @@ const appPublicEmployees = {
         },
 
         edit(person, showForm) {
-            clog("%c edit", "color:blue", person);
             const vm = this;
             vm.editMode = true;
             vm.editedEmployee = strip(person);

@@ -19777,18 +19777,21 @@ var test;
        *
        * @param {Object: ResizeObserver}
        */
-      observer: this.initObserver(),
+      observer: null,
       // {String} названия ref для фиксируемового объекта
       targetRef: null,
       // данные изменение расположения фиксируемового объекта
       fixData: {
-        top: null,
-        left: null,
-        width: null,
-        maxWidth: null,
-        height: null,
-        maxHeight: null
-      }
+        top: "initial",
+        left: "initial",
+        width: "initial",
+        maxWidth: "initial",
+        // maxHeight: "initial",
+        position: "fixed"
+      },
+      prevScrollY: 0,
+      shiftY: 0,
+      applyFixData: false
     };
   },
   watch: {
@@ -19797,25 +19800,15 @@ var test;
       handler: function handler(fixData) {
         var vm = this;
         var el = vm === null || vm === void 0 ? void 0 : vm.$refs[vm === null || vm === void 0 ? void 0 : vm.targetRef];
-        if (!el) {
+        if (!el || !vm.applyFixData) {
           return;
         }
-        vm.updateElementFix(el, fixData);
+        vm.updateFixElement(el, fixData);
       },
       deep: true
     }
   },
   methods: {
-    /**
-     * Инициализация объекта наблюдения за размерами элемента
-     *
-     * @returns {Object: ResizeObserver}
-     */
-    initObserver: function initObserver() {
-      var vm = this;
-      var observer = new ResizeObserver(vm.calculatePositionData);
-      return observer;
-    },
     /**
      * вычисляет размеры и положение фикируемового блока
      *
@@ -19823,17 +19816,68 @@ var test;
      */
     calculatePositionData: function calculatePositionData() {
       var vm = this;
-
-      // Хэддер сайта
-      var header = document.querySelector(".public-header");
+      var scrollY = window.scrollY;
 
       // целевой фиксируемый элемент
       var el = vm.$refs[vm.targetRef];
 
+      // Внутренние отступы родительского элемента
+      var paddingsParent = vm.getParentPaddings(el);
+
+      // Хэддер сайта
+      var header = document.querySelector(".public-header");
+
       // переменная показывающая какая часть хэддера еще в зоне видимости страницы
-      var deltaY = header.offsetHeight - window.scrollY;
+
+      var deltaY = header.offsetHeight - scrollY;
       deltaY = Math.max(0, deltaY);
 
+      // максимальная видимая высота элемента
+      var maxHeight = window.innerHeight - paddingsParent.y() - deltaY;
+      //*************** */
+
+      var minShiftY = Math.min(maxHeight - el.offsetHeight, 0);
+      var shiftY = vm.shiftY;
+      if (vm.getScrolldirection() === "down") {
+        shiftY -= 10;
+        shiftY = Math.max(minShiftY, shiftY);
+      } else {
+        shiftY += 10;
+        shiftY = Math.min(0, shiftY);
+      }
+
+      //*************** */
+      var parentRect = el.parentElement.getBoundingClientRect();
+
+      // максимальная доступная ширина элемента
+      vm.fixData.width = vm.fixData.maxWidth = parentRect.width - paddingsParent.x();
+
+      // отступы сверху и слева
+      vm.fixData.top = deltaY + paddingsParent.top + shiftY;
+      vm.fixData.left = parentRect.left + paddingsParent.left;
+      vm.shiftY = shiftY;
+      return;
+    },
+    /**
+     * определяет направление скролла
+     *
+     * @returns {Enum} up / down
+     */
+    getScrolldirection: function getScrolldirection() {
+      var vm = this;
+      var pos = window.scrollY;
+      var delta = vm.prevScrollY - pos;
+      vm.prevScrollY = pos;
+      return delta < 0 ? "down" : "up";
+    },
+    /**
+     * Отступы родительского элемента для el
+     *
+     * @param {HTMLElement} el
+     *
+     * @returns {Object}
+     */
+    getParentPaddings: function getParentPaddings(el) {
       // Внутренние отступы родительского элемента
       var paddingsParent = {
         top: (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.getStyle)(el.parentElement, "padding-bottom", true),
@@ -19847,18 +19891,35 @@ var test;
           return this.top + this.bottom;
         }
       };
-      var parentRect = el.parentElement.getBoundingClientRect();
-
-      // максимальная доступная ширина элемента
-      vm.fixData.width = vm.fixData.maxWidth = parentRect.width - paddingsParent.x();
-
-      // максимальная доступная высота элемента
-      var height = window.innerHeight - paddingsParent.y() - deltaY;
-      vm.fixData.height = vm.fixData.maxHeight = height;
-
-      // отступы сверху и слева
-      vm.fixData.top = deltaY + paddingsParent.top;
-      vm.fixData.left = parentRect.left + paddingsParent.left;
+      return paddingsParent;
+    },
+    /**
+     * Инициализация объекта наблюдения за размерами элемента
+     *
+     * @returns {Object: ResizeObserver}
+     */
+    initObserver: function initObserver() {
+      var vm = this;
+      var observer = new ResizeObserver(vm.calculatePositionData);
+      return observer;
+    },
+    /**
+     * Отменяет все назначенные свойства
+     *
+     * @returns {Void}
+     */
+    resertFixedElement: function resertFixedElement() {
+      var vm = this;
+      var fixData = {
+        top: "initial",
+        left: "initial",
+        width: "initial",
+        maxWidth: "initial",
+        // maxHeight: "initial",
+        position: "relative"
+      };
+      var el = vm === null || vm === void 0 ? void 0 : vm.$refs[vm === null || vm === void 0 ? void 0 : vm.targetRef];
+      vm.updateFixElement(el, fixData);
       return;
     },
     /**
@@ -19872,12 +19933,28 @@ var test;
     startFixElement: function startFixElement(targetRef, observeRef) {
       var vm = this;
       var observeEl = vm.$refs[observeRef];
+      vm.applyFixData = true;
+      vm.observer = vm.initObserver();
       vm.targetRef = targetRef;
-      vm.observer.observe(observeEl);
+      vm.fixData.position = "fixed";
+      vm.$nextTick(function () {
+        vm.observer.observe(observeEl);
+      });
       window.addEventListener("scroll", function () {
         vm.calculatePositionData();
       });
       return;
+    },
+    /**
+     * отключает отслеживание привязывания элемента
+     */
+    stopFixElement: function stopFixElement() {
+      var vm = this;
+      vm.applyFixData = false;
+      // vm.observer.disconnect();
+      vm.$nextTick(function () {
+        vm.resertFixedElement();
+      });
     },
     /**
      * Применение стилей к переданному объекту
@@ -19885,10 +19962,9 @@ var test;
      * @param {HTMLElement} element
      * @param {Object instanceof this.fixData } data
      */
-    updateElementFix: function updateElementFix(element, data) {
-      element.style.position = "fixed";
+    updateFixElement: function updateFixElement(element, data) {
       for (var styleProp in data) {
-        element.style[styleProp] = "".concat(data[styleProp], "px");
+        element.style[styleProp] = typeof data[styleProp] === "number" ? "".concat(data[styleProp], "px") : data[styleProp];
       }
     }
   }
@@ -20738,6 +20814,9 @@ var appPublicEmployees = {
       var vm = this;
       if (!_editMode) {
         vm.showForm = false;
+        vm.stopFixElement();
+      } else if (_editMode) {
+        vm.startFixElement("fixposition", "observeResize");
       }
       if (_editMode && vm.editedEmployee.id < 0) {
         vm.showForm = true;
@@ -20836,7 +20915,6 @@ var appPublicEmployees = {
       return date.getFullYear();
     },
     edit: function edit(person, showForm) {
-      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c edit", "color:blue", person);
       var vm = this;
       vm.editMode = true;
       vm.editedEmployee = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(person);

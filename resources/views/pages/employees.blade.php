@@ -44,16 +44,16 @@
                 </div>
             </div>
 
-            <Transition name="bounce">
-                <div class="col-12 col-lg-6 p-3 org-details" v-show='editMode'>
-                    <div class="d-lg-flex flex-column org-wrapper  p-4" v-if='showForm'>
+            <Transition name="fade">
+                <div class="col-12 col-lg-6 p-3 org-details" v-show='editMode' ref='observeResize'>
+                    <div class="d-lg-flex flex-column org-wrapper  p-4" v-if='showForm' :ref='"fixposition"'>
                         <h3 class="h4">Добавить нового сотрудника</h3>
                         <the-form ref='createEmployeeForm' :_structure='addEmployeeFormStructure'
                             @exec-submit='storeEmployee' @cancel='showForm=false; editMode=false'>
                         </the-form>
 
                     </div>
-                    <div class="d-lg-flex flex-column org-wrapper p-4" v-if='!showForm'>
+                    <div class="d-lg-flex flex-column org-wrapper p-4" v-if='!showForm' :ref='"fixposition"'>
                         <div class="row">
                             <div class="col">
 

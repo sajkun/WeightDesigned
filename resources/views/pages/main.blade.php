@@ -61,6 +61,7 @@
                     <div class="div">
                         <button class="btn btn-primary-alt w-100 text-center mt-4" type='button' v-if='mode!== "all"'
                             @click='changeDisplay("calendar")'>Выбрать другие даты</button>
+
                         <button class="btn btn-primary-alt w-100 text-center mt-4" type='button' v-if='mode === "all"'
                             @click='changeDisplay("list")'>Выбрать другие БВС</button>
                     </div>

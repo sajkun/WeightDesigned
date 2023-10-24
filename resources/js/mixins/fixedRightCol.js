@@ -3,7 +3,7 @@
  */
 
 //хэлперы
-import { getStyle } from "@/misc/helpers";
+import { clog, getStyle } from "@/misc/helpers";
 let test;
 export default {
     data() {
@@ -13,20 +13,25 @@ export default {
              *
              * @param {Object: ResizeObserver}
              */
-            observer: this.initObserver(),
+            observer: null,
 
             // {String} названия ref для фиксируемового объекта
             targetRef: null,
 
             // данные изменение расположения фиксируемового объекта
             fixData: {
-                top: null,
-                left: null,
-                width: null,
-                maxWidth: null,
-                height: null,
-                maxHeight: null,
+                top: "initial",
+                left: "initial",
+                width: "initial",
+                maxWidth: "initial",
+                // maxHeight: "initial",
+                position: "fixed",
             },
+
+            prevScrollY: 0,
+            shiftY: 0,
+
+            applyFixData: false,
         };
     },
 
@@ -36,11 +41,10 @@ export default {
             handler: function (fixData) {
                 const vm = this;
                 const el = vm?.$refs[vm?.targetRef];
-
-                if (!el) {
+                if (!el || !vm.applyFixData) {
                     return;
                 }
-                vm.updateElementFix(el, fixData);
+                vm.updateFixElement(el, fixData);
             },
             deep: true,
         },
@@ -48,34 +52,79 @@ export default {
 
     methods: {
         /**
-         * Инициализация объекта наблюдения за размерами элемента
-         *
-         * @returns {Object: ResizeObserver}
-         */
-        initObserver() {
-            const vm = this;
-            const observer = new ResizeObserver(vm.calculatePositionData);
-            return observer;
-        },
-
-        /**
          * вычисляет размеры и положение фикируемового блока
          *
          * @returns {Void}
          */
         calculatePositionData() {
             const vm = this;
-
-            // Хэддер сайта
-            const header = document.querySelector(".public-header");
+            const scrollY = window.scrollY;
 
             // целевой фиксируемый элемент
             const el = vm.$refs[vm.targetRef];
 
+            // Внутренние отступы родительского элемента
+            const paddingsParent = vm.getParentPaddings(el);
+
+            // Хэддер сайта
+            const header = document.querySelector(".public-header");
+
             // переменная показывающая какая часть хэддера еще в зоне видимости страницы
-            let deltaY = header.offsetHeight - window.scrollY;
+
+            let deltaY = header.offsetHeight - scrollY;
             deltaY = Math.max(0, deltaY);
 
+            // максимальная видимая высота элемента
+            const maxHeight = window.innerHeight - paddingsParent.y() - deltaY;
+            //*************** */
+
+            let minShiftY = Math.min(maxHeight - el.offsetHeight, 0);
+            let shiftY = vm.shiftY;
+
+            if (vm.getScrolldirection() === "down") {
+                shiftY -= 10;
+                shiftY = Math.max(minShiftY, shiftY);
+            } else {
+                shiftY += 10;
+                shiftY = Math.min(0, shiftY);
+            }
+
+            //*************** */
+            const parentRect = el.parentElement.getBoundingClientRect();
+
+            // максимальная доступная ширина элемента
+            vm.fixData.width = vm.fixData.maxWidth =
+                parentRect.width - paddingsParent.x();
+
+            // отступы сверху и слева
+            vm.fixData.top = deltaY + paddingsParent.top + shiftY;
+            vm.fixData.left = parentRect.left + paddingsParent.left;
+
+            vm.shiftY = shiftY;
+            return;
+        },
+
+        /**
+         * определяет направление скролла
+         *
+         * @returns {Enum} up / down
+         */
+        getScrolldirection() {
+            const vm = this;
+            const pos = window.scrollY;
+            const delta = vm.prevScrollY - pos;
+            vm.prevScrollY = pos;
+            return delta < 0 ? "down" : "up";
+        },
+
+        /**
+         * Отступы родительского элемента для el
+         *
+         * @param {HTMLElement} el
+         *
+         * @returns {Object}
+         */
+        getParentPaddings(el) {
             // Внутренние отступы родительского элемента
             const paddingsParent = {
                 top: getStyle(el.parentElement, "padding-bottom", true),
@@ -90,20 +139,37 @@ export default {
                 },
             };
 
-            const parentRect = el.parentElement.getBoundingClientRect();
+            return paddingsParent;
+        },
 
-            // максимальная доступная ширина элемента
-            vm.fixData.width = vm.fixData.maxWidth =
-                parentRect.width - paddingsParent.x();
+        /**
+         * Инициализация объекта наблюдения за размерами элемента
+         *
+         * @returns {Object: ResizeObserver}
+         */
+        initObserver() {
+            const vm = this;
+            const observer = new ResizeObserver(vm.calculatePositionData);
+            return observer;
+        },
 
-            // максимальная доступная высота элемента
-            const height = window.innerHeight - paddingsParent.y() - deltaY;
-            vm.fixData.height = vm.fixData.maxHeight = height;
-
-            // отступы сверху и слева
-            vm.fixData.top = deltaY + paddingsParent.top;
-            vm.fixData.left = parentRect.left + paddingsParent.left;
-
+        /**
+         * Отменяет все назначенные свойства
+         *
+         * @returns {Void}
+         */
+        resertFixedElement() {
+            const vm = this;
+            const fixData = {
+                top: "initial",
+                left: "initial",
+                width: "initial",
+                maxWidth: "initial",
+                // maxHeight: "initial",
+                position: "relative",
+            };
+            const el = vm?.$refs[vm?.targetRef];
+            vm.updateFixElement(el, fixData);
             return;
         },
 
@@ -118,8 +184,14 @@ export default {
         startFixElement(targetRef, observeRef) {
             const vm = this;
             const observeEl = vm.$refs[observeRef];
+            vm.applyFixData = true;
+            vm.observer = vm.initObserver();
             vm.targetRef = targetRef;
-            vm.observer.observe(observeEl);
+            vm.fixData.position = "fixed";
+
+            vm.$nextTick(() => {
+                vm.observer.observe(observeEl);
+            });
 
             window.addEventListener("scroll", () => {
                 vm.calculatePositionData();
@@ -128,16 +200,29 @@ export default {
         },
 
         /**
+         * отключает отслеживание привязывания элемента
+         */
+        stopFixElement() {
+            const vm = this;
+            vm.applyFixData = false;
+            // vm.observer.disconnect();
+            vm.$nextTick(() => {
+                vm.resertFixedElement();
+            });
+        },
+
+        /**
          * Применение стилей к переданному объекту
          *
          * @param {HTMLElement} element
          * @param {Object instanceof this.fixData } data
          */
-        updateElementFix(element, data) {
-            element.style.position = "fixed";
-
+        updateFixElement(element, data) {
             for (const styleProp in data) {
-                element.style[styleProp] = `${data[styleProp]}px`;
+                element.style[styleProp] =
+                    typeof data[styleProp] === "number"
+                        ? `${data[styleProp]}px`
+                        : data[styleProp];
             }
         },
     },
