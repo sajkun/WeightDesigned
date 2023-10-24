@@ -153,3 +153,28 @@ export const getRoundedValue = (value, type) => {
 
     return _return;
 };
+
+/**
+ * Получает значение css свойства элемента
+ *
+ * @param {HTMLElement} oElm
+ * @param {String} strCssRule
+ * @param {Boolean} onlyDigits
+ *
+ * @returns {String|Number}
+ */
+export const getStyle = (oElm, strCssRule, onlyDigits) => {
+    var strValue = "";
+    if (document.defaultView && document.defaultView.getComputedStyle) {
+        strValue = document.defaultView
+            .getComputedStyle(oElm, "")
+            .getPropertyValue(strCssRule);
+    } else if (oElm.currentStyle) {
+        strCssRule = strCssRule.replace(/\-(\w)/g, function (strMatch, p1) {
+            return p1.toUpperCase();
+        });
+        strValue = oElm.currentStyle[strCssRule];
+    }
+
+    return onlyDigits ? parseFloat(strValue) : strValue;
+};

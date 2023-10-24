@@ -301,8 +301,6 @@ const appPublicStatistics = {
 
             info.axis.x.maxValue = Object.values(info.points).length + 1;
 
-            clog(info);
-
             return info;
         },
 

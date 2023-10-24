@@ -15293,7 +15293,6 @@ var grasslandMap;
      * @returns {Object} ymap - объект яндекс карт
      */
     initMap: function initMap(selector) {
-      var vm = this;
       var map = new ymaps.Map(selector, {
         center: [45, 45],
         zoom: 12
@@ -15325,6 +15324,7 @@ var grasslandMap;
         clusterIconContentLayout: clusterIconContentLayout,
         clusterDisableClickZoom: true
       });
+      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)(clusterer);
       var placemarks = [];
       var _iterator2 = _createForOfIteratorHelper((0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(data)),
         _step2;
@@ -15378,7 +15378,9 @@ var grasslandMap;
               coordinates: [[0, 0], [Math.floor(rect.width + 32), Math.floor(rect.height)]]
             }
           });
+          (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)(point);
           placemarks.push(point);
+          grasslandMap.geoObjects.add(point);
         }
       } catch (err) {
         _iterator2.e(err);
@@ -17360,7 +17362,7 @@ var _hoisted_13 = /*#__PURE__*/_withScopeId(function () {
 
 function render(_ctx, _cache, $props, $setup, $data, $options) {
   return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", {
-    "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)(["row p-4", {
+    "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)(["row", {
       selected: $data.info.selected
     }]),
     onClick: _cache[0] || (_cache[0] = function () {
@@ -18218,7 +18220,6 @@ __webpack_require__.r(__webpack_exports__);
 /**
  * Основной файл, собирающий весь скрипт приложения
  *
- * @author Кулешов Вячеслав <sajkunrnd@gmail.com>
  */
 
 
@@ -19272,6 +19273,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   get1stDigit: () => (/* binding */ get1stDigit),
 /* harmony export */   getFormData: () => (/* binding */ getFormData),
 /* harmony export */   getRoundedValue: () => (/* binding */ getRoundedValue),
+/* harmony export */   getStyle: () => (/* binding */ getStyle),
 /* harmony export */   polyline: () => (/* binding */ polyline),
 /* harmony export */   strip: () => (/* binding */ strip)
 /* harmony export */ });
@@ -19443,6 +19445,28 @@ var getRoundedValue = function getRoundedValue(value, type) {
   }
   var _return = firstDigit * Math.pow(10, valueOrder);
   return _return;
+};
+
+/**
+ * Получает значение css свойства элемента
+ *
+ * @param {HTMLElement} oElm
+ * @param {String} strCssRule
+ * @param {Boolean} onlyDigits
+ *
+ * @returns {String|Number}
+ */
+var getStyle = function getStyle(oElm, strCssRule, onlyDigits) {
+  var strValue = "";
+  if (document.defaultView && document.defaultView.getComputedStyle) {
+    strValue = document.defaultView.getComputedStyle(oElm, "").getPropertyValue(strCssRule);
+  } else if (oElm.currentStyle) {
+    strCssRule = strCssRule.replace(/\-(\w)/g, function (strMatch, p1) {
+      return p1.toUpperCase();
+    });
+    strValue = oElm.currentStyle[strCssRule];
+  }
+  return onlyDigits ? parseFloat(strValue) : strValue;
 };
 
 /***/ }),
@@ -19746,44 +19770,129 @@ __webpack_require__.r(__webpack_exports__);
 
 //хэлперы
 
+var test;
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
-      classes: {
-        checked: false
+      /**
+       *  Объекь наблюдатель за изменением ширины
+       *
+       * @param {Object: ResizeObserver}
+       */
+      observer: this.initObserver(),
+      // {String} названия ref для фиксируемового объекта
+      targetRef: null,
+      // данные изменение расположения фиксируемового объекта
+      fixData: {
+        top: null,
+        left: null,
+        width: null,
+        maxWidth: null,
+        height: null,
+        maxHeight: null
       }
     };
   },
-  mounted: function mounted() {
-    (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("test fixed scroll");
+  watch: {
+    // данные для
+    fixData: {
+      handler: function handler(fixData) {
+        var vm = this;
+        var el = vm === null || vm === void 0 ? void 0 : vm.$refs[vm === null || vm === void 0 ? void 0 : vm.targetRef];
+        if (!el) {
+          return;
+        }
+        vm.updateElementFix(el, fixData);
+      },
+      deep: true
+    }
   },
   methods: {
-    checkClasses: function checkClasses(el) {
+    /**
+     * Инициализация объекта наблюдения за размерами элемента
+     *
+     * @returns {Object: ResizeObserver}
+     */
+    initObserver: function initObserver() {
       var vm = this;
-      if (vm.classes.checked) return;
-      for (var _class in vm.classes) {
-        vm.classes[_class] = el.classList.contains(_class);
-      }
-      vm.classes.checked = true;
+      var observer = new ResizeObserver(vm.calculatePositionData);
+      return observer;
     },
-    fixWidthnPosition: function fixWidthnPosition(el) {
-      this.checkClasses(el);
-      var rect = el.getBoundingClientRect();
-      el.style.width = "".concat(rect.width, "px");
-      el.style.height = "".concat(rect.height, "px");
-      el.style.top = "".concat(rect.top, "px");
-      el.style.right = "".concat(rect.top, "px");
-      el.style.position = "fixed";
-      el.classList.remove("w-100");
-      el.classList.remove("h-100");
-    },
-    restoreClasses: function restoreClasses(el) {
+    /**
+     * вычисляет размеры и положение фикируемового блока
+     *
+     * @returns {Void}
+     */
+    calculatePositionData: function calculatePositionData() {
       var vm = this;
-      for (var _class in vm.classes) {
-        vm.classes[_class] = el.classList.contains(_class);
-      }
+
+      // Хэддер сайта
+      var header = document.querySelector(".public-header");
+
+      // целевой фиксируемый элемент
+      var el = vm.$refs[vm.targetRef];
+
+      // переменная показывающая какая часть хэддера еще в зоне видимости страницы
+      var deltaY = header.offsetHeight - window.scrollY;
+      deltaY = Math.max(0, deltaY);
+
+      // Внутренние отступы родительского элемента
+      var paddingsParent = {
+        top: (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.getStyle)(el.parentElement, "padding-bottom", true),
+        bottom: (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.getStyle)(el.parentElement, "padding-top", true),
+        left: (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.getStyle)(el.parentElement, "padding-left", true),
+        right: (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.getStyle)(el.parentElement, "padding-right", true),
+        x: function x() {
+          return this.left + this.right;
+        },
+        y: function y() {
+          return this.top + this.bottom;
+        }
+      };
+      var parentRect = el.parentElement.getBoundingClientRect();
+
+      // максимальная доступная ширина элемента
+      vm.fixData.width = vm.fixData.maxWidth = parentRect.width - paddingsParent.x();
+
+      // максимальная доступная высота элемента
+      var height = window.innerHeight - paddingsParent.y() - deltaY;
+      vm.fixData.height = vm.fixData.maxHeight = height;
+
+      // отступы сверху и слева
+      vm.fixData.top = deltaY + paddingsParent.top;
+      vm.fixData.left = parentRect.left + paddingsParent.left;
+      return;
     },
-    makeTargetFixed: function makeTargetFixed(el) {}
+    /**
+     * инициализация процесса фиксирования элемента
+     *
+     * @param {String} targetRef // ref фиксируемового HTML элемента
+     * @param {String} observeRef // ref контейнера фиксируемового HTML элемента
+     *
+     * @returns {Void}
+     */
+    startFixElement: function startFixElement(targetRef, observeRef) {
+      var vm = this;
+      var observeEl = vm.$refs[observeRef];
+      vm.targetRef = targetRef;
+      vm.observer.observe(observeEl);
+      window.addEventListener("scroll", function () {
+        vm.calculatePositionData();
+      });
+      return;
+    },
+    /**
+     * Применение стилей к переданному объекту
+     *
+     * @param {HTMLElement} element
+     * @param {Object instanceof this.fixData } data
+     */
+    updateElementFix: function updateElementFix(element, data) {
+      element.style.position = "fixed";
+      for (var styleProp in data) {
+        element.style[styleProp] = "".concat(data[styleProp], "px");
+      }
+    }
   }
 });
 
@@ -21109,12 +21218,10 @@ var homePage = {
       vm.bvsData = response.bvs_data;
     });
     vm.getGrasslands(function (response) {
-      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)(response.grasslands);
       vm.grasslands = response.grasslands;
     });
-    var el = this.$refs.fixposition;
     vm.$nextTick(function () {
-      vm.fixWidthnPosition(el);
+      vm.startFixElement("fixposition", "observeResize");
     });
   },
   watch: {
@@ -21800,7 +21907,6 @@ var appPublicStatistics = {
         };
       });
       info.axis.x.maxValue = Object.values(info.points).length + 1;
-      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)(info);
       return info;
     },
     /**

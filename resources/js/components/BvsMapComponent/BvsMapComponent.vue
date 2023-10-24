@@ -101,8 +101,6 @@ export default {
          * @returns {Object} ymap - объект яндекс карт
          */
         initMap(selector) {
-            const vm = this;
-
             let map = new ymaps.Map(
                 selector,
                 {
@@ -147,6 +145,8 @@ export default {
                 clusterIconContentLayout: clusterIconContentLayout,
                 clusterDisableClickZoom: true,
             });
+
+            clog(clusterer);
 
             let placemarks = [];
             for (let bvsData of strip(data)) {
@@ -234,14 +234,16 @@ export default {
                         },
                     }
                 );
-
+                clog(point);
                 placemarks.push(point);
+                grasslandMap.geoObjects.add(point);
             }
 
             clusterer.add(placemarks);
             grasslandMap.geoObjects.add(clusterer);
 
             const objectState = clusterer.getObjectState(placemarks);
+
             if (objectState.isClustered) {
                 // Если метка находится в кластере, выставим ее в качестве активного объекта.
                 // Тогда она будет "выбрана" в открытом балуне кластера.

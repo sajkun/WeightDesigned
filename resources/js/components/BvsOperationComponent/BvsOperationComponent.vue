@@ -1,6 +1,6 @@
 <!-- отображение данных об операции бвс -->
 <template>
-    <div class="row p-4" @click="clickCb" :class="{ selected: info.selected }">
+    <div class="row" @click="clickCb" :class="{ selected: info.selected }">
         <div class="col-6">
             <b>Операция №{{ info.id }}</b>
         </div>

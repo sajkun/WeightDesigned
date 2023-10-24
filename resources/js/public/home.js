@@ -75,14 +75,11 @@ const homePage = {
         });
 
         vm.getGrasslands((response) => {
-            clog(response.grasslands);
             vm.grasslands = response.grasslands;
         });
 
-        const el = this.$refs.fixposition;
-
         vm.$nextTick(() => {
-            vm.fixWidthnPosition(el);
+            vm.startFixElement("fixposition", "observeResize");
         });
     },
 
