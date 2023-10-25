@@ -13859,7 +13859,7 @@ body.auth #app {
   align-self: center;
   position: relative;
 }
-.main-menu > li:hover .submenu {
+.main-menu > li.selected .submenu, .main-menu > li:hover .submenu {
   visibility: visible;
   opacity: 1;
 }

@@ -210,7 +210,4 @@ export default {
 .success {
     color: var(--green);
 }
-
-.row {
-}
 </style>

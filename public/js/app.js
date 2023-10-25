@@ -21735,7 +21735,7 @@ var appPublicRating = {
 
 //скрипты, которые будут задействованы сразу после загрузки страницы
 __webpack_require__(/*! @/ready/dadata */ "./resources/js/ready/dadata.js");
-__webpack_require__(/*! @/ready/mobileMenu */ "./resources/js/ready/mobileMenu.js");
+__webpack_require__(/*! @/ready/menu */ "./resources/js/ready/menu.js");
 __webpack_require__(/*! @/ready/formFields */ "./resources/js/ready/formFields.js");
 __webpack_require__(/*! @/ready/passwordStrength */ "./resources/js/ready/passwordStrength.js");
 
@@ -23022,24 +23022,237 @@ document.addEventListener("expandElement", function (event) {
 
 /***/ }),
 
-/***/ "./resources/js/ready/mobileMenu.js":
-/*!******************************************!*\
-  !*** ./resources/js/ready/mobileMenu.js ***!
-  \******************************************/
+/***/ "./resources/js/ready/menu.js":
+/*!************************************!*\
+  !*** ./resources/js/ready/menu.js ***!
+  \************************************/
 /***/ (() => {
 
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
+function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function _classPrivateMethodInitSpec(obj, privateSet) { _checkPrivateRedeclaration(obj, privateSet); privateSet.add(obj); }
+function _classPrivateFieldInitSpec(obj, privateMap, value) { _checkPrivateRedeclaration(obj, privateMap); privateMap.set(obj, value); }
+function _checkPrivateRedeclaration(obj, privateCollection) { if (privateCollection.has(obj)) { throw new TypeError("Cannot initialize the same private elements twice on an object"); } }
+function _classPrivateFieldGet(receiver, privateMap) { var descriptor = _classExtractFieldDescriptor(receiver, privateMap, "get"); return _classApplyDescriptorGet(receiver, descriptor); }
+function _classApplyDescriptorGet(receiver, descriptor) { if (descriptor.get) { return descriptor.get.call(receiver); } return descriptor.value; }
+function _classPrivateMethodGet(receiver, privateSet, fn) { if (!privateSet.has(receiver)) { throw new TypeError("attempted to get private field on non-instance"); } return fn; }
+function _classPrivateFieldSet(receiver, privateMap, value) { var descriptor = _classExtractFieldDescriptor(receiver, privateMap, "set"); _classApplyDescriptorSet(receiver, descriptor, value); return value; }
+function _classExtractFieldDescriptor(receiver, privateMap, action) { if (!privateMap.has(receiver)) { throw new TypeError("attempted to " + action + " private field on non-instance"); } return privateMap.get(receiver); }
+function _classApplyDescriptorSet(receiver, descriptor, value) { if (descriptor.set) { descriptor.set.call(receiver, value); } else { if (!descriptor.writable) { throw new TypeError("attempted to set read only private field"); } descriptor.value = value; } }
+var _menu = /*#__PURE__*/new WeakMap();
+var _mobileSwitcher = /*#__PURE__*/new WeakMap();
+var _menuStateOnMobile = /*#__PURE__*/new WeakMap();
+var _submenuSwitchers = /*#__PURE__*/new WeakMap();
+var _bindEvents = /*#__PURE__*/new WeakSet();
+var _bindSubmenuToggleByClick = /*#__PURE__*/new WeakSet();
+var _hideAllSubmenues = /*#__PURE__*/new WeakSet();
+var _hideOnClickOutside = /*#__PURE__*/new WeakSet();
+var _initMobileMenuSwitcher = /*#__PURE__*/new WeakSet();
+var _getHtmlElementSelector = /*#__PURE__*/new WeakSet();
+var _getSubmenuSwitchers = /*#__PURE__*/new WeakSet();
+var _menuClicked = /*#__PURE__*/new WeakSet();
+var _setMenuState = /*#__PURE__*/new WeakSet();
 /**
- * Смена режима отображения мобильного меню
+ * обработчики событий для главного меню сайта
  */
-
-// HTML элемент переключающий мобильное меню
-var mobileMenuToggler = document.getElementById("mobile-menu-toggle");
-
-// обработчик события мобильного меню
-mobileMenuToggler === null || mobileMenuToggler === void 0 ? void 0 : mobileMenuToggler.addEventListener("click", function () {
-  document.getElementById("main-menu").classList.toggle("shown");
-  mobileMenuToggler.classList.toggle("active");
+var menuActions = /*#__PURE__*/_createClass(
+/**
+ * @param {String} menu уникальный HTML селектор
+ * @param {String} mobileSwitcher ХТМЛ селектор для переключателя меню
+ */
+function menuActions(menu, mobileSwitcher) {
+  _classCallCheck(this, menuActions);
+  /**
+   * Меняет статус мобильного меню
+   *
+   * @param {Enum} state shown | hidden
+   *
+   * @returns {Void}
+   */
+  _classPrivateMethodInitSpec(this, _setMenuState);
+  /**
+   * определяет кликнуто ли меню
+   *
+   * @param {PointerEvent} e
+   *
+   * @return {Boolean}
+   */
+  _classPrivateMethodInitSpec(this, _menuClicked);
+  /**
+   * получает массив ссылок, у которых есть субменю
+   *
+   * @returns {Array<HTMLElement>} submenuSwitchers
+   */
+  _classPrivateMethodInitSpec(this, _getSubmenuSwitchers);
+  /**
+   * формирует селектор ХТМЛ элемента
+   *
+   * @param {HTMLElement} el
+   *
+   * @returns {String}
+   */
+  _classPrivateMethodInitSpec(this, _getHtmlElementSelector);
+  /**
+   * Добавляет слушатель событий для
+   * клика на переключатель мобильного меню
+   *
+   * @returns {Void}
+   */
+  _classPrivateMethodInitSpec(this, _initMobileMenuSwitcher);
+  /**
+   * Сворачивание и скрытие меню и сабменю по клику вне
+   *
+   * @returns {Void}
+   */
+  _classPrivateMethodInitSpec(this, _hideOnClickOutside);
+  /**
+   * скрывает все отображенные меню
+   *
+   * @returns {Void}
+   */
+  _classPrivateMethodInitSpec(this, _hideAllSubmenues);
+  /**
+   * Добавляет слушатель событий для
+   * - клика на ссылку у которое есть под меню
+   *
+   * отображение выпадающего списка меню
+   * при клике на ссылку уровнем выше
+   *
+   * @returns {Void}
+   */
+  _classPrivateMethodInitSpec(this, _bindSubmenuToggleByClick);
+  /**
+   * Добавляет слушатель событий для
+   * - клика на переключатель мобильного меню
+   * - клика на ссылку у которое есть под меню
+   *
+   * @returns {Void}
+   */
+  _classPrivateMethodInitSpec(this, _bindEvents);
+  /**
+   * @param {HTMLElement} главное меню
+   */
+  _classPrivateFieldInitSpec(this, _menu, {
+    writable: true,
+    value: void 0
+  });
+  /**
+   * @param {HTMLElement} мобильный переключатель меню
+   */
+  _classPrivateFieldInitSpec(this, _mobileSwitcher, {
+    writable: true,
+    value: void 0
+  });
+  /**
+   * состояние мобильного меню
+   * @param {Enum} : hidden|shown
+   */
+  _classPrivateFieldInitSpec(this, _menuStateOnMobile, {
+    writable: true,
+    value: void 0
+  });
+  /**
+   * @param {HTMLElement} все ссылки у которых есть субменю
+   */
+  _classPrivateFieldInitSpec(this, _submenuSwitchers, {
+    writable: true,
+    value: void 0
+  });
+  if (!menu || !mobileSwitcher) {
+    return;
+  }
+  _classPrivateFieldSet(this, _menu, document.querySelector(menu));
+  _classPrivateFieldSet(this, _mobileSwitcher, document.querySelector(mobileSwitcher));
+  _classPrivateFieldSet(this, _submenuSwitchers, _classPrivateMethodGet(this, _getSubmenuSwitchers, _getSubmenuSwitchers2).call(this));
+  _classPrivateFieldSet(this, _menuStateOnMobile, "hidden");
+  _classPrivateMethodGet(this, _bindEvents, _bindEvents2).call(this);
 });
+function _bindEvents2() {
+  _classPrivateMethodGet(this, _initMobileMenuSwitcher, _initMobileMenuSwitcher2).call(this);
+  _classPrivateMethodGet(this, _bindSubmenuToggleByClick, _bindSubmenuToggleByClick2).call(this);
+  _classPrivateMethodGet(this, _hideOnClickOutside, _hideOnClickOutside2).call(this);
+  return;
+}
+function _bindSubmenuToggleByClick2() {
+  var t = this;
+  _classPrivateFieldGet(t, _submenuSwitchers).forEach(function (el) {
+    var submenu = el.nextSibling;
+    if (Boolean(submenu)) {
+      el.addEventListener("click", function (e) {
+        e.preventDefault();
+        _classPrivateMethodGet(t, _hideAllSubmenues, _hideAllSubmenues2).call(t);
+        e.target.closest("li").classList.add("selected");
+      });
+    }
+  });
+  return;
+}
+function _hideAllSubmenues2() {
+  _classPrivateFieldGet(this, _submenuSwitchers).forEach(function (el) {
+    el.closest("li").classList.remove("selected");
+  });
+  return;
+}
+function _hideOnClickOutside2() {
+  var t = this;
+  document.addEventListener("click", function (e) {
+    if (!_classPrivateMethodGet(t, _menuClicked, _menuClicked2).call(t, e)) {
+      _classPrivateMethodGet(t, _hideAllSubmenues, _hideAllSubmenues2).call(t);
+      _classPrivateMethodGet(t, _setMenuState, _setMenuState2).call(t, "hidden");
+    }
+  });
+  return;
+}
+function _initMobileMenuSwitcher2() {
+  var t = this;
+  _classPrivateFieldGet(t, _mobileSwitcher).addEventListener("click", function () {
+    var state = _classPrivateFieldGet(t, _menuStateOnMobile) === "shown" ? "hidden" : "shown";
+    _classPrivateMethodGet(t, _setMenuState, _setMenuState2).call(t, state);
+  });
+  return;
+}
+function _getHtmlElementSelector2(el) {
+  // имя ХТМЛ тага меню
+  var tagName = el.tagName;
+  // все классы меню
+  var classNames = el.getAttribute("class").split(" ");
+  //ID меню
+  var idName = el.getAttribute("id");
+
+  // формирование селектора
+  var idSelectorPart = idName ? "#".concat(idName) : "";
+  var classesSelectorPart = classNames.length ? ".".concat(classNames.join(".")) : "";
+  var selector = "".concat(tagName).concat(idSelectorPart).concat(classesSelectorPart).toLowerCase();
+  return selector;
+}
+function _getSubmenuSwitchers2() {
+  var submenuSwitchers = Array.from(_classPrivateFieldGet(this, _menu).querySelectorAll("a")).filter(function (el) {
+    return Boolean(el.nextSibling);
+  });
+  return submenuSwitchers;
+}
+function _menuClicked2(e) {
+  var selector = _classPrivateMethodGet(this, _getHtmlElementSelector, _getHtmlElementSelector2).call(this, _classPrivateFieldGet(this, _menu));
+  var menuClicked = e.target.closest(selector) === _classPrivateFieldGet(this, _menu);
+  return menuClicked;
+}
+function _setMenuState2(state) {
+  var t = this;
+  _classPrivateFieldSet(t, _menuStateOnMobile, state);
+  if (state === "shown") {
+    _classPrivateFieldGet(t, _menu).classList.add("shown");
+    _classPrivateFieldGet(t, _mobileSwitcher).classList.add("active");
+  } else {
+    _classPrivateFieldGet(t, _menu).classList.remove("shown");
+    _classPrivateFieldGet(t, _mobileSwitcher).classList.remove("active");
+  }
+  return;
+}
+new menuActions(".main-menu", "#mobile-menu-toggle");
 
 /***/ }),
 
