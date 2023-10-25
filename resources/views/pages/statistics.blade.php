@@ -16,9 +16,9 @@
 
         {{-- шапка со списком выбора вариантов сортировки и выбора месяца или года отображения --}}
         {{-- ************************************************ --}}
-        <div class="mt-4 mb-2 statistics-header">
+        <div class="mt-4 mb-4 statistics-header" ref='beforeStickyPosition'>
             <div class="row align-items-center">
-                <div class="col-auto">
+                <div class="col-12 col-md-auto">
                     <p class="m-0 h-6 d-inline">Статистика:</p>
                     <select v-model='ratingBy' :size='ratingBy' class='ms-2  inline-select'>
                         <option v-for='rate, key in ratingOptions' :key='"options" + key' :value='key'
@@ -26,16 +26,17 @@
                             @{{ rate }}</option>
                     </select>
                 </div>
-                <div class="col-auto d-flex align-items-center">
+
+                <div class="mt-4 mt-md-0 col-auto d-flex align-items-center">
                     <span class="label">с </span>
                     <datepicker class='ms-2' :_date='dateRange.start' @date-changed='setDate("start", $event)' />
                 </div>
-                <div class="col-auto d-flex align-items-center">
+                <div class="mt-4 mt-md-0 col-auto d-flex align-items-center">
                     <span class="label">
                         по </span>
                     <datepicker :_date='dateRange.end' class='ms-2' @date-changed='setDate("end", $event)' />
                 </div>
-                <div class="col-auto">
+                <div class="col-md-auto mt-4 mt-md-0 col-12">
                     <button class="btn btn-sm btn-primary-alt" type='button' @click='setPeriod("month")'>Месяц</button>
                     <button class="btn btn-sm btn-primary-alt ms-2" type='button'
                         @click='setPeriod("quarter")'>Квартал</button>
@@ -57,9 +58,9 @@
             {{-- Список отфильтрованных данных --}}
             {{-- ************************************************ --}}
             <Transition name='fade'>
-                <div class='col-12 col-md-6 statistics-list' v-show='ratingData.length'>
-                    <transition-group :css="false" v-on:before-enter="onBeforeEnter" v-on:enter="onEnter"
-                        v-on:leave="onLeave" name='sort'>
+                <div class='col-12 col-md-6 d-none d-md-block' v-show='ratingData.length'>
+                    <transition-group tag='div' class='statistics-list' :css="false"
+                        v-on:before-enter="onBeforeEnter" v-on:enter="onEnter" v-on:leave="onLeave" name='sort'>
                         <div v-for='data, key in ratingData' :data-index='key' :key='data.pid'>
                             <div class='statistics-row' :class="'statistics' + (key + 1)">
                                 <div class='d-flex'>
@@ -85,89 +86,91 @@
 
             {{-- аналитические данные об урожает в выбранный период --}}
             {{-- ************************************************ --}}
-            <div class="col-12 col-md-6" v-show='ratingData.length'>
-                <div class="d-flex flex-column h-100 statistics-details p-4">
+            <Transition name='fade'>
+                <div class="col-12 col-md-6 d-flex flex-column " v-if='ratingData.length' ref='observeResize'>
+                    <div class="d-flex flex-column statistics-details p-4" :ref='"fixposition"'>
 
-                    {{-- Ряд с данными:
+                        {{-- Ряд с данными:
                          - собрано урожая,
                          - всего рабочих дней,
                          - лучший сбор за день
                         --}}
-                    {{-- ************************************************ --}}
-                    <div class="row">
-                        <div class="col-12 col-md-4">
-                            <div class="statistics-data">
-                                <h3 class="statistics-data__label">Собрано урожая</h3>
-                                <Transition name='fade'>
-                                    <p class="statistics-data__value">
-                                        @{{ statData.collected }}
-                                    </p>
-                                </Transition>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-4 mt-2 mt-md-0">
-                            <div class="statistics-data">
-                                <h3 class="statistics-data__label">Рабочих дней</h3>
-                                <Transition name='fade'>
-                                    <p class="statistics-data__value">
-                                        @{{ statData.daysCount }}
-                                    </p>
-                                </Transition>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-4 mt-2 mt-md-0">
-                            <div class="statistics-data">
-                                <h3 class="statistics-data__label">Лучший сбор за день</h3>
-                                <Transition name='fade'>
-                                    <p class="statistics-data__value">
-                                        @{{ statData.bestDay.collected }}
-                                        <span class="statistics-data__value_secondary">@{{ statData.bestDay.date }}</span>
-                                    </p>
-                                </Transition>
-                            </div>
-                        </div>
-                    </div>
-                    {{-- ************************************************ --}}
-                    {{-- график динамики уборки  --}}
-                    {{-- ************************************************ --}}
-                    <div class="flex-grow-1 mt-2 d-flex flex-column">
-                        <h3 class="h6 m-0">
-                            Динамика уборки урожая за @{{ currentPeriod }}
-                        </h3>
-
-                        <div class="graph-body flex-grow-1 mt-4">
-                            <Graph :_info='bvsInfo'></Graph>
-                        </div>
-                    </div>
-                    {{-- ************************************************ --}}
-
-                    {{-- 5 лучших за период --}}
-                    {{-- ************************************************ --}}
-                    <div>
-                        <h3 class="h6 m-0">
-                            @{{ top5Title }}
-                        </h3>
+                        {{-- ************************************************ --}}
                         <div class="row">
-                            <div class="col-7">
-                                <transition-group :css="false" v-on:before-enter="onBeforeEnter"
-                                    v-on:enter="onEnter" v-on:leave="onLeave" name='sort'>
-                                    <div class="statistics-best-item" v-for='item,key in top5' :key='"top5" + item.pid'
-                                        :data-index='key'>
-                                        <i class="statistics-best-item__icon"
-                                            :class='"statistics-best-item__icon" + key'></i>
-                                        <h4 class="statistics-best-item__name">@{{ item.name }}</h4>
-                                        <p class="statistics-best-item__persantage text-end">@{{ item.amount }}</p>
-                                    </div>
-                                </transition-group>
+                            <div class="col-12 col-md-4">
+                                <div class="statistics-data">
+                                    <h3 class="statistics-data__label">Собрано урожая</h3>
+                                    <Transition name='fade'>
+                                        <p class="statistics-data__value">
+                                            @{{ statData.collected }}
+                                        </p>
+                                    </Transition>
+                                </div>
                             </div>
-                            <div class="col-5">
-                                <div class="diagram"></div>
+                            <div class="col-12 col-md-4 mt-2 mt-md-0">
+                                <div class="statistics-data">
+                                    <h3 class="statistics-data__label">Рабочих дней</h3>
+                                    <Transition name='fade'>
+                                        <p class="statistics-data__value">
+                                            @{{ statData.daysCount }}
+                                        </p>
+                                    </Transition>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-4 mt-2 mt-md-0">
+                                <div class="statistics-data">
+                                    <h3 class="statistics-data__label">Лучший сбор за день</h3>
+                                    <Transition name='fade'>
+                                        <p class="statistics-data__value">
+                                            @{{ statData.bestDay.collected }}
+                                            <span class="statistics-data__value_secondary">@{{ statData.bestDay.date }}</span>
+                                        </p>
+                                    </Transition>
+                                </div>
                             </div>
                         </div>
+                        {{-- ************************************************ --}}
+                        {{-- график динамики уборки  --}}
+                        {{-- ************************************************ --}}
+                        <div class="flex-grow-1 mt-2 d-flex flex-column">
+                            <h3 class="h6 m-0">
+                                Динамика уборки урожая за @{{ currentPeriod }}
+                            </h3>
+
+                            <div class="graph-body flex-grow-1 mt-4">
+                                <Graph :_info='bvsInfo'></Graph>
+                            </div>
+                        </div>
+                        {{-- ************************************************ --}}
+
+                        {{-- 5 лучших за период --}}
+                        {{-- ************************************************ --}}
+                        <div>
+                            <h3 class="h6 m-0">
+                                @{{ top5Title }}
+                            </h3>
+                            <div class="row">
+                                <div class="col-7">
+                                    <transition-group :css="false" v-on:before-enter="onBeforeEnter"
+                                        v-on:enter="onEnter" v-on:leave="onLeave" name='sort'>
+                                        <div class="statistics-best-item" v-for='item,key in top5' :key='"top5" + item.pid'
+                                            :data-index='key'>
+                                            <i class="statistics-best-item__icon"
+                                                :class='"statistics-best-item__icon" + key'></i>
+                                            <h4 class="statistics-best-item__name">@{{ item.name }}</h4>
+                                            <p class="statistics-best-item__persantage text-end">@{{ item.amount }}</p>
+                                        </div>
+                                    </transition-group>
+                                </div>
+                                <div class="col-5">
+                                    <div class="diagram"></div>
+                                </div>
+                            </div>
+                        </div>
+                        {{-- ************************************************ --}}
                     </div>
-                    {{-- ************************************************ --}}
                 </div>
-            </div>
+            </Transition>
         </div>
     </div>
 @endsection

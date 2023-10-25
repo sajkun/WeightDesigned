@@ -16390,8 +16390,11 @@ var drawTimeout;
       var _this$getCnv = _slicedToArray(this.getCnv, 2),
         cnvs = _this$getCnv[0],
         ctx = _this$getCnv[1];
-      cnvs.width = vm.$refs.root.offsetWidth ? vm.$refs.root.offsetWidth : 500;
-      cnvs.height = vm.$refs.root.offsetHeight - 50 ? vm.$refs.root.offsetHeight - 50 : 500;
+      var maxWidth = Math.min(window.innerWidth, 800);
+      var rootWidth = vm.$refs.root.offsetWidth ? vm.$refs.root.offsetWidth : maxWidth;
+      cnvs.width = rootWidth;
+      cnvs.height = parseInt(rootWidth * 11 / 16);
+      vm.$refs.root.classList.remove("not-ready");
       ctx.translate(0, cnvs.height);
       ctx.rotate(-Math.PI / 2);
       return;
@@ -17594,7 +17597,7 @@ var _withScopeId = function _withScopeId(n) {
   return (0,vue__WEBPACK_IMPORTED_MODULE_0__.pushScopeId)("data-v-013f9ad8"), n = n(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.popScopeId)(), n;
 };
 var _hoisted_1 = {
-  "class": "w-100 h-100 component-root",
+  "class": "w-100 h-100 component-root not-ready",
   ref: "root"
 };
 var _hoisted_2 = {
@@ -19807,7 +19810,6 @@ __webpack_require__.r(__webpack_exports__);
         left: "initial",
         width: "initial",
         maxWidth: "initial",
-        maxHeight: "initial",
         position: "fixed"
       },
       scrollData: {
@@ -19882,8 +19884,13 @@ __webpack_require__.r(__webpack_exports__);
       // максимальная доступная ширина элемента
       vm.fixData.width = vm.fixData.maxWidth = parentRect.width - paddingsParent.x();
       if (vm.controllHeight) {
-        vm.fixData.maxHeight = maxHeight - paddingsParent.y();
-        vm.fixData.height = maxHeight - paddingsParent.y();
+        var height = maxHeight;
+        // height -= getStyle(el, "margin-top", true);
+        // height -= getStyle(el, "margin-bottom", true);
+        // height -= getStyle(el, "padding-top", true);
+        height -= (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.getStyle)(el, "padding-bottom", true);
+        vm.fixData.maxHeight = height;
+        vm.fixData.height = height;
       }
 
       // отступы сверху и слева
@@ -19976,7 +19983,6 @@ __webpack_require__.r(__webpack_exports__);
         left: "initial",
         width: "initial",
         maxWidth: "initial",
-        maxHeight: "initial",
         position: "relative"
       };
       var el = vm === null || vm === void 0 ? void 0 : vm.$refs[vm === null || vm === void 0 ? void 0 : vm.targetRef];
@@ -20011,6 +20017,7 @@ __webpack_require__.r(__webpack_exports__);
       vm.extraElements = extraElements;
       if (controllHeight) {
         vm.fixData.height = targetElement.offsetHeight;
+        vm.fixData.maxHeight = targetElement.offsetHeight;
       }
       vm.updateFixElement(targetElement, vm.fixData);
       vm.$nextTick(function () {
@@ -21821,16 +21828,17 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _misc_BvsDataClass__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @/misc/BvsDataClass */ "./resources/js/misc/BvsDataClass.js");
 /* harmony import */ var _mixins_axiosRequests__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @/mixins/axiosRequests */ "./resources/js/mixins/axiosRequests.js");
 /* harmony import */ var _mixins_crud__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @/mixins/crud */ "./resources/js/mixins/crud.js");
-/* harmony import */ var _mixins_messages__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @/mixins/messages */ "./resources/js/mixins/messages.js");
-/* harmony import */ var _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @/mixins/publicAuthData */ "./resources/js/mixins/publicAuthData.js");
-/* harmony import */ var _mixins_sortAnimation__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @/mixins/sortAnimation */ "./resources/js/mixins/sortAnimation.js");
-/* harmony import */ var _mixins_professions__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @/mixins/professions */ "./resources/js/mixins/professions.js");
-/* harmony import */ var _mixins_statData__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @/mixins/statData */ "./resources/js/mixins/statData.js");
-/* harmony import */ var _mixins_vehicleTypes__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @/mixins/vehicleTypes */ "./resources/js/mixins/vehicleTypes.js");
-/* harmony import */ var _components_MessagesComponent__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! @/components/MessagesComponent */ "./resources/js/components/MessagesComponent/index.js");
-/* harmony import */ var _components_GraphicComponent__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! @/components/GraphicComponent */ "./resources/js/components/GraphicComponent/index.js");
-/* harmony import */ var _components_inputs_MonthPickerComponent__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! @/components/inputs/MonthPickerComponent */ "./resources/js/components/inputs/MonthPickerComponent/index.js");
-/* harmony import */ var _components_inputs_DatepickerComponent__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! @/components/inputs/DatepickerComponent */ "./resources/js/components/inputs/DatepickerComponent/index.js");
+/* harmony import */ var _mixins_fixedRightCol__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @/mixins/fixedRightCol */ "./resources/js/mixins/fixedRightCol.js");
+/* harmony import */ var _mixins_messages__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @/mixins/messages */ "./resources/js/mixins/messages.js");
+/* harmony import */ var _mixins_professions__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @/mixins/professions */ "./resources/js/mixins/professions.js");
+/* harmony import */ var _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @/mixins/publicAuthData */ "./resources/js/mixins/publicAuthData.js");
+/* harmony import */ var _mixins_sortAnimation__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @/mixins/sortAnimation */ "./resources/js/mixins/sortAnimation.js");
+/* harmony import */ var _mixins_statData__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @/mixins/statData */ "./resources/js/mixins/statData.js");
+/* harmony import */ var _mixins_vehicleTypes__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! @/mixins/vehicleTypes */ "./resources/js/mixins/vehicleTypes.js");
+/* harmony import */ var _components_MessagesComponent__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! @/components/MessagesComponent */ "./resources/js/components/MessagesComponent/index.js");
+/* harmony import */ var _components_GraphicComponent__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! @/components/GraphicComponent */ "./resources/js/components/GraphicComponent/index.js");
+/* harmony import */ var _components_inputs_MonthPickerComponent__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! @/components/inputs/MonthPickerComponent */ "./resources/js/components/inputs/MonthPickerComponent/index.js");
+/* harmony import */ var _components_inputs_DatepickerComponent__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! @/components/inputs/DatepickerComponent */ "./resources/js/components/inputs/DatepickerComponent/index.js");
 /**
  * приложение отображение статистики публичного раздела
  *
@@ -21853,21 +21861,36 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
 // компоненты
 
 
 
 
 var appPublicStatistics = {
-  mixins: [_mixins_axiosRequests__WEBPACK_IMPORTED_MODULE_3__["default"], _mixins_crud__WEBPACK_IMPORTED_MODULE_4__["default"], _mixins_messages__WEBPACK_IMPORTED_MODULE_5__["default"], _mixins_professions__WEBPACK_IMPORTED_MODULE_8__["default"], _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_6__["default"], _mixins_statData__WEBPACK_IMPORTED_MODULE_9__["default"], _mixins_sortAnimation__WEBPACK_IMPORTED_MODULE_7__["default"], _mixins_vehicleTypes__WEBPACK_IMPORTED_MODULE_10__["default"]],
+  mixins: [_mixins_axiosRequests__WEBPACK_IMPORTED_MODULE_3__["default"], _mixins_crud__WEBPACK_IMPORTED_MODULE_4__["default"], _mixins_fixedRightCol__WEBPACK_IMPORTED_MODULE_5__["default"], _mixins_messages__WEBPACK_IMPORTED_MODULE_6__["default"], _mixins_professions__WEBPACK_IMPORTED_MODULE_7__["default"], _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_8__["default"], _mixins_statData__WEBPACK_IMPORTED_MODULE_10__["default"], _mixins_sortAnimation__WEBPACK_IMPORTED_MODULE_9__["default"], _mixins_vehicleTypes__WEBPACK_IMPORTED_MODULE_11__["default"]],
   components: {
-    MessagesComponent: _components_MessagesComponent__WEBPACK_IMPORTED_MODULE_11__["default"],
-    MonthPicker: _components_inputs_MonthPickerComponent__WEBPACK_IMPORTED_MODULE_13__["default"],
-    Datepicker: _components_inputs_DatepickerComponent__WEBPACK_IMPORTED_MODULE_14__["default"],
-    Graph: _components_GraphicComponent__WEBPACK_IMPORTED_MODULE_12__["default"]
+    MessagesComponent: _components_MessagesComponent__WEBPACK_IMPORTED_MODULE_12__["default"],
+    MonthPicker: _components_inputs_MonthPickerComponent__WEBPACK_IMPORTED_MODULE_14__["default"],
+    Datepicker: _components_inputs_DatepickerComponent__WEBPACK_IMPORTED_MODULE_15__["default"],
+    Graph: _components_GraphicComponent__WEBPACK_IMPORTED_MODULE_13__["default"]
   },
   data: function data() {
-    return {};
+    return {
+      initialized: false
+    };
+  },
+  watch: {
+    bvsData: function bvsData() {
+      var vm = this;
+      if (!vm.initialized) {
+        vm.$refs.emptyMessage.classList.remove("d-none");
+        setTimeout(function () {
+          vm.startFixElement("fixposition", "observeResize", false, [vm.$refs.beforeStickyPosition]);
+        }, 400);
+        vm.initialized = true;
+      }
+    }
   },
   computed: {
     /**
@@ -21993,15 +22016,11 @@ var appPublicStatistics = {
     }
   },
   mounted: function mounted() {
-    var _this = this;
     var vm = this;
     vm.$el.parentNode.classList.add("d-flex");
     var today = new Date();
     vm.dateRange.start = moment__WEBPACK_IMPORTED_MODULE_1___default()(today).set("date", 1).toISOString();
     vm.dateRange.end = moment__WEBPACK_IMPORTED_MODULE_1___default()(today).toISOString();
-    setTimeout(function () {
-      _this.$refs.emptyMessage.classList.remove("d-none");
-    }, 1500);
   },
   methods: {
     /**
@@ -23539,7 +23558,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, ".component-root[data-v-013f9ad8] {\n  overflow: hidden;\n}\ncanvas[data-v-013f9ad8] {\n  width: 100%;\n  height: 100%;\n}", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, ".component-root[data-v-013f9ad8] {\n  overflow: hidden;\n}\ncanvas[data-v-013f9ad8] {\n  width: 100%;\n  height: 100%;\n  transition: filter var(--fast), opacity var(--fast);\n}\n.not-ready[data-v-013f9ad8] {\n  filter: grayscale(100%) blur(2px);\n  opacity: 0.4;\n}", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 

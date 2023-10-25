@@ -30,7 +30,6 @@ export default {
                 left: "initial",
                 width: "initial",
                 maxWidth: "initial",
-                maxHeight: "initial",
                 position: "fixed",
             },
 
@@ -41,7 +40,6 @@ export default {
 
             shiftY: 0,
             controllHeight: false,
-
             applyFixData: false,
         };
     },
@@ -114,8 +112,13 @@ export default {
                 parentRect.width - paddingsParent.x();
 
             if (vm.controllHeight) {
-                vm.fixData.maxHeight = maxHeight - paddingsParent.y();
-                vm.fixData.height = maxHeight - paddingsParent.y();
+                let height = maxHeight;
+                // height -= getStyle(el, "margin-top", true);
+                // height -= getStyle(el, "margin-bottom", true);
+                // height -= getStyle(el, "padding-top", true);
+                height -= getStyle(el, "padding-bottom", true);
+                vm.fixData.maxHeight = height;
+                vm.fixData.height = height;
             }
 
             // отступы сверху и слева
@@ -225,7 +228,6 @@ export default {
                 left: "initial",
                 width: "initial",
                 maxWidth: "initial",
-                maxHeight: "initial",
                 position: "relative",
             };
             const el = vm?.$refs[vm?.targetRef];
@@ -266,6 +268,7 @@ export default {
 
             if (controllHeight) {
                 vm.fixData.height = targetElement.offsetHeight;
+                vm.fixData.maxHeight = targetElement.offsetHeight;
             }
 
             vm.updateFixElement(targetElement, vm.fixData);

@@ -13,10 +13,11 @@ import { BvsData } from "@/misc/BvsDataClass";
 //миксины
 import axiosRequests from "@/mixins/axiosRequests";
 import crud from "@/mixins/crud";
+import fixedRightCol from "@/mixins/fixedRightCol";
 import messages from "@/mixins/messages";
+import professions from "@/mixins/professions";
 import publicAuthData from "@/mixins/publicAuthData";
 import sortAnimation from "@/mixins/sortAnimation";
-import professions from "@/mixins/professions";
 import statData from "@/mixins/statData";
 import vehicleTypes from "@/mixins/vehicleTypes";
 
@@ -30,6 +31,7 @@ const appPublicStatistics = {
     mixins: [
         axiosRequests,
         crud,
+        fixedRightCol,
         messages,
         professions,
         publicAuthData,
@@ -46,7 +48,25 @@ const appPublicStatistics = {
     },
 
     data() {
-        return {};
+        return {
+            initialized: false,
+        };
+    },
+
+    watch: {
+        bvsData() {
+            const vm = this;
+
+            if (!vm.initialized) {
+                vm.$refs.emptyMessage.classList.remove("d-none");
+                setTimeout(() => {
+                    vm.startFixElement("fixposition", "observeResize", false, [
+                        vm.$refs.beforeStickyPosition,
+                    ]);
+                }, 400);
+                vm.initialized = true;
+            }
+        },
     },
 
     computed: {
@@ -195,13 +215,10 @@ const appPublicStatistics = {
     mounted() {
         const vm = this;
         vm.$el.parentNode.classList.add("d-flex");
+
         const today = new Date();
         vm.dateRange.start = moment(today).set("date", 1).toISOString();
         vm.dateRange.end = moment(today).toISOString();
-
-        setTimeout(() => {
-            this.$refs.emptyMessage.classList.remove("d-none");
-        }, 1500);
     },
 
     methods: {
