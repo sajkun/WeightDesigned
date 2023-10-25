@@ -3,7 +3,7 @@
  */
 
 //хэлперы
-import { getStyle, getDocHeight } from "@/misc/helpers";
+import { clog, getStyle, getDocHeight } from "@/misc/helpers";
 export default {
     data() {
         return {
@@ -59,10 +59,13 @@ export default {
                     vm.resertFixedElement();
                     return;
                 }
+
                 const el = vm?.$refs[vm?.targetRef];
                 if (!el || !vm.applyFixData) {
+                    vm.resertFixedElement();
                     return;
                 }
+
                 vm.updateFixElement(el, fixData);
             },
             deep: true,
@@ -77,6 +80,10 @@ export default {
          */
         calculatePositionData() {
             const vm = this;
+            if (!vm.ifEnoughtHeight()) {
+                vm.resertFixedElement();
+                return;
+            }
             const shiftVelocity = 30;
             const scrollY = window.scrollY;
             const leftToBottomEdge =
@@ -206,6 +213,17 @@ export default {
             };
 
             return paddingsParent;
+        },
+
+        /**
+         * проверка хватает ли высоты фиксируемого окна, чтобы поместиться в документе
+         *
+         * @returns {Boolean}
+         */
+        ifEnoughtHeight() {
+            const vm = this;
+            const targetElement = vm.$refs[vm.targetRef];
+            return targetElement.offsetHeight < getDocHeight();
         },
 
         /**
