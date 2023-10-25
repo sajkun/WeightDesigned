@@ -31,7 +31,7 @@
                                 <th>Профессия</th>
                                 <td></td>
                             </tr>
-                            <tr v-for='person, key in employees' :key='"emp" + key' @click.stop='edit(person, false )'>
+                            <tr v-for='person, key in employees' :key='"emp" + key' @click='edit(person, false )'>
                                 <td>@{{ key + 1 }}</td>
                                 <td title='ФИО'>@{{ person.first_name }} @{{ person.middle_name }} @{{ person.last_name }}</td>
                                 <td title='Телефон'>@{{ person.phone }}</td>

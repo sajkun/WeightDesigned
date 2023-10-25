@@ -5,7 +5,9 @@
  */
 
 //хэлперы
-import { strip, clog } from "@/misc/helpers";
+import { strip } from "@/misc/helpers";
+
+const clog = () => {};
 
 //миксины
 import fixedRightCol from "@/mixins/fixedRightCol";
@@ -150,6 +152,7 @@ const appPublicVehicles = {
     watch: {
         mode(mode) {
             const vm = this;
+            clog("watch:mode", mode);
             if (mode !== "details") {
                 // обнуление фиксированного положение правой колонки
                 vm.stopFixElement();

@@ -3,7 +3,7 @@
  */
 
 //хэлперы
-import { clog, getStyle } from "@/misc/helpers";
+import { clog, getStyle, getDocHeight } from "@/misc/helpers";
 export default {
     data() {
         return {
@@ -27,7 +27,11 @@ export default {
                 position: "fixed",
             },
 
-            prevScrollY: 0,
+            scrollData: {
+                prev: 0,
+                direction: 0,
+            },
+
             shiftY: 0,
             controllHeight: false,
 
@@ -61,12 +65,16 @@ export default {
          * @returns {Void}
          */
         calculatePositionData() {
+            clog("calculatePositionData");
             const vm = this;
             const shiftVelocity = 30;
             const scrollY = window.scrollY;
+            const leftToBottomEdge =
+                getDocHeight() - scrollY - window.innerHeight;
 
             // целевой фиксируемый элемент
             const el = vm.$refs[vm.targetRef];
+            const elHeight = el.offsetHeight;
 
             // Внутренние отступы родительского элемента
             const paddingsParent = vm.getParentPaddings(el);
@@ -84,7 +92,6 @@ export default {
 
             //*************** */
             //сдвиг необходимый для смещения зафиксированного элемента в случаях, если его высота больше видимой высоты окна
-
             let minShiftY = Math.min(maxHeight - el.offsetHeight, 0);
             let shiftY = vm.shiftY;
 
@@ -108,7 +115,21 @@ export default {
             }
 
             // отступы сверху и слева
-            vm.fixData.top = deltaY + paddingsParent.top + shiftY;
+            const totalShiftTop = deltaY + paddingsParent.top + shiftY;
+
+            // высота элемента ниже нижнего края экрана
+            const elPartSizeBelowBottomEdge =
+                elHeight + totalShiftTop - paddingsParent.bottom - maxHeight;
+
+            // сдвиг если нижняя граница фиксируемого элемента выступает нижней части экрана
+            const fixBottomEdgeShift =
+                elPartSizeBelowBottomEdge > 0 &&
+                leftToBottomEdge < elPartSizeBelowBottomEdge &&
+                vm.getScrolldirection() === "down"
+                    ? leftToBottomEdge - elPartSizeBelowBottomEdge
+                    : 0;
+
+            vm.fixData.top = totalShiftTop + fixBottomEdgeShift;
             vm.fixData.left = parentRect.left + paddingsParent.left;
 
             vm.shiftY = shiftY;
@@ -123,9 +144,14 @@ export default {
         getScrolldirection() {
             const vm = this;
             const pos = window.scrollY;
-            const delta = vm.prevScrollY - pos;
-            vm.prevScrollY = pos;
-            return delta < 0 ? "down" : "up";
+            const delta = vm.scrollData.prev - pos;
+            if (delta === 0) {
+                return vm.scrollData.direction;
+            }
+            vm.scrollData.prev =
+                vm.scrollData.prev !== pos ? pos : vm.scrollData.prev;
+            vm.scrollData.direction = delta > 0 ? "up" : "down";
+            return vm.scrollData.direction;
         },
 
         /**
@@ -201,17 +227,19 @@ export default {
         startFixElement(targetRef, observeRef, controllHeight) {
             const vm = this;
             const observeEl = vm.$refs[observeRef];
+            const targetElement = vm.$refs[targetRef];
             vm.applyFixData = true;
             vm.observer = vm.initObserver();
             vm.targetRef = targetRef;
             vm.fixData.position = "fixed";
             vm.controllHeight = controllHeight;
+            vm.updateFixElement(targetElement, vm.fixData);
 
             vm.$nextTick(() => {
                 vm.observer.observe(observeEl);
+                vm.observer.observe(targetElement);
+                window.addEventListener("scroll", vm.calculatePositionData);
             });
-
-            window.addEventListener("scroll", vm.calculatePositionData);
 
             return;
         },

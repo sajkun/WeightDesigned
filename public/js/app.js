@@ -19272,6 +19272,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   clog: () => (/* binding */ clog),
 /* harmony export */   get1stDigit: () => (/* binding */ get1stDigit),
+/* harmony export */   getDocHeight: () => (/* binding */ getDocHeight),
 /* harmony export */   getFormData: () => (/* binding */ getFormData),
 /* harmony export */   getRoundedValue: () => (/* binding */ getRoundedValue),
 /* harmony export */   getStyle: () => (/* binding */ getStyle),
@@ -19468,6 +19469,18 @@ var getStyle = function getStyle(oElm, strCssRule, onlyDigits) {
     strValue = oElm.currentStyle[strCssRule];
   }
   return onlyDigits ? parseFloat(strValue) : strValue;
+};
+
+/**
+ * Получает высоту документа
+ *
+ * @returns {Number}
+ */
+var getDocHeight = function getDocHeight() {
+  var body = document.body,
+    html = document.documentElement;
+  var height = Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight);
+  return height;
 };
 
 /***/ }),
@@ -19791,7 +19804,10 @@ __webpack_require__.r(__webpack_exports__);
         maxHeight: "initial",
         position: "fixed"
       },
-      prevScrollY: 0,
+      scrollData: {
+        prev: 0,
+        direction: 0
+      },
       shiftY: 0,
       controllHeight: false,
       applyFixData: false
@@ -19822,12 +19838,15 @@ __webpack_require__.r(__webpack_exports__);
      * @returns {Void}
      */
     calculatePositionData: function calculatePositionData() {
+      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("calculatePositionData");
       var vm = this;
       var shiftVelocity = 30;
       var scrollY = window.scrollY;
+      var leftToBottomEdge = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.getDocHeight)() - scrollY - window.innerHeight;
 
       // целевой фиксируемый элемент
       var el = vm.$refs[vm.targetRef];
+      var elHeight = el.offsetHeight;
 
       // Внутренние отступы родительского элемента
       var paddingsParent = vm.getParentPaddings(el);
@@ -19845,7 +19864,6 @@ __webpack_require__.r(__webpack_exports__);
 
       //*************** */
       //сдвиг необходимый для смещения зафиксированного элемента в случаях, если его высота больше видимой высоты окна
-
       var minShiftY = Math.min(maxHeight - el.offsetHeight, 0);
       var shiftY = vm.shiftY;
       if (vm.getScrolldirection() === "down") {
@@ -19866,7 +19884,14 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       // отступы сверху и слева
-      vm.fixData.top = deltaY + paddingsParent.top + shiftY;
+      var totalShiftTop = deltaY + paddingsParent.top + shiftY;
+
+      // высота элемента ниже нижнего края экрана
+      var elPartSizeBelowBottomEdge = elHeight + totalShiftTop - paddingsParent.bottom - maxHeight;
+
+      // сдвиг если нижняя граница фиксируемого элемента выступает нижней части экрана
+      var fixBottomEdgeShift = elPartSizeBelowBottomEdge > 0 && leftToBottomEdge < elPartSizeBelowBottomEdge && vm.getScrolldirection() === "down" ? leftToBottomEdge - elPartSizeBelowBottomEdge : 0;
+      vm.fixData.top = totalShiftTop + fixBottomEdgeShift;
       vm.fixData.left = parentRect.left + paddingsParent.left;
       vm.shiftY = shiftY;
       return;
@@ -19879,9 +19904,13 @@ __webpack_require__.r(__webpack_exports__);
     getScrolldirection: function getScrolldirection() {
       var vm = this;
       var pos = window.scrollY;
-      var delta = vm.prevScrollY - pos;
-      vm.prevScrollY = pos;
-      return delta < 0 ? "down" : "up";
+      var delta = vm.scrollData.prev - pos;
+      if (delta === 0) {
+        return vm.scrollData.direction;
+      }
+      vm.scrollData.prev = vm.scrollData.prev !== pos ? pos : vm.scrollData.prev;
+      vm.scrollData.direction = delta > 0 ? "up" : "down";
+      return vm.scrollData.direction;
     },
     /**
      * Отступы родительского элемента для el
@@ -19951,15 +19980,18 @@ __webpack_require__.r(__webpack_exports__);
     startFixElement: function startFixElement(targetRef, observeRef, controllHeight) {
       var vm = this;
       var observeEl = vm.$refs[observeRef];
+      var targetElement = vm.$refs[targetRef];
       vm.applyFixData = true;
       vm.observer = vm.initObserver();
       vm.targetRef = targetRef;
       vm.fixData.position = "fixed";
       vm.controllHeight = controllHeight;
+      vm.updateFixElement(targetElement, vm.fixData);
       vm.$nextTick(function () {
         vm.observer.observe(observeEl);
+        vm.observer.observe(targetElement);
+        window.addEventListener("scroll", vm.calculatePositionData);
       });
-      window.addEventListener("scroll", vm.calculatePositionData);
       return;
     },
     /**
@@ -22345,6 +22377,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
 //хэлперы
 
+var clog = function clog() {};
 
 //миксины
 
@@ -22441,6 +22474,7 @@ var appPublicVehicles = {
   watch: {
     mode: function mode(_mode) {
       var vm = this;
+      clog("watch:mode", _mode);
       if (_mode !== "details") {
         // обнуление фиксированного положение правой колонки
         vm.stopFixElement();
@@ -22549,10 +22583,10 @@ var appPublicVehicles = {
         name: name,
         pin: pin
       }).then(function (response) {
-        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)((0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(response));
+        clog((0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(response));
         vm.messages[response.data.type] = response.data.message;
       })["catch"](function (e) {
-        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)(e.response);
+        clog(e.response);
         vm.messages.error = e.response.data.message;
       });
     },
@@ -22577,10 +22611,10 @@ var appPublicVehicles = {
       postData["organisation_id"] = vm.organisation_id;
       axios.post("/rfids/test", postData).then(function (response) {
         var _response$data;
-        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c checkRfid response", "color:green", response);
+        clog("%c checkRfid response", "color:green", response);
         vm.messages[response.data.type] = response === null || response === void 0 || (_response$data = response.data) === null || _response$data === void 0 ? void 0 : _response$data.message;
       })["catch"](function (e) {
-        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c checkRfid error", "color: red", e.response);
+        clog("%c checkRfid error", "color: red", e.response);
         vm.messages.error = e.response.data.message;
       });
     },
@@ -22613,22 +22647,22 @@ var appPublicVehicles = {
           return e.id;
         })
       };
-      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("createVehicle: ", vm.vehicleType);
-      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("createVehicle data: ", sendData);
+      clog("createVehicle: ", vm.vehicleType);
+      clog("createVehicle data: ", sendData);
       axios.post("/vehicles/store", sendData).then(function (response) {
         var _response$data2, _vm$$refs$formCreateV2;
-        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c createVehicle response", "color:green", response);
+        clog("%c createVehicle response", "color:green", response);
         vm.messages[response.data.type] = response === null || response === void 0 || (_response$data2 = response.data) === null || _response$data2 === void 0 ? void 0 : _response$data2.message;
         (_vm$$refs$formCreateV2 = vm.$refs.formCreateVehicle) === null || _vm$$refs$formCreateV2 === void 0 || _vm$$refs$formCreateV2.reset();
         vm.reset();
         vm.getVehicles();
       })["catch"](function (e) {
-        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c createVehicle error", "color: red", e.response);
+        clog("%c createVehicle error", "color: red", e.response);
         vm.messages.error = e.response.data.message;
       });
     },
     deleteVehicle: function deleteVehicle(item) {
-      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c deleteVehicle", "color: blue", item);
+      clog("%c deleteVehicle", "color: blue", item);
       var vm = this;
       vm.mode = "list";
       var sendData = {
@@ -22638,11 +22672,11 @@ var appPublicVehicles = {
       };
       axios.post("/vehicles/delete", sendData).then(function (response) {
         var _response$data3;
-        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c deleteVehicle", "color:green", response);
+        clog("%c deleteVehicle", "color:green", response);
         vm.messages[response.data.type] = response === null || response === void 0 || (_response$data3 = response.data) === null || _response$data3 === void 0 ? void 0 : _response$data3.message;
         vm.getVehicles();
       })["catch"](function (e) {
-        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c deleteVehicle error", "color: red", e.response);
+        clog("%c deleteVehicle error", "color: red", e.response);
         vm.messages.error = e.response.data.message;
       });
     },
@@ -22654,10 +22688,10 @@ var appPublicVehicles = {
       axios.get("/employees/list", {
         user_id: vm.userId
       }).then(function (response) {
-        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c getEmployees", "color: green", response);
+        clog("%c getEmployees", "color: green", response);
         vm.employees = response.data.employees;
       })["catch"](function (e) {
-        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c getVehicles error", "color: red", e.response);
+        clog("%c getVehicles error", "color: red", e.response);
         vm.messages.error = e.response.data.message;
       });
     },
@@ -22673,10 +22707,10 @@ var appPublicVehicles = {
     getVehicles: function getVehicles() {
       var vm = this;
       axios.get("/vehicles/list").then(function (response) {
-        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c getVehicles", "color: green", response);
+        clog("%c getVehicles", "color: green", response);
         vm.vehicles = response.data;
       })["catch"](function (e) {
-        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c getVehicles error", "color: red", e.response);
+        clog("%c getVehicles error", "color: red", e.response);
         vm.messages.error = e.response.data.message;
       });
     },
@@ -22684,7 +22718,7 @@ var appPublicVehicles = {
       var vm = this;
       vm.mayBeResponsiblePerson = person;
       vm.popup = null;
-      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c selectResponsiblePerson", "color: blue", (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(person));
+      clog("%c selectResponsiblePerson", "color: blue", (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(person));
     },
     submitCreate: function submitCreate() {
       this.$refs.formCreateVehicle.requestSubmit();
@@ -22707,7 +22741,7 @@ var appPublicVehicles = {
       } finally {
         _iterator3.f();
       }
-      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)(postData);
+      clog(postData);
       vm.rfids.push(postData);
 
       // vm.$refs.addRfid?.reset();
@@ -22716,7 +22750,7 @@ var appPublicVehicles = {
     updateVehicle: function updateVehicle() {
       var _vm$mayBeResponsibleP2;
       var vm = this;
-      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c updateVehicle", "color: blue", (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.editedVehicle));
+      clog("%c updateVehicle", "color: blue", (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.editedVehicle));
       var formData = new FormData(vm.$refs.editVehicleForm);
       var postData = {};
       var _iterator4 = _createForOfIteratorHelper(formData),
@@ -22745,16 +22779,16 @@ var appPublicVehicles = {
       };
       axios.post("/vehicles/update", sendData).then(function (response) {
         var _response$data4;
-        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c updateVehicle", "color:green", response);
+        clog("%c updateVehicle", "color:green", response);
         vm.messages[response.data.type] = response === null || response === void 0 || (_response$data4 = response.data) === null || _response$data4 === void 0 ? void 0 : _response$data4.message;
         vm.getVehicles();
       })["catch"](function (e) {
-        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c updateVehicle error", "color: red", e.response);
+        clog("%c updateVehicle error", "color: red", e.response);
         vm.messages.error = e.response.data.message;
       });
     },
     viewVehicle: function viewVehicle(item) {
-      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c viewVehicle", "color: blue", (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(item));
+      clog("%c viewVehicle", "color: blue", (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(item));
       var vm = this;
       this.mode = "details";
       vm.editedVehicle = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(item);

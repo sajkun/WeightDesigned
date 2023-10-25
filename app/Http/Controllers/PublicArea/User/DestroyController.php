@@ -41,7 +41,7 @@ class DestroyController extends Controller
             $delete_user = User::find($delete_user_id);
 
             if (!$delete_user) {
-                throw new \ErrorException('Попытка удалить несуществующего пользоывателя', 404);
+                throw new \ErrorException('Попытка удалить несуществующего пользователя', 404);
             }
 
             if ($delete_user->organisation_id != $organisation_id) {
