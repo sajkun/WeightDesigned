@@ -16928,6 +16928,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_inputs_InputComponent__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @/components/inputs/InputComponent */ "./resources/js/components/inputs/InputComponent/index.js");
 /* harmony import */ var _components_inputs_SelectComponent__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @/components/inputs/SelectComponent */ "./resources/js/components/inputs/SelectComponent/index.js");
 /* harmony import */ var _components_inputs_PasswordInputComponent__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @/components/inputs/PasswordInputComponent */ "./resources/js/components/inputs/PasswordInputComponent/index.js");
+/* harmony import */ var _misc_helpers__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @/misc/helpers */ "./resources/js/misc/helpers.js");
+
 
 
 
@@ -17015,8 +17017,11 @@ __webpack_require__.r(__webpack_exports__);
       (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c Отправка данных формы", "color: green", data);
       vm.$emit("exec-submit", data);
     },
-    reset: function reset() {
-      this.$refs.form.reset();
+    clear: function clear() {
+      this.structure = this.structure.map(function (el) {
+        el.value = null;
+        return el;
+      });
     }
   }
 });
@@ -18591,6 +18596,16 @@ __webpack_require__.r(__webpack_exports__);
         "class": "mt-2",
         minlength: 5
       }, {
+        id: "last_name-new-user",
+        name: "last_name",
+        label: "Фамилия",
+        type: "text",
+        minlength: 4,
+        required: true,
+        "class": "col-md-6 col-lg-4 mt-2 ",
+        pattern: "[А-Яа-я]{1,}",
+        title: "Допустимы только русские буквы. Удалите пробелы"
+      }, {
         id: "first_name-new-user",
         name: "first_name",
         label: "Имя",
@@ -18598,16 +18613,7 @@ __webpack_require__.r(__webpack_exports__);
         required: true,
         "class": "col-md-6 col-lg-4 mt-2 ",
         pattern: "[А-Яа-я]{1,}",
-        title: "Допустимы только русские буквы"
-      }, {
-        id: "last_name-new-user",
-        name: "last_name",
-        label: "Фамилия",
-        type: "text",
-        required: true,
-        "class": "col-md-6 col-lg-4 mt-2 ",
-        pattern: "[А-Яа-я]{1,}",
-        title: "Допустимы только русские буквы"
+        title: "Допустимы только русские буквы. Удалите пробелы"
       }, {
         id: "middle_name-new-user",
         name: "middle_name",
@@ -18615,14 +18621,16 @@ __webpack_require__.r(__webpack_exports__);
         type: "text",
         "class": "mt-2 col-lg-4  ",
         pattern: "[А-Яа-я]{1,}",
-        title: "Допустимы только русские буквы"
+        title: "Допустимы только русские буквы. Удалите пробелы"
       }, {
         id: "email-new-user",
         name: "email",
         label: "E-mail",
         type: "email",
         required: true,
-        "class": " mt-2 "
+        "class": " mt-2 ",
+        pattern: "[a-z0-9]+@[a-z]+\\.[a-z]{2,4}",
+        title: "email в формате <foo@bar.com>, допускаются латинские буквы и цифры. Обязательно наличие символов @ и . после точки допускается от 2х до 4х символов"
       }, {
         id: "phone-new-user",
         name: "phone",
@@ -18631,7 +18639,8 @@ __webpack_require__.r(__webpack_exports__);
         required: true,
         "class": "mt-2 ",
         minlength: 6,
-        pattern: "[+]{0,1}[0-9\\-\\(\\)]{1,}"
+        pattern: "[+]{0,1}[0-9\\-\\(\\)]{1,}",
+        title: "Допустимы цифры, и символы (, ), +, -"
       }, {
         id: "password-new-user",
         name: "password",
@@ -18710,15 +18719,6 @@ __webpack_require__.r(__webpack_exports__);
     editUserFormStructure: function editUserFormStructure() {
       var vm = this;
       var structure = [{
-        id: "first_name-new-user",
-        name: "first_name",
-        label: "Имя",
-        type: "text",
-        required: true,
-        "class": "col-md-6 col-lg-4 mt-2 ",
-        pattern: "[А-Яа-я]{1,}",
-        title: "Допустимы только русские буквы"
-      }, {
         id: "last_name-new-user",
         name: "last_name",
         label: "Фамилия",
@@ -18726,7 +18726,17 @@ __webpack_require__.r(__webpack_exports__);
         required: true,
         "class": "col-md-6 col-lg-4 mt-2 ",
         pattern: "[А-Яа-я]{1,}",
-        title: "Допустимы только русские буквы"
+        title: "Допустимы только русские буквы. Удалите пробелы"
+      }, {
+        id: "first_name-new-user",
+        name: "first_name",
+        label: "Имя",
+        type: "text",
+        required: true,
+        "class": "col-md-6 col-lg-4 mt-2 ",
+        pattern: "[А-Яа-я]{1,}",
+        title: "Допустимы только русские буквы. Удалите пробелы",
+        minlength: 4
       }, {
         id: "middle_name-new-user",
         name: "middle_name",
@@ -18734,16 +18744,18 @@ __webpack_require__.r(__webpack_exports__);
         type: "text",
         "class": "mt-2 col-lg-4  ",
         pattern: "[А-Яа-я]{1,}",
-        title: "Допустимы только русские буквы"
+        title: "Допустимы только русские буквы. Удалите пробелы"
       }, {
         id: "email-new-user",
         name: "email",
         label: "E-mail",
         type: "email",
         required: true,
-        "class": "col-md-6 mt-2 "
+        "class": "col-md-6 mt-2 ",
+        pattern: "[a-z0-9]+@[a-z]+\\.[a-z]{2,4}",
+        title: "email в формате <foo@bar.com>, допускаются латинские буквы и цифры. Обязательно наличие символов @ и . после точки допускается от 2х до 4х символов"
       }, {
-        title: "Допустимы цифры, (, ), +, -",
+        title: "Допустимы цифры, и символы (, ), +, -",
         id: "phone-new-user",
         name: "phone",
         label: "Телефон",
@@ -18798,7 +18810,7 @@ __webpack_require__.r(__webpack_exports__);
         required: true,
         "class": "col-md-6 col-lg-4 mt-2 ",
         pattern: "[А-Яа-я]{1,}",
-        title: "Допустимы только русские буквы"
+        title: "Допустимы только русские буквы. Удалите пробелы"
       }, {
         id: "first_name-new-employee",
         name: "first_name",
@@ -18807,7 +18819,7 @@ __webpack_require__.r(__webpack_exports__);
         required: true,
         "class": "col-md-6 col-lg-4 mt-2 ",
         pattern: "[А-Яа-я]{1,}",
-        title: "Допустимы только русские буквы"
+        title: "Допустимы только русские буквы. Удалите пробелы"
       }, {
         id: "middle_name-new-employee",
         name: "middle_name",
@@ -18815,7 +18827,7 @@ __webpack_require__.r(__webpack_exports__);
         type: "text",
         "class": "mt-2 col-lg-4  ",
         pattern: "[А-Яа-я]{1,}",
-        title: "Допустимы только русские буквы"
+        title: "Допустимы только русские буквы. Удалите пробелы"
       }, {
         id: "phone-new-employee",
         name: "phone",
@@ -18824,6 +18836,7 @@ __webpack_require__.r(__webpack_exports__);
         required: true,
         "class": "mt-2 ",
         minlength: 6,
+        title: "Допустимы цифры, и символы (, ), +, -",
         pattern: "[+]{0,1}[0-9\\-\\(\\)]{1,}"
       }, {
         id: "specialisation-new-employee",
@@ -18865,7 +18878,7 @@ __webpack_require__.r(__webpack_exports__);
         required: true,
         "class": "col-md-6 col-lg-4 mt-2 ",
         pattern: "[А-Яа-я]{1,}",
-        title: "Допустимы только русские буквы"
+        title: "Допустимы только русские буквы. Удалите пробелы"
       }, {
         id: "first_name-new-employee",
         name: "first_name",
@@ -18874,7 +18887,7 @@ __webpack_require__.r(__webpack_exports__);
         required: true,
         "class": "col-md-6 col-lg-4 mt-2 ",
         pattern: "[А-Яа-я]{1,}",
-        title: "Допустимы только русские буквы"
+        title: "Допустимы только русские буквы. Удалите пробелы"
       }, {
         id: "middle_name-new-employee",
         name: "middle_name",
@@ -18882,7 +18895,7 @@ __webpack_require__.r(__webpack_exports__);
         type: "text",
         "class": "mt-2 col-lg-4  ",
         pattern: "[А-Яа-я]{1,}",
-        title: "Допустимы только русские буквы"
+        title: "Допустимы только русские буквы. Удалите пробелы"
       }, {
         id: "phone-new-employee",
         name: "phone",
@@ -18891,6 +18904,7 @@ __webpack_require__.r(__webpack_exports__);
         required: true,
         "class": "mt-2 ",
         minlength: 6,
+        title: "Допустимы цифры, и символы (, ), +, -",
         pattern: "[+]{0,1}[0-9\\-\\(\\)]{1,}"
       }, {
         id: "specialisation-new-employee",
@@ -19603,9 +19617,11 @@ var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 var crud = {
   methods: {
     confirmActionCb: function confirmActionCb() {
+      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("confirmActionCb");
       document.dispatchEvent(new CustomEvent("submitConfirmEvent"));
     },
     cancelConfirmActionCb: function cancelConfirmActionCb() {
+      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("cancelConfirmActionCb");
       document.dispatchEvent(new CustomEvent("cancelConfirmEvent"));
     },
     createEntity: function createEntity(postData, url) {
@@ -19634,8 +19650,8 @@ var crud = {
         document.addEventListener("cancelConfirmEvent", _handlerCancel);
         vm.messages.confirm = "\u0412\u044B \u0443\u0432\u0435\u0440\u0435\u043D\u044B, \u0447\u0442\u043E \u0445\u043E\u0442\u0438\u0442\u0435 \u0443\u0434\u0430\u043B\u0438\u0442\u044C ".concat(postData === null || postData === void 0 ? void 0 : postData.name, "?");
       } else {
-        document.removeEventListener("confirmEvent", _handlerSubmit, false);
-        document.removeEventListener("submitConfirmEvent", _handlerCancel, false);
+        document.removeEventListener("submitConfirmEvent", _handlerSubmit, false);
+        document.removeEventListener("cancelConfirmEvent", _handlerCancel, false);
         vm.$nextTick(function () {
           vm.clearMessages(true);
         });
@@ -19654,8 +19670,9 @@ var crud = {
         vm.messages[response.data.type] = response.data.message;
         (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c sendRequest success", "color:green", response);
         return response;
-      }).then(function () {
+      }).then(function (response) {
         document.dispatchEvent(new CustomEvent("updateList"));
+        return response;
       })["catch"](function (e) {
         (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c sendRequest error", "color:red", e.response);
         vm.messages.error = "".concat(e.response.status, " ").concat(e.response.statusText, " : ").concat(e.response.data.message);
@@ -19821,12 +19838,17 @@ __webpack_require__.r(__webpack_exports__);
       applyFixData: false
     };
   },
+  computed: {
+    mobileBreakPoint: function mobileBreakPoint() {
+      return 768;
+    }
+  },
   watch: {
     // обновление положение элемента при изменении данных
     fixData: {
       handler: function handler(fixData) {
         var vm = this;
-        if (window.innerWidth < 768) {
+        if (window.innerWidth < vm.mobileBreakPoint) {
           vm.resertFixedElement();
           return;
         }
@@ -19885,9 +19907,6 @@ __webpack_require__.r(__webpack_exports__);
       vm.fixData.width = vm.fixData.maxWidth = parentRect.width - paddingsParent.x();
       if (vm.controllHeight) {
         var height = maxHeight;
-        // height -= getStyle(el, "margin-top", true);
-        // height -= getStyle(el, "margin-bottom", true);
-        // height -= getStyle(el, "padding-top", true);
         height -= (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.getStyle)(el, "padding-bottom", true);
         vm.fixData.maxHeight = height;
         vm.fixData.height = height;
@@ -20053,6 +20072,46 @@ __webpack_require__.r(__webpack_exports__);
         element.style[styleProp] = typeof data[styleProp] === "number" ? "".concat(data[styleProp], "px") : data[styleProp];
       }
       return;
+    }
+  }
+});
+
+/***/ }),
+
+/***/ "./resources/js/mixins/formatName.js":
+/*!*******************************************!*\
+  !*** ./resources/js/mixins/formatName.js ***!
+  \*******************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  methods: {
+    /**
+     * форматирует имя
+     *
+     * @param  {...String} names Фамилия Имя Отчество
+     *
+     * @returns {String} Фамилия И.О.
+     */
+    formatName: function formatName() {
+      for (var _len = arguments.length, names = new Array(_len), _key = 0; _key < _len; _key++) {
+        names[_key] = arguments[_key];
+      }
+      if (!names || !names.length) {
+        return;
+      }
+      var name = names.shift();
+      if (!name) return;
+      for (var _i = 0, _names = names; _i < _names.length; _i++) {
+        var part = _names[_i];
+        name = window.innerWidth < 992 ? "".concat(name.trim(), " ").concat(part.substring(0, 1), ".") : "".concat(name.trim(), " ").concat(part);
+      }
+      return name;
     }
   }
 });
@@ -20829,12 +20888,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _mixins_crud__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @/mixins/crud */ "./resources/js/mixins/crud.js");
 /* harmony import */ var _formFields_employees_edit__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @/formFields/employees/edit */ "./resources/js/formFields/employees/edit.js");
 /* harmony import */ var _mixins_fixedRightCol__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @/mixins/fixedRightCol */ "./resources/js/mixins/fixedRightCol.js");
-/* harmony import */ var _mixins_messages__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @/mixins/messages */ "./resources/js/mixins/messages.js");
-/* harmony import */ var _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @/mixins/publicAuthData */ "./resources/js/mixins/publicAuthData.js");
-/* harmony import */ var _components_inputs_FieldComponent__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @/components/inputs/FieldComponent */ "./resources/js/components/inputs/FieldComponent/index.js");
-/* harmony import */ var _components_inputs_FormComponent___WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @/components/inputs/FormComponent/ */ "./resources/js/components/inputs/FormComponent/index.js");
-/* harmony import */ var _components_inputs_InputComponent__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @/components/inputs/InputComponent */ "./resources/js/components/inputs/InputComponent/index.js");
-/* harmony import */ var _components_MessagesComponent___WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @/components/MessagesComponent/ */ "./resources/js/components/MessagesComponent/index.js");
+/* harmony import */ var _mixins_formatName__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @/mixins/formatName */ "./resources/js/mixins/formatName.js");
+/* harmony import */ var _mixins_messages__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @/mixins/messages */ "./resources/js/mixins/messages.js");
+/* harmony import */ var _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @/mixins/publicAuthData */ "./resources/js/mixins/publicAuthData.js");
+/* harmony import */ var _components_inputs_FieldComponent__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @/components/inputs/FieldComponent */ "./resources/js/components/inputs/FieldComponent/index.js");
+/* harmony import */ var _components_inputs_FormComponent___WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @/components/inputs/FormComponent/ */ "./resources/js/components/inputs/FormComponent/index.js");
+/* harmony import */ var _components_inputs_InputComponent__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @/components/inputs/InputComponent */ "./resources/js/components/inputs/InputComponent/index.js");
+/* harmony import */ var _components_MessagesComponent___WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! @/components/MessagesComponent/ */ "./resources/js/components/MessagesComponent/index.js");
 /**
  *
  * Приложение отвечающее за внешний вид и отправку
@@ -20852,6 +20912,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
 //компоненты
 
 
@@ -20859,12 +20920,12 @@ __webpack_require__.r(__webpack_exports__);
 
 var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 var appPublicEmployees = {
-  mixins: [_formFields_employees_add__WEBPACK_IMPORTED_MODULE_1__["default"], _mixins_crud__WEBPACK_IMPORTED_MODULE_2__["default"], _formFields_employees_edit__WEBPACK_IMPORTED_MODULE_3__["default"], _mixins_fixedRightCol__WEBPACK_IMPORTED_MODULE_4__["default"], _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_6__["default"], _mixins_messages__WEBPACK_IMPORTED_MODULE_5__["default"]],
+  mixins: [_formFields_employees_add__WEBPACK_IMPORTED_MODULE_1__["default"], _mixins_crud__WEBPACK_IMPORTED_MODULE_2__["default"], _formFields_employees_edit__WEBPACK_IMPORTED_MODULE_3__["default"], _mixins_fixedRightCol__WEBPACK_IMPORTED_MODULE_4__["default"], _mixins_formatName__WEBPACK_IMPORTED_MODULE_5__["default"], _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_7__["default"], _mixins_messages__WEBPACK_IMPORTED_MODULE_6__["default"]],
   components: {
-    FieldComponent: _components_inputs_FieldComponent__WEBPACK_IMPORTED_MODULE_7__["default"],
-    Field: _components_inputs_InputComponent__WEBPACK_IMPORTED_MODULE_9__["default"],
-    TheForm: _components_inputs_FormComponent___WEBPACK_IMPORTED_MODULE_8__["default"],
-    MessagesComponent: _components_MessagesComponent___WEBPACK_IMPORTED_MODULE_10__["default"]
+    FieldComponent: _components_inputs_FieldComponent__WEBPACK_IMPORTED_MODULE_8__["default"],
+    Field: _components_inputs_InputComponent__WEBPACK_IMPORTED_MODULE_10__["default"],
+    TheForm: _components_inputs_FormComponent___WEBPACK_IMPORTED_MODULE_9__["default"],
+    MessagesComponent: _components_MessagesComponent___WEBPACK_IMPORTED_MODULE_11__["default"]
   },
   data: function data() {
     return {
@@ -20952,6 +21013,9 @@ var appPublicEmployees = {
         return !el.employee_id || el.employee_id === vm.editedEmployee.id;
       });
       return vehicles;
+    },
+    mobileBreakPoint: function mobileBreakPoint() {
+      return 992;
     }
   },
   mounted: function mounted() {
@@ -21071,8 +21135,8 @@ var appPublicEmployees = {
       };
       vm.createEntity(postData, "/employees/store").then(function (e) {
         if (e.status === 200) {
-          vm.$refs.createEmployeeForm.reset();
           vm.clearEmployee();
+          vm.$refs.createEmployeeForm.clear();
         }
       });
     },
@@ -22158,11 +22222,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _formFields_editPwd__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @/formFields/editPwd */ "./resources/js/formFields/editPwd.js");
 /* harmony import */ var _formFields_editUser__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @/formFields/editUser */ "./resources/js/formFields/editUser.js");
 /* harmony import */ var _mixins_fixedRightCol__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @/mixins/fixedRightCol */ "./resources/js/mixins/fixedRightCol.js");
-/* harmony import */ var _mixins_messages__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @/mixins/messages */ "./resources/js/mixins/messages.js");
-/* harmony import */ var _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @/mixins/publicAuthData */ "./resources/js/mixins/publicAuthData.js");
-/* harmony import */ var _components_inputs_FormComponent___WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @/components/inputs/FormComponent/ */ "./resources/js/components/inputs/FormComponent/index.js");
-/* harmony import */ var _components_inputs_InputComponent__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @/components/inputs/InputComponent */ "./resources/js/components/inputs/InputComponent/index.js");
-/* harmony import */ var _components_MessagesComponent___WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @/components/MessagesComponent/ */ "./resources/js/components/MessagesComponent/index.js");
+/* harmony import */ var _mixins_formatName__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @/mixins/formatName */ "./resources/js/mixins/formatName.js");
+/* harmony import */ var _mixins_messages__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @/mixins/messages */ "./resources/js/mixins/messages.js");
+/* harmony import */ var _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @/mixins/publicAuthData */ "./resources/js/mixins/publicAuthData.js");
+/* harmony import */ var _components_inputs_FormComponent___WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @/components/inputs/FormComponent/ */ "./resources/js/components/inputs/FormComponent/index.js");
+/* harmony import */ var _components_inputs_InputComponent__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @/components/inputs/InputComponent */ "./resources/js/components/inputs/InputComponent/index.js");
+/* harmony import */ var _components_MessagesComponent___WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! @/components/MessagesComponent/ */ "./resources/js/components/MessagesComponent/index.js");
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
@@ -22183,17 +22248,18 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
 
 
 
+
 //компоненты
 
 
 
 var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 var appPublicUsers = {
-  mixins: [_formFields_addUser__WEBPACK_IMPORTED_MODULE_1__["default"], _formFields_editPwd__WEBPACK_IMPORTED_MODULE_3__["default"], _formFields_editUser__WEBPACK_IMPORTED_MODULE_4__["default"], _mixins_crud__WEBPACK_IMPORTED_MODULE_2__["default"], _mixins_fixedRightCol__WEBPACK_IMPORTED_MODULE_5__["default"], _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_7__["default"], _mixins_messages__WEBPACK_IMPORTED_MODULE_6__["default"]],
+  mixins: [_formFields_addUser__WEBPACK_IMPORTED_MODULE_1__["default"], _formFields_editPwd__WEBPACK_IMPORTED_MODULE_3__["default"], _formFields_editUser__WEBPACK_IMPORTED_MODULE_4__["default"], _mixins_crud__WEBPACK_IMPORTED_MODULE_2__["default"], _mixins_fixedRightCol__WEBPACK_IMPORTED_MODULE_5__["default"], _mixins_formatName__WEBPACK_IMPORTED_MODULE_6__["default"], _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_8__["default"], _mixins_messages__WEBPACK_IMPORTED_MODULE_7__["default"]],
   components: {
-    Field: _components_inputs_InputComponent__WEBPACK_IMPORTED_MODULE_9__["default"],
-    TheForm: _components_inputs_FormComponent___WEBPACK_IMPORTED_MODULE_8__["default"],
-    MessagesComponent: _components_MessagesComponent___WEBPACK_IMPORTED_MODULE_10__["default"]
+    Field: _components_inputs_InputComponent__WEBPACK_IMPORTED_MODULE_10__["default"],
+    TheForm: _components_inputs_FormComponent___WEBPACK_IMPORTED_MODULE_9__["default"],
+    MessagesComponent: _components_MessagesComponent___WEBPACK_IMPORTED_MODULE_11__["default"]
   },
   data: function data() {
     var _editedUser;
@@ -22238,7 +22304,7 @@ var appPublicUsers = {
   },
   computed: {
     listClass: function listClass() {
-      var editClass = "col-12 col-lg-6 d-sm-none d-lg-block";
+      var editClass = "col-12 col-lg-6 d-none d-lg-block";
       var displayClass = "col-12 ";
       return this.editMode ? editClass : displayClass;
     },
@@ -22248,7 +22314,6 @@ var appPublicUsers = {
   },
   watch: {
     editForm: function editForm() {
-      this.reset();
       var vm = this;
       vm.reset();
       if (!vm.editMode) {
@@ -22256,7 +22321,7 @@ var appPublicUsers = {
         vm.stopFixElement();
       } else if (vm.editMode) {
         // применение sticky поведения для правой колонки
-        vm.startFixElement("fixposition", "observeResize");
+        vm.startFixElement("fixposition", "observeResize", false, [vm.$refs.beforeStickyPosition]);
       }
     },
     editMode: function editMode(_editMode) {
@@ -22267,7 +22332,7 @@ var appPublicUsers = {
         vm.stopFixElement();
       } else if (_editMode) {
         // применение sticky поведения для правой колонки
-        vm.startFixElement("fixposition", "observeResize");
+        vm.startFixElement("fixposition", "observeResize", false, [vm.$refs.beforeStickyPosition]);
       }
     },
     activeTab: function activeTab() {
@@ -22354,9 +22419,11 @@ var appPublicUsers = {
       };
       vm.createEntity(postData, "/users/store").then(function (e) {
         if (e.status === 200) {
-          vm.$refs.createUserForm.reset();
           vm.clearUser();
           vm.reset();
+          vm.$nextTick(function () {
+            vm.$refs.createUserForm.clear();
+          });
         }
       });
     },
@@ -22503,7 +22570,8 @@ var appPublicVehicles = {
       return ["БП-16/20", "БП-22/28", "БП-22/28 габаритный", "БП-22/28 (8 колес)", "БП-22/31", "БП-22/31 хоппер", "БП-22/31 габаритный", "БП-22/31 8 колес", "БП-33/42 хоппер", "БП-33/42 8 колес", "БП-40/50"];
     },
     vehiclesCurrent: function vehiclesCurrent() {
-      return this.vehicles["".concat(this.vehicleType, "s")];
+      var vehicles = this.vehicles["".concat(this.vehicleType, "s")] ? this.vehicles["".concat(this.vehicleType, "s")] : {};
+      return Object.values(vehicles);
     },
     vehiclesGrouped: function vehiclesGrouped() {
       var vm = this;
@@ -23005,17 +23073,40 @@ function showSuggestions(selector, data) {
     htmlNode.after(dropdown);
   });
 }
-
-// обработчик клика вне выпадающего списка
-document.addEventListener("click", function (e) {
-  var _e$target$closest;
-  if (!((_e$target$closest = e.target.closest(".dropdown")) !== null && _e$target$closest !== void 0 && _e$target$closest.length)) {
-    var _document$querySelect5;
-    (_document$querySelect5 = document.querySelectorAll(".dropdown")) === null || _document$querySelect5 === void 0 || _document$querySelect5.forEach(function (el) {
-      el.remove();
-    });
-  }
-});
+if (nameInput) {
+  var buttonIndex = -1;
+  // обработчик клика вне выпадающего списка
+  document.addEventListener("click", function (e) {
+    var _e$target$closest;
+    if (!((_e$target$closest = e.target.closest(".dropdown")) !== null && _e$target$closest !== void 0 && _e$target$closest.length)) {
+      var _document$querySelect5;
+      (_document$querySelect5 = document.querySelectorAll(".dropdown")) === null || _document$querySelect5 === void 0 || _document$querySelect5.forEach(function (el) {
+        el.remove();
+      });
+    }
+  });
+  document.addEventListener("keydown", function (e) {
+    var dropdown = document.querySelector(".dropdown-container");
+    if (!dropdown) {
+      buttonIndex = -1;
+      return;
+    }
+    var buttons = Array.from(dropdown.querySelectorAll(".btn-list-imitation"));
+    if (!buttons.length) {
+      buttonIndex = -1;
+      return;
+    }
+    var focusedButton = Array.from(dropdown.querySelectorAll(".btn-list-imitation:focus")).pop();
+    buttonIndex = focusedButton ? buttons.indexOf(focusedButton) : buttonIndex;
+    if (focusedButton) {
+      focusedButton.blur();
+    }
+    buttonIndex = [37, 38].indexOf(e.keyCode) >= 0 ? buttonIndex - 1 : [39, 40].indexOf(e.keyCode) >= 0 ? buttonIndex + 1 : buttonIndex;
+    buttonIndex = buttonIndex >= buttons.length ? 0 : buttonIndex;
+    buttonIndex = buttonIndex < 0 ? buttons.length - 1 : buttonIndex;
+    buttons[buttonIndex].focus();
+  });
+}
 
 /***/ }),
 
@@ -23120,9 +23211,9 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _classPrivateMethodInitSpec(obj, privateSet) { _checkPrivateRedeclaration(obj, privateSet); privateSet.add(obj); }
 function _classPrivateFieldInitSpec(obj, privateMap, value) { _checkPrivateRedeclaration(obj, privateMap); privateMap.set(obj, value); }
 function _checkPrivateRedeclaration(obj, privateCollection) { if (privateCollection.has(obj)) { throw new TypeError("Cannot initialize the same private elements twice on an object"); } }
+function _classPrivateMethodGet(receiver, privateSet, fn) { if (!privateSet.has(receiver)) { throw new TypeError("attempted to get private field on non-instance"); } return fn; }
 function _classPrivateFieldGet(receiver, privateMap) { var descriptor = _classExtractFieldDescriptor(receiver, privateMap, "get"); return _classApplyDescriptorGet(receiver, descriptor); }
 function _classApplyDescriptorGet(receiver, descriptor) { if (descriptor.get) { return descriptor.get.call(receiver); } return descriptor.value; }
-function _classPrivateMethodGet(receiver, privateSet, fn) { if (!privateSet.has(receiver)) { throw new TypeError("attempted to get private field on non-instance"); } return fn; }
 function _classPrivateFieldSet(receiver, privateMap, value) { var descriptor = _classExtractFieldDescriptor(receiver, privateMap, "set"); _classApplyDescriptorSet(receiver, descriptor, value); return value; }
 function _classExtractFieldDescriptor(receiver, privateMap, action) { if (!privateMap.has(receiver)) { throw new TypeError("attempted to " + action + " private field on non-instance"); } return privateMap.get(receiver); }
 function _classApplyDescriptorSet(receiver, descriptor, value) { if (descriptor.set) { descriptor.set.call(receiver, value); } else { if (!descriptor.writable) { throw new TypeError("attempted to set read only private field"); } descriptor.value = value; } }
@@ -23138,6 +23229,7 @@ var _initMobileMenuSwitcher = /*#__PURE__*/new WeakSet();
 var _getHtmlElementSelector = /*#__PURE__*/new WeakSet();
 var _getSubmenuSwitchers = /*#__PURE__*/new WeakSet();
 var _menuClicked = /*#__PURE__*/new WeakSet();
+var _mobileSwitcherClicked = /*#__PURE__*/new WeakSet();
 var _setMenuState = /*#__PURE__*/new WeakSet();
 /**
  * обработчики событий для главного меню сайта
@@ -23148,6 +23240,7 @@ var menuActions = /*#__PURE__*/_createClass(
  * @param {String} mobileSwitcher ХТМЛ селектор для переключателя меню
  */
 function menuActions(menu, mobileSwitcher) {
+  var _document;
   _classCallCheck(this, menuActions);
   /**
    * Меняет статус мобильного меню
@@ -23157,6 +23250,14 @@ function menuActions(menu, mobileSwitcher) {
    * @returns {Void}
    */
   _classPrivateMethodInitSpec(this, _setMenuState);
+  /**
+   * определяет кликнут ли переключатель мобильного меню
+   *
+   * @param {PointerEvent} e
+   *
+   * @return {Boolean}
+   */
+  _classPrivateMethodInitSpec(this, _mobileSwitcherClicked);
   /**
    * определяет кликнуто ли меню
    *
@@ -23245,14 +23346,18 @@ function menuActions(menu, mobileSwitcher) {
     writable: true,
     value: void 0
   });
+  var _t = this;
   if (!menu || !mobileSwitcher) {
     return;
   }
-  _classPrivateFieldSet(this, _menu, document.querySelector(menu));
-  _classPrivateFieldSet(this, _mobileSwitcher, document.querySelector(mobileSwitcher));
-  _classPrivateFieldSet(this, _submenuSwitchers, _classPrivateMethodGet(this, _getSubmenuSwitchers, _getSubmenuSwitchers2).call(this));
-  _classPrivateFieldSet(this, _menuStateOnMobile, "hidden");
-  _classPrivateMethodGet(this, _bindEvents, _bindEvents2).call(this);
+  _classPrivateFieldSet(_t, _menu, (_document = document) === null || _document === void 0 ? void 0 : _document.querySelector(menu));
+  _classPrivateFieldSet(_t, _mobileSwitcher, document.querySelector(mobileSwitcher));
+  if (!_classPrivateFieldGet(_t, _menu) || !_classPrivateFieldGet(_t, _mobileSwitcher)) {
+    return;
+  }
+  _classPrivateFieldSet(_t, _submenuSwitchers, _classPrivateMethodGet(_t, _getSubmenuSwitchers, _getSubmenuSwitchers2).call(_t));
+  _classPrivateFieldSet(_t, _menuStateOnMobile, "hidden");
+  _classPrivateMethodGet(_t, _bindEvents, _bindEvents2).call(_t);
 });
 function _bindEvents2() {
   _classPrivateMethodGet(this, _initMobileMenuSwitcher, _initMobileMenuSwitcher2).call(this);
@@ -23283,9 +23388,11 @@ function _hideAllSubmenues2() {
 function _hideOnClickOutside2() {
   var t = this;
   document.addEventListener("click", function (e) {
-    if (!_classPrivateMethodGet(t, _menuClicked, _menuClicked2).call(t, e)) {
+    if (!_classPrivateMethodGet(t, _menuClicked, _menuClicked2).call(t, e) && !_classPrivateMethodGet(t, _mobileSwitcherClicked, _mobileSwitcherClicked2).call(t, e)) {
       _classPrivateMethodGet(t, _hideAllSubmenues, _hideAllSubmenues2).call(t);
       _classPrivateMethodGet(t, _setMenuState, _setMenuState2).call(t, "hidden");
+    } else if (!_classPrivateMethodGet(t, _menuClicked, _menuClicked2).call(t, e)) {
+      _classPrivateMethodGet(t, _hideAllSubmenues, _hideAllSubmenues2).call(t);
     }
   });
   return;
@@ -23322,6 +23429,11 @@ function _menuClicked2(e) {
   var selector = _classPrivateMethodGet(this, _getHtmlElementSelector, _getHtmlElementSelector2).call(this, _classPrivateFieldGet(this, _menu));
   var menuClicked = e.target.closest(selector) === _classPrivateFieldGet(this, _menu);
   return menuClicked;
+}
+function _mobileSwitcherClicked2(e) {
+  var selector = _classPrivateMethodGet(this, _getHtmlElementSelector, _getHtmlElementSelector2).call(this, _classPrivateFieldGet(this, _mobileSwitcher));
+  var mobileSwitcherClicked = e.target.closest(selector) === _classPrivateFieldGet(this, _mobileSwitcher);
+  return mobileSwitcherClicked;
 }
 function _setMenuState2(state) {
   var t = this;

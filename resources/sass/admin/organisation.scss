@@ -17,8 +17,10 @@ table.organisation {
     tr {
         &:not(:first-child) {
             border-top: 1px solid #dfe6fa;
-            border-radius: var(--brs);
             cursor: pointer;
+            @media (min-width: map.get($grid-breakpoints, "md")) {
+                border-radius: var(--brs);
+            }
         }
 
         &:hover {

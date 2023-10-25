@@ -3,10 +3,12 @@ const axios = require("axios");
 const crud = {
     methods: {
         confirmActionCb() {
+            clog("confirmActionCb");
             document.dispatchEvent(new CustomEvent("submitConfirmEvent"));
         },
 
         cancelConfirmActionCb() {
+            clog("cancelConfirmActionCb");
             document.dispatchEvent(new CustomEvent("cancelConfirmEvent"));
         },
 
@@ -57,13 +59,13 @@ const crud = {
                 vm.messages.confirm = `Вы уверены, что хотите удалить ${postData?.name}?`;
             } else {
                 document.removeEventListener(
-                    "confirmEvent",
+                    "submitConfirmEvent",
                     handlerSubmit,
                     false
                 );
 
                 document.removeEventListener(
-                    "submitConfirmEvent",
+                    "cancelConfirmEvent",
                     handlerCancel,
                     false
                 );
@@ -92,8 +94,9 @@ const crud = {
                     clog("%c sendRequest success", "color:green", response);
                     return response;
                 })
-                .then(() => {
+                .then((response) => {
                     document.dispatchEvent(new CustomEvent("updateList"));
+                    return response;
                 })
                 .catch((e) => {
                     clog("%c sendRequest error", "color:red", e.response);

@@ -118,7 +118,11 @@ const appPublicVehicles = {
         },
 
         vehiclesCurrent() {
-            return this.vehicles[`${this.vehicleType}s`];
+            const vehicles = this.vehicles[`${this.vehicleType}s`]
+                ? this.vehicles[`${this.vehicleType}s`]
+                : {};
+
+            return Object.values(vehicles);
         },
 
         vehiclesGrouped() {

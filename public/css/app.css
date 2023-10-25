@@ -13141,8 +13141,12 @@ table.organisation th {
 }
 table.organisation tr:not(:first-child) {
   border-top: 1px solid #dfe6fa;
-  border-radius: var(--brs);
   cursor: pointer;
+}
+@media (min-width: 768px) {
+  table.organisation tr:not(:first-child) {
+    border-radius: var(--brs);
+  }
 }
 table.organisation tr:hover:not(:first-child):not(.no-hover) {
   outline: 2px solid #007e3c;
@@ -13395,6 +13399,12 @@ body {
 }
 .tabs .btn {
   margin-bottom: -1px;
+  font-size: 0.75rem;
+}
+@media (min-width: 768px) {
+  .tabs .btn {
+    font-size: 1rem;
+  }
 }
 .tabs ul {
   padding: 0;

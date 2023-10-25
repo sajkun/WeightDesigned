@@ -142,11 +142,55 @@ function showSuggestions(selector, data) {
     });
 }
 
-// обработчик клика вне выпадающего списка
-document.addEventListener("click", (e) => {
-    if (!e.target.closest(".dropdown")?.length) {
-        document.querySelectorAll(".dropdown")?.forEach((el) => {
-            el.remove();
-        });
-    }
-});
+if (nameInput) {
+    let buttonIndex = -1;
+    // обработчик клика вне выпадающего списка
+    document.addEventListener("click", (e) => {
+        if (!e.target.closest(".dropdown")?.length) {
+            document.querySelectorAll(".dropdown")?.forEach((el) => {
+                el.remove();
+            });
+        }
+    });
+
+    document.addEventListener("keydown", (e) => {
+        const dropdown = document.querySelector(".dropdown-container");
+
+        if (!dropdown) {
+            buttonIndex = -1;
+            return;
+        }
+        const buttons = Array.from(
+            dropdown.querySelectorAll(".btn-list-imitation")
+        );
+
+        if (!buttons.length) {
+            buttonIndex = -1;
+            return;
+        }
+
+        let focusedButton = Array.from(
+            dropdown.querySelectorAll(".btn-list-imitation:focus")
+        ).pop();
+
+        buttonIndex = focusedButton
+            ? buttons.indexOf(focusedButton)
+            : buttonIndex;
+
+        if (focusedButton) {
+            focusedButton.blur();
+        }
+
+        buttonIndex =
+            [37, 38].indexOf(e.keyCode) >= 0
+                ? buttonIndex - 1
+                : [39, 40].indexOf(e.keyCode) >= 0
+                ? buttonIndex + 1
+                : buttonIndex;
+
+        buttonIndex = buttonIndex >= buttons.length ? 0 : buttonIndex;
+        buttonIndex = buttonIndex < 0 ? buttons.length - 1 : buttonIndex;
+
+        buttons[buttonIndex].focus();
+    });
+}

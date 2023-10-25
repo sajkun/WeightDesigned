@@ -20,6 +20,7 @@
                 <button class="btn btn-close" type='button' @click='clearMessages()' v-if="key!='confirm'"></button>
             </div>
         </Transition>
+
         <div class="row h-100 position-relative" v-if='mode === "list" || mode === "details" '>
             <div class="px-3 align-self-start">
 
@@ -43,7 +44,7 @@
 
                                     <tr v-for='item, key in vehiclesCurrent' :key='"vehicklerow" + key'
                                         @click='viewVehicle(item)'>
-                                        <td>@{{ key }}</td>
+                                        <td>@{{ key + 1 }}</td>
                                         <td>@{{ item.name }}</td>
                                         <td>@{{ item.model }}</td>
                                         <td>@{{ item.employee_name }}</td>

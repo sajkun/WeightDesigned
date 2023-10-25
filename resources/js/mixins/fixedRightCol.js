@@ -44,12 +44,18 @@ export default {
         };
     },
 
+    computed: {
+        mobileBreakPoint() {
+            return 768;
+        },
+    },
+
     watch: {
         // обновление положение элемента при изменении данных
         fixData: {
             handler: function (fixData) {
                 const vm = this;
-                if (window.innerWidth < 768) {
+                if (window.innerWidth < vm.mobileBreakPoint) {
                     vm.resertFixedElement();
                     return;
                 }
@@ -113,9 +119,6 @@ export default {
 
             if (vm.controllHeight) {
                 let height = maxHeight;
-                // height -= getStyle(el, "margin-top", true);
-                // height -= getStyle(el, "margin-bottom", true);
-                // height -= getStyle(el, "padding-top", true);
                 height -= getStyle(el, "padding-bottom", true);
                 vm.fixData.maxHeight = height;
                 vm.fixData.height = height;

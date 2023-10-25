@@ -12,6 +12,7 @@ import addEmployeeForm from "@/formFields/employees/add";
 import crud from "@/mixins/crud";
 import editEmployeeForm from "@/formFields/employees/edit";
 import fixedRightCol from "@/mixins/fixedRightCol";
+import formatName from "@/mixins/formatName";
 import messages from "@/mixins/messages";
 import publicAuthData from "@/mixins/publicAuthData";
 
@@ -28,6 +29,7 @@ const appPublicEmployees = {
         crud,
         editEmployeeForm,
         fixedRightCol,
+        formatName,
         publicAuthData,
         messages,
     ],
@@ -138,6 +140,10 @@ const appPublicEmployees = {
             });
 
             return vehicles;
+        },
+
+        mobileBreakPoint() {
+            return 992;
         },
     },
 
@@ -286,8 +292,8 @@ const appPublicEmployees = {
 
             vm.createEntity(postData, `/employees/store`).then((e) => {
                 if (e.status === 200) {
-                    vm.$refs.createEmployeeForm.reset();
                     vm.clearEmployee();
+                    vm.$refs.createEmployeeForm.clear();
                 }
             });
         },

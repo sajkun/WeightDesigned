@@ -29,7 +29,7 @@
 
 <script>
 import { getFormData } from "@/misc/helpers";
-import { clog } from "@/misc/helpers";
+import { clog, strip } from "@/misc/helpers";
 import FieldComponent from "@/components/inputs/FieldComponent";
 export default {
     props: {
@@ -63,8 +63,11 @@ export default {
             vm.$emit("exec-submit", data);
         },
 
-        reset() {
-            this.$refs.form.reset();
+        clear() {
+            this.structure = this.structure.map((el) => {
+                el.value = null;
+                return el;
+            });
         },
     },
 };

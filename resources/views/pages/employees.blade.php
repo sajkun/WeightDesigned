@@ -33,7 +33,7 @@
                             </tr>
                             <tr v-for='person, key in employees' :key='"emp" + key' @click='edit(person, false )'>
                                 <td>@{{ key + 1 }}</td>
-                                <td title='ФИО'>@{{ person.first_name }} @{{ person.middle_name }} @{{ person.last_name }}</td>
+                                <td title='ФИО'>@{{ formatName(person.last_name, person.first_name, person.middle_name) }}</td>
                                 <td title='Телефон'>@{{ person.phone }}</td>
                                 <td title='Профессия'>@{{ person.specialisation }}</td>
                                 <td class='text-end'>

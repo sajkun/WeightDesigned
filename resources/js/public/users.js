@@ -11,6 +11,7 @@ import crud from "@/mixins/crud";
 import editPasswordForm from "@/formFields/editPwd";
 import editUserForm from "@/formFields/editUser";
 import fixedRightCol from "@/mixins/fixedRightCol";
+import formatName from "@/mixins/formatName";
 import messages from "@/mixins/messages";
 import publicAuthData from "@/mixins/publicAuthData";
 
@@ -27,6 +28,7 @@ const appPublicUsers = {
         editUserForm,
         crud,
         fixedRightCol,
+        formatName,
         publicAuthData,
         messages,
     ],
@@ -87,7 +89,7 @@ const appPublicUsers = {
 
     computed: {
         listClass() {
-            const editClass = "col-12 col-lg-6 d-sm-none d-lg-block";
+            const editClass = "col-12 col-lg-6 d-none d-lg-block";
             const displayClass = "col-12 ";
             return this.editMode ? editClass : displayClass;
         },
@@ -99,7 +101,6 @@ const appPublicUsers = {
 
     watch: {
         editForm() {
-            this.reset();
             const vm = this;
             vm.reset();
 
@@ -108,7 +109,9 @@ const appPublicUsers = {
                 vm.stopFixElement();
             } else if (vm.editMode) {
                 // применение sticky поведения для правой колонки
-                vm.startFixElement("fixposition", "observeResize");
+                vm.startFixElement("fixposition", "observeResize", false, [
+                    vm.$refs.beforeStickyPosition,
+                ]);
             }
         },
 
@@ -121,7 +124,9 @@ const appPublicUsers = {
                 vm.stopFixElement();
             } else if (editMode) {
                 // применение sticky поведения для правой колонки
-                vm.startFixElement("fixposition", "observeResize");
+                vm.startFixElement("fixposition", "observeResize", false, [
+                    vm.$refs.beforeStickyPosition,
+                ]);
             }
         },
 
@@ -222,6 +227,7 @@ const appPublicUsers = {
             const vm = this;
             const password = strip(data.password);
             delete data.password;
+
             const postData = {
                 user_id: vm.userId,
                 organisation_id: vm.organisationId,
@@ -231,9 +237,11 @@ const appPublicUsers = {
 
             vm.createEntity(postData, `/users/store`).then((e) => {
                 if (e.status === 200) {
-                    vm.$refs.createUserForm.reset();
                     vm.clearUser();
                     vm.reset();
+                    vm.$nextTick(() => {
+                        vm.$refs.createUserForm.clear();
+                    });
                 }
             });
         },

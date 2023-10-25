@@ -29,15 +29,21 @@ class menuActions {
      * @param {String} mobileSwitcher ХТМЛ селектор для переключателя меню
      */
     constructor(menu, mobileSwitcher) {
+        const t = this;
         if (!menu || !mobileSwitcher) {
             return;
         }
 
-        this.#menu = document.querySelector(menu);
-        this.#mobileSwitcher = document.querySelector(mobileSwitcher);
-        this.#submenuSwitchers = this.#getSubmenuSwitchers();
-        this.#menuStateOnMobile = "hidden";
-        this.#bindEvents();
+        t.#menu = document?.querySelector(menu);
+        t.#mobileSwitcher = document.querySelector(mobileSwitcher);
+
+        if (!t.#menu || !t.#mobileSwitcher) {
+            return;
+        }
+
+        t.#submenuSwitchers = t.#getSubmenuSwitchers();
+        t.#menuStateOnMobile = "hidden";
+        t.#bindEvents();
     }
 
     /**
@@ -101,9 +107,11 @@ class menuActions {
     #hideOnClickOutside() {
         const t = this;
         document.addEventListener("click", (e) => {
-            if (!t.#menuClicked(e)) {
+            if (!t.#menuClicked(e) && !t.#mobileSwitcherClicked(e)) {
                 t.#hideAllSubmenues();
                 t.#setMenuState("hidden");
+            } else if (!t.#menuClicked(e)) {
+                t.#hideAllSubmenues();
             }
         });
 
@@ -179,6 +187,20 @@ class menuActions {
         const selector = this.#getHtmlElementSelector(this.#menu);
         const menuClicked = e.target.closest(selector) === this.#menu;
         return menuClicked;
+    }
+
+    /**
+     * определяет кликнут ли переключатель мобильного меню
+     *
+     * @param {PointerEvent} e
+     *
+     * @return {Boolean}
+     */
+    #mobileSwitcherClicked(e) {
+        const selector = this.#getHtmlElementSelector(this.#mobileSwitcher);
+        const mobileSwitcherClicked =
+            e.target.closest(selector) === this.#mobileSwitcher;
+        return mobileSwitcherClicked;
     }
 
     /**
