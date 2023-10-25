@@ -1,21 +1,38 @@
 /**
+ *
  * Приложение отвечающее за внешний вид и отправку
  * запросов CRUD раздела "Сотрудники"
  */
+
+//хэлперы
 import { strip, clog, getFormData } from "@/misc/helpers";
-import publicAuthData from "@/mixins/publicAuthData";
-import messages from "@/mixins/messages";
-import MessagesComponent from "@/components/MessagesComponent/";
-import FieldComponent from "@/components/inputs/FieldComponent";
-import InputComponent from "@/components/inputs/InputComponent";
-import FormComponent from "@/components/inputs/FormComponent/";
-import crud from "@/mixins/crud";
+
+//миксины
 import addEmployeeForm from "@/formFields/employees/add";
+import crud from "@/mixins/crud";
 import editEmployeeForm from "@/formFields/employees/edit";
+import fixedRightCol from "@/mixins/fixedRightCol";
+import formatName from "@/mixins/formatName";
+import messages from "@/mixins/messages";
+import publicAuthData from "@/mixins/publicAuthData";
+
+//компоненты
+import FieldComponent from "@/components/inputs/FieldComponent";
+import FormComponent from "@/components/inputs/FormComponent/";
+import InputComponent from "@/components/inputs/InputComponent";
+import MessagesComponent from "@/components/MessagesComponent/";
 
 const axios = require("axios");
 const appPublicEmployees = {
-    mixins: [messages, crud, addEmployeeForm, editEmployeeForm, publicAuthData],
+    mixins: [
+        addEmployeeForm,
+        crud,
+        editEmployeeForm,
+        fixedRightCol,
+        formatName,
+        publicAuthData,
+        messages,
+    ],
     components: {
         FieldComponent,
         Field: InputComponent,
@@ -55,10 +72,29 @@ const appPublicEmployees = {
     },
 
     watch: {
+        editForm() {
+            const vm = this;
+            vm.reset();
+
+            if (!vm.editMode) {
+                // обнуление фитксированного положение правой колонки
+                vm.stopFixElement();
+            } else if (vm.editMode) {
+                // применение sticky поведения для правой колонки
+                vm.startFixElement("fixposition", "observeResize");
+            }
+        },
+
         editMode(editMode) {
             const vm = this;
+
             if (!editMode) {
                 vm.showForm = false;
+                // обнуление фитксированного положение правой колонки
+                vm.stopFixElement();
+            } else if (editMode) {
+                // применение sticky поведения для правой колонки
+                vm.startFixElement("fixposition", "observeResize");
             }
 
             if (editMode && vm.editedEmployee.id < 0) {
@@ -104,6 +140,10 @@ const appPublicEmployees = {
             });
 
             return vehicles;
+        },
+
+        mobileBreakPoint() {
+            return 992;
         },
     },
 
@@ -180,7 +220,6 @@ const appPublicEmployees = {
         },
 
         edit(person, showForm) {
-            clog("%c edit", "color:blue", person);
             const vm = this;
             vm.editMode = true;
             vm.editedEmployee = strip(person);
@@ -253,8 +292,8 @@ const appPublicEmployees = {
 
             vm.createEntity(postData, `/employees/store`).then((e) => {
                 if (e.status === 200) {
-                    vm.$refs.createEmployeeForm.reset();
                     vm.clearEmployee();
+                    vm.$refs.createEmployeeForm.clear();
                 }
             });
         },

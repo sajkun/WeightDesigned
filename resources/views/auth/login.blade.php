@@ -28,7 +28,7 @@
 
                                         <input id="login" type="text" class=" @error('login') is-invalid @enderror"
                                             name="login" value="{{ old('login') }}" required autocomplete="login"
-                                            autofocus>
+                                            autofocus minlength="5">
 
                                         <label for="login"
                                             class="@if (old('login')) active @endif">Логин</label>
@@ -42,8 +42,9 @@
                                 </div>
 
                                 <div class="form-control-custom mt-3">
-                                    <input id="password" type="password" class="@error('password') is-invalid @enderror"
-                                        name="password" required data-mode='password' autocomplete="current-password">
+                                    <input id="password" minlength="8" type="password"
+                                        class="@error('password') is-invalid @enderror" name="password" required
+                                        data-mode='password' autocomplete="current-password">
 
                                     <label for="password">Пароль</label>
 

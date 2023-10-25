@@ -7,6 +7,8 @@
 
         <input type="hidden" ref='organisationId' value='{{ $organisation_id }}'>
         <input type="hidden" ref='userId' value='{{ $user_id }}'>
+        <h2 class="h5 px-3 mt-3" ref='beforeStickyPosition'>Пользователи</h2>
+
         <div class="row h-100 position-relative">
             <div class="p-3 align-self-start" :class='listClass'
                 :style="!editMode ? 'transition: width .15s ease .1s' : ''">
@@ -27,7 +29,7 @@
                             <tr v-for='user, key in users' :key='"user" + key' @click='editUser(user)'>
                                 <td>@{{ key + 1 }}</td>
                                 <td title='Логин'>@{{ user.login }}</td>
-                                <td title='ФИО'>@{{ user.first_name }} @{{ user.middle_name }} @{{ user.last_name }}</td>
+                                <td title='ФИО'>@{{ formatName(user.last_name, user.first_name, user.middle_name) }}</td>
                                 <td title='Роль'>@{{ user.role_name }}</td>
                                 <td class='text-end'>
                                     @can('delete', [App\Models\User::class, $organisation_id])
@@ -41,15 +43,15 @@
                 </div>
             </div>
 
-            <Transition name="bounce">
-                <div class="col-12 col-lg-6 p-3 org-details" v-show='editMode'>
-                    <div class="d-lg-flex flex-column org-wrapper p-3" v-if='showForm'>
+            <Transition name="fade">
+                <div class="col-12 col-lg-6 p-3 org-details" v-show='editMode' ref='observeResize'>
+                    <div class="d-lg-flex flex-column org-wrapper p-3" v-if='showForm' :ref='"fixposition"'>
                         <the-form ref='createUserForm' :_structure='addUserFormStructure' @exec-submit='storeUser'
                             @cancel='showForm=false; editMode=false'>
                         </the-form>
                     </div>
 
-                    <div class="d-lg-flex flex-column org-wrapper" v-if='!showForm'>
+                    <div class="d-lg-flex flex-column org-wrapper" v-if='!showForm' :ref='"fixposition"'>
                         <div class="row">
                             <div class="col-8">
                                 <h2 class="h6 m-0 p-2">

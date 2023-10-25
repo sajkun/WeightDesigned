@@ -1,26 +1,25 @@
 <?php
 namespace App\Http\Controllers\PublicArea;
 
-use App\Http\Controllers\Controller;
 use App\Http\Controllers\PublicController;
-use Illuminate\Http\Request;
 
 class IndexController extends PublicController
 {
     /**
-     * Handle the incoming request.
+     * отображает главную страницу кубличной зоны
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return Illuminate\Support\Facades\View
      */
-    public function __invoke(Request $request)
+    public function __invoke()
     {
         $this->prepareData();
         return view('pages.main');
     }
 
     /**
-     * Метод определяющий нужно ли использовать яндекс карты
+     * Метод определяющий нужно ли загружать скрипт API яндекс карт
+     *
+     * @return Boolean
      */
     protected function useYamap()
     {

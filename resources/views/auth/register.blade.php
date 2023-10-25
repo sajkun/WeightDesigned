@@ -27,13 +27,14 @@
                                         <input id="login" type="text" minlength="5"
                                             class="@error('login') is-invalid @enderror" name="login"
                                             value="{{ old('login') }}" required autocomplete="off"
-                                            pattern='[A-Za-zА-Яа-яЁё0-9]{5,}' autofocus>
+                                            pattern='[A-Za-zА-Яа-яЁё0-9]{5,}'
+                                            title='Допустимы только буквы и цифры, минимум 5 символов' autofocus>
                                         <label for="login"
                                             class="@if (old('login')) active @endif">Логин</label>
                                     </div>
                                     <i class='form-control-comment'>
                                         <span>Минимум 5 символов, допустимы только буквы и цифры
-                                            цифры</span>
+                                        </span>
                                     </i>
                                     @error('login')
                                         <span class="invalid-feedback" role="alert">
@@ -45,7 +46,8 @@
                                 <div class="mt-3">
                                     <div class="form-control-custom ">
                                         <input id="email" type="email" class="@error('email') is-invalid @enderror"
-                                            pattern='[a-z0-9]+@[a-z]+\.[a-z]{2,3}' name="email"
+                                            title='email в формате <foo@bar.com>, допускаются латинские буквы и цифры. Обязательно наличие символов @ и . после точки допускается от 2х до 4х символов'
+                                            pattern='[a-z0-9]+@[a-z]+\.[a-z]{2,4}' name="email"
                                             value="{{ old('email') }}" required autocomplete="off">
 
                                         <label for="email"
@@ -89,6 +91,7 @@
                                 <div class="mt-3">
                                     <div class="form-control-custom">
                                         <input id="tax-number" type="text" minlength="8" pattern='[0-9]{8,}'
+                                            title='допустимы только цифры. Минимальная длина - 8 цифр'
                                             class="@error('tax_number') is-invalid @enderror" name="tax_number"
                                             value="{{ old('tax_number') }}" required autocomplete="tax-number" autofocus>
 

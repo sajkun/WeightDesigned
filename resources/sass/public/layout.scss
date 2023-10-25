@@ -92,6 +92,7 @@
         align-self: center;
         position: relative;
 
+        &.selected,
         &:hover {
             .submenu {
                 visibility: visible;

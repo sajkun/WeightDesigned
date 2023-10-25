@@ -31,6 +31,7 @@ import passevents from "@/mixins/passevents";
 import InputComponent from "@/components/inputs/InputComponent";
 import SelectComponent from "@/components/inputs/SelectComponent";
 import PasswordInputComponent from "@/components/inputs/PasswordInputComponent";
+import { clog, strip } from "@/misc/helpers";
 export default {
     mixins: [passevents],
     components: {

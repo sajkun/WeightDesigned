@@ -5,10 +5,15 @@
         <input type="hidden" ref='organisationId' value='{{ $organisation_id }}'>
         <input type="hidden" ref='userId' value='{{ $user_id }}'>
 
+        {{-- Компонент сообщений --}}
+        {{-- ********************** --}}
         <messages-component :_messages='messages' v-on:cancel-msg='cancelConfirmActionCb' v-on:confirm-msg='confirmActionCb'
             v-on:clear-msg='clearMessages'></messages-component>
+        {{-- ********************** --}}
 
         <div class="row h-100 position-relative">
+            {{-- Таблица со списком работников --}}
+            {{-- ********************** --}}
             <div class="p-3 align-self-start" :class='listClass'
                 :style="!editMode ? 'transition: width .15s ease .1s' : ''">
 
@@ -26,9 +31,9 @@
                                 <th>Профессия</th>
                                 <td></td>
                             </tr>
-                            <tr v-for='person, key in employees' :key='"emp" + key' @click.stop='edit(person, false )'>
+                            <tr v-for='person, key in employees' :key='"emp" + key' @click='edit(person, false )'>
                                 <td>@{{ key + 1 }}</td>
-                                <td title='ФИО'>@{{ person.first_name }} @{{ person.middle_name }} @{{ person.last_name }}</td>
+                                <td title='ФИО'>@{{ formatName(person.last_name, person.first_name, person.middle_name) }}</td>
                                 <td title='Телефон'>@{{ person.phone }}</td>
                                 <td title='Профессия'>@{{ person.specialisation }}</td>
                                 <td class='text-end'>
@@ -43,20 +48,31 @@
                     </table>
                 </div>
             </div>
+            {{-- ********************** --}}
+            {{-- конец таблицы со списком работников --}}
 
-            <Transition name="bounce">
-                <div class="col-12 col-lg-6 p-3 org-details" v-show='editMode'>
-                    <div class="d-lg-flex flex-column org-wrapper  p-4" v-if='showForm'>
+            {{-- Данные о сотруднике и форма добавления нового сотрудника --}}
+            {{-- ********************** --}}
+            <Transition name="fade">
+                <div class="col-12 col-lg-6 p-3 org-details" v-show='editMode' ref='observeResize'>
+
+                    {{-- Форма добавления нового сотрудника --}}
+                    {{-- ********************** --}}
+                    <div class="d-lg-flex flex-column org-wrapper  p-4" v-if='showForm' :ref='"fixposition"'>
                         <h3 class="h4">Добавить нового сотрудника</h3>
                         <the-form ref='createEmployeeForm' :_structure='addEmployeeFormStructure'
                             @exec-submit='storeEmployee' @cancel='showForm=false; editMode=false'>
                         </the-form>
 
                     </div>
-                    <div class="d-lg-flex flex-column org-wrapper p-4" v-if='!showForm'>
+                    {{-- ********************** --}}
+                    {{--  Конец Форма добавления нового сотрудника --}}
+
+                    {{-- Данные о выбранном сотруднике --}}
+                    {{-- ********************** --}}
+                    <div class="d-lg-flex flex-column org-wrapper p-4" v-if='!showForm' :ref='"fixposition"'>
                         <div class="row">
                             <div class="col">
-
                                 <h2 class="h4 m-0">
                                     @{{ editedEmployee.first_name }}
                                     @{{ editedEmployee.middle_name }}
@@ -72,11 +88,16 @@
                         </div>
                         @include('pages.employees.view-info')
                         @include('pages.employees.view-settings')
-
                     </div>
+                    {{-- ********************** --}}
+                    {{-- Конец Данных о выбранном сотруднике --}}
                 </div>
             </Transition>
+            {{-- ********************** --}}
+            {{-- Конец Данные о сотруднике и форма добавления нового сотрудника --}}
         </div>
+
+        {{-- Высплывающее окно для выбора техники и назначения сотрудника ответственным --}}
         <Transition name="fade">
             @include('pages.employees.vehicles-popup')
         </Transition>

@@ -41,7 +41,7 @@ class IndexController extends PublicController
     }
 
     /**
-     * Метод определяющий нужно ли использовать яндекс карты
+     * Метод определяющий нужно ли загружать скрипт API яндекс карт
      */
     protected function useYamap()
     {

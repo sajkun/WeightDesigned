@@ -2,25 +2,27 @@
  * Домашняя страница
  */
 
-import messages from "@/mixins/messages";
+//хэлперы
+import { strip, clog } from "@/misc/helpers";
+import moment from "moment";
+
+//миксины
+import axiosRequests from "@/mixins/axiosRequests";
+import crud from "@/mixins/crud";
+import fixedRightCol from "@/mixins/fixedRightCol";
 import publicAuthData from "@/mixins/publicAuthData";
-import MessagesComponent from "@/components/MessagesComponent/";
+
+//компоненты
 import BvsMapComponent from "@/components/BvsMapComponent/";
-import SwitcherComponent from "@/components/SwitcherComponent";
 import CalendarComponent from "@/components/CalendarComponent";
 import BvsShortComponent from "@/components/BvsShortComponent";
 import BvsOperationComponent from "@/components/BvsOperationComponent";
-import { strip, clog } from "@/misc/helpers";
-import crud from "@/mixins/crud";
-import moment from "moment";
-
-const axios = require("axios");
+import SwitcherComponent from "@/components/SwitcherComponent";
 
 const homePage = {
-    mixins: [messages, crud, publicAuthData],
+    mixins: [axiosRequests, crud, fixedRightCol, publicAuthData],
 
     components: {
-        MessagesComponent,
         BvsShortComponent,
         SwitcherComponent,
         Calendar: CalendarComponent,
@@ -35,14 +37,29 @@ const homePage = {
 
             // тип детализации отображенния данных
             display: "calendar", // calendar | list | items
+
+            // исходные данные от БВС
             bvsData: [],
+
+            // перечень полей хозяйства
+            grasslands: [],
+
+            // период отображения данных
             period: {
                 start: null,
                 end: null,
             },
+
+            // список выбранных весовых для отображения на карте
             selectedBvs: [],
+
+            // список выбранных операций весовых для отображения на карте
             selectedOperationsIds: [],
+
+            // ширина окна браузера
             windowWidth: window.innerWidth,
+
+            //Признак отображения/скрытия компонента карты
             showMap: true,
         };
     },
@@ -53,7 +70,17 @@ const homePage = {
             window.addEventListener("resize", vm.onResize);
         });
 
-        vm.getBvsData();
+        vm.getBvsData().then((response) => {
+            vm.bvsData = response.bvs_data;
+        });
+
+        vm.getGrasslands((response) => {
+            vm.grasslands = response.grasslands;
+        });
+
+        vm.$nextTick(() => {
+            vm.startFixElement("fixposition", "observeResize", true);
+        });
     },
 
     watch: {
@@ -94,6 +121,13 @@ const homePage = {
             return null;
         },
 
+        /**
+         * скрытие и отображение карты для мобильных устройств
+         *
+         * @param {Integer} newWidth
+         *
+         * @returns {Void}
+         */
         windowWidth(newWidth) {
             const vm = this;
             const breakpoint = 768;
@@ -154,6 +188,11 @@ const homePage = {
             return data;
         },
 
+        /**
+         * отфильтрованные значения данных от БВС в разрезе операций
+         *
+         * @returns {Array} массив данных о БВС
+         */
         bvsFilteredByOperations() {
             const vm = this;
             let data = strip(vm.bvsOperations);
@@ -195,7 +234,7 @@ const homePage = {
         },
 
         /**
-         * Признак активности календаря
+         * Ключ, определюящий надо ли отображать календарь в зависимости от типа выбранного периода
          *
          * @returns {Boolean}
          */
@@ -203,10 +242,16 @@ const homePage = {
             return this.mode === "all";
         },
 
+        grasslandsData() {
+            const vm = this;
+            const grasslands = strip(vm.grasslands);
+            return grasslands;
+        },
+
         /**
          * Форматированная строка текущей даты
          *
-         * @returns String D-m-y
+         * @returns {String} пример  YYYY-MM-DD (1900-10-23). Нумерация месмыцев начитнается с 1, т.е.  январь <-> 1 и т.д.
          */
         today() {
             const vm = this;
@@ -218,6 +263,10 @@ const homePage = {
             return moment().format("YYYY-MM-DD");
         },
 
+        /**
+         *
+         * @returns {Array<String>} возвращает массив строк. Строки то даты в формате YYYY-MM-DD (1900-10-23).  Нумерация месмыцев начитнается с 1, т.е.  январь <-> 1 и т.д.
+         */
         markedDays() {
             const vm = this;
             let data = strip(vm.bvsData);
@@ -230,7 +279,12 @@ const homePage = {
             return dates;
         },
 
-        // режимы выбора даты
+        /**
+         * режимы выбора даты
+         *
+         * @returns {Object}
+         */
+
         modes() {
             const modes = {
                 all: "За все время",
@@ -240,7 +294,10 @@ const homePage = {
             return modes;
         },
 
-        // признак режима работы календаря выбор периода или нет
+        /** признак режима работы календаря. Включен ли выбор периода или нет
+         *
+         *  @returns {Boolean}
+         */
         selectPeriod() {
             return this.mode === "period";
         },
@@ -259,7 +316,7 @@ const homePage = {
         /**
          * смена режима выбора отображения даты
          *
-         * @param {Enum} display :// all | day | period
+         * @param {Enum} display  all | day | period
          */
         changeMode(data) {
             const vm = this;
@@ -267,39 +324,18 @@ const homePage = {
             vm.display = vm.mode === "all" ? "list" : "calendar";
         },
 
-        // запрос данных БВС
-        getBvsData() {
-            const vm = this;
-
-            const postData = {
-                user_id: vm.userId,
-                organisation_id: vm.organisationId,
-            };
-
-            axios
-                .post(`/bvsdata/list`, postData)
-                .then((response) => {
-                    clog("%c getBvsData response", "color:green", response);
-
-                    vm.bvsData = response.data.bvs_data;
-                    // vm.messages[response.data.type] = response?.data?.message;
-                })
-                .catch((e) => {
-                    clog("%c getBvsData error", "color: red", e.response);
-                    // vm.messages.error = e.response.data.message;
-                });
-        },
-
         /**
          * Коллбэк для события изменения размеров окна браузера
          * Обновляет значение переменной ширины окна
+         *
+         * @returns {Void}
          */
         onResize() {
             this.windowWidth = window.innerWidth;
         },
 
         /**
-         * обработчик события выбора БВС
+         * обработчик события клика на элемент из списка БВС
          *
          * @param {Object} data
          */
@@ -314,7 +350,7 @@ const homePage = {
         },
 
         /**
-         * обработчик события календаря. Выбор 1 даты
+         * обработчик события выбора единичной даты на  календаре.
          *
          * @param {Object} data {date: ISO date string}
          *
@@ -327,7 +363,7 @@ const homePage = {
         },
 
         /**
-         * обработчик события выбора операции БВС
+         * обработчик события клика на элементе из списка операций БВС
          *
          * @param {Object} data BvsData object @see BvsData Laravel Model BvsData
          *
@@ -343,7 +379,7 @@ const homePage = {
         },
 
         /**
-         * обработчик события календаря. Выбор диапазона дат
+         * обработчик события выбора диапазона дат на  календаре.
          *
          * @param {Object} data
          *   {

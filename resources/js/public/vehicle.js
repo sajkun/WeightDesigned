@@ -1,10 +1,21 @@
-import messages from "@/mixins/messages";
+/**
+ * Техника
+ * Отображает список техники и позволяет
+ * добавлять, удалять и редактировать технику
+ */
+
+//хэлперы
 import { strip, clog } from "@/misc/helpers";
+
+//миксины
+import fixedRightCol from "@/mixins/fixedRightCol";
+import messages from "@/mixins/messages";
 import publicAuthData from "@/mixins/publicAuthData";
 
 const axios = require("axios");
 const appPublicVehicles = {
-    mixins: [messages, publicAuthData],
+    mixins: [fixedRightCol, publicAuthData, messages],
+
     data() {
         return {
             mode: "list", // list | edit | create | details
@@ -107,7 +118,11 @@ const appPublicVehicles = {
         },
 
         vehiclesCurrent() {
-            return this.vehicles[`${this.vehicleType}s`];
+            const vehicles = this.vehicles[`${this.vehicleType}s`]
+                ? this.vehicles[`${this.vehicleType}s`]
+                : {};
+
+            return Object.values(vehicles);
         },
 
         vehiclesGrouped() {
@@ -138,8 +153,19 @@ const appPublicVehicles = {
 
     watch: {
         mode(mode) {
-            clog("mode:", mode);
             const vm = this;
+            clog("watch:mode", mode);
+            if (mode !== "details") {
+                // обнуление фиксированного положение правой колонки
+                vm.stopFixElement();
+            }
+
+            vm.$nextTick(() => {
+                if (mode === "details") {
+                    // применение sticky поведения для правой колонки
+                    vm.startFixElement("fixposition", "observeResize");
+                }
+            });
 
             if (mode === "create") {
                 vm.reset();

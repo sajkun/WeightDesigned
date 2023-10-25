@@ -1,26 +1,36 @@
 /**
  * работа с пользователями публичной зоны
  */
-import publicAuthData from "@/mixins/publicAuthData";
-import messages from "@/mixins/messages";
-import MessagesComponent from "@/components/MessagesComponent/";
-import crud from "@/mixins/crud";
+
+//хэлперы
 import { strip, clog } from "@/misc/helpers";
+
+//миксины
 import addUserForm from "@/formFields/addUser";
+import crud from "@/mixins/crud";
 import editPasswordForm from "@/formFields/editPwd";
 import editUserForm from "@/formFields/editUser";
-import InputComponent from "@/components/inputs/InputComponent";
-import FormComponent from "@/components/inputs/FormComponent/";
-const axios = require("axios");
+import fixedRightCol from "@/mixins/fixedRightCol";
+import formatName from "@/mixins/formatName";
+import messages from "@/mixins/messages";
+import publicAuthData from "@/mixins/publicAuthData";
 
+//компоненты
+import FormComponent from "@/components/inputs/FormComponent/";
+import InputComponent from "@/components/inputs/InputComponent";
+import MessagesComponent from "@/components/MessagesComponent/";
+
+const axios = require("axios");
 const appPublicUsers = {
     mixins: [
-        messages,
-        crud,
         addUserForm,
-        editUserForm,
         editPasswordForm,
+        editUserForm,
+        crud,
+        fixedRightCol,
+        formatName,
         publicAuthData,
+        messages,
     ],
 
     components: {
@@ -79,7 +89,7 @@ const appPublicUsers = {
 
     computed: {
         listClass() {
-            const editClass = "col-12 col-lg-6 d-sm-none d-lg-block";
+            const editClass = "col-12 col-lg-6 d-none d-lg-block";
             const displayClass = "col-12 ";
             return this.editMode ? editClass : displayClass;
         },
@@ -91,11 +101,33 @@ const appPublicUsers = {
 
     watch: {
         editForm() {
-            this.reset();
+            const vm = this;
+            vm.reset();
+
+            if (!vm.editMode) {
+                // обнуление фитксированного положение правой колонки
+                vm.stopFixElement();
+            } else if (vm.editMode) {
+                // применение sticky поведения для правой колонки
+                vm.startFixElement("fixposition", "observeResize", false, [
+                    vm.$refs.beforeStickyPosition,
+                ]);
+            }
         },
 
-        editMode() {
-            this.reset();
+        editMode(editMode) {
+            const vm = this;
+            vm.reset();
+
+            if (!editMode) {
+                // обнуление фитксированного положение правой колонки
+                vm.stopFixElement();
+            } else if (editMode) {
+                // применение sticky поведения для правой колонки
+                vm.startFixElement("fixposition", "observeResize", false, [
+                    vm.$refs.beforeStickyPosition,
+                ]);
+            }
         },
 
         activeTab() {
@@ -195,6 +227,7 @@ const appPublicUsers = {
             const vm = this;
             const password = strip(data.password);
             delete data.password;
+
             const postData = {
                 user_id: vm.userId,
                 organisation_id: vm.organisationId,
@@ -204,9 +237,11 @@ const appPublicUsers = {
 
             vm.createEntity(postData, `/users/store`).then((e) => {
                 if (e.status === 200) {
-                    vm.$refs.createUserForm.reset();
                     vm.clearUser();
                     vm.reset();
+                    vm.$nextTick(() => {
+                        vm.$refs.createUserForm.clear();
+                    });
                 }
             });
         },

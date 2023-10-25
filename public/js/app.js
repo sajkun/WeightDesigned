@@ -15193,9 +15193,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _misc_helpers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/misc/helpers */ "./resources/js/misc/helpers.js");
 /* harmony import */ var _components_svg_bvs_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @/components/svg/bvs.js */ "./resources/js/components/svg/bvs.js");
+/* harmony import */ var _mixins_drawGrassland__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @/mixins/drawGrassland */ "./resources/js/mixins/drawGrassland.js");
 function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
+
 
 
 
@@ -15206,11 +15208,13 @@ var grasslandMap;
     return {
       id: this._id,
       // HTML id атрибут
-      bvsData: this._bvsData // данные от бвс
+      bvsData: this._bvsData,
+      // данные от бвс
+      grasslandsData: this._grasslandsData // данные о полях
     };
   },
 
-  mixins: [_components_svg_bvs_js__WEBPACK_IMPORTED_MODULE_1__["default"]],
+  mixins: [_components_svg_bvs_js__WEBPACK_IMPORTED_MODULE_1__["default"], _mixins_drawGrassland__WEBPACK_IMPORTED_MODULE_2__["default"]],
   watch: {
     // обновление данных от родителя
     _bvsData: function _bvsData(data) {
@@ -15226,11 +15230,22 @@ var grasslandMap;
       if (grasslandMap.geoObjects.getLength()) {
         grasslandMap.setBounds(grasslandMap.geoObjects.getBounds());
       }
+    },
+    // обновление данных от родителя
+    _grasslandsData: function _grasslandsData(data) {
+      var vm = this;
+      vm.grasslandsData = data;
     }
   },
   props: {
     // данные от бвс
     _bvsData: {
+      type: Array,
+      "default": [],
+      required: false
+    },
+    // данные о полях
+    _grasslandsData: {
       type: Array,
       "default": [],
       required: false
@@ -15253,6 +15268,19 @@ var grasslandMap;
         if (grasslandMap.geoObjects.getLength()) {
           grasslandMap.setBounds(grasslandMap.geoObjects.getBounds());
         }
+        var _iterator = _createForOfIteratorHelper(vm.grasslandsData),
+          _step;
+        try {
+          for (_iterator.s(); !(_step = _iterator.n()).done;) {
+            var _grassland = _step.value;
+            var points = JSON.parse(_grassland.geo_json);
+            vm.drawGrassland(points, grasslandMap);
+          }
+        } catch (err) {
+          _iterator.e(err);
+        } finally {
+          _iterator.f();
+        }
       });
     });
   },
@@ -15265,7 +15293,6 @@ var grasslandMap;
      * @returns {Object} ymap - объект яндекс карт
      */
     initMap: function initMap(selector) {
-      var vm = this;
       var map = new ymaps.Map(selector, {
         center: [45, 45],
         zoom: 12
@@ -15298,11 +15325,11 @@ var grasslandMap;
         clusterDisableClickZoom: true
       });
       var placemarks = [];
-      var _iterator = _createForOfIteratorHelper((0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(data)),
-        _step;
+      var _iterator2 = _createForOfIteratorHelper((0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(data)),
+        _step2;
       try {
-        for (_iterator.s(); !(_step = _iterator.n()).done;) {
-          var bvsData = _step.value;
+        for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+          var bvsData = _step2.value;
           // вычисление размера метки
           var newDiv = document.createElement("div");
           newDiv.setAttribute("id", "check");
@@ -15351,11 +15378,12 @@ var grasslandMap;
             }
           });
           placemarks.push(point);
+          grasslandMap.geoObjects.add(point);
         }
       } catch (err) {
-        _iterator.e(err);
+        _iterator2.e(err);
       } finally {
-        _iterator.f();
+        _iterator2.f();
       }
       clusterer.add(placemarks);
       grasslandMap.geoObjects.add(clusterer);
@@ -16362,8 +16390,11 @@ var drawTimeout;
       var _this$getCnv = _slicedToArray(this.getCnv, 2),
         cnvs = _this$getCnv[0],
         ctx = _this$getCnv[1];
-      cnvs.width = vm.$refs.root.offsetWidth ? vm.$refs.root.offsetWidth : 500;
-      cnvs.height = vm.$refs.root.offsetHeight - 50 ? vm.$refs.root.offsetHeight - 50 : 500;
+      var maxWidth = Math.min(window.innerWidth, 800);
+      var rootWidth = vm.$refs.root.offsetWidth ? vm.$refs.root.offsetWidth : maxWidth;
+      cnvs.width = rootWidth;
+      cnvs.height = parseInt(rootWidth * 11 / 16);
+      vm.$refs.root.classList.remove("not-ready");
       ctx.translate(0, cnvs.height);
       ctx.rotate(-Math.PI / 2);
       return;
@@ -16897,6 +16928,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_inputs_InputComponent__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @/components/inputs/InputComponent */ "./resources/js/components/inputs/InputComponent/index.js");
 /* harmony import */ var _components_inputs_SelectComponent__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @/components/inputs/SelectComponent */ "./resources/js/components/inputs/SelectComponent/index.js");
 /* harmony import */ var _components_inputs_PasswordInputComponent__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @/components/inputs/PasswordInputComponent */ "./resources/js/components/inputs/PasswordInputComponent/index.js");
+/* harmony import */ var _misc_helpers__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @/misc/helpers */ "./resources/js/misc/helpers.js");
+
 
 
 
@@ -16984,8 +17017,11 @@ __webpack_require__.r(__webpack_exports__);
       (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c Отправка данных формы", "color: green", data);
       vm.$emit("exec-submit", data);
     },
-    reset: function reset() {
-      this.$refs.form.reset();
+    clear: function clear() {
+      this.structure = this.structure.map(function (el) {
+        el.value = null;
+        return el;
+      });
     }
   }
 });
@@ -17283,48 +17319,51 @@ var _withScopeId = function _withScopeId(n) {
   return (0,vue__WEBPACK_IMPORTED_MODULE_0__.pushScopeId)("data-v-3aaf0140"), n = n(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.popScopeId)(), n;
 };
 var _hoisted_1 = {
-  "class": "col-6"
+  "class": "row"
 };
 var _hoisted_2 = {
-  "class": "col-6 text-end"
+  "class": "col-6"
 };
 var _hoisted_3 = {
-  "class": "label"
+  "class": "col-6 text-end"
 };
 var _hoisted_4 = {
+  "class": "label"
+};
+var _hoisted_5 = {
   "class": "col-4"
 };
-var _hoisted_5 = /*#__PURE__*/_withScopeId(function () {
+var _hoisted_6 = /*#__PURE__*/_withScopeId(function () {
   return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", {
     "class": "m-0 label"
   }, "Статус:", -1 /* HOISTED */);
 });
-var _hoisted_6 = {
-  "class": "col-4"
-};
 var _hoisted_7 = {
-  "class": "m-0 label"
+  "class": "col-4"
 };
 var _hoisted_8 = {
+  "class": "m-0 label"
+};
+var _hoisted_9 = {
   "class": "col-4"
 };
-var _hoisted_9 = /*#__PURE__*/_withScopeId(function () {
+var _hoisted_10 = /*#__PURE__*/_withScopeId(function () {
   return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", {
     "class": "m-0 label"
   }, "Вес в бункере:", -1 /* HOISTED */);
 });
-var _hoisted_10 = {
+var _hoisted_11 = {
   "class": "col-4"
 };
-var _hoisted_11 = /*#__PURE__*/_withScopeId(function () {
+var _hoisted_12 = /*#__PURE__*/_withScopeId(function () {
   return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", {
     "class": "m-0 label"
   }, "Статус чека:", -1 /* HOISTED */);
 });
-var _hoisted_12 = {
+var _hoisted_13 = {
   "class": "col-8"
 };
-var _hoisted_13 = /*#__PURE__*/_withScopeId(function () {
+var _hoisted_14 = /*#__PURE__*/_withScopeId(function () {
   return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", {
     "class": "m-0 label"
   }, "RFID:", -1 /* HOISTED */);
@@ -17332,17 +17371,17 @@ var _hoisted_13 = /*#__PURE__*/_withScopeId(function () {
 
 function render(_ctx, _cache, $props, $setup, $data, $options) {
   return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", {
-    "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)(["row p-4", {
+    "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)(["root-wrapper py-2", {
       selected: $data.info.selected
     }]),
     onClick: _cache[0] || (_cache[0] = function () {
       return $options.clickCb && $options.clickCb.apply($options, arguments);
     })
-  }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("b", null, "Операция №" + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.info.id), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_3, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($options.operationTime.formatted), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_4, [_hoisted_5, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($options.operationInfo.formatted), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_6, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", _hoisted_7, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($options.operationInfo.type) + ":", 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($options.operationInfo.object), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_8, [_hoisted_9, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($options.operationInfo.ammountInBunker), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_10, [_hoisted_11, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
+  }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("b", null, "Операция №" + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.info.id), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_4, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($options.operationTime.formatted), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_5, [_hoisted_6, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($options.operationInfo.formatted), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_7, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", _hoisted_8, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($options.operationInfo.type) + ":", 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($options.operationInfo.object), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_9, [_hoisted_10, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($options.operationInfo.ammountInBunker), 1 /* TEXT */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_11, [_hoisted_12, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
     "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)($options.status.check.status)
-  }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($options.status.check.text), 3 /* TEXT, CLASS */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_12, [_hoisted_13, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
+  }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($options.status.check.text), 3 /* TEXT, CLASS */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_13, [_hoisted_14, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
     "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)($options.status.rfid.status)
-  }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($options.status.rfid.text), 3 /* TEXT, CLASS */)])], 2 /* CLASS */);
+  }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($options.status.rfid.text), 3 /* TEXT, CLASS */)])])], 2 /* CLASS */);
 }
 
 /***/ }),
@@ -17563,7 +17602,7 @@ var _withScopeId = function _withScopeId(n) {
   return (0,vue__WEBPACK_IMPORTED_MODULE_0__.pushScopeId)("data-v-013f9ad8"), n = n(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.popScopeId)(), n;
 };
 var _hoisted_1 = {
-  "class": "w-100 h-100 component-root",
+  "class": "w-100 h-100 component-root not-ready",
   ref: "root"
 };
 var _hoisted_2 = {
@@ -18189,6 +18228,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _public_statistics_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./public/statistics.js */ "./resources/js/public/statistics.js");
 /**
  * Основной файл, собирающий весь скрипт приложения
+ *
  */
 
 
@@ -18556,6 +18596,16 @@ __webpack_require__.r(__webpack_exports__);
         "class": "mt-2",
         minlength: 5
       }, {
+        id: "last_name-new-user",
+        name: "last_name",
+        label: "Фамилия",
+        type: "text",
+        minlength: 4,
+        required: true,
+        "class": "col-md-6 col-lg-4 mt-2 ",
+        pattern: "[А-Яа-я]{1,}",
+        title: "Допустимы только русские буквы. Удалите пробелы"
+      }, {
         id: "first_name-new-user",
         name: "first_name",
         label: "Имя",
@@ -18563,16 +18613,7 @@ __webpack_require__.r(__webpack_exports__);
         required: true,
         "class": "col-md-6 col-lg-4 mt-2 ",
         pattern: "[А-Яа-я]{1,}",
-        title: "Допустимы только русские буквы"
-      }, {
-        id: "last_name-new-user",
-        name: "last_name",
-        label: "Фамилия",
-        type: "text",
-        required: true,
-        "class": "col-md-6 col-lg-4 mt-2 ",
-        pattern: "[А-Яа-я]{1,}",
-        title: "Допустимы только русские буквы"
+        title: "Допустимы только русские буквы. Удалите пробелы"
       }, {
         id: "middle_name-new-user",
         name: "middle_name",
@@ -18580,14 +18621,16 @@ __webpack_require__.r(__webpack_exports__);
         type: "text",
         "class": "mt-2 col-lg-4  ",
         pattern: "[А-Яа-я]{1,}",
-        title: "Допустимы только русские буквы"
+        title: "Допустимы только русские буквы. Удалите пробелы"
       }, {
         id: "email-new-user",
         name: "email",
         label: "E-mail",
         type: "email",
         required: true,
-        "class": " mt-2 "
+        "class": " mt-2 ",
+        pattern: "[a-z0-9]+@[a-z]+\\.[a-z]{2,4}",
+        title: "email в формате <foo@bar.com>, допускаются латинские буквы и цифры. Обязательно наличие символов @ и . после точки допускается от 2х до 4х символов"
       }, {
         id: "phone-new-user",
         name: "phone",
@@ -18596,7 +18639,8 @@ __webpack_require__.r(__webpack_exports__);
         required: true,
         "class": "mt-2 ",
         minlength: 6,
-        pattern: "[+]{0,1}[0-9\\-\\(\\)]{1,}"
+        pattern: "[+]{0,1}[0-9\\-\\(\\)]{1,}",
+        title: "Допустимы цифры, и символы (, ), +, -"
       }, {
         id: "password-new-user",
         name: "password",
@@ -18675,15 +18719,6 @@ __webpack_require__.r(__webpack_exports__);
     editUserFormStructure: function editUserFormStructure() {
       var vm = this;
       var structure = [{
-        id: "first_name-new-user",
-        name: "first_name",
-        label: "Имя",
-        type: "text",
-        required: true,
-        "class": "col-md-6 col-lg-4 mt-2 ",
-        pattern: "[А-Яа-я]{1,}",
-        title: "Допустимы только русские буквы"
-      }, {
         id: "last_name-new-user",
         name: "last_name",
         label: "Фамилия",
@@ -18691,7 +18726,17 @@ __webpack_require__.r(__webpack_exports__);
         required: true,
         "class": "col-md-6 col-lg-4 mt-2 ",
         pattern: "[А-Яа-я]{1,}",
-        title: "Допустимы только русские буквы"
+        title: "Допустимы только русские буквы. Удалите пробелы"
+      }, {
+        id: "first_name-new-user",
+        name: "first_name",
+        label: "Имя",
+        type: "text",
+        required: true,
+        "class": "col-md-6 col-lg-4 mt-2 ",
+        pattern: "[А-Яа-я]{1,}",
+        title: "Допустимы только русские буквы. Удалите пробелы",
+        minlength: 4
       }, {
         id: "middle_name-new-user",
         name: "middle_name",
@@ -18699,16 +18744,18 @@ __webpack_require__.r(__webpack_exports__);
         type: "text",
         "class": "mt-2 col-lg-4  ",
         pattern: "[А-Яа-я]{1,}",
-        title: "Допустимы только русские буквы"
+        title: "Допустимы только русские буквы. Удалите пробелы"
       }, {
         id: "email-new-user",
         name: "email",
         label: "E-mail",
         type: "email",
         required: true,
-        "class": "col-md-6 mt-2 "
+        "class": "col-md-6 mt-2 ",
+        pattern: "[a-z0-9]+@[a-z]+\\.[a-z]{2,4}",
+        title: "email в формате <foo@bar.com>, допускаются латинские буквы и цифры. Обязательно наличие символов @ и . после точки допускается от 2х до 4х символов"
       }, {
-        title: "Допустимы цифры, (, ), +, -",
+        title: "Допустимы цифры, и символы (, ), +, -",
         id: "phone-new-user",
         name: "phone",
         label: "Телефон",
@@ -18763,7 +18810,7 @@ __webpack_require__.r(__webpack_exports__);
         required: true,
         "class": "col-md-6 col-lg-4 mt-2 ",
         pattern: "[А-Яа-я]{1,}",
-        title: "Допустимы только русские буквы"
+        title: "Допустимы только русские буквы. Удалите пробелы"
       }, {
         id: "first_name-new-employee",
         name: "first_name",
@@ -18772,7 +18819,7 @@ __webpack_require__.r(__webpack_exports__);
         required: true,
         "class": "col-md-6 col-lg-4 mt-2 ",
         pattern: "[А-Яа-я]{1,}",
-        title: "Допустимы только русские буквы"
+        title: "Допустимы только русские буквы. Удалите пробелы"
       }, {
         id: "middle_name-new-employee",
         name: "middle_name",
@@ -18780,7 +18827,7 @@ __webpack_require__.r(__webpack_exports__);
         type: "text",
         "class": "mt-2 col-lg-4  ",
         pattern: "[А-Яа-я]{1,}",
-        title: "Допустимы только русские буквы"
+        title: "Допустимы только русские буквы. Удалите пробелы"
       }, {
         id: "phone-new-employee",
         name: "phone",
@@ -18789,6 +18836,7 @@ __webpack_require__.r(__webpack_exports__);
         required: true,
         "class": "mt-2 ",
         minlength: 6,
+        title: "Допустимы цифры, и символы (, ), +, -",
         pattern: "[+]{0,1}[0-9\\-\\(\\)]{1,}"
       }, {
         id: "specialisation-new-employee",
@@ -18830,7 +18878,7 @@ __webpack_require__.r(__webpack_exports__);
         required: true,
         "class": "col-md-6 col-lg-4 mt-2 ",
         pattern: "[А-Яа-я]{1,}",
-        title: "Допустимы только русские буквы"
+        title: "Допустимы только русские буквы. Удалите пробелы"
       }, {
         id: "first_name-new-employee",
         name: "first_name",
@@ -18839,7 +18887,7 @@ __webpack_require__.r(__webpack_exports__);
         required: true,
         "class": "col-md-6 col-lg-4 mt-2 ",
         pattern: "[А-Яа-я]{1,}",
-        title: "Допустимы только русские буквы"
+        title: "Допустимы только русские буквы. Удалите пробелы"
       }, {
         id: "middle_name-new-employee",
         name: "middle_name",
@@ -18847,7 +18895,7 @@ __webpack_require__.r(__webpack_exports__);
         type: "text",
         "class": "mt-2 col-lg-4  ",
         pattern: "[А-Яа-я]{1,}",
-        title: "Допустимы только русские буквы"
+        title: "Допустимы только русские буквы. Удалите пробелы"
       }, {
         id: "phone-new-employee",
         name: "phone",
@@ -18856,6 +18904,7 @@ __webpack_require__.r(__webpack_exports__);
         required: true,
         "class": "mt-2 ",
         minlength: 6,
+        title: "Допустимы цифры, и символы (, ), +, -",
         pattern: "[+]{0,1}[0-9\\-\\(\\)]{1,}"
       }, {
         id: "specialisation-new-employee",
@@ -18918,9 +18967,6 @@ function _classApplyDescriptorSet(receiver, descriptor, value) { if (descriptor.
  * и форматирующий их в представление, используемое
  * для отображения графика сбора урожая
  * и статистических данных
- *
- *
- * @author Кулешов Вячеслав
  */
 
 //хэлперы
@@ -19243,8 +19289,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   clog: () => (/* binding */ clog),
 /* harmony export */   get1stDigit: () => (/* binding */ get1stDigit),
+/* harmony export */   getDocHeight: () => (/* binding */ getDocHeight),
 /* harmony export */   getFormData: () => (/* binding */ getFormData),
 /* harmony export */   getRoundedValue: () => (/* binding */ getRoundedValue),
+/* harmony export */   getStyle: () => (/* binding */ getStyle),
 /* harmony export */   polyline: () => (/* binding */ polyline),
 /* harmony export */   strip: () => (/* binding */ strip)
 /* harmony export */ });
@@ -19418,6 +19466,40 @@ var getRoundedValue = function getRoundedValue(value, type) {
   return _return;
 };
 
+/**
+ * Получает значение css свойства элемента
+ *
+ * @param {HTMLElement} oElm
+ * @param {String} strCssRule
+ * @param {Boolean} onlyDigits
+ *
+ * @returns {String|Number}
+ */
+var getStyle = function getStyle(oElm, strCssRule, onlyDigits) {
+  var strValue = "";
+  if (document.defaultView && document.defaultView.getComputedStyle) {
+    strValue = document.defaultView.getComputedStyle(oElm, "").getPropertyValue(strCssRule);
+  } else if (oElm.currentStyle) {
+    strCssRule = strCssRule.replace(/\-(\w)/g, function (strMatch, p1) {
+      return p1.toUpperCase();
+    });
+    strValue = oElm.currentStyle[strCssRule];
+  }
+  return onlyDigits ? parseFloat(strValue) : strValue;
+};
+
+/**
+ * Получает высоту документа
+ *
+ * @returns {Number}
+ */
+var getDocHeight = function getDocHeight() {
+  var body = document.body,
+    html = document.documentElement;
+  var height = Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight);
+  return height;
+};
+
 /***/ }),
 
 /***/ "./resources/js/mixins/axiosRequests.js":
@@ -19457,7 +19539,7 @@ var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
       });
     },
     /**
-     * запрос перечня сотрудников
+     * запрос списка сотрудников
      *
      * @return {Promise}
      */
@@ -19477,7 +19559,29 @@ var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
       });
     },
     /**
-     * запрос перечня техники
+     * запрос списка полей
+     *
+     * @return {Promise}
+     */
+    getGrasslands: function getGrasslands() {
+      var vm = this;
+      if (vm.$refs.organisationId < 0) {
+        return;
+      }
+      return axios.get("/grasslands/list", {
+        user_id: vm.userId
+      }).then(function (response) {
+        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c getGrasslands", "color: green", response);
+        vm.grasslands = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(response.data.grasslands);
+        return (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(response.data);
+      })["catch"](function (e) {
+        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c getGrasslands error", "color: red", e.response);
+        vm.messages.error = "".concat(e.response.status, " ").concat(e.response.statusText, " : ").concat(e.response.data.message);
+        return e.response;
+      });
+    },
+    /**
+     * запрос списка техники
      *
      * @return {Promise}
      */
@@ -19513,9 +19617,11 @@ var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 var crud = {
   methods: {
     confirmActionCb: function confirmActionCb() {
+      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("confirmActionCb");
       document.dispatchEvent(new CustomEvent("submitConfirmEvent"));
     },
     cancelConfirmActionCb: function cancelConfirmActionCb() {
+      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("cancelConfirmActionCb");
       document.dispatchEvent(new CustomEvent("cancelConfirmEvent"));
     },
     createEntity: function createEntity(postData, url) {
@@ -19544,8 +19650,8 @@ var crud = {
         document.addEventListener("cancelConfirmEvent", _handlerCancel);
         vm.messages.confirm = "\u0412\u044B \u0443\u0432\u0435\u0440\u0435\u043D\u044B, \u0447\u0442\u043E \u0445\u043E\u0442\u0438\u0442\u0435 \u0443\u0434\u0430\u043B\u0438\u0442\u044C ".concat(postData === null || postData === void 0 ? void 0 : postData.name, "?");
       } else {
-        document.removeEventListener("confirmEvent", _handlerSubmit, false);
-        document.removeEventListener("submitConfirmEvent", _handlerCancel, false);
+        document.removeEventListener("submitConfirmEvent", _handlerSubmit, false);
+        document.removeEventListener("cancelConfirmEvent", _handlerCancel, false);
         vm.$nextTick(function () {
           vm.clearMessages(true);
         });
@@ -19564,8 +19670,9 @@ var crud = {
         vm.messages[response.data.type] = response.data.message;
         (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c sendRequest success", "color:green", response);
         return response;
-      }).then(function () {
+      }).then(function (response) {
         document.dispatchEvent(new CustomEvent("updateList"));
+        return response;
       })["catch"](function (e) {
         (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c sendRequest error", "color:red", e.response);
         vm.messages.error = "".concat(e.response.status, " ").concat(e.response.statusText, " : ").concat(e.response.data.message);
@@ -19575,6 +19682,439 @@ var crud = {
   }
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (crud);
+
+/***/ }),
+
+/***/ "./resources/js/mixins/drawGrassland.js":
+/*!**********************************************!*\
+  !*** ./resources/js/mixins/drawGrassland.js ***!
+  \**********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _public_dbf__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/public/dbf */ "./resources/js/public/dbf.js");
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  methods: {
+    /**
+     *
+     * @param {*} points
+     *
+     * @returns {Void}
+     */
+    drawGrassland: function drawGrassland(points, grasslandMap) {
+      var _vm$$refs;
+      var vm = this;
+      var center = (0,_public_dbf__WEBPACK_IMPORTED_MODULE_0__.getCenterByPoints)(points);
+      if ((_vm$$refs = vm.$refs) !== null && _vm$$refs !== void 0 && _vm$$refs.geo_json) {
+        vm.$refs.geo_json.value = JSON.stringify(points);
+      }
+      grasslandMap.setCenter(center);
+      vm.execDrawGrassland(points, grasslandMap);
+    },
+    /**
+     * отрисовывает контур на яндекс карте по kml файлу
+     *
+     * @param {Object} geoJsonObject
+     *
+     * @returns {Void}
+     */
+    drawKmlShape: function drawKmlShape(geoJsonObject) {
+      var _geoJsonObject$featur;
+      var vm = this;
+      var geometry = geoJsonObject === null || geoJsonObject === void 0 || (_geoJsonObject$featur = geoJsonObject.features.pop()) === null || _geoJsonObject$featur === void 0 ? void 0 : _geoJsonObject$featur.geometry;
+      if (!geometry) {
+        vm.messages.error = "\u0412 \u0444\u0430\u0439\u043B\u0435 \u043D\u0435 \u043D\u0430\u0439\u0434\u0435\u043D\u0430 \u0440\u0430\u0437\u043C\u0435\u0442\u043A\u0430";
+        return;
+      }
+      var type = geometry === null || geometry === void 0 ? void 0 : geometry.type;
+      var allowedTypes = ["LineString", "Polygon"];
+      if (!type || allowedTypes.indexOf(type) < 0) {
+        vm.messages.error = "\u041D\u0435\u0434\u043E\u043F\u0443\u0441\u0442\u0438\u043C\u0430\u044F \u0433\u0435\u043E\u043C\u0435\u0442\u0440\u0438\u044F \u0440\u0430\u0437\u043C\u0435\u0442\u043A\u0438 \u0444\u0430\u0439\u043B\u0430 - (".concat(type, ")");
+        return;
+      }
+      var points = type === "Polygon" ? geometry === null || geometry === void 0 ? void 0 : geometry.coordinates.shift() : geometry === null || geometry === void 0 ? void 0 : geometry.coordinates;
+      vm.drawGrassland(points);
+    },
+    /**
+     * добавление объекта полигона по заданным точкам на карту
+     *
+     * @param {Arrya<float, float>} coordinates массив точек lat, long
+     * @param {Object} map объект ymap карта
+     *
+     * @returns {Void}
+     */
+    execDrawGrassland: function execDrawGrassland(coordinates, map) {
+      var grasslandGeoObject = new ymaps.GeoObject({
+        // Описываем геометрию геообъекта.
+        geometry: {
+          // Тип геометрии - "Многоугольник".
+          type: "Polygon",
+          // Указываем координаты вершин многоугольника.
+          coordinates: [coordinates],
+          // Задаем правило заливки внутренних контуров по алгоритму "nonZero".
+          fillRule: "nonZero"
+        },
+        // Описываем свойства геообъекта.
+        properties: {
+          // Содержимое балуна.
+          // balloonContent: item.name,
+        }
+      }, {
+        // Описываем опции геообъекта.
+        // Цвет заливки.
+        fillColor: "rgba(143, 113, 43,0.1)",
+        // Цвет обводки.
+        strokeColor: "#c48e1a",
+        // Общая прозрачность (как для заливки, так и для обводки).
+        // opacity: 0.5,
+        // Ширина обводки.
+        strokeWidth: 3,
+        // Стиль обводки.
+        strokeStyle: "solid"
+      });
+
+      // Добавляем многоугольник на карту.
+      map.geoObjects.add(grasslandGeoObject);
+    }
+  }
+});
+
+/***/ }),
+
+/***/ "./resources/js/mixins/fixedRightCol.js":
+/*!**********************************************!*\
+  !*** ./resources/js/mixins/fixedRightCol.js ***!
+  \**********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _misc_helpers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/misc/helpers */ "./resources/js/misc/helpers.js");
+/**
+ *
+ */
+
+//хэлперы
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  data: function data() {
+    return {
+      /**
+       *  Объекь наблюдатель за изменением ширины
+       *
+       * @param {Object: ResizeObserver}
+       */
+      observer: null,
+      /**
+       * Элементы перед фиксируемым, которые нужно учесть при рассчете местоположения
+       *
+       * @param {Array<HTMLElement>}
+       */
+      extraElements: [],
+      // {String} названия ref для фиксируемового объекта
+      targetRef: null,
+      // данные изменение расположения фиксируемового объекта
+      fixData: {
+        top: "initial",
+        left: "initial",
+        width: "initial",
+        maxWidth: "initial",
+        position: "fixed"
+      },
+      scrollData: {
+        prev: 0,
+        direction: 0
+      },
+      shiftY: 0,
+      controllHeight: false,
+      applyFixData: false
+    };
+  },
+  computed: {
+    mobileBreakPoint: function mobileBreakPoint() {
+      return 768;
+    }
+  },
+  watch: {
+    // обновление положение элемента при изменении данных
+    fixData: {
+      handler: function handler(fixData) {
+        var vm = this;
+        if (window.innerWidth < vm.mobileBreakPoint) {
+          vm.resertFixedElement();
+          return;
+        }
+        var el = vm === null || vm === void 0 ? void 0 : vm.$refs[vm === null || vm === void 0 ? void 0 : vm.targetRef];
+        if (!el || !vm.applyFixData) {
+          return;
+        }
+        vm.updateFixElement(el, fixData);
+      },
+      deep: true
+    }
+  },
+  methods: {
+    /**
+     * вычисляет размеры и положение фикируемового блока
+     *
+     * @returns {Void}
+     */
+    calculatePositionData: function calculatePositionData() {
+      var vm = this;
+      var shiftVelocity = 30;
+      var scrollY = window.scrollY;
+      var leftToBottomEdge = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.getDocHeight)() - scrollY - window.innerHeight;
+
+      // целевой фиксируемый элемент
+      var el = vm.$refs[vm.targetRef];
+      var elHeight = el.offsetHeight;
+
+      // Внутренние отступы родительского элемента
+      var paddingsParent = vm.getParentPaddings(el);
+
+      // переменная показывающая какая часть хэддера еще в зоне видимости страницы
+
+      var deltaY = vm.getHeightBefore() - scrollY;
+      deltaY = Math.max(0, deltaY);
+
+      // максимальная видимая высота элемента
+      var maxHeight = window.innerHeight - paddingsParent.y() - deltaY;
+
+      //*************** */
+      //сдвиг необходимый для смещения зафиксированного элемента в случаях, если его высота больше видимой высоты окна
+      var minShiftY = Math.min(maxHeight - el.offsetHeight, 0);
+      var shiftY = vm.shiftY;
+      if (vm.getScrolldirection() === "down") {
+        shiftY -= shiftVelocity;
+        shiftY = Math.max(minShiftY, shiftY);
+      } else {
+        shiftY += shiftVelocity;
+        shiftY = Math.min(0, shiftY);
+      }
+
+      //*************** */
+      var parentRect = el.parentElement.getBoundingClientRect();
+
+      // максимальная доступная ширина элемента
+      vm.fixData.width = vm.fixData.maxWidth = parentRect.width - paddingsParent.x();
+      if (vm.controllHeight) {
+        var height = maxHeight;
+        height -= (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.getStyle)(el, "padding-bottom", true);
+        vm.fixData.maxHeight = height;
+        vm.fixData.height = height;
+      }
+
+      // отступы сверху и слева
+      var totalShiftTop = deltaY + paddingsParent.top + shiftY;
+
+      // высота элемента ниже нижнего края экрана
+      var elPartSizeBelowBottomEdge = elHeight + totalShiftTop - paddingsParent.bottom - maxHeight;
+
+      // сдвиг если нижняя граница фиксируемого элемента выступает нижней части экрана
+      var fixBottomEdgeShift = elPartSizeBelowBottomEdge > 0 && leftToBottomEdge < elPartSizeBelowBottomEdge && vm.getScrolldirection() === "down" ? leftToBottomEdge - elPartSizeBelowBottomEdge : 0;
+      vm.fixData.top = totalShiftTop + fixBottomEdgeShift;
+      vm.fixData.left = parentRect.left + paddingsParent.left;
+      vm.shiftY = shiftY;
+      return;
+    },
+    /**
+     * Получает суммарную высоту предшествующих зафиксированному элементу
+     *
+     * @returns {Number}
+     */
+    getHeightBefore: function getHeightBefore() {
+      var vm = this;
+      var header = document.querySelector(".public-header");
+      var height = header.offsetHeight;
+      vm.extraElements.forEach(function (el) {
+        height += el.offsetHeight;
+        height += (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.getStyle)(el, "margin-top", true);
+        height += (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.getStyle)(el, "margin-bottom", true);
+      });
+      return height;
+    },
+    /**
+     * определяет направление скролла
+     *
+     * @returns {Enum} up / down
+     */
+    getScrolldirection: function getScrolldirection() {
+      var vm = this;
+      var pos = window.scrollY;
+      var delta = vm.scrollData.prev - pos;
+      if (delta === 0) {
+        return vm.scrollData.direction;
+      }
+      vm.scrollData.prev = vm.scrollData.prev !== pos ? pos : vm.scrollData.prev;
+      vm.scrollData.direction = delta > 0 ? "up" : "down";
+      return vm.scrollData.direction;
+    },
+    /**
+     * Отступы родительского элемента для el
+     *
+     * @param {HTMLElement} el
+     *
+     * @returns {Object}
+     */
+    getParentPaddings: function getParentPaddings(el) {
+      // Внутренние отступы родительского элемента
+      var paddingsParent = {
+        top: (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.getStyle)(el.parentElement, "padding-bottom", true),
+        bottom: (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.getStyle)(el.parentElement, "padding-top", true),
+        left: (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.getStyle)(el.parentElement, "padding-left", true),
+        right: (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.getStyle)(el.parentElement, "padding-right", true),
+        x: function x() {
+          return this.left + this.right;
+        },
+        y: function y() {
+          return this.top + this.bottom;
+        }
+      };
+      return paddingsParent;
+    },
+    /**
+     * Инициализация объекта наблюдения за размерами элемента
+     *
+     * @returns {Object: ResizeObserver}
+     */
+    initObserver: function initObserver() {
+      var vm = this;
+      var observer = new ResizeObserver(vm.calculatePositionData);
+      return observer;
+    },
+    /**
+     * Отменяет все назначенные свойства
+     *
+     * @returns {Void}
+     */
+    resertFixedElement: function resertFixedElement() {
+      var vm = this;
+      var fixData = {
+        top: "initial",
+        left: "initial",
+        width: "initial",
+        maxWidth: "initial",
+        position: "relative"
+      };
+      var el = vm === null || vm === void 0 ? void 0 : vm.$refs[vm === null || vm === void 0 ? void 0 : vm.targetRef];
+      vm.updateFixElement(el, fixData);
+      window.removeEventListener("scroll", vm.calculatePositionData);
+      vm.$nextTick(function () {
+        vm.observer.disconnect();
+      });
+      return;
+    },
+    /**
+     * инициализация процесса фиксирования элемента
+     *
+     * @param {String} targetRef ref фиксируемового HTML элемента
+     * @param {String} observeRef ref контейнера фиксируемового HTML элемента
+     * @param {Boolean} fixHeight  нужно ли фиксировать высоту блока
+     * @param {Array<HTMLElement>} extraElements дополнительные элементы перед фиксируемым элементом
+     *
+     * @returns {Void}
+     */
+    startFixElement: function startFixElement(targetRef, observeRef) {
+      var controllHeight = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+      var extraElements = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : [];
+      var vm = this;
+      var observeEl = vm.$refs[observeRef];
+      var targetElement = vm.$refs[targetRef];
+      vm.applyFixData = true;
+      vm.observer = vm.initObserver();
+      vm.targetRef = targetRef;
+      vm.fixData.position = "fixed";
+      vm.controllHeight = controllHeight;
+      vm.extraElements = extraElements;
+      if (controllHeight) {
+        vm.fixData.height = targetElement.offsetHeight;
+        vm.fixData.maxHeight = targetElement.offsetHeight;
+      }
+      vm.updateFixElement(targetElement, vm.fixData);
+      vm.$nextTick(function () {
+        vm.observer.observe(observeEl);
+        vm.observer.observe(targetElement);
+        window.addEventListener("scroll", vm.calculatePositionData);
+      });
+      return;
+    },
+    /**
+     * отключает отслеживание привязывания элемента
+     *
+     * @returns {Void}
+     */
+    stopFixElement: function stopFixElement() {
+      var vm = this;
+      vm.applyFixData = false;
+      vm.$nextTick(function () {
+        vm.resertFixedElement();
+      });
+      return;
+    },
+    /**
+     * Применение стилей к переданному объекту
+     *
+     * @param {HTMLElement} element
+     * @param {Object instanceof this.fixData } data
+     *
+     * @returns {Void}
+     */
+    updateFixElement: function updateFixElement(element, data) {
+      for (var styleProp in data) {
+        element.style[styleProp] = typeof data[styleProp] === "number" ? "".concat(data[styleProp], "px") : data[styleProp];
+      }
+      return;
+    }
+  }
+});
+
+/***/ }),
+
+/***/ "./resources/js/mixins/formatName.js":
+/*!*******************************************!*\
+  !*** ./resources/js/mixins/formatName.js ***!
+  \*******************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  methods: {
+    /**
+     * форматирует имя
+     *
+     * @param  {...String} names Фамилия Имя Отчество
+     *
+     * @returns {String} Фамилия И.О.
+     */
+    formatName: function formatName() {
+      for (var _len = arguments.length, names = new Array(_len), _key = 0; _key < _len; _key++) {
+        names[_key] = arguments[_key];
+      }
+      if (!names || !names.length) {
+        return;
+      }
+      var name = names.shift();
+      if (!name) return;
+      for (var _i = 0, _names = names; _i < _names.length; _i++) {
+        var part = _names[_i];
+        name = window.innerWidth < 992 ? "".concat(name.trim(), " ").concat(part.substring(0, 1), ".") : "".concat(name.trim(), " ").concat(part);
+      }
+      return name;
+    }
+  }
+});
 
 /***/ }),
 
@@ -20344,37 +20884,48 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _misc_helpers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/misc/helpers */ "./resources/js/misc/helpers.js");
-/* harmony import */ var _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @/mixins/publicAuthData */ "./resources/js/mixins/publicAuthData.js");
-/* harmony import */ var _mixins_messages__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @/mixins/messages */ "./resources/js/mixins/messages.js");
-/* harmony import */ var _components_MessagesComponent___WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @/components/MessagesComponent/ */ "./resources/js/components/MessagesComponent/index.js");
-/* harmony import */ var _components_inputs_FieldComponent__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @/components/inputs/FieldComponent */ "./resources/js/components/inputs/FieldComponent/index.js");
-/* harmony import */ var _components_inputs_InputComponent__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @/components/inputs/InputComponent */ "./resources/js/components/inputs/InputComponent/index.js");
-/* harmony import */ var _components_inputs_FormComponent___WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @/components/inputs/FormComponent/ */ "./resources/js/components/inputs/FormComponent/index.js");
-/* harmony import */ var _mixins_crud__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @/mixins/crud */ "./resources/js/mixins/crud.js");
-/* harmony import */ var _formFields_employees_add__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @/formFields/employees/add */ "./resources/js/formFields/employees/add.js");
-/* harmony import */ var _formFields_employees_edit__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @/formFields/employees/edit */ "./resources/js/formFields/employees/edit.js");
+/* harmony import */ var _formFields_employees_add__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @/formFields/employees/add */ "./resources/js/formFields/employees/add.js");
+/* harmony import */ var _mixins_crud__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @/mixins/crud */ "./resources/js/mixins/crud.js");
+/* harmony import */ var _formFields_employees_edit__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @/formFields/employees/edit */ "./resources/js/formFields/employees/edit.js");
+/* harmony import */ var _mixins_fixedRightCol__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @/mixins/fixedRightCol */ "./resources/js/mixins/fixedRightCol.js");
+/* harmony import */ var _mixins_formatName__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @/mixins/formatName */ "./resources/js/mixins/formatName.js");
+/* harmony import */ var _mixins_messages__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @/mixins/messages */ "./resources/js/mixins/messages.js");
+/* harmony import */ var _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @/mixins/publicAuthData */ "./resources/js/mixins/publicAuthData.js");
+/* harmony import */ var _components_inputs_FieldComponent__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @/components/inputs/FieldComponent */ "./resources/js/components/inputs/FieldComponent/index.js");
+/* harmony import */ var _components_inputs_FormComponent___WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @/components/inputs/FormComponent/ */ "./resources/js/components/inputs/FormComponent/index.js");
+/* harmony import */ var _components_inputs_InputComponent__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @/components/inputs/InputComponent */ "./resources/js/components/inputs/InputComponent/index.js");
+/* harmony import */ var _components_MessagesComponent___WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! @/components/MessagesComponent/ */ "./resources/js/components/MessagesComponent/index.js");
 /**
+ *
  * Приложение отвечающее за внешний вид и отправку
  * запросов CRUD раздела "Сотрудники"
  */
 
+//хэлперы
+
+
+//миксины
 
 
 
 
 
+
+
+
+//компоненты
 
 
 
 
 var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 var appPublicEmployees = {
-  mixins: [_mixins_messages__WEBPACK_IMPORTED_MODULE_2__["default"], _mixins_crud__WEBPACK_IMPORTED_MODULE_7__["default"], _formFields_employees_add__WEBPACK_IMPORTED_MODULE_8__["default"], _formFields_employees_edit__WEBPACK_IMPORTED_MODULE_9__["default"], _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_1__["default"]],
+  mixins: [_formFields_employees_add__WEBPACK_IMPORTED_MODULE_1__["default"], _mixins_crud__WEBPACK_IMPORTED_MODULE_2__["default"], _formFields_employees_edit__WEBPACK_IMPORTED_MODULE_3__["default"], _mixins_fixedRightCol__WEBPACK_IMPORTED_MODULE_4__["default"], _mixins_formatName__WEBPACK_IMPORTED_MODULE_5__["default"], _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_7__["default"], _mixins_messages__WEBPACK_IMPORTED_MODULE_6__["default"]],
   components: {
-    FieldComponent: _components_inputs_FieldComponent__WEBPACK_IMPORTED_MODULE_4__["default"],
-    Field: _components_inputs_InputComponent__WEBPACK_IMPORTED_MODULE_5__["default"],
-    TheForm: _components_inputs_FormComponent___WEBPACK_IMPORTED_MODULE_6__["default"],
-    MessagesComponent: _components_MessagesComponent___WEBPACK_IMPORTED_MODULE_3__["default"]
+    FieldComponent: _components_inputs_FieldComponent__WEBPACK_IMPORTED_MODULE_8__["default"],
+    Field: _components_inputs_InputComponent__WEBPACK_IMPORTED_MODULE_10__["default"],
+    TheForm: _components_inputs_FormComponent___WEBPACK_IMPORTED_MODULE_9__["default"],
+    MessagesComponent: _components_MessagesComponent___WEBPACK_IMPORTED_MODULE_11__["default"]
   },
   data: function data() {
     return {
@@ -20407,10 +20958,26 @@ var appPublicEmployees = {
     };
   },
   watch: {
+    editForm: function editForm() {
+      var vm = this;
+      vm.reset();
+      if (!vm.editMode) {
+        // обнуление фитксированного положение правой колонки
+        vm.stopFixElement();
+      } else if (vm.editMode) {
+        // применение sticky поведения для правой колонки
+        vm.startFixElement("fixposition", "observeResize");
+      }
+    },
     editMode: function editMode(_editMode) {
       var vm = this;
       if (!_editMode) {
         vm.showForm = false;
+        // обнуление фитксированного положение правой колонки
+        vm.stopFixElement();
+      } else if (_editMode) {
+        // применение sticky поведения для правой колонки
+        vm.startFixElement("fixposition", "observeResize");
       }
       if (_editMode && vm.editedEmployee.id < 0) {
         vm.showForm = true;
@@ -20446,6 +21013,9 @@ var appPublicEmployees = {
         return !el.employee_id || el.employee_id === vm.editedEmployee.id;
       });
       return vehicles;
+    },
+    mobileBreakPoint: function mobileBreakPoint() {
+      return 992;
     }
   },
   mounted: function mounted() {
@@ -20509,7 +21079,6 @@ var appPublicEmployees = {
       return date.getFullYear();
     },
     edit: function edit(person, showForm) {
-      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c edit", "color:blue", person);
       var vm = this;
       vm.editMode = true;
       vm.editedEmployee = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(person);
@@ -20566,8 +21135,8 @@ var appPublicEmployees = {
       };
       vm.createEntity(postData, "/employees/store").then(function (e) {
         if (e.status === 200) {
-          vm.$refs.createEmployeeForm.reset();
           vm.clearEmployee();
+          vm.$refs.createEmployeeForm.clear();
         }
       });
     },
@@ -20603,26 +21172,38 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _misc_helpers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/misc/helpers */ "./resources/js/misc/helpers.js");
-/* harmony import */ var _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @/mixins/publicAuthData */ "./resources/js/mixins/publicAuthData.js");
-/* harmony import */ var _dbf__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./dbf */ "./resources/js/public/dbf.js");
-/* harmony import */ var _mixins_messages__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @/mixins/messages */ "./resources/js/mixins/messages.js");
+/* harmony import */ var _node_modules_tmcw_togeojson__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @/../../node_modules/@tmcw/togeojson */ "./node_modules/@tmcw/togeojson/dist/togeojson.umd.js");
+/* harmony import */ var _node_modules_tmcw_togeojson__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_tmcw_togeojson__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _public_dbf__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @/public/dbf */ "./resources/js/public/dbf.js");
+/* harmony import */ var _mixins_axiosRequests__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @/mixins/axiosRequests */ "./resources/js/mixins/axiosRequests.js");
 /* harmony import */ var _mixins_crud__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @/mixins/crud */ "./resources/js/mixins/crud.js");
-/* harmony import */ var _components_FileInputComponent__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @/components/FileInputComponent */ "./resources/js/components/FileInputComponent/index.js");
-/* harmony import */ var _node_modules_tmcw_togeojson__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @/../../node_modules/@tmcw/togeojson */ "./node_modules/@tmcw/togeojson/dist/togeojson.umd.js");
-/* harmony import */ var _node_modules_tmcw_togeojson__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_node_modules_tmcw_togeojson__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var _mixins_drawGrassland__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @/mixins/drawGrassland */ "./resources/js/mixins/drawGrassland.js");
+/* harmony import */ var _mixins_messages__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @/mixins/messages */ "./resources/js/mixins/messages.js");
+/* harmony import */ var _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @/mixins/publicAuthData */ "./resources/js/mixins/publicAuthData.js");
+/* harmony import */ var _components_FileInputComponent__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @/components/FileInputComponent */ "./resources/js/components/FileInputComponent/index.js");
+/**
+ *
+ */
+
+//хэлперы
+
+
+
+
+// миксины
 
 
 
 
 
 
+//компоненты
 
 var grasslandMap;
-var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 var appPublicGrasslands = {
-  mixins: [_mixins_messages__WEBPACK_IMPORTED_MODULE_3__["default"], _mixins_crud__WEBPACK_IMPORTED_MODULE_4__["default"], _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_1__["default"]],
+  mixins: [_mixins_axiosRequests__WEBPACK_IMPORTED_MODULE_3__["default"], _mixins_drawGrassland__WEBPACK_IMPORTED_MODULE_5__["default"], _mixins_crud__WEBPACK_IMPORTED_MODULE_4__["default"], _mixins_messages__WEBPACK_IMPORTED_MODULE_6__["default"], _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_7__["default"]],
   components: {
-    file: _components_FileInputComponent__WEBPACK_IMPORTED_MODULE_5__["default"]
+    file: _components_FileInputComponent__WEBPACK_IMPORTED_MODULE_8__["default"]
   },
   data: {
     mode: "list",
@@ -20631,9 +21212,13 @@ var appPublicGrasslands = {
   },
   mounted: function mounted() {
     var vm = this;
-    vm.getGrasslands();
+    vm.getGrasslands().then(function (r) {
+      vm.grasslands = r.grasslands;
+    });
     document.addEventListener("updateList", function () {
-      vm.getGrasslands();
+      vm.getGrasslands().then(function (r) {
+        vm.grasslands = r.grasslands;
+      });
     });
   },
   computed: {
@@ -20668,67 +21253,6 @@ var appPublicGrasslands = {
       };
       vm.createEntity(postData, "/grasslands/store");
     },
-    drawGrassland: function drawGrassland(points) {
-      var _vm$$refs;
-      var vm = this;
-      var center = (0,_dbf__WEBPACK_IMPORTED_MODULE_2__.getCenterByPoints)(points);
-      if ((_vm$$refs = vm.$refs) !== null && _vm$$refs !== void 0 && _vm$$refs.geo_json) {
-        vm.$refs.geo_json.value = JSON.stringify(points);
-      }
-      grasslandMap.setCenter(center);
-      grasslandMap.geoObjects.removeAll();
-      vm.drawGrasslandCb(points, grasslandMap);
-    },
-    drawGrasslandCb: function drawGrasslandCb(coordinates, map) {
-      var grasslandGeoObject = new ymaps.GeoObject({
-        // Описываем геометрию геообъекта.
-        geometry: {
-          // Тип геометрии - "Многоугольник".
-          type: "Polygon",
-          // Указываем координаты вершин многоугольника.
-          coordinates: [coordinates],
-          // Задаем правило заливки внутренних контуров по алгоритму "nonZero".
-          fillRule: "nonZero"
-        },
-        // Описываем свойства геообъекта.
-        properties: {
-          // Содержимое балуна.
-          // balloonContent: item.name,
-        }
-      }, {
-        // Описываем опции геообъекта.
-        // Цвет заливки.
-        fillColor: "rgba(143, 113, 43,0.1)",
-        // Цвет обводки.
-        strokeColor: "#c48e1a",
-        // Общая прозрачность (как для заливки, так и для обводки).
-        // opacity: 0.5,
-        // Ширина обводки.
-        strokeWidth: 3,
-        // Стиль обводки.
-        strokeStyle: "solid"
-      });
-
-      // Добавляем многоугольник на карту.
-      map.geoObjects.add(grasslandGeoObject);
-    },
-    drawKmlShape: function drawKmlShape(geoJsonObject) {
-      var _geoJsonObject$featur;
-      var vm = this;
-      var geometry = geoJsonObject === null || geoJsonObject === void 0 || (_geoJsonObject$featur = geoJsonObject.features.pop()) === null || _geoJsonObject$featur === void 0 ? void 0 : _geoJsonObject$featur.geometry;
-      if (!geometry) {
-        vm.messages.error = "\u0412 \u0444\u0430\u0439\u043B\u0435 \u043D\u0435 \u043D\u0430\u0439\u0434\u0435\u043D\u0430 \u0440\u0430\u0437\u043C\u0435\u0442\u043A\u0430";
-        return;
-      }
-      var type = geometry === null || geometry === void 0 ? void 0 : geometry.type;
-      var allowedTypes = ["LineString", "Polygon"];
-      if (!type || allowedTypes.indexOf(type) < 0) {
-        vm.messages.error = "\u041D\u0435\u0434\u043E\u043F\u0443\u0441\u0442\u0438\u043C\u0430\u044F \u0433\u0435\u043E\u043C\u0435\u0442\u0440\u0438\u044F \u0440\u0430\u0437\u043C\u0435\u0442\u043A\u0438 \u0444\u0430\u0439\u043B\u0430 - (".concat(type, ")");
-        return;
-      }
-      var points = type === "Polygon" ? geometry === null || geometry === void 0 ? void 0 : geometry.coordinates.shift() : geometry === null || geometry === void 0 ? void 0 : geometry.coordinates;
-      vm.drawGrassland(points);
-    },
     deleteGrassland: function deleteGrassland(item) {
       var vm = this;
       var postData = {
@@ -20749,21 +21273,6 @@ var appPublicGrasslands = {
             e.target.nextElementSibling.classList.remove("active");
           }
         });
-      });
-    },
-    getGrasslands: function getGrasslands() {
-      var vm = this;
-      if (vm.$refs.organisationId < 0) {
-        return;
-      }
-      axios.get("/grasslands/list", {
-        user_id: vm.userId
-      }).then(function (response) {
-        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c getGrasslands", "color: green", response);
-        vm.grasslands = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(response.data.grasslands);
-      })["catch"](function (e) {
-        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c getGrasslands error", "color: red", e.response);
-        vm.messages.error = "".concat(e.response.status, " ").concat(e.response.statusText, " : ").concat(e.response.data.message);
       });
     },
     initMap: function initMap(selector) {
@@ -20798,27 +21307,26 @@ var appPublicGrasslands = {
       };
       switch (ext) {
         case "shp":
-          (0,_dbf__WEBPACK_IMPORTED_MODULE_2__.readBinaryShapeFile)(data.file)["catch"](function (error) {
+          (0,_public_dbf__WEBPACK_IMPORTED_MODULE_2__.readBinaryShapeFile)(data.file)["catch"](function (error) {
             console.error("Error reading file:", error);
           }).then(function (shpData) {
-            (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)(shpData);
-            var center = (0,_dbf__WEBPACK_IMPORTED_MODULE_2__.getShapeFileCenter)(shpData);
-            var points = (0,_dbf__WEBPACK_IMPORTED_MODULE_2__.getPointsForGrassland)(shpData);
-            vm.drawGrassland(points);
+            var points = (0,_public_dbf__WEBPACK_IMPORTED_MODULE_2__.getPointsForGrassland)(shpData);
+            grasslandMap.geoObjects.removeAll();
+            vm.drawGrassland(points, grasslandMap);
           });
           break;
         case "kml":
           var reader = new FileReader();
           var geoJsonObject;
           reader.addEventListener("load", function () {
-            geoJsonObject = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)((0,_node_modules_tmcw_togeojson__WEBPACK_IMPORTED_MODULE_6__.kml)(getDom(reader.result)));
+            geoJsonObject = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)((0,_node_modules_tmcw_togeojson__WEBPACK_IMPORTED_MODULE_1__.kml)(getDom(reader.result)));
             vm.drawKmlShape(geoJsonObject);
           }, false);
           reader.readAsText(data.file);
           break;
         case "kmz":
           var geoJson = getKmlDom(data.file).then(function (kmlDom) {
-            var geoJsonObject = (0,_node_modules_tmcw_togeojson__WEBPACK_IMPORTED_MODULE_6__.kml)(kmlDom);
+            var geoJsonObject = (0,_node_modules_tmcw_togeojson__WEBPACK_IMPORTED_MODULE_1__.kml)(kmlDom);
             return geoJsonObject;
           });
           geoJson.then(function (gj) {
@@ -20839,7 +21347,8 @@ var appPublicGrasslands = {
       vm.$nextTick(function () {
         vm.enableInputs();
         grasslandMap = vm.initMap("map-container");
-        vm.drawGrassland(points);
+        grasslandMap.geoObjects.removeAll();
+        vm.drawGrassland(points, grasslandMap);
       });
     },
     editGrassland: function editGrassland() {
@@ -20870,43 +21379,46 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _mixins_messages__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/mixins/messages */ "./resources/js/mixins/messages.js");
-/* harmony import */ var _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @/mixins/publicAuthData */ "./resources/js/mixins/publicAuthData.js");
-/* harmony import */ var _components_MessagesComponent___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @/components/MessagesComponent/ */ "./resources/js/components/MessagesComponent/index.js");
-/* harmony import */ var _components_BvsMapComponent___WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @/components/BvsMapComponent/ */ "./resources/js/components/BvsMapComponent/index.js");
-/* harmony import */ var _components_SwitcherComponent__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @/components/SwitcherComponent */ "./resources/js/components/SwitcherComponent/index.js");
-/* harmony import */ var _components_CalendarComponent__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @/components/CalendarComponent */ "./resources/js/components/CalendarComponent/index.js");
-/* harmony import */ var _components_BvsShortComponent__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @/components/BvsShortComponent */ "./resources/js/components/BvsShortComponent/index.js");
-/* harmony import */ var _components_BvsOperationComponent__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @/components/BvsOperationComponent */ "./resources/js/components/BvsOperationComponent/index.js");
-/* harmony import */ var _misc_helpers__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @/misc/helpers */ "./resources/js/misc/helpers.js");
-/* harmony import */ var _mixins_crud__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @/mixins/crud */ "./resources/js/mixins/crud.js");
-/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
-/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_10__);
+/* harmony import */ var _misc_helpers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/misc/helpers */ "./resources/js/misc/helpers.js");
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _mixins_axiosRequests__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @/mixins/axiosRequests */ "./resources/js/mixins/axiosRequests.js");
+/* harmony import */ var _mixins_crud__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @/mixins/crud */ "./resources/js/mixins/crud.js");
+/* harmony import */ var _mixins_fixedRightCol__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @/mixins/fixedRightCol */ "./resources/js/mixins/fixedRightCol.js");
+/* harmony import */ var _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @/mixins/publicAuthData */ "./resources/js/mixins/publicAuthData.js");
+/* harmony import */ var _components_BvsMapComponent___WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @/components/BvsMapComponent/ */ "./resources/js/components/BvsMapComponent/index.js");
+/* harmony import */ var _components_CalendarComponent__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @/components/CalendarComponent */ "./resources/js/components/CalendarComponent/index.js");
+/* harmony import */ var _components_BvsShortComponent__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @/components/BvsShortComponent */ "./resources/js/components/BvsShortComponent/index.js");
+/* harmony import */ var _components_BvsOperationComponent__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @/components/BvsOperationComponent */ "./resources/js/components/BvsOperationComponent/index.js");
+/* harmony import */ var _components_SwitcherComponent__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @/components/SwitcherComponent */ "./resources/js/components/SwitcherComponent/index.js");
 /**
  * Домашняя страница
  */
 
+//хэлперы
+
+
+
+//миксины
 
 
 
 
 
+//компоненты
 
 
 
 
 
-
-var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 var homePage = {
-  mixins: [_mixins_messages__WEBPACK_IMPORTED_MODULE_0__["default"], _mixins_crud__WEBPACK_IMPORTED_MODULE_9__["default"], _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_1__["default"]],
+  mixins: [_mixins_axiosRequests__WEBPACK_IMPORTED_MODULE_2__["default"], _mixins_crud__WEBPACK_IMPORTED_MODULE_3__["default"], _mixins_fixedRightCol__WEBPACK_IMPORTED_MODULE_4__["default"], _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_5__["default"]],
   components: {
-    MessagesComponent: _components_MessagesComponent___WEBPACK_IMPORTED_MODULE_2__["default"],
-    BvsShortComponent: _components_BvsShortComponent__WEBPACK_IMPORTED_MODULE_6__["default"],
-    SwitcherComponent: _components_SwitcherComponent__WEBPACK_IMPORTED_MODULE_4__["default"],
-    Calendar: _components_CalendarComponent__WEBPACK_IMPORTED_MODULE_5__["default"],
-    BvsMap: _components_BvsMapComponent___WEBPACK_IMPORTED_MODULE_3__["default"],
-    BvsOperation: _components_BvsOperationComponent__WEBPACK_IMPORTED_MODULE_7__["default"]
+    BvsShortComponent: _components_BvsShortComponent__WEBPACK_IMPORTED_MODULE_8__["default"],
+    SwitcherComponent: _components_SwitcherComponent__WEBPACK_IMPORTED_MODULE_10__["default"],
+    Calendar: _components_CalendarComponent__WEBPACK_IMPORTED_MODULE_7__["default"],
+    BvsMap: _components_BvsMapComponent___WEBPACK_IMPORTED_MODULE_6__["default"],
+    BvsOperation: _components_BvsOperationComponent__WEBPACK_IMPORTED_MODULE_9__["default"]
   },
   data: function data() {
     return {
@@ -20917,14 +21429,23 @@ var homePage = {
       // тип детализации отображенния данных
       display: "calendar",
       // calendar | list | items
+
+      // исходные данные от БВС
       bvsData: [],
+      // перечень полей хозяйства
+      grasslands: [],
+      // период отображения данных
       period: {
         start: null,
         end: null
       },
+      // список выбранных весовых для отображения на карте
       selectedBvs: [],
+      // список выбранных операций весовых для отображения на карте
       selectedOperationsIds: [],
+      // ширина окна браузера
       windowWidth: window.innerWidth,
+      //Признак отображения/скрытия компонента карты
       showMap: true
     };
   },
@@ -20933,7 +21454,15 @@ var homePage = {
     vm.$nextTick(function () {
       window.addEventListener("resize", vm.onResize);
     });
-    vm.getBvsData();
+    vm.getBvsData().then(function (response) {
+      vm.bvsData = response.bvs_data;
+    });
+    vm.getGrasslands(function (response) {
+      vm.grasslands = response.grasslands;
+    });
+    vm.$nextTick(function () {
+      vm.startFixElement("fixposition", "observeResize", true);
+    });
   },
   watch: {
     /**
@@ -20968,6 +21497,13 @@ var homePage = {
       }
       return null;
     },
+    /**
+     * скрытие и отображение карты для мобильных устройств
+     *
+     * @param {Integer} newWidth
+     *
+     * @returns {Void}
+     */
     windowWidth: function windowWidth(newWidth) {
       var vm = this;
       var breakpoint = 768;
@@ -20983,7 +21519,7 @@ var homePage = {
      */
     bvsDataFiltered: function bvsDataFiltered() {
       var vm = this;
-      var data = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_8__.strip)(vm.bvsData);
+      var data = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.bvsData);
       if (vm.period.start && vm.period.end) {
         var start = new Date(vm.period.start);
         var end = new Date(vm.period.end);
@@ -21001,7 +21537,7 @@ var homePage = {
      */
     bsvFilteredByUnit: function bsvFilteredByUnit() {
       var vm = this;
-      var dataRaw = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_8__.strip)(vm.bvsDataFiltered);
+      var dataRaw = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.bvsDataFiltered);
       var initialValue = {};
       var data = dataRaw.reduce(function (accumulator, val) {
         var idx = val.bvs_name;
@@ -21012,17 +21548,22 @@ var homePage = {
             selected: false
           };
         }
-        accumulator[idx].selected = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_8__.strip)(vm.selectedBvs).indexOf(idx) >= 0;
+        accumulator[idx].selected = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.selectedBvs).indexOf(idx) >= 0;
         accumulator[idx].items.push(val);
         return accumulator;
       }, initialValue);
       return data;
     },
+    /**
+     * отфильтрованные значения данных от БВС в разрезе операций
+     *
+     * @returns {Array} массив данных о БВС
+     */
     bvsFilteredByOperations: function bvsFilteredByOperations() {
       var vm = this;
-      var data = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_8__.strip)(vm.bvsOperations);
+      var data = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.bvsOperations);
       if (vm.selectedOperationsIds.length) {
-        var items = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_8__.strip)(vm.selectedOperationsIds);
+        var items = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.selectedOperationsIds);
         data = data.filter(function (d) {
           return items.indexOf(d.id) >= 0;
         });
@@ -21036,13 +21577,13 @@ var homePage = {
      */
     bvsOperations: function bvsOperations() {
       var vm = this;
-      var dataRaw = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_8__.strip)(vm.bvsDataFiltered);
-      var names = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_8__.strip)(vm.selectedBvs);
+      var dataRaw = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.bvsDataFiltered);
+      var names = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.selectedBvs);
       var data;
       data = names.length > 0 ? dataRaw.filter(function (d) {
         return names.indexOf(d.bvs_name) >= 0;
       }) : dataRaw;
-      var operations = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_8__.strip)(vm.selectedOperationsIds);
+      var operations = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.selectedOperationsIds);
       data = data.map(function (d) {
         d.selected = operations.indexOf(d.id) >= 0;
         return d;
@@ -21050,36 +21591,49 @@ var homePage = {
       return data;
     },
     /**
-     * Признак активности календаря
+     * Ключ, определюящий надо ли отображать календарь в зависимости от типа выбранного периода
      *
      * @returns {Boolean}
      */
     calendarState: function calendarState() {
       return this.mode === "all";
     },
+    grasslandsData: function grasslandsData() {
+      var vm = this;
+      var grasslands = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.grasslands);
+      return grasslands;
+    },
     /**
      * Форматированная строка текущей даты
      *
-     * @returns String D-m-y
+     * @returns {String} пример  YYYY-MM-DD (1900-10-23). Нумерация месмыцев начитнается с 1, т.е.  январь <-> 1 и т.д.
      */
     today: function today() {
       var vm = this;
       if (vm.period.start) {
         var date = new Date(vm.period.start);
-        return moment__WEBPACK_IMPORTED_MODULE_10___default()(date).format("YYYY-MM-DD");
+        return moment__WEBPACK_IMPORTED_MODULE_1___default()(date).format("YYYY-MM-DD");
       }
-      return moment__WEBPACK_IMPORTED_MODULE_10___default()().format("YYYY-MM-DD");
+      return moment__WEBPACK_IMPORTED_MODULE_1___default()().format("YYYY-MM-DD");
     },
+    /**
+     *
+     * @returns {Array<String>} возвращает массив строк. Строки то даты в формате YYYY-MM-DD (1900-10-23).  Нумерация месмыцев начитнается с 1, т.е.  январь <-> 1 и т.д.
+     */
     markedDays: function markedDays() {
       var vm = this;
-      var data = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_8__.strip)(vm.bvsData);
+      var data = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.bvsData);
       var dates = data.map(function (d) {
-        var day = moment__WEBPACK_IMPORTED_MODULE_10___default()(d.operation_time);
+        var day = moment__WEBPACK_IMPORTED_MODULE_1___default()(d.operation_time);
         return day.format("YYYY-MM-DD");
       });
       return dates;
     },
-    // режимы выбора даты
+    /**
+     * режимы выбора даты
+     *
+     * @returns {Object}
+     */
     modes: function modes() {
       var modes = {
         all: "За все время",
@@ -21088,7 +21642,10 @@ var homePage = {
       };
       return modes;
     },
-    // признак режима работы календаря выбор периода или нет
+    /** признак режима работы календаря. Включен ли выбор периода или нет
+     *
+     *  @returns {Boolean}
+     */
     selectPeriod: function selectPeriod() {
       return this.mode === "period";
     }
@@ -21105,44 +21662,30 @@ var homePage = {
     /**
      * смена режима выбора отображения даты
      *
-     * @param {Enum} display :// all | day | period
+     * @param {Enum} display  all | day | period
      */
     changeMode: function changeMode(data) {
       var vm = this;
       vm.mode = data.mode;
       vm.display = vm.mode === "all" ? "list" : "calendar";
     },
-    // запрос данных БВС
-    getBvsData: function getBvsData() {
-      var vm = this;
-      var postData = {
-        user_id: vm.userId,
-        organisation_id: vm.organisationId
-      };
-      axios.post("/bvsdata/list", postData).then(function (response) {
-        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_8__.clog)("%c getBvsData response", "color:green", response);
-        vm.bvsData = response.data.bvs_data;
-        // vm.messages[response.data.type] = response?.data?.message;
-      })["catch"](function (e) {
-        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_8__.clog)("%c getBvsData error", "color: red", e.response);
-        // vm.messages.error = e.response.data.message;
-      });
-    },
     /**
      * Коллбэк для события изменения размеров окна браузера
      * Обновляет значение переменной ширины окна
+     *
+     * @returns {Void}
      */
     onResize: function onResize() {
       this.windowWidth = window.innerWidth;
     },
     /**
-     * обработчик события выбора БВС
+     * обработчик события клика на элемент из списка БВС
      *
      * @param {Object} data
      */
     selectBvsCb: function selectBvsCb(data) {
       var vm = this;
-      var idx = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_8__.strip)(vm.selectedBvs).indexOf(data.name);
+      var idx = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.selectedBvs).indexOf(data.name);
       if (idx >= 0) {
         vm.selectedBvs.splice(idx, 1);
       } else {
@@ -21150,19 +21693,19 @@ var homePage = {
       }
     },
     /**
-     * обработчик события календаря. Выбор 1 даты
+     * обработчик события выбора единичной даты на  календаре.
      *
      * @param {Object} data {date: ISO date string}
      *
      */
     selectDateCb: function selectDateCb(data) {
-      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_8__.clog)("%c selectDateCb", "color: blue", data);
+      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c selectDateCb", "color: blue", data);
       var vm = this;
       vm.period.start = "".concat(data.date, "T00:00:00");
       vm.period.end = "".concat(data.date, "T23:59:59");
     },
     /**
-     * обработчик события выбора операции БВС
+     * обработчик события клика на элементе из списка операций БВС
      *
      * @param {Object} data BvsData object @see BvsData Laravel Model BvsData
      *
@@ -21177,7 +21720,7 @@ var homePage = {
       }
     },
     /**
-     * обработчик события календаря. Выбор диапазона дат
+     * обработчик события выбора диапазона дат на  календаре.
      *
      * @param {Object} data
      *   {
@@ -21186,7 +21729,7 @@ var homePage = {
      *   }
      */
     selectPeriodCb: function selectPeriodCb(data) {
-      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_8__.clog)("%c selectPeriodCb", "color: blue", data);
+      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c selectPeriodCb", "color: blue", data);
       var vm = this;
       vm.period.start = "".concat(data.start, "T00:00:00");
       vm.period.end = "".concat(data.end, "T23:59:59");
@@ -21213,15 +21756,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _mixins_axiosRequests__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @/mixins/axiosRequests */ "./resources/js/mixins/axiosRequests.js");
 /* harmony import */ var _mixins_crud__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @/mixins/crud */ "./resources/js/mixins/crud.js");
-/* harmony import */ var _mixins_messages__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @/mixins/messages */ "./resources/js/mixins/messages.js");
-/* harmony import */ var _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @/mixins/publicAuthData */ "./resources/js/mixins/publicAuthData.js");
-/* harmony import */ var _mixins_sortAnimation__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @/mixins/sortAnimation */ "./resources/js/mixins/sortAnimation.js");
-/* harmony import */ var _mixins_professions__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @/mixins/professions */ "./resources/js/mixins/professions.js");
-/* harmony import */ var _mixins_statData__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @/mixins/statData */ "./resources/js/mixins/statData.js");
-/* harmony import */ var _mixins_vehicleTypes__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @/mixins/vehicleTypes */ "./resources/js/mixins/vehicleTypes.js");
-/* harmony import */ var _components_MessagesComponent__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @/components/MessagesComponent */ "./resources/js/components/MessagesComponent/index.js");
-/* harmony import */ var _components_inputs_MonthPickerComponent__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! @/components/inputs/MonthPickerComponent */ "./resources/js/components/inputs/MonthPickerComponent/index.js");
-/* harmony import */ var _components_RatingColumsComponent__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! @/components/RatingColumsComponent */ "./resources/js/components/RatingColumsComponent/index.js");
+/* harmony import */ var _mixins_fixedRightCol__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @/mixins/fixedRightCol */ "./resources/js/mixins/fixedRightCol.js");
+/* harmony import */ var _mixins_messages__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @/mixins/messages */ "./resources/js/mixins/messages.js");
+/* harmony import */ var _mixins_professions__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @/mixins/professions */ "./resources/js/mixins/professions.js");
+/* harmony import */ var _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @/mixins/publicAuthData */ "./resources/js/mixins/publicAuthData.js");
+/* harmony import */ var _mixins_sortAnimation__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @/mixins/sortAnimation */ "./resources/js/mixins/sortAnimation.js");
+/* harmony import */ var _mixins_statData__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @/mixins/statData */ "./resources/js/mixins/statData.js");
+/* harmony import */ var _mixins_vehicleTypes__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @/mixins/vehicleTypes */ "./resources/js/mixins/vehicleTypes.js");
+/* harmony import */ var _components_MessagesComponent__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! @/components/MessagesComponent */ "./resources/js/components/MessagesComponent/index.js");
+/* harmony import */ var _components_inputs_MonthPickerComponent__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! @/components/inputs/MonthPickerComponent */ "./resources/js/components/inputs/MonthPickerComponent/index.js");
+/* harmony import */ var _components_RatingColumsComponent__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! @/components/RatingColumsComponent */ "./resources/js/components/RatingColumsComponent/index.js");
 /**
  * Отображение рейтинга по предприятию
  */
@@ -21240,16 +21784,17 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
 // компоненты
 
 
 
 var appPublicRating = {
-  mixins: [_mixins_axiosRequests__WEBPACK_IMPORTED_MODULE_2__["default"], _mixins_crud__WEBPACK_IMPORTED_MODULE_3__["default"], _mixins_messages__WEBPACK_IMPORTED_MODULE_4__["default"], _mixins_professions__WEBPACK_IMPORTED_MODULE_7__["default"], _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_5__["default"], _mixins_sortAnimation__WEBPACK_IMPORTED_MODULE_6__["default"], _mixins_statData__WEBPACK_IMPORTED_MODULE_8__["default"], _mixins_vehicleTypes__WEBPACK_IMPORTED_MODULE_9__["default"]],
+  mixins: [_mixins_axiosRequests__WEBPACK_IMPORTED_MODULE_2__["default"], _mixins_crud__WEBPACK_IMPORTED_MODULE_3__["default"], _mixins_fixedRightCol__WEBPACK_IMPORTED_MODULE_4__["default"], _mixins_messages__WEBPACK_IMPORTED_MODULE_5__["default"], _mixins_professions__WEBPACK_IMPORTED_MODULE_6__["default"], _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_7__["default"], _mixins_sortAnimation__WEBPACK_IMPORTED_MODULE_8__["default"], _mixins_statData__WEBPACK_IMPORTED_MODULE_9__["default"], _mixins_vehicleTypes__WEBPACK_IMPORTED_MODULE_10__["default"]],
   components: {
-    MessagesComponent: _components_MessagesComponent__WEBPACK_IMPORTED_MODULE_10__["default"],
-    MonthPicker: _components_inputs_MonthPickerComponent__WEBPACK_IMPORTED_MODULE_11__["default"],
-    Columns: _components_RatingColumsComponent__WEBPACK_IMPORTED_MODULE_12__["default"]
+    MessagesComponent: _components_MessagesComponent__WEBPACK_IMPORTED_MODULE_11__["default"],
+    MonthPicker: _components_inputs_MonthPickerComponent__WEBPACK_IMPORTED_MODULE_12__["default"],
+    Columns: _components_RatingColumsComponent__WEBPACK_IMPORTED_MODULE_13__["default"]
   },
   data: function data() {
     return {
@@ -21275,6 +21820,9 @@ var appPublicRating = {
   mounted: function mounted() {
     var vm = this;
     vm.$el.parentNode.classList.add("d-flex");
+    setTimeout(function () {
+      vm.startFixElement("fixposition", "observeResize", true, [vm.$refs.beforeStickyPosition]);
+    });
   },
   methods: {
     /**
@@ -21321,10 +21869,9 @@ var appPublicRating = {
 
 //скрипты, которые будут задействованы сразу после загрузки страницы
 __webpack_require__(/*! @/ready/dadata */ "./resources/js/ready/dadata.js");
-__webpack_require__(/*! @/ready/mobileMenu */ "./resources/js/ready/mobileMenu.js");
+__webpack_require__(/*! @/ready/menu */ "./resources/js/ready/menu.js");
 __webpack_require__(/*! @/ready/formFields */ "./resources/js/ready/formFields.js");
 __webpack_require__(/*! @/ready/passwordStrength */ "./resources/js/ready/passwordStrength.js");
-console.log("ready js");
 
 /***/ }),
 
@@ -21345,20 +21892,20 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _misc_BvsDataClass__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @/misc/BvsDataClass */ "./resources/js/misc/BvsDataClass.js");
 /* harmony import */ var _mixins_axiosRequests__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @/mixins/axiosRequests */ "./resources/js/mixins/axiosRequests.js");
 /* harmony import */ var _mixins_crud__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @/mixins/crud */ "./resources/js/mixins/crud.js");
-/* harmony import */ var _mixins_messages__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @/mixins/messages */ "./resources/js/mixins/messages.js");
-/* harmony import */ var _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @/mixins/publicAuthData */ "./resources/js/mixins/publicAuthData.js");
-/* harmony import */ var _mixins_sortAnimation__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @/mixins/sortAnimation */ "./resources/js/mixins/sortAnimation.js");
-/* harmony import */ var _mixins_professions__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @/mixins/professions */ "./resources/js/mixins/professions.js");
-/* harmony import */ var _mixins_statData__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @/mixins/statData */ "./resources/js/mixins/statData.js");
-/* harmony import */ var _mixins_vehicleTypes__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @/mixins/vehicleTypes */ "./resources/js/mixins/vehicleTypes.js");
-/* harmony import */ var _components_MessagesComponent__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! @/components/MessagesComponent */ "./resources/js/components/MessagesComponent/index.js");
-/* harmony import */ var _components_GraphicComponent__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! @/components/GraphicComponent */ "./resources/js/components/GraphicComponent/index.js");
-/* harmony import */ var _components_inputs_MonthPickerComponent__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! @/components/inputs/MonthPickerComponent */ "./resources/js/components/inputs/MonthPickerComponent/index.js");
-/* harmony import */ var _components_inputs_DatepickerComponent__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! @/components/inputs/DatepickerComponent */ "./resources/js/components/inputs/DatepickerComponent/index.js");
+/* harmony import */ var _mixins_fixedRightCol__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @/mixins/fixedRightCol */ "./resources/js/mixins/fixedRightCol.js");
+/* harmony import */ var _mixins_messages__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @/mixins/messages */ "./resources/js/mixins/messages.js");
+/* harmony import */ var _mixins_professions__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @/mixins/professions */ "./resources/js/mixins/professions.js");
+/* harmony import */ var _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @/mixins/publicAuthData */ "./resources/js/mixins/publicAuthData.js");
+/* harmony import */ var _mixins_sortAnimation__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @/mixins/sortAnimation */ "./resources/js/mixins/sortAnimation.js");
+/* harmony import */ var _mixins_statData__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @/mixins/statData */ "./resources/js/mixins/statData.js");
+/* harmony import */ var _mixins_vehicleTypes__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! @/mixins/vehicleTypes */ "./resources/js/mixins/vehicleTypes.js");
+/* harmony import */ var _components_MessagesComponent__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! @/components/MessagesComponent */ "./resources/js/components/MessagesComponent/index.js");
+/* harmony import */ var _components_GraphicComponent__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! @/components/GraphicComponent */ "./resources/js/components/GraphicComponent/index.js");
+/* harmony import */ var _components_inputs_MonthPickerComponent__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! @/components/inputs/MonthPickerComponent */ "./resources/js/components/inputs/MonthPickerComponent/index.js");
+/* harmony import */ var _components_inputs_DatepickerComponent__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! @/components/inputs/DatepickerComponent */ "./resources/js/components/inputs/DatepickerComponent/index.js");
 /**
  * приложение отображение статистики публичного раздела
  *
- * @author Кулешов Вячеслав
  */
 
 //хэлперы
@@ -21378,21 +21925,36 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
 // компоненты
 
 
 
 
 var appPublicStatistics = {
-  mixins: [_mixins_axiosRequests__WEBPACK_IMPORTED_MODULE_3__["default"], _mixins_crud__WEBPACK_IMPORTED_MODULE_4__["default"], _mixins_messages__WEBPACK_IMPORTED_MODULE_5__["default"], _mixins_professions__WEBPACK_IMPORTED_MODULE_8__["default"], _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_6__["default"], _mixins_statData__WEBPACK_IMPORTED_MODULE_9__["default"], _mixins_sortAnimation__WEBPACK_IMPORTED_MODULE_7__["default"], _mixins_vehicleTypes__WEBPACK_IMPORTED_MODULE_10__["default"]],
+  mixins: [_mixins_axiosRequests__WEBPACK_IMPORTED_MODULE_3__["default"], _mixins_crud__WEBPACK_IMPORTED_MODULE_4__["default"], _mixins_fixedRightCol__WEBPACK_IMPORTED_MODULE_5__["default"], _mixins_messages__WEBPACK_IMPORTED_MODULE_6__["default"], _mixins_professions__WEBPACK_IMPORTED_MODULE_7__["default"], _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_8__["default"], _mixins_statData__WEBPACK_IMPORTED_MODULE_10__["default"], _mixins_sortAnimation__WEBPACK_IMPORTED_MODULE_9__["default"], _mixins_vehicleTypes__WEBPACK_IMPORTED_MODULE_11__["default"]],
   components: {
-    MessagesComponent: _components_MessagesComponent__WEBPACK_IMPORTED_MODULE_11__["default"],
-    MonthPicker: _components_inputs_MonthPickerComponent__WEBPACK_IMPORTED_MODULE_13__["default"],
-    Datepicker: _components_inputs_DatepickerComponent__WEBPACK_IMPORTED_MODULE_14__["default"],
-    Graph: _components_GraphicComponent__WEBPACK_IMPORTED_MODULE_12__["default"]
+    MessagesComponent: _components_MessagesComponent__WEBPACK_IMPORTED_MODULE_12__["default"],
+    MonthPicker: _components_inputs_MonthPickerComponent__WEBPACK_IMPORTED_MODULE_14__["default"],
+    Datepicker: _components_inputs_DatepickerComponent__WEBPACK_IMPORTED_MODULE_15__["default"],
+    Graph: _components_GraphicComponent__WEBPACK_IMPORTED_MODULE_13__["default"]
   },
   data: function data() {
-    return {};
+    return {
+      initialized: false
+    };
+  },
+  watch: {
+    bvsData: function bvsData() {
+      var vm = this;
+      if (!vm.initialized) {
+        vm.$refs.emptyMessage.classList.remove("d-none");
+        setTimeout(function () {
+          vm.startFixElement("fixposition", "observeResize", false, [vm.$refs.beforeStickyPosition]);
+        }, 400);
+        vm.initialized = true;
+      }
+    }
   },
   computed: {
     /**
@@ -21518,15 +22080,11 @@ var appPublicStatistics = {
     }
   },
   mounted: function mounted() {
-    var _this = this;
     var vm = this;
     vm.$el.parentNode.classList.add("d-flex");
     var today = new Date();
     vm.dateRange.start = moment__WEBPACK_IMPORTED_MODULE_1___default()(today).set("date", 1).toISOString();
     vm.dateRange.end = moment__WEBPACK_IMPORTED_MODULE_1___default()(today).toISOString();
-    setTimeout(function () {
-      _this.$refs.emptyMessage.classList.remove("d-none");
-    }, 1500);
   },
   methods: {
     /**
@@ -21606,7 +22164,6 @@ var appPublicStatistics = {
         };
       });
       info.axis.x.maxValue = Object.values(info.points).length + 1;
-      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)(info);
       return info;
     },
     /**
@@ -21659,16 +22216,18 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/mixins/publicAuthData */ "./resources/js/mixins/publicAuthData.js");
-/* harmony import */ var _mixins_messages__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @/mixins/messages */ "./resources/js/mixins/messages.js");
-/* harmony import */ var _components_MessagesComponent___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @/components/MessagesComponent/ */ "./resources/js/components/MessagesComponent/index.js");
-/* harmony import */ var _mixins_crud__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @/mixins/crud */ "./resources/js/mixins/crud.js");
-/* harmony import */ var _misc_helpers__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @/misc/helpers */ "./resources/js/misc/helpers.js");
-/* harmony import */ var _formFields_addUser__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @/formFields/addUser */ "./resources/js/formFields/addUser.js");
-/* harmony import */ var _formFields_editPwd__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @/formFields/editPwd */ "./resources/js/formFields/editPwd.js");
-/* harmony import */ var _formFields_editUser__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @/formFields/editUser */ "./resources/js/formFields/editUser.js");
-/* harmony import */ var _components_inputs_InputComponent__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @/components/inputs/InputComponent */ "./resources/js/components/inputs/InputComponent/index.js");
+/* harmony import */ var _misc_helpers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/misc/helpers */ "./resources/js/misc/helpers.js");
+/* harmony import */ var _formFields_addUser__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @/formFields/addUser */ "./resources/js/formFields/addUser.js");
+/* harmony import */ var _mixins_crud__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @/mixins/crud */ "./resources/js/mixins/crud.js");
+/* harmony import */ var _formFields_editPwd__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @/formFields/editPwd */ "./resources/js/formFields/editPwd.js");
+/* harmony import */ var _formFields_editUser__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @/formFields/editUser */ "./resources/js/formFields/editUser.js");
+/* harmony import */ var _mixins_fixedRightCol__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @/mixins/fixedRightCol */ "./resources/js/mixins/fixedRightCol.js");
+/* harmony import */ var _mixins_formatName__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @/mixins/formatName */ "./resources/js/mixins/formatName.js");
+/* harmony import */ var _mixins_messages__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @/mixins/messages */ "./resources/js/mixins/messages.js");
+/* harmony import */ var _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @/mixins/publicAuthData */ "./resources/js/mixins/publicAuthData.js");
 /* harmony import */ var _components_inputs_FormComponent___WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @/components/inputs/FormComponent/ */ "./resources/js/components/inputs/FormComponent/index.js");
+/* harmony import */ var _components_inputs_InputComponent__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @/components/inputs/InputComponent */ "./resources/js/components/inputs/InputComponent/index.js");
+/* harmony import */ var _components_MessagesComponent___WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! @/components/MessagesComponent/ */ "./resources/js/components/MessagesComponent/index.js");
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
@@ -21677,22 +22236,30 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
  * работа с пользователями публичной зоны
  */
 
+//хэлперы
+
+
+//миксины
 
 
 
 
 
 
+
+
+
+//компоненты
 
 
 
 var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 var appPublicUsers = {
-  mixins: [_mixins_messages__WEBPACK_IMPORTED_MODULE_1__["default"], _mixins_crud__WEBPACK_IMPORTED_MODULE_3__["default"], _formFields_addUser__WEBPACK_IMPORTED_MODULE_5__["default"], _formFields_editUser__WEBPACK_IMPORTED_MODULE_7__["default"], _formFields_editPwd__WEBPACK_IMPORTED_MODULE_6__["default"], _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_0__["default"]],
+  mixins: [_formFields_addUser__WEBPACK_IMPORTED_MODULE_1__["default"], _formFields_editPwd__WEBPACK_IMPORTED_MODULE_3__["default"], _formFields_editUser__WEBPACK_IMPORTED_MODULE_4__["default"], _mixins_crud__WEBPACK_IMPORTED_MODULE_2__["default"], _mixins_fixedRightCol__WEBPACK_IMPORTED_MODULE_5__["default"], _mixins_formatName__WEBPACK_IMPORTED_MODULE_6__["default"], _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_8__["default"], _mixins_messages__WEBPACK_IMPORTED_MODULE_7__["default"]],
   components: {
-    Field: _components_inputs_InputComponent__WEBPACK_IMPORTED_MODULE_8__["default"],
+    Field: _components_inputs_InputComponent__WEBPACK_IMPORTED_MODULE_10__["default"],
     TheForm: _components_inputs_FormComponent___WEBPACK_IMPORTED_MODULE_9__["default"],
-    MessagesComponent: _components_MessagesComponent___WEBPACK_IMPORTED_MODULE_2__["default"]
+    MessagesComponent: _components_MessagesComponent___WEBPACK_IMPORTED_MODULE_11__["default"]
   },
   data: function data() {
     var _editedUser;
@@ -21737,7 +22304,7 @@ var appPublicUsers = {
   },
   computed: {
     listClass: function listClass() {
-      var editClass = "col-12 col-lg-6 d-sm-none d-lg-block";
+      var editClass = "col-12 col-lg-6 d-none d-lg-block";
       var displayClass = "col-12 ";
       return this.editMode ? editClass : displayClass;
     },
@@ -21747,10 +22314,26 @@ var appPublicUsers = {
   },
   watch: {
     editForm: function editForm() {
-      this.reset();
+      var vm = this;
+      vm.reset();
+      if (!vm.editMode) {
+        // обнуление фитксированного положение правой колонки
+        vm.stopFixElement();
+      } else if (vm.editMode) {
+        // применение sticky поведения для правой колонки
+        vm.startFixElement("fixposition", "observeResize", false, [vm.$refs.beforeStickyPosition]);
+      }
     },
-    editMode: function editMode() {
-      this.reset();
+    editMode: function editMode(_editMode) {
+      var vm = this;
+      vm.reset();
+      if (!_editMode) {
+        // обнуление фитксированного положение правой колонки
+        vm.stopFixElement();
+      } else if (_editMode) {
+        // применение sticky поведения для правой колонки
+        vm.startFixElement("fixposition", "observeResize", false, [vm.$refs.beforeStickyPosition]);
+      }
     },
     activeTab: function activeTab() {
       this.reset();
@@ -21795,17 +22378,17 @@ var appPublicUsers = {
       vm.editedUser = JSON.parse(JSON.stringify(user));
     },
     getUsers: function getUsers() {
-      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_4__.clog)("%c getUser", "color:#f7f");
+      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c getUser", "color:#f7f");
       var vm = this;
       if (vm.$refs.organisationId < 0) {
         return;
       }
       axios.get("/users/list").then(function (response) {
-        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_4__.clog)("%c getUsers успех", "color:green", response);
+        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c getUsers успех", "color:green", response);
         vm.users = response.data.users;
         vm.roles = response.data.roles;
       })["catch"](function (e) {
-        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_4__.clog)("%c getUsers ошибка", "color:red", e.response);
+        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c getUsers ошибка", "color:red", e.response);
       });
     },
     patchUser: function patchUser(data) {
@@ -21826,7 +22409,7 @@ var appPublicUsers = {
     },
     storeUser: function storeUser(data) {
       var vm = this;
-      var password = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_4__.strip)(data.password);
+      var password = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(data.password);
       delete data.password;
       var postData = {
         user_id: vm.userId,
@@ -21836,9 +22419,11 @@ var appPublicUsers = {
       };
       vm.createEntity(postData, "/users/store").then(function (e) {
         if (e.status === 200) {
-          vm.$refs.createUserForm.reset();
           vm.clearUser();
           vm.reset();
+          vm.$nextTick(function () {
+            vm.$refs.createUserForm.clear();
+          });
         }
       });
     },
@@ -21866,7 +22451,7 @@ var appPublicUsers = {
         new_password: data.newPassword,
         old_password: data.oldPassword
       }).then(function (response) {
-        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_4__.clog)(response);
+        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)(response);
         vm.editPassword = false;
         vm.messages.success = response.data.message ? response.data.message : "Пароль успешно изменен";
       })["catch"](function (e) {
@@ -21890,9 +22475,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _mixins_messages__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/mixins/messages */ "./resources/js/mixins/messages.js");
-/* harmony import */ var _misc_helpers__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @/misc/helpers */ "./resources/js/misc/helpers.js");
-/* harmony import */ var _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @/mixins/publicAuthData */ "./resources/js/mixins/publicAuthData.js");
+/* harmony import */ var _misc_helpers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/misc/helpers */ "./resources/js/misc/helpers.js");
+/* harmony import */ var _mixins_fixedRightCol__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @/mixins/fixedRightCol */ "./resources/js/mixins/fixedRightCol.js");
+/* harmony import */ var _mixins_messages__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @/mixins/messages */ "./resources/js/mixins/messages.js");
+/* harmony import */ var _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @/mixins/publicAuthData */ "./resources/js/mixins/publicAuthData.js");
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
@@ -21900,12 +22486,22 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
+/**
+ * Техника
+ * Отображает список техники и позволяет
+ * добавлять, удалять и редактировать технику
+ */
+
+//хэлперы
+
+
+//миксины
 
 
 
 var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 var appPublicVehicles = {
-  mixins: [_mixins_messages__WEBPACK_IMPORTED_MODULE_0__["default"], _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_2__["default"]],
+  mixins: [_mixins_fixedRightCol__WEBPACK_IMPORTED_MODULE_1__["default"], _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_3__["default"], _mixins_messages__WEBPACK_IMPORTED_MODULE_2__["default"]],
   data: function data() {
     return {
       mode: "list",
@@ -21974,7 +22570,8 @@ var appPublicVehicles = {
       return ["БП-16/20", "БП-22/28", "БП-22/28 габаритный", "БП-22/28 (8 колес)", "БП-22/31", "БП-22/31 хоппер", "БП-22/31 габаритный", "БП-22/31 8 колес", "БП-33/42 хоппер", "БП-33/42 8 колес", "БП-40/50"];
     },
     vehiclesCurrent: function vehiclesCurrent() {
-      return this.vehicles["".concat(this.vehicleType, "s")];
+      var vehicles = this.vehicles["".concat(this.vehicleType, "s")] ? this.vehicles["".concat(this.vehicleType, "s")] : {};
+      return Object.values(vehicles);
     },
     vehiclesGrouped: function vehiclesGrouped() {
       var vm = this;
@@ -21993,8 +22590,18 @@ var appPublicVehicles = {
   },
   watch: {
     mode: function mode(_mode) {
-      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.clog)("mode:", _mode);
       var vm = this;
+      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("watch:mode", _mode);
+      if (_mode !== "details") {
+        // обнуление фиксированного положение правой колонки
+        vm.stopFixElement();
+      }
+      vm.$nextTick(function () {
+        if (_mode === "details") {
+          // применение sticky поведения для правой колонки
+          vm.startFixElement("fixposition", "observeResize");
+        }
+      });
       if (_mode === "create") {
         vm.reset();
         vm.$nextTick(function () {
@@ -22053,11 +22660,11 @@ var appPublicVehicles = {
       } else {
         group.splice(index, 1);
       }
-      vm.group = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.strip)(group);
+      vm.group = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(group);
     },
     applyGroup: function applyGroup() {
       var vm = this;
-      vm.mayBeGroupedVehicles = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.strip)(vm.group);
+      vm.mayBeGroupedVehicles = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.group);
       vm.popup = null;
     },
     enableInputs: function enableInputs() {
@@ -22093,10 +22700,10 @@ var appPublicVehicles = {
         name: name,
         pin: pin
       }).then(function (response) {
-        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.clog)((0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.strip)(response));
+        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)((0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(response));
         vm.messages[response.data.type] = response.data.message;
       })["catch"](function (e) {
-        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.clog)(e.response);
+        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)(e.response);
         vm.messages.error = e.response.data.message;
       });
     },
@@ -22121,10 +22728,10 @@ var appPublicVehicles = {
       postData["organisation_id"] = vm.organisation_id;
       axios.post("/rfids/test", postData).then(function (response) {
         var _response$data;
-        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.clog)("%c checkRfid response", "color:green", response);
+        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c checkRfid response", "color:green", response);
         vm.messages[response.data.type] = response === null || response === void 0 || (_response$data = response.data) === null || _response$data === void 0 ? void 0 : _response$data.message;
       })["catch"](function (e) {
-        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.clog)("%c checkRfid error", "color: red", e.response);
+        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c checkRfid error", "color: red", e.response);
         vm.messages.error = e.response.data.message;
       });
     },
@@ -22157,22 +22764,22 @@ var appPublicVehicles = {
           return e.id;
         })
       };
-      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.clog)("createVehicle: ", vm.vehicleType);
-      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.clog)("createVehicle data: ", sendData);
+      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("createVehicle: ", vm.vehicleType);
+      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("createVehicle data: ", sendData);
       axios.post("/vehicles/store", sendData).then(function (response) {
         var _response$data2, _vm$$refs$formCreateV2;
-        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.clog)("%c createVehicle response", "color:green", response);
+        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c createVehicle response", "color:green", response);
         vm.messages[response.data.type] = response === null || response === void 0 || (_response$data2 = response.data) === null || _response$data2 === void 0 ? void 0 : _response$data2.message;
         (_vm$$refs$formCreateV2 = vm.$refs.formCreateVehicle) === null || _vm$$refs$formCreateV2 === void 0 || _vm$$refs$formCreateV2.reset();
         vm.reset();
         vm.getVehicles();
       })["catch"](function (e) {
-        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.clog)("%c createVehicle error", "color: red", e.response);
+        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c createVehicle error", "color: red", e.response);
         vm.messages.error = e.response.data.message;
       });
     },
     deleteVehicle: function deleteVehicle(item) {
-      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.clog)("%c deleteVehicle", "color: blue", item);
+      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c deleteVehicle", "color: blue", item);
       var vm = this;
       vm.mode = "list";
       var sendData = {
@@ -22182,11 +22789,11 @@ var appPublicVehicles = {
       };
       axios.post("/vehicles/delete", sendData).then(function (response) {
         var _response$data3;
-        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.clog)("%c deleteVehicle", "color:green", response);
+        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c deleteVehicle", "color:green", response);
         vm.messages[response.data.type] = response === null || response === void 0 || (_response$data3 = response.data) === null || _response$data3 === void 0 ? void 0 : _response$data3.message;
         vm.getVehicles();
       })["catch"](function (e) {
-        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.clog)("%c deleteVehicle error", "color: red", e.response);
+        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c deleteVehicle error", "color: red", e.response);
         vm.messages.error = e.response.data.message;
       });
     },
@@ -22198,10 +22805,10 @@ var appPublicVehicles = {
       axios.get("/employees/list", {
         user_id: vm.userId
       }).then(function (response) {
-        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.clog)("%c getEmployees", "color: green", response);
+        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c getEmployees", "color: green", response);
         vm.employees = response.data.employees;
       })["catch"](function (e) {
-        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.clog)("%c getVehicles error", "color: red", e.response);
+        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c getVehicles error", "color: red", e.response);
         vm.messages.error = e.response.data.message;
       });
     },
@@ -22217,10 +22824,10 @@ var appPublicVehicles = {
     getVehicles: function getVehicles() {
       var vm = this;
       axios.get("/vehicles/list").then(function (response) {
-        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.clog)("%c getVehicles", "color: green", response);
+        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c getVehicles", "color: green", response);
         vm.vehicles = response.data;
       })["catch"](function (e) {
-        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.clog)("%c getVehicles error", "color: red", e.response);
+        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c getVehicles error", "color: red", e.response);
         vm.messages.error = e.response.data.message;
       });
     },
@@ -22228,7 +22835,7 @@ var appPublicVehicles = {
       var vm = this;
       vm.mayBeResponsiblePerson = person;
       vm.popup = null;
-      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.clog)("%c selectResponsiblePerson", "color: blue", (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.strip)(person));
+      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c selectResponsiblePerson", "color: blue", (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(person));
     },
     submitCreate: function submitCreate() {
       this.$refs.formCreateVehicle.requestSubmit();
@@ -22251,7 +22858,7 @@ var appPublicVehicles = {
       } finally {
         _iterator3.f();
       }
-      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.clog)(postData);
+      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)(postData);
       vm.rfids.push(postData);
 
       // vm.$refs.addRfid?.reset();
@@ -22260,7 +22867,7 @@ var appPublicVehicles = {
     updateVehicle: function updateVehicle() {
       var _vm$mayBeResponsibleP2;
       var vm = this;
-      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.clog)("%c updateVehicle", "color: blue", (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.strip)(vm.editedVehicle));
+      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c updateVehicle", "color: blue", (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.editedVehicle));
       var formData = new FormData(vm.$refs.editVehicleForm);
       var postData = {};
       var _iterator4 = _createForOfIteratorHelper(formData),
@@ -22289,23 +22896,23 @@ var appPublicVehicles = {
       };
       axios.post("/vehicles/update", sendData).then(function (response) {
         var _response$data4;
-        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.clog)("%c updateVehicle", "color:green", response);
+        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c updateVehicle", "color:green", response);
         vm.messages[response.data.type] = response === null || response === void 0 || (_response$data4 = response.data) === null || _response$data4 === void 0 ? void 0 : _response$data4.message;
         vm.getVehicles();
       })["catch"](function (e) {
-        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.clog)("%c updateVehicle error", "color: red", e.response);
+        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c updateVehicle error", "color: red", e.response);
         vm.messages.error = e.response.data.message;
       });
     },
     viewVehicle: function viewVehicle(item) {
-      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.clog)("%c viewVehicle", "color: blue", (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.strip)(item));
+      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c viewVehicle", "color: blue", (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(item));
       var vm = this;
       this.mode = "details";
-      vm.editedVehicle = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.strip)(item);
-      vm.mayBeResponsiblePerson = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.strip)(item).employee;
-      vm.rfids = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.strip)(item).rfids;
-      vm.mayBeGroupedVehicles = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.strip)(item).group;
-      vm.group = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.strip)(item).group;
+      vm.editedVehicle = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(item);
+      vm.mayBeResponsiblePerson = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(item).employee;
+      vm.rfids = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(item).rfids;
+      vm.mayBeGroupedVehicles = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(item).group;
+      vm.group = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(item).group;
     },
     removeRfid: function removeRfid(rfid) {
       var vm = this;
@@ -22325,7 +22932,7 @@ var appPublicVehicles = {
         vm.group = group;
       }
       if (save) {
-        vm.mayBeGroupedVehicles = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.strip)(vm.group);
+        vm.mayBeGroupedVehicles = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.group);
       }
     }
   }
@@ -22466,17 +23073,40 @@ function showSuggestions(selector, data) {
     htmlNode.after(dropdown);
   });
 }
-
-// обработчик клика вне выпадающего списка
-document.addEventListener("click", function (e) {
-  var _e$target$closest;
-  if (!((_e$target$closest = e.target.closest(".dropdown")) !== null && _e$target$closest !== void 0 && _e$target$closest.length)) {
-    var _document$querySelect5;
-    (_document$querySelect5 = document.querySelectorAll(".dropdown")) === null || _document$querySelect5 === void 0 || _document$querySelect5.forEach(function (el) {
-      el.remove();
-    });
-  }
-});
+if (nameInput) {
+  var buttonIndex = -1;
+  // обработчик клика вне выпадающего списка
+  document.addEventListener("click", function (e) {
+    var _e$target$closest;
+    if (!((_e$target$closest = e.target.closest(".dropdown")) !== null && _e$target$closest !== void 0 && _e$target$closest.length)) {
+      var _document$querySelect5;
+      (_document$querySelect5 = document.querySelectorAll(".dropdown")) === null || _document$querySelect5 === void 0 || _document$querySelect5.forEach(function (el) {
+        el.remove();
+      });
+    }
+  });
+  document.addEventListener("keydown", function (e) {
+    var dropdown = document.querySelector(".dropdown-container");
+    if (!dropdown) {
+      buttonIndex = -1;
+      return;
+    }
+    var buttons = Array.from(dropdown.querySelectorAll(".btn-list-imitation"));
+    if (!buttons.length) {
+      buttonIndex = -1;
+      return;
+    }
+    var focusedButton = Array.from(dropdown.querySelectorAll(".btn-list-imitation:focus")).pop();
+    buttonIndex = focusedButton ? buttons.indexOf(focusedButton) : buttonIndex;
+    if (focusedButton) {
+      focusedButton.blur();
+    }
+    buttonIndex = [37, 38].indexOf(e.keyCode) >= 0 ? buttonIndex - 1 : [39, 40].indexOf(e.keyCode) >= 0 ? buttonIndex + 1 : buttonIndex;
+    buttonIndex = buttonIndex >= buttons.length ? 0 : buttonIndex;
+    buttonIndex = buttonIndex < 0 ? buttons.length - 1 : buttonIndex;
+    buttons[buttonIndex].focus();
+  });
+}
 
 /***/ }),
 
@@ -22566,24 +23196,258 @@ document.addEventListener("expandElement", function (event) {
 
 /***/ }),
 
-/***/ "./resources/js/ready/mobileMenu.js":
-/*!******************************************!*\
-  !*** ./resources/js/ready/mobileMenu.js ***!
-  \******************************************/
+/***/ "./resources/js/ready/menu.js":
+/*!************************************!*\
+  !*** ./resources/js/ready/menu.js ***!
+  \************************************/
 /***/ (() => {
 
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
+function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function _classPrivateMethodInitSpec(obj, privateSet) { _checkPrivateRedeclaration(obj, privateSet); privateSet.add(obj); }
+function _classPrivateFieldInitSpec(obj, privateMap, value) { _checkPrivateRedeclaration(obj, privateMap); privateMap.set(obj, value); }
+function _checkPrivateRedeclaration(obj, privateCollection) { if (privateCollection.has(obj)) { throw new TypeError("Cannot initialize the same private elements twice on an object"); } }
+function _classPrivateMethodGet(receiver, privateSet, fn) { if (!privateSet.has(receiver)) { throw new TypeError("attempted to get private field on non-instance"); } return fn; }
+function _classPrivateFieldGet(receiver, privateMap) { var descriptor = _classExtractFieldDescriptor(receiver, privateMap, "get"); return _classApplyDescriptorGet(receiver, descriptor); }
+function _classApplyDescriptorGet(receiver, descriptor) { if (descriptor.get) { return descriptor.get.call(receiver); } return descriptor.value; }
+function _classPrivateFieldSet(receiver, privateMap, value) { var descriptor = _classExtractFieldDescriptor(receiver, privateMap, "set"); _classApplyDescriptorSet(receiver, descriptor, value); return value; }
+function _classExtractFieldDescriptor(receiver, privateMap, action) { if (!privateMap.has(receiver)) { throw new TypeError("attempted to " + action + " private field on non-instance"); } return privateMap.get(receiver); }
+function _classApplyDescriptorSet(receiver, descriptor, value) { if (descriptor.set) { descriptor.set.call(receiver, value); } else { if (!descriptor.writable) { throw new TypeError("attempted to set read only private field"); } descriptor.value = value; } }
+var _menu = /*#__PURE__*/new WeakMap();
+var _mobileSwitcher = /*#__PURE__*/new WeakMap();
+var _menuStateOnMobile = /*#__PURE__*/new WeakMap();
+var _submenuSwitchers = /*#__PURE__*/new WeakMap();
+var _bindEvents = /*#__PURE__*/new WeakSet();
+var _bindSubmenuToggleByClick = /*#__PURE__*/new WeakSet();
+var _hideAllSubmenues = /*#__PURE__*/new WeakSet();
+var _hideOnClickOutside = /*#__PURE__*/new WeakSet();
+var _initMobileMenuSwitcher = /*#__PURE__*/new WeakSet();
+var _getHtmlElementSelector = /*#__PURE__*/new WeakSet();
+var _getSubmenuSwitchers = /*#__PURE__*/new WeakSet();
+var _menuClicked = /*#__PURE__*/new WeakSet();
+var _mobileSwitcherClicked = /*#__PURE__*/new WeakSet();
+var _setMenuState = /*#__PURE__*/new WeakSet();
 /**
- * Смена режима отображения мобильного меню
+ * обработчики событий для главного меню сайта
  */
-
-// HTML элемент переключающий мобильное меню
-var mobileMenuToggler = document.getElementById("mobile-menu-toggle");
-
-// обработчик события мобильного меню
-mobileMenuToggler === null || mobileMenuToggler === void 0 ? void 0 : mobileMenuToggler.addEventListener("click", function () {
-  document.getElementById("main-menu").classList.toggle("shown");
-  mobileMenuToggler.classList.toggle("active");
+var menuActions = /*#__PURE__*/_createClass(
+/**
+ * @param {String} menu уникальный HTML селектор
+ * @param {String} mobileSwitcher ХТМЛ селектор для переключателя меню
+ */
+function menuActions(menu, mobileSwitcher) {
+  var _document;
+  _classCallCheck(this, menuActions);
+  /**
+   * Меняет статус мобильного меню
+   *
+   * @param {Enum} state shown | hidden
+   *
+   * @returns {Void}
+   */
+  _classPrivateMethodInitSpec(this, _setMenuState);
+  /**
+   * определяет кликнут ли переключатель мобильного меню
+   *
+   * @param {PointerEvent} e
+   *
+   * @return {Boolean}
+   */
+  _classPrivateMethodInitSpec(this, _mobileSwitcherClicked);
+  /**
+   * определяет кликнуто ли меню
+   *
+   * @param {PointerEvent} e
+   *
+   * @return {Boolean}
+   */
+  _classPrivateMethodInitSpec(this, _menuClicked);
+  /**
+   * получает массив ссылок, у которых есть субменю
+   *
+   * @returns {Array<HTMLElement>} submenuSwitchers
+   */
+  _classPrivateMethodInitSpec(this, _getSubmenuSwitchers);
+  /**
+   * формирует селектор ХТМЛ элемента
+   *
+   * @param {HTMLElement} el
+   *
+   * @returns {String}
+   */
+  _classPrivateMethodInitSpec(this, _getHtmlElementSelector);
+  /**
+   * Добавляет слушатель событий для
+   * клика на переключатель мобильного меню
+   *
+   * @returns {Void}
+   */
+  _classPrivateMethodInitSpec(this, _initMobileMenuSwitcher);
+  /**
+   * Сворачивание и скрытие меню и сабменю по клику вне
+   *
+   * @returns {Void}
+   */
+  _classPrivateMethodInitSpec(this, _hideOnClickOutside);
+  /**
+   * скрывает все отображенные меню
+   *
+   * @returns {Void}
+   */
+  _classPrivateMethodInitSpec(this, _hideAllSubmenues);
+  /**
+   * Добавляет слушатель событий для
+   * - клика на ссылку у которое есть под меню
+   *
+   * отображение выпадающего списка меню
+   * при клике на ссылку уровнем выше
+   *
+   * @returns {Void}
+   */
+  _classPrivateMethodInitSpec(this, _bindSubmenuToggleByClick);
+  /**
+   * Добавляет слушатель событий для
+   * - клика на переключатель мобильного меню
+   * - клика на ссылку у которое есть под меню
+   *
+   * @returns {Void}
+   */
+  _classPrivateMethodInitSpec(this, _bindEvents);
+  /**
+   * @param {HTMLElement} главное меню
+   */
+  _classPrivateFieldInitSpec(this, _menu, {
+    writable: true,
+    value: void 0
+  });
+  /**
+   * @param {HTMLElement} мобильный переключатель меню
+   */
+  _classPrivateFieldInitSpec(this, _mobileSwitcher, {
+    writable: true,
+    value: void 0
+  });
+  /**
+   * состояние мобильного меню
+   * @param {Enum} : hidden|shown
+   */
+  _classPrivateFieldInitSpec(this, _menuStateOnMobile, {
+    writable: true,
+    value: void 0
+  });
+  /**
+   * @param {HTMLElement} все ссылки у которых есть субменю
+   */
+  _classPrivateFieldInitSpec(this, _submenuSwitchers, {
+    writable: true,
+    value: void 0
+  });
+  var _t = this;
+  if (!menu || !mobileSwitcher) {
+    return;
+  }
+  _classPrivateFieldSet(_t, _menu, (_document = document) === null || _document === void 0 ? void 0 : _document.querySelector(menu));
+  _classPrivateFieldSet(_t, _mobileSwitcher, document.querySelector(mobileSwitcher));
+  if (!_classPrivateFieldGet(_t, _menu) || !_classPrivateFieldGet(_t, _mobileSwitcher)) {
+    return;
+  }
+  _classPrivateFieldSet(_t, _submenuSwitchers, _classPrivateMethodGet(_t, _getSubmenuSwitchers, _getSubmenuSwitchers2).call(_t));
+  _classPrivateFieldSet(_t, _menuStateOnMobile, "hidden");
+  _classPrivateMethodGet(_t, _bindEvents, _bindEvents2).call(_t);
 });
+function _bindEvents2() {
+  _classPrivateMethodGet(this, _initMobileMenuSwitcher, _initMobileMenuSwitcher2).call(this);
+  _classPrivateMethodGet(this, _bindSubmenuToggleByClick, _bindSubmenuToggleByClick2).call(this);
+  _classPrivateMethodGet(this, _hideOnClickOutside, _hideOnClickOutside2).call(this);
+  return;
+}
+function _bindSubmenuToggleByClick2() {
+  var t = this;
+  _classPrivateFieldGet(t, _submenuSwitchers).forEach(function (el) {
+    var submenu = el.nextSibling;
+    if (Boolean(submenu)) {
+      el.addEventListener("click", function (e) {
+        e.preventDefault();
+        _classPrivateMethodGet(t, _hideAllSubmenues, _hideAllSubmenues2).call(t);
+        e.target.closest("li").classList.add("selected");
+      });
+    }
+  });
+  return;
+}
+function _hideAllSubmenues2() {
+  _classPrivateFieldGet(this, _submenuSwitchers).forEach(function (el) {
+    el.closest("li").classList.remove("selected");
+  });
+  return;
+}
+function _hideOnClickOutside2() {
+  var t = this;
+  document.addEventListener("click", function (e) {
+    if (!_classPrivateMethodGet(t, _menuClicked, _menuClicked2).call(t, e) && !_classPrivateMethodGet(t, _mobileSwitcherClicked, _mobileSwitcherClicked2).call(t, e)) {
+      _classPrivateMethodGet(t, _hideAllSubmenues, _hideAllSubmenues2).call(t);
+      _classPrivateMethodGet(t, _setMenuState, _setMenuState2).call(t, "hidden");
+    } else if (!_classPrivateMethodGet(t, _menuClicked, _menuClicked2).call(t, e)) {
+      _classPrivateMethodGet(t, _hideAllSubmenues, _hideAllSubmenues2).call(t);
+    }
+  });
+  return;
+}
+function _initMobileMenuSwitcher2() {
+  var t = this;
+  _classPrivateFieldGet(t, _mobileSwitcher).addEventListener("click", function () {
+    var state = _classPrivateFieldGet(t, _menuStateOnMobile) === "shown" ? "hidden" : "shown";
+    _classPrivateMethodGet(t, _setMenuState, _setMenuState2).call(t, state);
+  });
+  return;
+}
+function _getHtmlElementSelector2(el) {
+  // имя ХТМЛ тага меню
+  var tagName = el.tagName;
+  // все классы меню
+  var classNames = el.getAttribute("class").split(" ");
+  //ID меню
+  var idName = el.getAttribute("id");
+
+  // формирование селектора
+  var idSelectorPart = idName ? "#".concat(idName) : "";
+  var classesSelectorPart = classNames.length ? ".".concat(classNames.join(".")) : "";
+  var selector = "".concat(tagName).concat(idSelectorPart).concat(classesSelectorPart).toLowerCase();
+  return selector;
+}
+function _getSubmenuSwitchers2() {
+  var submenuSwitchers = Array.from(_classPrivateFieldGet(this, _menu).querySelectorAll("a")).filter(function (el) {
+    return Boolean(el.nextSibling);
+  });
+  return submenuSwitchers;
+}
+function _menuClicked2(e) {
+  var selector = _classPrivateMethodGet(this, _getHtmlElementSelector, _getHtmlElementSelector2).call(this, _classPrivateFieldGet(this, _menu));
+  var menuClicked = e.target.closest(selector) === _classPrivateFieldGet(this, _menu);
+  return menuClicked;
+}
+function _mobileSwitcherClicked2(e) {
+  var selector = _classPrivateMethodGet(this, _getHtmlElementSelector, _getHtmlElementSelector2).call(this, _classPrivateFieldGet(this, _mobileSwitcher));
+  var mobileSwitcherClicked = e.target.closest(selector) === _classPrivateFieldGet(this, _mobileSwitcher);
+  return mobileSwitcherClicked;
+}
+function _setMenuState2(state) {
+  var t = this;
+  _classPrivateFieldSet(t, _menuStateOnMobile, state);
+  if (state === "shown") {
+    _classPrivateFieldGet(t, _menu).classList.add("shown");
+    _classPrivateFieldGet(t, _mobileSwitcher).classList.add("active");
+  } else {
+    _classPrivateFieldGet(t, _menu).classList.remove("shown");
+    _classPrivateFieldGet(t, _mobileSwitcher).classList.remove("active");
+  }
+  return;
+}
+new menuActions(".main-menu", "#mobile-menu-toggle");
 
 /***/ }),
 
@@ -22686,7 +23550,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, ".error[data-v-3aaf0140] {\n  color: var(--red);\n}\n.success[data-v-3aaf0140] {\n  color: var(--green);\n}\n.row[data-v-3aaf0140] {\n  background-color: var(--lightest);\n}\n.row[data-v-3aaf0140]:hover {\n  background-color: var(--grey-light);\n}\n.row.selected[data-v-3aaf0140] {\n  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.3);\n}", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, ".root-wrapper[data-v-3aaf0140] {\n  padding-right: calc(0.5 * var(--bs-gutter-x));\n  padding-left: calc(0.5 * var(--bs-gutter-x));\n  background-color: var(--lightest);\n  transition: background-color var(--fast);\n}\n.root-wrapper[data-v-3aaf0140]:hover {\n  background-color: var(--grey-light);\n}\n.root-wrapper.selected[data-v-3aaf0140] {\n  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.3);\n}\n.error[data-v-3aaf0140] {\n  color: var(--red);\n}\n.success[data-v-3aaf0140] {\n  color: var(--green);\n}", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -22806,7 +23670,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, ".component-root[data-v-013f9ad8] {\n  overflow: hidden;\n}\ncanvas[data-v-013f9ad8] {\n  width: 100%;\n  height: 100%;\n}", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, ".component-root[data-v-013f9ad8] {\n  overflow: hidden;\n}\ncanvas[data-v-013f9ad8] {\n  width: 100%;\n  height: 100%;\n  transition: filter var(--fast), opacity var(--fast);\n}\n.not-ready[data-v-013f9ad8] {\n  filter: grayscale(100%) blur(2px);\n  opacity: 0.4;\n}", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 

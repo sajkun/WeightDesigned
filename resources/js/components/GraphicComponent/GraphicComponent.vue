@@ -12,7 +12,7 @@
     ]
 -->
 <template>
-    <div class="w-100 h-100 component-root" ref="root">
+    <div class="w-100 h-100 component-root not-ready" ref="root">
         <canvas ref="canvas"></canvas>
     </div>
 </template>
@@ -265,7 +265,6 @@ export default {
             const vm = this;
             const [cnvs, ctx] = vm.getCnv;
             const zero = strip(vm.zero);
-
             const step = strip(vm.getStepsData());
             const info = strip(vm.info);
 
@@ -390,13 +389,17 @@ export default {
         prepareCanvas() {
             const vm = this;
             const [cnvs, ctx] = this.getCnv;
-            cnvs.width = vm.$refs.root.offsetWidth
+
+            const maxWidth = Math.min(window.innerWidth, 800);
+            const rootWidth = vm.$refs.root.offsetWidth
                 ? vm.$refs.root.offsetWidth
-                : 500;
-            cnvs.height =
-                vm.$refs.root.offsetHeight - 50
-                    ? vm.$refs.root.offsetHeight - 50
-                    : 500;
+                : maxWidth;
+
+            cnvs.width = rootWidth;
+            cnvs.height = parseInt((rootWidth * 11) / 16);
+
+            vm.$refs.root.classList.remove("not-ready");
+
             ctx.translate(0, cnvs.height);
             ctx.rotate(-Math.PI / 2);
 
