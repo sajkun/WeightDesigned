@@ -19793,6 +19793,12 @@ __webpack_require__.r(__webpack_exports__);
        * @param {Object: ResizeObserver}
        */
       observer: null,
+      /**
+       * Элементы перед фиксируемым, которые нужно учесть при рассчете местоположения
+       *
+       * @param {Array<HTMLElement>}
+       */
+      extraElements: [],
       // {String} названия ref для фиксируемового объекта
       targetRef: null,
       // данные изменение расположения фиксируемового объекта
@@ -19838,7 +19844,6 @@ __webpack_require__.r(__webpack_exports__);
      * @returns {Void}
      */
     calculatePositionData: function calculatePositionData() {
-      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("calculatePositionData");
       var vm = this;
       var shiftVelocity = 30;
       var scrollY = window.scrollY;
@@ -19851,12 +19856,9 @@ __webpack_require__.r(__webpack_exports__);
       // Внутренние отступы родительского элемента
       var paddingsParent = vm.getParentPaddings(el);
 
-      // Хэддер сайта
-      var header = document.querySelector(".public-header");
-
       // переменная показывающая какая часть хэддера еще в зоне видимости страницы
 
-      var deltaY = header.offsetHeight - scrollY;
+      var deltaY = vm.getHeightBefore() - scrollY;
       deltaY = Math.max(0, deltaY);
 
       // максимальная видимая высота элемента
@@ -19880,7 +19882,8 @@ __webpack_require__.r(__webpack_exports__);
       // максимальная доступная ширина элемента
       vm.fixData.width = vm.fixData.maxWidth = parentRect.width - paddingsParent.x();
       if (vm.controllHeight) {
-        vm.fixData.maxHeight = maxHeight;
+        vm.fixData.maxHeight = maxHeight - paddingsParent.y();
+        vm.fixData.height = maxHeight - paddingsParent.y();
       }
 
       // отступы сверху и слева
@@ -19895,6 +19898,22 @@ __webpack_require__.r(__webpack_exports__);
       vm.fixData.left = parentRect.left + paddingsParent.left;
       vm.shiftY = shiftY;
       return;
+    },
+    /**
+     * Получает суммарную высоту предшествующих зафиксированному элементу
+     *
+     * @returns {Number}
+     */
+    getHeightBefore: function getHeightBefore() {
+      var vm = this;
+      var header = document.querySelector(".public-header");
+      var height = header.offsetHeight;
+      vm.extraElements.forEach(function (el) {
+        height += el.offsetHeight;
+        height += (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.getStyle)(el, "margin-top", true);
+        height += (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.getStyle)(el, "margin-bottom", true);
+      });
+      return height;
     },
     /**
      * определяет направление скролла
@@ -19971,13 +19990,16 @@ __webpack_require__.r(__webpack_exports__);
     /**
      * инициализация процесса фиксирования элемента
      *
-     * @param {String} targetRef // ref фиксируемового HTML элемента
-     * @param {String} observeRef // ref контейнера фиксируемового HTML элемента
-     * @param {Boolean} fixHeight // нужно ли фиксировать высоту блока
+     * @param {String} targetRef ref фиксируемового HTML элемента
+     * @param {String} observeRef ref контейнера фиксируемового HTML элемента
+     * @param {Boolean} fixHeight  нужно ли фиксировать высоту блока
+     * @param {Array<HTMLElement>} extraElements дополнительные элементы перед фиксируемым элементом
      *
      * @returns {Void}
      */
-    startFixElement: function startFixElement(targetRef, observeRef, controllHeight) {
+    startFixElement: function startFixElement(targetRef, observeRef) {
+      var controllHeight = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+      var extraElements = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : [];
       var vm = this;
       var observeEl = vm.$refs[observeRef];
       var targetElement = vm.$refs[targetRef];
@@ -19986,6 +20008,10 @@ __webpack_require__.r(__webpack_exports__);
       vm.targetRef = targetRef;
       vm.fixData.position = "fixed";
       vm.controllHeight = controllHeight;
+      vm.extraElements = extraElements;
+      if (controllHeight) {
+        vm.fixData.height = targetElement.offsetHeight;
+      }
       vm.updateFixElement(targetElement, vm.fixData);
       vm.$nextTick(function () {
         vm.observer.observe(observeEl);
@@ -21659,15 +21685,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _mixins_axiosRequests__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @/mixins/axiosRequests */ "./resources/js/mixins/axiosRequests.js");
 /* harmony import */ var _mixins_crud__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @/mixins/crud */ "./resources/js/mixins/crud.js");
-/* harmony import */ var _mixins_messages__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @/mixins/messages */ "./resources/js/mixins/messages.js");
-/* harmony import */ var _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @/mixins/publicAuthData */ "./resources/js/mixins/publicAuthData.js");
-/* harmony import */ var _mixins_sortAnimation__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @/mixins/sortAnimation */ "./resources/js/mixins/sortAnimation.js");
-/* harmony import */ var _mixins_professions__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @/mixins/professions */ "./resources/js/mixins/professions.js");
-/* harmony import */ var _mixins_statData__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @/mixins/statData */ "./resources/js/mixins/statData.js");
-/* harmony import */ var _mixins_vehicleTypes__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @/mixins/vehicleTypes */ "./resources/js/mixins/vehicleTypes.js");
-/* harmony import */ var _components_MessagesComponent__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @/components/MessagesComponent */ "./resources/js/components/MessagesComponent/index.js");
-/* harmony import */ var _components_inputs_MonthPickerComponent__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! @/components/inputs/MonthPickerComponent */ "./resources/js/components/inputs/MonthPickerComponent/index.js");
-/* harmony import */ var _components_RatingColumsComponent__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! @/components/RatingColumsComponent */ "./resources/js/components/RatingColumsComponent/index.js");
+/* harmony import */ var _mixins_fixedRightCol__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @/mixins/fixedRightCol */ "./resources/js/mixins/fixedRightCol.js");
+/* harmony import */ var _mixins_messages__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @/mixins/messages */ "./resources/js/mixins/messages.js");
+/* harmony import */ var _mixins_professions__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @/mixins/professions */ "./resources/js/mixins/professions.js");
+/* harmony import */ var _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @/mixins/publicAuthData */ "./resources/js/mixins/publicAuthData.js");
+/* harmony import */ var _mixins_sortAnimation__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @/mixins/sortAnimation */ "./resources/js/mixins/sortAnimation.js");
+/* harmony import */ var _mixins_statData__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @/mixins/statData */ "./resources/js/mixins/statData.js");
+/* harmony import */ var _mixins_vehicleTypes__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @/mixins/vehicleTypes */ "./resources/js/mixins/vehicleTypes.js");
+/* harmony import */ var _components_MessagesComponent__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! @/components/MessagesComponent */ "./resources/js/components/MessagesComponent/index.js");
+/* harmony import */ var _components_inputs_MonthPickerComponent__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! @/components/inputs/MonthPickerComponent */ "./resources/js/components/inputs/MonthPickerComponent/index.js");
+/* harmony import */ var _components_RatingColumsComponent__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! @/components/RatingColumsComponent */ "./resources/js/components/RatingColumsComponent/index.js");
 /**
  * Отображение рейтинга по предприятию
  */
@@ -21686,16 +21713,17 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
 // компоненты
 
 
 
 var appPublicRating = {
-  mixins: [_mixins_axiosRequests__WEBPACK_IMPORTED_MODULE_2__["default"], _mixins_crud__WEBPACK_IMPORTED_MODULE_3__["default"], _mixins_messages__WEBPACK_IMPORTED_MODULE_4__["default"], _mixins_professions__WEBPACK_IMPORTED_MODULE_7__["default"], _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_5__["default"], _mixins_sortAnimation__WEBPACK_IMPORTED_MODULE_6__["default"], _mixins_statData__WEBPACK_IMPORTED_MODULE_8__["default"], _mixins_vehicleTypes__WEBPACK_IMPORTED_MODULE_9__["default"]],
+  mixins: [_mixins_axiosRequests__WEBPACK_IMPORTED_MODULE_2__["default"], _mixins_crud__WEBPACK_IMPORTED_MODULE_3__["default"], _mixins_fixedRightCol__WEBPACK_IMPORTED_MODULE_4__["default"], _mixins_messages__WEBPACK_IMPORTED_MODULE_5__["default"], _mixins_professions__WEBPACK_IMPORTED_MODULE_6__["default"], _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_7__["default"], _mixins_sortAnimation__WEBPACK_IMPORTED_MODULE_8__["default"], _mixins_statData__WEBPACK_IMPORTED_MODULE_9__["default"], _mixins_vehicleTypes__WEBPACK_IMPORTED_MODULE_10__["default"]],
   components: {
-    MessagesComponent: _components_MessagesComponent__WEBPACK_IMPORTED_MODULE_10__["default"],
-    MonthPicker: _components_inputs_MonthPickerComponent__WEBPACK_IMPORTED_MODULE_11__["default"],
-    Columns: _components_RatingColumsComponent__WEBPACK_IMPORTED_MODULE_12__["default"]
+    MessagesComponent: _components_MessagesComponent__WEBPACK_IMPORTED_MODULE_11__["default"],
+    MonthPicker: _components_inputs_MonthPickerComponent__WEBPACK_IMPORTED_MODULE_12__["default"],
+    Columns: _components_RatingColumsComponent__WEBPACK_IMPORTED_MODULE_13__["default"]
   },
   data: function data() {
     return {
@@ -21721,6 +21749,9 @@ var appPublicRating = {
   mounted: function mounted() {
     var vm = this;
     vm.$el.parentNode.classList.add("d-flex");
+    setTimeout(function () {
+      vm.startFixElement("fixposition", "observeResize", true, [vm.$refs.beforeStickyPosition]);
+    });
   },
   methods: {
     /**
@@ -22377,7 +22408,6 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
 //хэлперы
 
-var clog = function clog() {};
 
 //миксины
 
@@ -22474,7 +22504,7 @@ var appPublicVehicles = {
   watch: {
     mode: function mode(_mode) {
       var vm = this;
-      clog("watch:mode", _mode);
+      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("watch:mode", _mode);
       if (_mode !== "details") {
         // обнуление фиксированного положение правой колонки
         vm.stopFixElement();
@@ -22583,10 +22613,10 @@ var appPublicVehicles = {
         name: name,
         pin: pin
       }).then(function (response) {
-        clog((0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(response));
+        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)((0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(response));
         vm.messages[response.data.type] = response.data.message;
       })["catch"](function (e) {
-        clog(e.response);
+        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)(e.response);
         vm.messages.error = e.response.data.message;
       });
     },
@@ -22611,10 +22641,10 @@ var appPublicVehicles = {
       postData["organisation_id"] = vm.organisation_id;
       axios.post("/rfids/test", postData).then(function (response) {
         var _response$data;
-        clog("%c checkRfid response", "color:green", response);
+        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c checkRfid response", "color:green", response);
         vm.messages[response.data.type] = response === null || response === void 0 || (_response$data = response.data) === null || _response$data === void 0 ? void 0 : _response$data.message;
       })["catch"](function (e) {
-        clog("%c checkRfid error", "color: red", e.response);
+        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c checkRfid error", "color: red", e.response);
         vm.messages.error = e.response.data.message;
       });
     },
@@ -22647,22 +22677,22 @@ var appPublicVehicles = {
           return e.id;
         })
       };
-      clog("createVehicle: ", vm.vehicleType);
-      clog("createVehicle data: ", sendData);
+      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("createVehicle: ", vm.vehicleType);
+      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("createVehicle data: ", sendData);
       axios.post("/vehicles/store", sendData).then(function (response) {
         var _response$data2, _vm$$refs$formCreateV2;
-        clog("%c createVehicle response", "color:green", response);
+        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c createVehicle response", "color:green", response);
         vm.messages[response.data.type] = response === null || response === void 0 || (_response$data2 = response.data) === null || _response$data2 === void 0 ? void 0 : _response$data2.message;
         (_vm$$refs$formCreateV2 = vm.$refs.formCreateVehicle) === null || _vm$$refs$formCreateV2 === void 0 || _vm$$refs$formCreateV2.reset();
         vm.reset();
         vm.getVehicles();
       })["catch"](function (e) {
-        clog("%c createVehicle error", "color: red", e.response);
+        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c createVehicle error", "color: red", e.response);
         vm.messages.error = e.response.data.message;
       });
     },
     deleteVehicle: function deleteVehicle(item) {
-      clog("%c deleteVehicle", "color: blue", item);
+      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c deleteVehicle", "color: blue", item);
       var vm = this;
       vm.mode = "list";
       var sendData = {
@@ -22672,11 +22702,11 @@ var appPublicVehicles = {
       };
       axios.post("/vehicles/delete", sendData).then(function (response) {
         var _response$data3;
-        clog("%c deleteVehicle", "color:green", response);
+        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c deleteVehicle", "color:green", response);
         vm.messages[response.data.type] = response === null || response === void 0 || (_response$data3 = response.data) === null || _response$data3 === void 0 ? void 0 : _response$data3.message;
         vm.getVehicles();
       })["catch"](function (e) {
-        clog("%c deleteVehicle error", "color: red", e.response);
+        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c deleteVehicle error", "color: red", e.response);
         vm.messages.error = e.response.data.message;
       });
     },
@@ -22688,10 +22718,10 @@ var appPublicVehicles = {
       axios.get("/employees/list", {
         user_id: vm.userId
       }).then(function (response) {
-        clog("%c getEmployees", "color: green", response);
+        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c getEmployees", "color: green", response);
         vm.employees = response.data.employees;
       })["catch"](function (e) {
-        clog("%c getVehicles error", "color: red", e.response);
+        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c getVehicles error", "color: red", e.response);
         vm.messages.error = e.response.data.message;
       });
     },
@@ -22707,10 +22737,10 @@ var appPublicVehicles = {
     getVehicles: function getVehicles() {
       var vm = this;
       axios.get("/vehicles/list").then(function (response) {
-        clog("%c getVehicles", "color: green", response);
+        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c getVehicles", "color: green", response);
         vm.vehicles = response.data;
       })["catch"](function (e) {
-        clog("%c getVehicles error", "color: red", e.response);
+        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c getVehicles error", "color: red", e.response);
         vm.messages.error = e.response.data.message;
       });
     },
@@ -22718,7 +22748,7 @@ var appPublicVehicles = {
       var vm = this;
       vm.mayBeResponsiblePerson = person;
       vm.popup = null;
-      clog("%c selectResponsiblePerson", "color: blue", (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(person));
+      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c selectResponsiblePerson", "color: blue", (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(person));
     },
     submitCreate: function submitCreate() {
       this.$refs.formCreateVehicle.requestSubmit();
@@ -22741,7 +22771,7 @@ var appPublicVehicles = {
       } finally {
         _iterator3.f();
       }
-      clog(postData);
+      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)(postData);
       vm.rfids.push(postData);
 
       // vm.$refs.addRfid?.reset();
@@ -22750,7 +22780,7 @@ var appPublicVehicles = {
     updateVehicle: function updateVehicle() {
       var _vm$mayBeResponsibleP2;
       var vm = this;
-      clog("%c updateVehicle", "color: blue", (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.editedVehicle));
+      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c updateVehicle", "color: blue", (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.editedVehicle));
       var formData = new FormData(vm.$refs.editVehicleForm);
       var postData = {};
       var _iterator4 = _createForOfIteratorHelper(formData),
@@ -22779,16 +22809,16 @@ var appPublicVehicles = {
       };
       axios.post("/vehicles/update", sendData).then(function (response) {
         var _response$data4;
-        clog("%c updateVehicle", "color:green", response);
+        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c updateVehicle", "color:green", response);
         vm.messages[response.data.type] = response === null || response === void 0 || (_response$data4 = response.data) === null || _response$data4 === void 0 ? void 0 : _response$data4.message;
         vm.getVehicles();
       })["catch"](function (e) {
-        clog("%c updateVehicle error", "color: red", e.response);
+        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c updateVehicle error", "color: red", e.response);
         vm.messages.error = e.response.data.message;
       });
     },
     viewVehicle: function viewVehicle(item) {
-      clog("%c viewVehicle", "color: blue", (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(item));
+      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c viewVehicle", "color: blue", (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(item));
       var vm = this;
       this.mode = "details";
       vm.editedVehicle = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(item);

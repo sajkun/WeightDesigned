@@ -16,7 +16,7 @@
 
         {{-- шапка со списком выбора вариантов сортировки и выбора месяца или года отображения --}}
         {{-- ************************************************ --}}
-        <div class="row mt-4 mb-2 justify-content-between">
+        <div class="row mt-4 mb-2 justify-content-between" ref='beforeStickyPosition'>
             <div class="col-md-auto col-12 align-self-center">
                 <p class="m-0 h-6 d-inline">Рейтинг среди:</p>
                 <select v-model='ratingBy' class='ms-2  inline-select'>
@@ -63,8 +63,10 @@
             <div class="col-12 col-md-6 col-xl-7 mt-4 rating-nolist" v-if='!ratingData.length'>
                 <i>Нет записей </i>
             </div>
-            <div class="col-12 col-md-6 col-xl-5">
-                <Columns :_info='ratingData' :_max-value='ratingMaxValue'></Columns>
+            <div class="col-12 col-md-6 col-xl-5 d-flex flex-column" ref='observeResize'>
+                <div class="w-100 flex-grow-1" :ref='"fixposition"'>
+                    <Columns :_info='ratingData' :_max-value='ratingMaxValue'></Columns>
+                </div>
             </div>
         </div>
     </div>

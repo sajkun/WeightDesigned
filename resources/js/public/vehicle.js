@@ -5,9 +5,7 @@
  */
 
 //хэлперы
-import { strip } from "@/misc/helpers";
-
-const clog = () => {};
+import { strip, clog } from "@/misc/helpers";
 
 //миксины
 import fixedRightCol from "@/mixins/fixedRightCol";

@@ -9,10 +9,11 @@ import moment from "moment";
 //миксины
 import axiosRequests from "@/mixins/axiosRequests";
 import crud from "@/mixins/crud";
+import fixedRightCol from "@/mixins/fixedRightCol";
 import messages from "@/mixins/messages";
+import professions from "@/mixins/professions";
 import publicAuthData from "@/mixins/publicAuthData";
 import sortAnimation from "@/mixins/sortAnimation";
-import professions from "@/mixins/professions";
 import statData from "@/mixins/statData";
 import vehicleTypes from "@/mixins/vehicleTypes";
 
@@ -25,6 +26,7 @@ const appPublicRating = {
     mixins: [
         axiosRequests,
         crud,
+        fixedRightCol,
         messages,
         professions,
         publicAuthData,
@@ -68,6 +70,12 @@ const appPublicRating = {
     mounted() {
         const vm = this;
         vm.$el.parentNode.classList.add("d-flex");
+
+        setTimeout(() => {
+            vm.startFixElement("fixposition", "observeResize", true, [
+                vm.$refs.beforeStickyPosition,
+            ]);
+        });
     },
 
     methods: {

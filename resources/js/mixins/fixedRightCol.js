@@ -3,7 +3,7 @@
  */
 
 //хэлперы
-import { clog, getStyle, getDocHeight } from "@/misc/helpers";
+import { getStyle, getDocHeight } from "@/misc/helpers";
 export default {
     data() {
         return {
@@ -13,6 +13,13 @@ export default {
              * @param {Object: ResizeObserver}
              */
             observer: null,
+
+            /**
+             * Элементы перед фиксируемым, которые нужно учесть при рассчете местоположения
+             *
+             * @param {Array<HTMLElement>}
+             */
+            extraElements: [],
 
             // {String} названия ref для фиксируемового объекта
             targetRef: null,
@@ -65,7 +72,6 @@ export default {
          * @returns {Void}
          */
         calculatePositionData() {
-            clog("calculatePositionData");
             const vm = this;
             const shiftVelocity = 30;
             const scrollY = window.scrollY;
@@ -79,12 +85,9 @@ export default {
             // Внутренние отступы родительского элемента
             const paddingsParent = vm.getParentPaddings(el);
 
-            // Хэддер сайта
-            const header = document.querySelector(".public-header");
-
             // переменная показывающая какая часть хэддера еще в зоне видимости страницы
 
-            let deltaY = header.offsetHeight - scrollY;
+            let deltaY = vm.getHeightBefore() - scrollY;
             deltaY = Math.max(0, deltaY);
 
             // максимальная видимая высота элемента
@@ -111,7 +114,8 @@ export default {
                 parentRect.width - paddingsParent.x();
 
             if (vm.controllHeight) {
-                vm.fixData.maxHeight = maxHeight;
+                vm.fixData.maxHeight = maxHeight - paddingsParent.y();
+                vm.fixData.height = maxHeight - paddingsParent.y();
             }
 
             // отступы сверху и слева
@@ -134,6 +138,25 @@ export default {
 
             vm.shiftY = shiftY;
             return;
+        },
+
+        /**
+         * Получает суммарную высоту предшествующих зафиксированному элементу
+         *
+         * @returns {Number}
+         */
+        getHeightBefore() {
+            const vm = this;
+            const header = document.querySelector(".public-header");
+            let height = header.offsetHeight;
+
+            vm.extraElements.forEach((el) => {
+                height += el.offsetHeight;
+                height += getStyle(el, "margin-top", true);
+                height += getStyle(el, "margin-bottom", true);
+            });
+
+            return height;
         },
 
         /**
@@ -218,13 +241,19 @@ export default {
         /**
          * инициализация процесса фиксирования элемента
          *
-         * @param {String} targetRef // ref фиксируемового HTML элемента
-         * @param {String} observeRef // ref контейнера фиксируемового HTML элемента
-         * @param {Boolean} fixHeight // нужно ли фиксировать высоту блока
+         * @param {String} targetRef ref фиксируемового HTML элемента
+         * @param {String} observeRef ref контейнера фиксируемового HTML элемента
+         * @param {Boolean} fixHeight  нужно ли фиксировать высоту блока
+         * @param {Array<HTMLElement>} extraElements дополнительные элементы перед фиксируемым элементом
          *
          * @returns {Void}
          */
-        startFixElement(targetRef, observeRef, controllHeight) {
+        startFixElement(
+            targetRef,
+            observeRef,
+            controllHeight = false,
+            extraElements = []
+        ) {
             const vm = this;
             const observeEl = vm.$refs[observeRef];
             const targetElement = vm.$refs[targetRef];
@@ -233,8 +262,13 @@ export default {
             vm.targetRef = targetRef;
             vm.fixData.position = "fixed";
             vm.controllHeight = controllHeight;
-            vm.updateFixElement(targetElement, vm.fixData);
+            vm.extraElements = extraElements;
 
+            if (controllHeight) {
+                vm.fixData.height = targetElement.offsetHeight;
+            }
+
+            vm.updateFixElement(targetElement, vm.fixData);
             vm.$nextTick(() => {
                 vm.observer.observe(observeEl);
                 vm.observer.observe(targetElement);
