@@ -1,7 +1,7 @@
 export default {
     methods: {
         /**
-         * форматирует имя
+         * форматирует имя в зависимости от разрешения экрана
          *
          * @param  {...String} names Фамилия Имя Отчество
          *
@@ -14,7 +14,7 @@ export default {
 
             let name = names.shift();
 
-            if(!name) return
+            if (!name) return;
             for (const part of names) {
                 name =
                     window.innerWidth < 992
