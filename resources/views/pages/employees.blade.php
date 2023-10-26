@@ -10,6 +10,7 @@
         <messages-component :_messages='messages' v-on:cancel-msg='cancelConfirmActionCb' v-on:confirm-msg='confirmActionCb'
             v-on:clear-msg='clearMessages'></messages-component>
         {{-- ********************** --}}
+        <h2 class="h5 px-3 mt-3" ref='beforeStickyPosition'>Сотрудники</h2>
 
         <div class="row h-100 position-relative">
             {{-- Таблица со списком работников --}}

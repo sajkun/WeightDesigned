@@ -81,7 +81,9 @@ const appPublicEmployees = {
                 vm.stopFixElement();
             } else if (vm.editMode) {
                 // применение sticky поведения для правой колонки
-                vm.startFixElement("fixposition", "observeResize");
+                vm.startFixElement("fixposition", "observeResize", false, [
+                    vm.$refs.beforeStickyPosition,
+                ]);
             }
         },
 
@@ -94,7 +96,9 @@ const appPublicEmployees = {
                 vm.stopFixElement();
             } else if (editMode) {
                 // применение sticky поведения для правой колонки
-                vm.startFixElement("fixposition", "observeResize");
+                vm.startFixElement("fixposition", "observeResize", false, [
+                    vm.$refs.beforeStickyPosition,
+                ]);
             }
 
             if (editMode && vm.editedEmployee.id < 0) {

@@ -20,6 +20,8 @@
             </div>
         </Transition>
 
+        <h2 class="h5 px-3 mt-3" ref='beforeStickyPosition'>Поля</h2>
+
         <Transition name="fade">
             <div class="h-100 position-relative" v-if='mode === "list" || mode === "details" '>
                 <div class="p-3 align-self-start">

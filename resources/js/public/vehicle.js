@@ -154,7 +154,6 @@ const appPublicVehicles = {
     watch: {
         mode(mode) {
             const vm = this;
-            clog("watch:mode", mode);
             if (mode !== "details") {
                 // обнуление фиксированного положение правой колонки
                 vm.stopFixElement();
@@ -163,7 +162,9 @@ const appPublicVehicles = {
             vm.$nextTick(() => {
                 if (mode === "details") {
                     // применение sticky поведения для правой колонки
-                    vm.startFixElement("fixposition", "observeResize");
+                    vm.startFixElement("fixposition", "observeResize", false, [
+                        vm.$refs.beforeStickyPosition,
+                    ]);
                 }
             });
 

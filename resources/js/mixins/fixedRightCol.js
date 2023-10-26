@@ -223,7 +223,9 @@ export default {
         ifEnoughtHeight() {
             const vm = this;
             const targetElement = vm.$refs[vm.targetRef];
-            return targetElement.offsetHeight < getDocHeight();
+            const compareHeight =
+                targetElement.offsetHeight + vm.getHeightBefore();
+            return compareHeight < getDocHeight();
         },
 
         /**
