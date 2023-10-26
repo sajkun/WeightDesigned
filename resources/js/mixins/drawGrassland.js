@@ -1,6 +1,23 @@
+import { strip, clog, getFormData } from "@/misc/helpers";
 import { getCenterByPoints } from "@/public/dbf";
 
 export default {
+    mounted() {
+        ymaps.ready(["util.calculateArea"]).then(function () {
+            clog("test");
+            // var myPolygon = new ymaps.Polygon(someCoordinates);
+            // // You can calculate area of any type of ymaps.GeoObject.
+            // var area = ymaps.util.calculateArea(myPolygon);
+            // // Or you can calculate area of GeoJson feature.
+            // var areaFromJson = ymaps.util.calculateArea({
+            //     type: "Feature",
+            //     geometry: {
+            //         type: "Rectangle",
+            //         coordinates: someRectangleCoordinates,
+            //     },
+            // });
+        });
+    },
     methods: {
         /**
          *
@@ -17,7 +34,7 @@ export default {
             }
 
             grasslandMap.setCenter(center);
-            vm.execDrawGrassland(points, grasslandMap);
+            return vm.execDrawGrassland(points, grasslandMap);
         },
 
         /**
@@ -27,7 +44,7 @@ export default {
          *
          * @returns {Void}
          */
-        drawKmlShape(geoJsonObject) {
+        drawKmlShape(geoJsonObject, grasslandMap) {
             const vm = this;
             const geometry = geoJsonObject?.features.pop()?.geometry;
 
@@ -49,7 +66,7 @@ export default {
                     ? geometry?.coordinates.shift()
                     : geometry?.coordinates;
 
-            vm.drawGrassland(points);
+            return vm.drawGrassland(points, grasslandMap);
         },
 
         /**
@@ -58,7 +75,7 @@ export default {
          * @param {Arrya<float, float>} coordinates массив точек lat, long
          * @param {Object} map объект ymap карта
          *
-         * @returns {Void}
+         * @returns {Number} площадь поля в гектарах
          */
         execDrawGrassland(coordinates, map) {
             let grasslandGeoObject = new ymaps.GeoObject(
@@ -95,6 +112,12 @@ export default {
 
             // Добавляем многоугольник на карту.
             map.geoObjects.add(grasslandGeoObject);
+
+            var grasslandSize = Math.round(
+                ymaps.util.calculateArea(grasslandGeoObject)
+            );
+
+            return (grasslandSize / 1e4).toFixed(1);
         },
     },
 };

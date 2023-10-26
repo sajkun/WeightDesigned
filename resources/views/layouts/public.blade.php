@@ -26,6 +26,9 @@
     @if ($useYamap)
         <script src="https://api-maps.yandex.ru/2.1?apikey=164d5998-e082-4c46-9a64-fbb2f9725c6c&load=package.full&lang=ru_RU">
         </script>
+        {{-- <script src="http://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script> --}}
+        <script src="https://yastatic.net/s3/mapsapi-jslibs/area/0.0.1/util.calculateArea.min.js" type="text/javascript">
+        </script>
     @endif
 </head>
 

@@ -30,7 +30,7 @@ const appPublicGrasslands = {
     data: {
         mode: "list",
         grasslands: [],
-        grassalndToEdit: {},
+        grasslandToEdit: {},
     },
 
     mounted() {
@@ -170,7 +170,11 @@ const appPublicGrasslands = {
                         .then((shpData) => {
                             const points = getPointsForGrassland(shpData);
                             grasslandMap.geoObjects.removeAll();
-                            vm.drawGrassland(points, grasslandMap);
+                            vm.$refs.grasslandSize.value =
+                                vm.grasslandToEdit.size = vm.drawGrassland(
+                                    points,
+                                    grasslandMap
+                                );
                         });
                     break;
                 case "kml":
@@ -180,7 +184,11 @@ const appPublicGrasslands = {
                         "load",
                         () => {
                             geoJsonObject = strip(kml(getDom(reader.result)));
-                            vm.drawKmlShape(geoJsonObject);
+                            vm.$refs.grasslandSize.value =
+                                vm.grasslandToEdit.size = vm.drawKmlShape(
+                                    geoJsonObject,
+                                    grasslandMap
+                                );
                         },
                         false
                     );
@@ -192,8 +200,9 @@ const appPublicGrasslands = {
                         return geoJsonObject;
                     });
 
-                    geoJson.then((gj) => {
-                        vm.drawKmlShape(gj);
+                    geoJson.then((geoJsonObject) => {
+                        vm.$refs.grasslandSize.value = vm.grasslandToEdit.size =
+                            vm.drawKmlShape(geoJsonObject, grasslandMap);
                     });
                     break;
 
@@ -208,7 +217,7 @@ const appPublicGrasslands = {
             const vm = this;
             const points = JSON.parse(grassland.geo_json);
             vm.mode = "edit";
-            vm.grassalndToEdit = grassland;
+            vm.grasslandToEdit = grassland;
 
             vm.$nextTick(() => {
                 vm.enableInputs();

@@ -19696,9 +19696,28 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _public_dbf__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/public/dbf */ "./resources/js/public/dbf.js");
+/* harmony import */ var _misc_helpers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/misc/helpers */ "./resources/js/misc/helpers.js");
+/* harmony import */ var _public_dbf__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @/public/dbf */ "./resources/js/public/dbf.js");
+
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  mounted: function mounted() {
+    ymaps.ready(["util.calculateArea"]).then(function () {
+      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("test");
+      // var myPolygon = new ymaps.Polygon(someCoordinates);
+      // // You can calculate area of any type of ymaps.GeoObject.
+      // var area = ymaps.util.calculateArea(myPolygon);
+      // // Or you can calculate area of GeoJson feature.
+      // var areaFromJson = ymaps.util.calculateArea({
+      //     type: "Feature",
+      //     geometry: {
+      //         type: "Rectangle",
+      //         coordinates: someRectangleCoordinates,
+      //     },
+      // });
+    });
+  },
+
   methods: {
     /**
      *
@@ -19709,12 +19728,12 @@ __webpack_require__.r(__webpack_exports__);
     drawGrassland: function drawGrassland(points, grasslandMap) {
       var _vm$$refs;
       var vm = this;
-      var center = (0,_public_dbf__WEBPACK_IMPORTED_MODULE_0__.getCenterByPoints)(points);
+      var center = (0,_public_dbf__WEBPACK_IMPORTED_MODULE_1__.getCenterByPoints)(points);
       if ((_vm$$refs = vm.$refs) !== null && _vm$$refs !== void 0 && _vm$$refs.geo_json) {
         vm.$refs.geo_json.value = JSON.stringify(points);
       }
       grasslandMap.setCenter(center);
-      vm.execDrawGrassland(points, grasslandMap);
+      return vm.execDrawGrassland(points, grasslandMap);
     },
     /**
      * отрисовывает контур на яндекс карте по kml файлу
@@ -19723,7 +19742,7 @@ __webpack_require__.r(__webpack_exports__);
      *
      * @returns {Void}
      */
-    drawKmlShape: function drawKmlShape(geoJsonObject) {
+    drawKmlShape: function drawKmlShape(geoJsonObject, grasslandMap) {
       var _geoJsonObject$featur;
       var vm = this;
       var geometry = geoJsonObject === null || geoJsonObject === void 0 || (_geoJsonObject$featur = geoJsonObject.features.pop()) === null || _geoJsonObject$featur === void 0 ? void 0 : _geoJsonObject$featur.geometry;
@@ -19738,7 +19757,7 @@ __webpack_require__.r(__webpack_exports__);
         return;
       }
       var points = type === "Polygon" ? geometry === null || geometry === void 0 ? void 0 : geometry.coordinates.shift() : geometry === null || geometry === void 0 ? void 0 : geometry.coordinates;
-      vm.drawGrassland(points);
+      return vm.drawGrassland(points, grasslandMap);
     },
     /**
      * добавление объекта полигона по заданным точкам на карту
@@ -19746,7 +19765,7 @@ __webpack_require__.r(__webpack_exports__);
      * @param {Arrya<float, float>} coordinates массив точек lat, long
      * @param {Object} map объект ymap карта
      *
-     * @returns {Void}
+     * @returns {Number} площадь поля в гектарах
      */
     execDrawGrassland: function execDrawGrassland(coordinates, map) {
       var grasslandGeoObject = new ymaps.GeoObject({
@@ -19780,6 +19799,8 @@ __webpack_require__.r(__webpack_exports__);
 
       // Добавляем многоугольник на карту.
       map.geoObjects.add(grasslandGeoObject);
+      var grasslandSize = Math.round(ymaps.util.calculateArea(grasslandGeoObject));
+      return (grasslandSize / 1e4).toFixed(1);
     }
   }
 });
@@ -21227,7 +21248,7 @@ var appPublicGrasslands = {
   data: {
     mode: "list",
     grasslands: [],
-    grassalndToEdit: {}
+    grasslandToEdit: {}
   },
   mounted: function mounted() {
     var vm = this;
@@ -21331,7 +21352,7 @@ var appPublicGrasslands = {
           }).then(function (shpData) {
             var points = (0,_public_dbf__WEBPACK_IMPORTED_MODULE_2__.getPointsForGrassland)(shpData);
             grasslandMap.geoObjects.removeAll();
-            vm.drawGrassland(points, grasslandMap);
+            vm.$refs.grasslandSize.value = vm.grasslandToEdit.size = vm.drawGrassland(points, grasslandMap);
           });
           break;
         case "kml":
@@ -21339,7 +21360,7 @@ var appPublicGrasslands = {
           var geoJsonObject;
           reader.addEventListener("load", function () {
             geoJsonObject = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)((0,_node_modules_tmcw_togeojson__WEBPACK_IMPORTED_MODULE_1__.kml)(getDom(reader.result)));
-            vm.drawKmlShape(geoJsonObject);
+            vm.$refs.grasslandSize.value = vm.grasslandToEdit.size = vm.drawKmlShape(geoJsonObject, grasslandMap);
           }, false);
           reader.readAsText(data.file);
           break;
@@ -21348,8 +21369,8 @@ var appPublicGrasslands = {
             var geoJsonObject = (0,_node_modules_tmcw_togeojson__WEBPACK_IMPORTED_MODULE_1__.kml)(kmlDom);
             return geoJsonObject;
           });
-          geoJson.then(function (gj) {
-            vm.drawKmlShape(gj);
+          geoJson.then(function (geoJsonObject) {
+            vm.$refs.grasslandSize.value = vm.grasslandToEdit.size = vm.drawKmlShape(geoJsonObject, grasslandMap);
           });
           break;
         default:
@@ -21362,7 +21383,7 @@ var appPublicGrasslands = {
       var vm = this;
       var points = JSON.parse(grassland.geo_json);
       vm.mode = "edit";
-      vm.grassalndToEdit = grassland;
+      vm.grasslandToEdit = grassland;
       vm.$nextTick(function () {
         vm.enableInputs();
         grasslandMap = vm.initMap("map-container");
