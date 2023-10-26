@@ -16,12 +16,15 @@ import publicAuthData from "@/mixins/publicAuthData";
 
 //компоненты
 import FileInputComponent from "@/components/FileInputComponent";
+import MessagesComponent from "@/components/MessagesComponent/";
 
 let grasslandMap;
 const appPublicGrasslands = {
     mixins: [axiosRequests, drawGrassland, crud, messages, publicAuthData],
+
     components: {
         file: FileInputComponent,
+        MessagesComponent,
     },
 
     data: {

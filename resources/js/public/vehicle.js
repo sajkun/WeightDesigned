@@ -8,13 +8,19 @@
 import { strip, clog } from "@/misc/helpers";
 
 //миксины
+import crud from "@/mixins/crud";
 import fixedRightCol from "@/mixins/fixedRightCol";
 import messages from "@/mixins/messages";
 import publicAuthData from "@/mixins/publicAuthData";
 
+//компоненты
+import MessagesComponent from "@/components/MessagesComponent/";
+
 const axios = require("axios");
 const appPublicVehicles = {
-    mixins: [fixedRightCol, publicAuthData, messages],
+    mixins: [fixedRightCol, crud, publicAuthData, messages],
+
+    components: { MessagesComponent },
 
     data() {
         return {
