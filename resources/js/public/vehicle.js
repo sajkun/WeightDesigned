@@ -8,6 +8,7 @@
 import { strip, clog } from "@/misc/helpers";
 
 //миксины
+import axiosRequests from "@/mixins/axiosRequests";
 import crud from "@/mixins/crud";
 import fixedRightCol from "@/mixins/fixedRightCol";
 import messages from "@/mixins/messages";
@@ -18,7 +19,7 @@ import MessagesComponent from "@/components/MessagesComponent/";
 
 const axios = require("axios");
 const appPublicVehicles = {
-    mixins: [fixedRightCol, crud, publicAuthData, messages],
+    mixins: [axiosRequests, crud, fixedRightCol, publicAuthData, messages],
 
     components: { MessagesComponent },
 
@@ -386,27 +387,6 @@ const appPublicVehicles = {
                 });
         },
 
-        getEmployees() {
-            const vm = this;
-
-            if (vm.$refs.organisationId < 0) {
-                return;
-            }
-
-            axios
-                .get("/employees/list", {
-                    user_id: vm.userId,
-                })
-                .then((response) => {
-                    clog("%c getEmployees", "color: green", response);
-                    vm.employees = response.data.employees;
-                })
-                .catch((e) => {
-                    clog("%c getVehicles error", "color: red", e.response);
-                    vm.messages.error = e.response.data.message;
-                });
-        },
-
         reset() {
             const vm = this;
             vm.mayBeResponsiblePerson = null;
@@ -415,20 +395,6 @@ const appPublicVehicles = {
             vm.mayBeGroupedVehicles = [];
             vm.rfids = [];
             vm.group = [];
-        },
-
-        getVehicles() {
-            const vm = this;
-            axios
-                .get("/vehicles/list")
-                .then((response) => {
-                    clog("%c getVehicles", "color: green", response);
-                    vm.vehicles = response.data;
-                })
-                .catch((e) => {
-                    clog("%c getVehicles error", "color: red", e.response);
-                    vm.messages.error = e.response.data.message;
-                });
         },
 
         selectResponsiblePerson(person) {
