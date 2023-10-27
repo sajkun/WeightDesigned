@@ -1,10 +1,14 @@
+<!-- Элемент форма -->
 <template>
     <form @submit.prevent="submit" ref="form">
         <div class="row">
             <Field
-                v-for="(data, key) in structure"
-                :key="'input' + key"
-                :_info="data"
+                v-for="(info, key) in fields"
+                :key="'input' + key + info.id"
+                :_info="info"
+                :_forceRender="info.value"
+                @change-field="changedHandler"
+                @input-field="inputHandler"
             ></Field>
         </div>
         <slot></slot>
@@ -13,7 +17,7 @@
                 <button
                     type="button"
                     class="w-100 btn btn-borders-grey"
-                    @click="cancel"
+                    @click="cancelForm"
                 >
                     Отмена
                 </button>
@@ -28,20 +32,32 @@
 </template>
 
 <script>
+//хэлперы
+import { clog } from "@/misc/helpers";
+
+//миксины
 import { getFormData } from "@/misc/helpers";
-import { clog, strip } from "@/misc/helpers";
+
+//компоненты
 import FieldComponent from "@/components/inputs/FieldComponent";
+
 export default {
     props: {
+        // массив содержащий описание всех полей ввода формы
         _structure: Array,
     },
     data() {
         return {
+            // массив содержащий описание всех полей ввода формы
             structure: this._structure,
+            renderComponent: true,
         };
     },
 
     watch: {
+        /**
+         * интерактивное обновление элментов формы
+         */
         _structure: {
             handler: function (val) {
                 this.structure = val;
@@ -49,25 +65,83 @@ export default {
             deep: true,
         },
     },
+
     components: {
         Field: FieldComponent,
     },
-    methods: {
-        cancel() {
-            this.$emit("cancel");
+
+    computed: {
+        fields() {
+            return this.structure;
         },
-        submit() {
-            const vm = this;
-            const data = getFormData(vm.$refs.form);
-            clog("%c Отправка данных формы", "color: green", data);
-            vm.$emit("exec-submit", data);
+    },
+
+    emits: ["fileChanged", "execSubmit", "cancelForm"],
+
+    methods: {
+        /**
+         * Обработчик события отмены действий в форме
+         *
+         * @returns {Void}
+         */
+        cancelForm() {
+            this.$emit("cancelForm");
+            return;
         },
 
+        /**
+         * обработчик событий изменения в полях ввода
+         * передаёт на уровень выше сведения об измененном файле
+         *
+         * @param {Object|Event} data
+         *
+         * @returns {Void}
+         */
+        changedHandler(data) {
+            const vm = this;
+            if (data?.file) {
+                vm.$emit("fileChanged", data);
+            }
+
+            return;
+        },
+
+        /**
+         * Очистка всех полей формы
+         *
+         * @returns {Void}
+         */
         clear() {
             this.structure = this.structure.map((el) => {
                 el.value = null;
                 return el;
             });
+
+            return;
+        },
+
+        /**
+         * обработчик события ввода в поля формы
+         *
+         * @param {Object} data
+         *
+         * @returns {Void}
+         */
+        inputHandler(data) {
+            return;
+        },
+
+        /**
+         * Отправка данных формы
+         *
+         * @returns {Void}
+         */
+        submit() {
+            const vm = this;
+            const data = getFormData(vm.$refs.form);
+            clog("%c Отправка данных формы", "color: green", data);
+            vm.$emit("execSubmit", data);
+            return;
         },
     },
 };

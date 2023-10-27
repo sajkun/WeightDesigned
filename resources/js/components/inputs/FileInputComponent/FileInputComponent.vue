@@ -9,10 +9,15 @@
             :accept="accept"
             :required="required"
         />
-        <input type="text" readonly :value="fileName" />
-        <label :for="id" :class="{ active: labelActiveClass }"
-            ><slot></slot
-        ></label>
+        <input
+            type="text"
+            readonly
+            :value="fileName"
+            :class="{ active: fileName }"
+        />
+        <label :for="id" :class="{ active: labelActiveClass }">
+            <slot></slot>
+        </label>
     </div>
 </template>
 
@@ -37,9 +42,13 @@ export default {
     methods: {
         changeFile(event) {
             const vm = this;
-            vm.fileName = event.target.files[0].name;
-
-            vm.$emit("changed", { file: event.target.files[0] });
+            vm.fileName = event.target.files[0]?.name
+                ? event.target.files[0].name
+                : "";
+            vm.$emit("changed", {
+                file: event.target.files[0],
+                name: vm.name,
+            });
         },
     },
 };

@@ -47,7 +47,7 @@
                 <div class="col-12 col-lg-6 p-3 org-details" v-show='editMode' ref='observeResize'>
                     <div class="d-lg-flex flex-column org-wrapper p-3" v-if='showForm' :ref='"fixposition"'>
                         <the-form ref='createUserForm' :_structure='addUserFormStructure' @exec-submit='storeUser'
-                            @cancel='showForm=false; editMode=false'>
+                            @cancel-form='showForm=false; editMode=false'>
                         </the-form>
                     </div>
 

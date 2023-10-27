@@ -22,7 +22,7 @@
                         <div class='' :class="columnClass.tableClass">
                             <div class="d-lg-flex org-wrapper flex-column">
                                 @can('create', [App\Models\Grassland::class, $organisation_id])
-                                    <button class="btn w-100 btn-borders" type="button" @click='addGrassland'>Добавить
+                                    <button class="btn m-2 d-block btn-borders" type="button" @click='addGrassland'>Добавить
                                         поле</button>
                                 @endcan
                                 <table class="organisation mt-3">
@@ -34,7 +34,7 @@
                                             <th>Культура</th>
                                             <th></th>
                                         </tr>
-                                        <tr v-for='item, key in grasslands' :key='"grassland" + key'
+                                        <tr v-for='item, key in grasslands' :key='"grassland" + key + item.id'
                                             @click='viewGrassland(item)'>
                                             <td>@{{ key + 1 }}</td>
                                             <td>@{{ item.name }}</td>

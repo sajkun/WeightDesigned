@@ -1,8 +1,8 @@
 <div class="p-3 d-flex flex-column h-100" v-if='mode==="edit"'>
     @can('update', [App\Models\Grassland::class, $organisation_id])
-        <h3 class="h6">Редактирование поля @{{ grassalndToEdit.name }}</h3>
+        <h3 class="h6">Редактирование поля @{{ grasslandToEdit.name }}</h3>
     @elsecan('viewAny', [App\Models\Grassland::class, $organisation_id])
-        <h3 class="h6"> @{{ grassalndToEdit.name }}</h3>
+        <h3 class="h6"> @{{ grasslandToEdit.name }}</h3>
     @endcan
     <div class="row flex-grow-1 position-relative">
         <div class="col-12 col-md-6">
@@ -21,23 +21,23 @@
 
                     @can('update', [App\Models\Grassland::class, $organisation_id])
                         <form @submit.prevent='editGrassland' id="editGrassland" ref='formEditGrassland'>
-                            <input type="hidden" name='id' v-model='grassalndToEdit.id'>
+                            <input type="hidden" name='id' v-model='grasslandToEdit.id'>
                             <div class="row narrow-row">
                                 <div class="col-12 col-md-6 mt-2 form-control-custom">
-                                    <input type="text" v-model='grassalndToEdit.name' id='grasslandName' name='name'
+                                    <input type="text" v-model='grasslandToEdit.name' id='grasslandName' name='name'
                                         ref='grasslandName' required key='grasslandName'>
-                                    <label :class="{ 'active': grassalndToEdit.name }" for="grasslandName">Название</label>
+                                    <label :class="{ 'active': grasslandToEdit.name }" for="grasslandName">Название</label>
                                 </div>
                                 <div class="col-12 col-md-6 mt-2  form-control-custom">
-                                    <input type="text" id='grasslandSize' name='size' v-model='grassalndToEdit.size'
+                                    <input type="text" id='grasslandSize' name='size' v-model='grasslandToEdit.size'
                                         ref='grasslandSize' required key='grasslandSize'>
-                                    <label :class="{ 'active': grassalndToEdit.size }" for="grasslandSize">Размер поля
+                                    <label :class="{ 'active': grasslandToEdit.size }" for="grasslandSize">Размер поля
                                         (га)</label>
                                 </div>
 
                                 <div class="col-12 col-md-6 mt-2  form-control-custom">
                                     <select id='grasslandCulture' name='culture' class='h-100'
-                                        v-model='grassalndToEdit.culture' required key='grasslandCulture'>
+                                        v-model='grasslandToEdit.culture' required key='grasslandCulture'>
                                         <option disabled hidden selected>--выберите культуру--</option>
                                         <option v-for='culture,key in cultures' :key='"culture" + key'
                                             :value="culture">
@@ -63,19 +63,19 @@
                     @elsecan('viewAny', [App\Models\Grassland::class, $organisation_id])
                         <div class="row narrow-row">
                             <div class="col-12 col-md-6 mt-2 form-control-custom">
-                                <input type="text" v-model='grassalndToEdit.name' readonly id='grasslandName'
+                                <input type="text" v-model='grasslandToEdit.name' readonly id='grasslandName'
                                     name='name' ref='grasslandName' required key='grasslandName'>
-                                <label :class="{ 'active': grassalndToEdit.name }" for="grasslandName">Название</label>
+                                <label :class="{ 'active': grasslandToEdit.name }" for="grasslandName">Название</label>
                             </div>
                             <div class="col-12 col-md-6 mt-2  form-control-custom">
-                                <input type="text" id='grasslandSize' name='size' v-model='grassalndToEdit.size'
+                                <input type="text" id='grasslandSize' name='size' v-model='grasslandToEdit.size'
                                     ref='grasslandSize' readonly required key='grasslandSize'>
-                                <label :class="{ 'active': grassalndToEdit.size }" for="grasslandSize">Размер поля
+                                <label :class="{ 'active': grasslandToEdit.size }" for="grasslandSize">Размер поля
                                     (га)</label>
                             </div>
 
                             <div class="col-12 mt-2  form-control-custom">
-                                <input type="text" id='grasslandCulture' name='size' v-model='grassalndToEdit.size'
+                                <input type="text" id='grasslandCulture' name='size' v-model='grasslandToEdit.size'
                                     ref='grasslandCulture' readonly required key='grasslandCulture'>
                                 <label for="grasslandCulture" class='active'>Культура</label>
                             </div>

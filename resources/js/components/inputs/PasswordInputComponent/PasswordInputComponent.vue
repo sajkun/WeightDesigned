@@ -3,8 +3,8 @@
         <input-component
             :_info="inputInfo"
             :_value="password"
-            @change="change"
-            @input="input"
+            @change-field="change"
+            @input-field="input"
         ></input-component>
         <button
             class="btn btn-link"

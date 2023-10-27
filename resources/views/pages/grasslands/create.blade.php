@@ -2,7 +2,7 @@
     <h3 class="h6">Добавление поля</h3>
     <div class="row flex-grow-1 position-relative">
         <div class="col-12 col-md-6">
-            <div class="org-wrapper">
+            <div class="org-wrapper p-4">
                 <p class="h6">
                     <svg width="26" height="26" viewBox="0 0 26 26" fill="none"
                         xmlns="http://www.w3.org/2000/svg">
@@ -13,6 +13,13 @@
                     данные поля
                 </p>
 
+                <div class="mt-2">
+                    <the-form ref='createGrasslandForm' :_structure='addFormStructure' @exec-submit='createGrassland'
+                        @file-changed='parseShapeFile' @cancel-form='mode="list"'>
+                        <input type="hidden" name='geo_json' ref='geo_json'>
+                    </the-form>
+                </div>
+                {{--
                 <div class="mt-2">
                     <form @submit.prevent='createGrassland' id="createGrassland" ref='formCreateGrassland'>
                         <div class="row narrow-row">
@@ -49,10 +56,10 @@
                         </div>
                         <div class="text-end mt-2">
                             <button class="btn btn-borders-grey" type='button' @click='mode="list"'>Закрыть</button>
-                            <button class="btn btn-primary-alt" type='submit'>Сохранить</button>
+                            <button class="btn ms-2 btn-primary-alt" type='submit'>Сохранить</button>
                         </div>
                     </form>
-                </div>
+                </div> --}}
             </div>
         </div>
         <div class="col-12 col-md-6">

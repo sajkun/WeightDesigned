@@ -3,21 +3,9 @@ import { getCenterByPoints } from "@/public/dbf";
 
 export default {
     mounted() {
-        ymaps.ready(["util.calculateArea"]).then(function () {
-            clog("test");
-            // var myPolygon = new ymaps.Polygon(someCoordinates);
-            // // You can calculate area of any type of ymaps.GeoObject.
-            // var area = ymaps.util.calculateArea(myPolygon);
-            // // Or you can calculate area of GeoJson feature.
-            // var areaFromJson = ymaps.util.calculateArea({
-            //     type: "Feature",
-            //     geometry: {
-            //         type: "Rectangle",
-            //         coordinates: someRectangleCoordinates,
-            //     },
-            // });
-        });
+        ymaps.ready(["util.calculateArea"]);
     },
+
     methods: {
         /**
          *

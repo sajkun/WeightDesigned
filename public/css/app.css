@@ -13949,6 +13949,7 @@ body.auth #app {
   border: 0 !important;
 }
 
+#public-grasslands .row,
 #public-employees .row,
 #public-users .row {
   --bs-gutter-x: 0.5rem;
