@@ -20034,15 +20034,14 @@ __webpack_require__.r(__webpack_exports__);
      */
     resertFixedElement: function resertFixedElement() {
       var vm = this;
-      var fixData = {
-        top: "initial",
-        left: "initial",
-        width: "initial",
-        maxWidth: "initial",
-        position: "relative"
-      };
       var el = vm === null || vm === void 0 ? void 0 : vm.$refs[vm === null || vm === void 0 ? void 0 : vm.targetRef];
-      vm.updateFixElement(el, fixData);
+      var capitalLetters = new RegExp("[A-Z]", "gu");
+      Object.keys(vm.fixData).forEach(function (propertyName) {
+        var prop = propertyName.replace(capitalLetters, function (letter) {
+          return "-".concat(letter.toLowerCase());
+        });
+        el.style.removeProperty(prop);
+      });
       window.removeEventListener("scroll", vm.calculatePositionData);
       vm.$nextTick(function () {
         vm.observer.disconnect();

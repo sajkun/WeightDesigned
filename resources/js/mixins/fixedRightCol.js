@@ -246,15 +246,17 @@ export default {
          */
         resertFixedElement() {
             const vm = this;
-            const fixData = {
-                top: "initial",
-                left: "initial",
-                width: "initial",
-                maxWidth: "initial",
-                position: "relative",
-            };
             const el = vm?.$refs[vm?.targetRef];
-            vm.updateFixElement(el, fixData);
+            const capitalLetters = new RegExp("[A-Z]", "gu");
+
+            Object.keys(vm.fixData).forEach((propertyName) => {
+                const prop = propertyName.replace(
+                    capitalLetters,
+                    (letter) => `-${letter.toLowerCase()}`
+                );
+                el.style.removeProperty(prop);
+            });
+
             window.removeEventListener("scroll", vm.calculatePositionData);
 
             vm.$nextTick(() => {
