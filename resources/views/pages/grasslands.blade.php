@@ -6,21 +6,21 @@
         <input type="hidden" ref='organisationId' value='{{ $organisation_id }}'>
         <input type="hidden" ref='userId' value='{{ $user_id }}'>
 
-
         {{-- Компонент сообщений --}}
         {{-- ********************** --}}
         <messages-component :_messages='messages' v-on:cancel-msg='cancelConfirmActionCb' v-on:confirm-msg='confirmActionCb'
             v-on:clear-msg='clearMessages'></messages-component>
-
+        {{-- ********************** --}}
         <h2 class="h5 px-3 mt-3" ref='beforeStickyPosition'>Поля</h2>
 
+        {{-- таблица со списком полей --}}
         <Transition name="fade">
             <div class="h-100 position-relative" v-if='mode === "list" || mode === "details" '>
                 <div class="p-3 align-self-start">
 
                     <div class="row h-100">
                         <div class='' :class="columnClass.tableClass">
-                            <div class="d-lg-flex org-wrapper flex-column">
+                            <div class="d-flex org-wrapper flex-column">
                                 @can('create', [App\Models\Grassland::class, $organisation_id])
                                     <button class="btn m-2 d-block btn-borders" type="button" @click='addGrassland'>Добавить
                                         поле</button>
@@ -56,13 +56,18 @@
                 </div>
             </div>
         </Transition>
+        {{-- ********************** --}}
 
+        {{-- раздел с формой создания поля --}}
         @can('create', [App\Models\Grassland::class, $organisation_id])
             @include('pages.grasslands.create')
         @endcan
+        {{-- ********************** --}}
 
+        {{-- раздел с формой редактирования поля --}}
         @can('viewAny', [App\Models\Grassland::class, $organisation_id])
             @include('pages.grasslands.view')
         @endcan
+        {{-- ********************** --}}
     </div>
 @endsection

@@ -15,7 +15,7 @@ class ChangeColumnToGrasslandsTable extends Migration
     {
         Schema::table('grasslands', function (Blueprint $table) {
             $table->float('size')->change();
-
+            $table->longText('comment')->nullable();
         });
     }
 
@@ -28,6 +28,7 @@ class ChangeColumnToGrasslandsTable extends Migration
     {
         Schema::table('grasslands', function (Blueprint $table) {
             $table->integer('size')->change();
+            $table->dropColumn('comment');
         });
     }
 }

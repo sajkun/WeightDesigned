@@ -17,7 +17,7 @@ class CreateGrasslandsTable extends Migration
             $table->id();
             $table->timestamps();
             $table->string('name')->nullable()->default('');
-            $table->integer('size')->nullable();
+            $table->float('size')->nullable();
             $table->json('geo_json')->nullable();
             $table->string('culture')->nullable();
             $table->unsignedBigInteger('organisation_id')->nullable();

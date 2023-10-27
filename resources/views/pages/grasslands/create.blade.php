@@ -1,3 +1,4 @@
+{{-- Фрагмент страницы карты, отвечающитй за дорбавление поля --}}
 <div class="p-3 d-flex flex-column h-100" v-if='mode==="create"'>
     <h3 class="h6">Добавление поля</h3>
     <div class="row flex-grow-1 position-relative">
@@ -12,57 +13,18 @@
                     </svg>
                     данные поля
                 </p>
-
                 <div class="mt-2">
+                    {{-- форма добавления поля --}}
                     <the-form ref='createGrasslandForm' :_structure='addFormStructure' @exec-submit='createGrassland'
-                        @file-changed='parseShapeFile' @cancel-form='mode="list"'>
+                        :key='"addFormKey"' @file-changed='parseShapeFile' @cancel-form='mode="list"'>
                         <input type="hidden" name='geo_json' ref='geo_json'>
                     </the-form>
+                    {{-- ------------------------- --}}
                 </div>
-                {{--
-                <div class="mt-2">
-                    <form @submit.prevent='createGrassland' id="createGrassland" ref='formCreateGrassland'>
-                        <div class="row narrow-row">
-                            <div class="col-12 col-md-6 mt-2 form-control-custom">
-                                <input type="text" id='grasslandName' name='name' ref='grasslandName' required
-                                    key='grasslandName'>
-                                <label for="grasslandName">Название</label>
-                            </div>
-                            <div class="col-12 col-md-6 mt-2  form-control-custom">
-                                <input type="text" id='grasslandSize' name='size' ref='grasslandSize' required
-                                    key='grasslandSize'>
-                                <label for="grasslandSize">Размер поля (га)</label>
-                            </div>
-
-                            <div class="col-12 col-md-6 mt-2  form-control-custom">
-                                <select id='grasslandCulture' name='culture' class='h-100' required
-                                    key='grasslandCulture'>
-                                    <option disabled hidden selected>--выберите культуру--</option>
-                                    <option v-for='culture,key in cultures' :key='"culture" + key'
-                                        :value="culture">
-                                        @{{ culture }}
-                                    </option>
-                                </select>
-                                <label for="grasslandCulture" class='active'>Культура</label>
-                            </div>
-
-                            <div class="col-12 col-md-6 mt-2  form-control-custom">
-                                <file v-on:changed='parseShapeFile' :_accept="'.shp, .kml, .kmz'" :_id="'grasslandFile'"
-                                    :ref="'grasslandFile'" :_required='true':key="'grasslandFile'">
-                                    <span>Файл поля</span>
-                                </file>
-                                <input type="hidden" name='geo_json' ref='geo_json'>
-                            </div>
-                        </div>
-                        <div class="text-end mt-2">
-                            <button class="btn btn-borders-grey" type='button' @click='mode="list"'>Закрыть</button>
-                            <button class="btn ms-2 btn-primary-alt" type='submit'>Сохранить</button>
-                        </div>
-                    </form>
-                </div> --}}
             </div>
         </div>
         <div class="col-12 col-md-6">
+            {{-- блок карты --}}
             <div class="h-100" id='map-container'></div>
         </div>
     </div>

@@ -12,6 +12,17 @@
             :key="'input' + info.id"
             v-if="mode === 'input'"
         ></input-component>
+        <!-- поле textarea -->
+        <!-- ************** -->
+        <textarea-component
+            :_info="info"
+            :class="info.class ? info.class + ' col-12' : 'col-12'"
+            :_value="info.value"
+            @change="changeField"
+            @input="inputField"
+            :key="'textarea' + info.id"
+            v-if="mode === 'textarea'"
+        ></textarea-component>
         <!-- ************** -->
 
         <!-- поле ввода пароля -->
@@ -69,6 +80,7 @@ import InputComponent from "@/components/inputs/InputComponent";
 import FileInputComponent from "@/components/inputs/FileInputComponent";
 import PasswordInputComponent from "@/components/inputs/PasswordInputComponent";
 import SelectComponent from "@/components/inputs/SelectComponent";
+import TextareaComponent from "@/components/inputs/TextareaComponent";
 
 export default {
     mixins: [passevents],
@@ -77,6 +89,7 @@ export default {
         SelectComponent,
         Password: PasswordInputComponent,
         File: FileInputComponent,
+        TextareaComponent,
     },
     props: {
         _forceRender: {

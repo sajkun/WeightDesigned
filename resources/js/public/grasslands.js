@@ -93,9 +93,19 @@ const appPublicGrasslands = {
     },
 
     watch: {
+        /**
+         * режим работы страницы
+         *
+         * @param {Enum} mode  list|create|edit
+         */
         mode(mode) {
-            if (mode == "create") {
-                this.grasslandToEdit = {};
+            const vm = this;
+            if (["list", "create"].indexOf(mode) >= 0) {
+                vm.$nextTick(() => {
+                    vm.grasslandToEdit = {};
+                    vm.$refs.createGrasslandForm?.clear();
+                    vm.$refs.editGrasslandForm?.clear();
+                });
             }
         },
     },
@@ -109,20 +119,46 @@ const appPublicGrasslands = {
          */
         addFormStructure() {
             const vm = this;
-            let structure = vm.grasslandFormStructure;
-
+            // данные о поле
             const grasslandProps = strip(vm.grasslandToEdit);
 
-            structure = structure.map((item) => {
-                const value = grasslandProps[item.name];
+            //структура формы
+            let structure = vm
+                .getFormStructure(
+                    vm.grasslandFormStructure,
+                    grasslandProps,
+                    true
+                )
+                .map((f) => {
+                    f.id = `add-${f.id}`;
+                    return f;
+                });
 
-                if (value) {
-                    item.value = value;
-                }
+            return structure;
+        },
 
-                return item;
-            });
+        /**
+         * список объектов, описывающих поля
+         * формы редактирования объекта "Поле(grassland)"
+         *
+         * @returns {Array<Object>}
+         */
+        editFormStructure() {
+            const vm = this;
+            // данные о поле
+            const grasslandProps = strip(vm.grasslandToEdit);
 
+            //структура формы
+            let structure = vm
+                .getFormStructure(
+                    vm.grasslandFormStructure,
+                    grasslandProps,
+                    false
+                )
+                .map((f) => {
+                    f.id = `edit-${f.id}`;
+                    return f;
+                });
             return structure;
         },
 
@@ -154,6 +190,7 @@ const appPublicGrasslands = {
                 Рожь: "Рожь",
                 Лен: "Лен",
                 Хмель: "Хмель",
+                Семечка: "Семечка",
             };
         },
     },
@@ -210,6 +247,30 @@ const appPublicGrasslands = {
                 name: item.name,
             };
             vm.deleteEntity(postData, `/grasslands/delete`);
+        },
+
+        /**
+         *
+         * @param {Object} structure
+         * @param {Object} grasslandProps
+         * @param {Boolean} loadShape обязателен файл границ поля
+         */
+        getFormStructure(structure, grasslandProps = {}, loadShape = true) {
+            let _structure = structure;
+            _structure.size.required = loadShape;
+            _structure = Object.values(_structure);
+
+            _structure = _structure.map((item) => {
+                const value = grasslandProps[item.name];
+
+                if (value) {
+                    item.value = value;
+                }
+
+                return item;
+            });
+
+            return _structure;
         },
 
         /**
@@ -343,10 +404,8 @@ const appPublicGrasslands = {
         /**
          * Обработчик редактирования поля
          */
-        editGrassland() {
+        editGrassland(grasslandData) {
             const vm = this;
-
-            let grasslandData = getFormData(vm.$refs.formEditGrassland);
 
             grasslandData.geo_json = grasslandData.geo_json
                 ? JSON.parse(grasslandData.geo_json)

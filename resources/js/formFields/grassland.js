@@ -15,12 +15,12 @@ export default {
         /**
          * Структура формы создания и редактирования поля
          *
-         * @returns {Array<Object>}
+         * @returns {Object<Object>}
          */
         grasslandFormStructure() {
-            const structure = [
-                {
-                    id: "add-grassland-name",
+            const structure = {
+                name: {
+                    id: "grassland-name",
                     name: "name",
                     label: "Название",
                     type: "text",
@@ -32,8 +32,8 @@ export default {
                     value: "",
                 },
 
-                {
-                    id: "add-grassland-culture",
+                culture: {
+                    id: "grassland-culture",
                     name: "culture",
                     label: "Культура",
                     type: "select",
@@ -42,8 +42,8 @@ export default {
                     options: this.cultures,
                     value: "",
                 },
-                {
-                    id: "add-grassland-size",
+                size: {
+                    id: "grassland-size",
                     name: "size",
                     label: "Размер поля(га)",
                     type: "text",
@@ -52,17 +52,24 @@ export default {
                     pattern: "\\d*\\.?\\d{1}",
                     title: "Допустимы только цифры и разделитель регистра (.) После точки должна быть строго 1 цифра",
                 },
-                {
-                    id: "add-grassland-file",
+                type: {
+                    id: "grassland-file",
                     label: "Файл поля(.shp,.kml,.kmz)",
                     type: "file",
-                    required: true,
                     class: "col-md-6 col-12 mt-2 ",
                     title: "Загрузите файл поля",
                     accept: ".shp,.kml,kmz",
                     value: "",
                 },
-            ];
+                comment: {
+                    id: "grassland-comment",
+                    name: "comment",
+                    label: "Комментарий",
+                    type: "textarea",
+                    required: false,
+                    class: "col-12 mt-2 ",
+                },
+            };
 
             return structure;
         },

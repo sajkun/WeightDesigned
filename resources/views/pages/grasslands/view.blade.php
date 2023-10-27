@@ -1,4 +1,4 @@
-<div class="p-3 d-flex flex-column h-100" v-if='mode==="edit"'>
+<div class="p-3 d-flex flex-column h-100" v-show='mode==="edit"'>
     @can('update', [App\Models\Grassland::class, $organisation_id])
         <h3 class="h6">Редактирование поля @{{ grasslandToEdit.name }}</h3>
     @elsecan('viewAny', [App\Models\Grassland::class, $organisation_id])
@@ -6,7 +6,7 @@
     @endcan
     <div class="row flex-grow-1 position-relative">
         <div class="col-12 col-md-6">
-            <div class="org-wrapper">
+            <div class="org-wrapper p-3">
                 <p class="h6">
                     <svg width="26" height="26" viewBox="0 0 26 26" fill="none"
                         xmlns="http://www.w3.org/2000/svg">
@@ -18,49 +18,15 @@
                 </p>
 
                 <div class="mt-2">
-
                     @can('update', [App\Models\Grassland::class, $organisation_id])
-                        <form @submit.prevent='editGrassland' id="editGrassland" ref='formEditGrassland'>
-                            <input type="hidden" name='id' v-model='grasslandToEdit.id'>
-                            <div class="row narrow-row">
-                                <div class="col-12 col-md-6 mt-2 form-control-custom">
-                                    <input type="text" v-model='grasslandToEdit.name' id='grasslandName' name='name'
-                                        ref='grasslandName' required key='grasslandName'>
-                                    <label :class="{ 'active': grasslandToEdit.name }" for="grasslandName">Название</label>
-                                </div>
-                                <div class="col-12 col-md-6 mt-2  form-control-custom">
-                                    <input type="text" id='grasslandSize' name='size' v-model='grasslandToEdit.size'
-                                        ref='grasslandSize' required key='grasslandSize'>
-                                    <label :class="{ 'active': grasslandToEdit.size }" for="grasslandSize">Размер поля
-                                        (га)</label>
-                                </div>
-
-                                <div class="col-12 col-md-6 mt-2  form-control-custom">
-                                    <select id='grasslandCulture' name='culture' class='h-100'
-                                        v-model='grasslandToEdit.culture' required key='grasslandCulture'>
-                                        <option disabled hidden selected>--выберите культуру--</option>
-                                        <option v-for='culture,key in cultures' :key='"culture" + key'
-                                            :value="culture">
-                                            @{{ culture }}
-                                        </option>
-                                    </select>
-                                    <label for="grasslandCulture" class='active'>Культура</label>
-                                </div>
-
-                                <div class="col-12 col-md-6 mt-2  form-control-custom">
-                                    <file v-on:changed='parseShapeFile' :_accept="'.shp, .kml, .kmz'" :_id="'grasslandFile'"
-                                        :ref="'grasslandFile'" :key="'grasslandFile'">
-                                        <span>Файл поля</span>
-                                    </file>
-                                    <input type="hidden" name='geo_json' ref='geo_json'>
-                                </div>
-                            </div>
-                            <div class="text-end mt-2">
-                                <button class="btn btn-borders-grey" type='button' @click='mode="list"'>Закрыть</button>
-                                <button class="btn btn-primary-alt" type='submit'>Сохранить</button>
-                            </div>
-                        </form>
-                    @elsecan('viewAny', [App\Models\Grassland::class, $organisation_id])
+                        {{-- форма добавления поля --}}
+                        <the-form ref='editGrasslandForm' :_structure='editFormStructure' @exec-submit='editGrassland'
+                            :key='"editFormKey" + grasslandToEdit.id' @file-changed='parseShapeFile'
+                            @cancel-form='mode="list"'>
+                            <input type="hidden" name='id' :value='grasslandToEdit.id'>
+                            <input type="hidden" name='geo_json' ref='geo_json'>
+                        </the-form>
+                       @elsecan('viewAny', [App\Models\Grassland::class, $organisation_id])
                         <div class="row narrow-row">
                             <div class="col-12 col-md-6 mt-2 form-control-custom">
                                 <input type="text" v-model='grasslandToEdit.name' readonly id='grasslandName'
@@ -82,13 +48,12 @@
                         </div>
                         <div class="text-end mt-2">
                             <button class="btn btn-borders-grey" type='button' @click='mode="list"'>Закрыть</button>
-                        </div>
-                    @endcan
+                        </div> @endcan
+                            </div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6">
+                    <div class="h-100" id='map-container'></div>
                 </div>
             </div>
         </div>
-        <div class="col-12 col-md-6">
-            <div class="h-100" id='map-container'></div>
-        </div>
-    </div>
-</div>

@@ -4,6 +4,7 @@
     position: relative;
 
     select,
+    textarea,
     input[type="password"],
     input[type="number"],
     input[type="email"],
@@ -44,6 +45,12 @@
             font-size var(--fast), color var(--fast);
         z-index: 5;
 
+        &.textarea-label {
+            --shift-top: 0;
+            top: 0;
+            transform: translateY(0%);
+        }
+
         &.active {
             left: 0.5rem;
             transform: translateY(var(--shift-top));
@@ -51,6 +58,8 @@
         }
     }
 
+    textarea.active + label,
+    textarea:focus + label,
     select.active + label,
     input.active + label,
     input:focus + label {

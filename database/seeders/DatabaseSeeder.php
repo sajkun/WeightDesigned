@@ -23,39 +23,39 @@ class DatabaseSeeder extends Seeder
             'created_at' => new \DateTime('now'),
         ]);
 
-        DB::table('pincodes')->insert([
-            'name' => 'test',
-            'pin' => '12345',
-            'created_at' => new \DateTime('now'),
-        ]);
+        // DB::table('pincodes')->insert([
+        //     'name' => 'test',
+        //     'pin' => '12345',
+        //     'created_at' => new \DateTime('now'),
+        // ]);
 
-        DB::table('pincodes')->insert([
-            'name' => 'lill1206',
-            'pin' => '12345',
-            'created_at' => new \DateTime('now'),
-        ]);
-        DB::table('pincodes')->insert([
-            'name' => 'lill1209',
-            'pin' => '12345',
-            'created_at' => new \DateTime('now'),
-        ]);
-        DB::table('pincodes')->insert([
-            'name' => 'lill3455',
-            'pin' => '12345',
-            'created_at' => new \DateTime('now'),
-        ]);
-        DB::table('pincodes')->insert([
-            'name' => 'lill1721',
-            'pin' => '12345',
-            'created_at' => new \DateTime('now'),
-        ]);
+        // DB::table('pincodes')->insert([
+        //     'name' => 'lill1206',
+        //     'pin' => '12345',
+        //     'created_at' => new \DateTime('now'),
+        // ]);
+        // DB::table('pincodes')->insert([
+        //     'name' => 'lill1209',
+        //     'pin' => '12345',
+        //     'created_at' => new \DateTime('now'),
+        // ]);
+        // DB::table('pincodes')->insert([
+        //     'name' => 'lill3455',
+        //     'pin' => '12345',
+        //     'created_at' => new \DateTime('now'),
+        // ]);
+        // DB::table('pincodes')->insert([
+        //     'name' => 'lill1721',
+        //     'pin' => '12345',
+        //     'created_at' => new \DateTime('now'),
+        // ]);
 
-        DB::table('employees')->insert([
-            'first_name' => 'Иван',
-            'middle_name' => 'Петрович',
-            'last_name' => 'Сидоров',
-            'phone' => '12345',
-            'specialisation' => 'Водитель Трактора',
-        ]);
+        // DB::table('employees')->insert([
+        //     'first_name' => 'Иван',
+        //     'middle_name' => 'Петрович',
+        //     'last_name' => 'Сидоров',
+        //     'phone' => '12345',
+        //     'specialisation' => 'Водитель Трактора',
+        // ]);
     }
 }

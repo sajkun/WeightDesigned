@@ -13260,6 +13260,7 @@ body {
   --shift-top: -125%;
 }
 .form-control-custom select,
+.form-control-custom textarea,
 .form-control-custom input[type=password],
 .form-control-custom input[type=number],
 .form-control-custom input[type=email],
@@ -13273,6 +13274,7 @@ body {
   outline: 2px solid transparent;
 }
 .form-control-custom select:hover,
+.form-control-custom textarea:hover,
 .form-control-custom input[type=password]:hover,
 .form-control-custom input[type=number]:hover,
 .form-control-custom input[type=email]:hover,
@@ -13280,6 +13282,7 @@ body {
   border-color: var(--grey-medium);
 }
 .form-control-custom select:focus-visible,
+.form-control-custom textarea:focus-visible,
 .form-control-custom input[type=password]:focus-visible,
 .form-control-custom input[type=number]:focus-visible,
 .form-control-custom input[type=email]:focus-visible,
@@ -13288,6 +13291,7 @@ body {
   outline: 2px solid var(--blue-medium);
 }
 .form-control-custom select:active,
+.form-control-custom textarea:active,
 .form-control-custom input[type=password]:active,
 .form-control-custom input[type=number]:active,
 .form-control-custom input[type=email]:active,
@@ -13304,11 +13308,18 @@ body {
   transition: left var(--fast), transform var(--fast), font-size var(--fast), color var(--fast);
   z-index: 5;
 }
+.form-control-custom label.textarea-label {
+  --shift-top: 0;
+  top: 0;
+  transform: translateY(0%);
+}
 .form-control-custom label.active {
   left: 0.5rem;
   transform: translateY(var(--shift-top));
   font-size: 0.75rem;
 }
+.form-control-custom textarea.active + label,
+.form-control-custom textarea:focus + label,
 .form-control-custom select.active + label,
 .form-control-custom input.active + label,
 .form-control-custom input:focus + label {
