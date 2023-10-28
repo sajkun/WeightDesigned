@@ -15,16 +15,10 @@
                         @exec-submit='createGrassland' :key='"addFormKey"' @file-changed='parseShapeFile'
                         @cancel-form='mode="list"'>
                         <input type="hidden" name='geo_json' ref='geo_json'>
-                        <div class="row mb-2">
-                            <div class="col-6">
-                                <button class="btn btn-borders-grey-light p-1 d-block w-100" type='button'
-                                    @click='clearMap'>Очистить
-                                    карту</button>
-                            </div>
-                            <div class="col-6">
-                                <button class="btn btn-borders-grey-light p-1 d-block w-100" type='button'
-                                    @click='geoJsonSource="map"' :key='"doDraw"'>Задать контур вручную</button>
-                            </div>
+                        <div class="div mb-2">
+                            <button class="btn btn-borders-grey-light p-1 d-block w-100" type='button'
+                                @click='geoJsonSource="map"' :key='"doDraw"'>Задать контур поля
+                                вручную</button>
                         </div>
                     </the-form>
                     {{-- ------------------------- --}}
