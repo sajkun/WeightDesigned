@@ -21679,7 +21679,18 @@ var appPublicGrasslands = {
      *
      * @param {Boolean}
      */
-    showMap: true
+    showMap: true,
+    /**
+     * источник данных о границах поля
+     * загрузка из файла или выбор вручную кликами на карте
+     *
+     * @param {Enum} : file | map
+     */
+    geoJsonSource: "file",
+    /**
+     * Координаты точек, заданных вручную
+     */
+    tempCoordinates: []
   },
   mounted: function mounted() {
     var vm = this;
@@ -21702,6 +21713,25 @@ var appPublicGrasslands = {
     });
   },
   watch: {
+    /**
+     * @param {String} geoJsonSource
+     */
+    geoJsonSource: function geoJsonSource(_geoJsonSource) {
+      if (_geoJsonSource == "map") {
+        this.clearMap();
+      }
+      if (_geoJsonSource == "file") {
+        var vm = this;
+        var grassland = vm.grasslandToEdit;
+        if (Boolean(grassland.geo_json) || vm.tempCoordinates.length > 0) {
+          var points = vm.tempCoordinates.length > 0 ? vm.tempCoordinates : JSON.parse(grassland.geo_json);
+          grasslandMap.geoObjects.removeAll();
+          if (points.length > 2) {
+            vm.grasslandToEdit.size = vm.drawGrassland(points, grasslandMap);
+          }
+        }
+      }
+    },
     /**
      * режим работы страницы
      *
@@ -21825,6 +21855,48 @@ var appPublicGrasslands = {
       });
     },
     /**
+     * Отрисовка контура карты по вручную заданным точкам
+     */
+    applyMannualMap: function applyMannualMap() {
+      var _this = this;
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
+        var vm;
+        return _regeneratorRuntime().wrap(function _callee$(_context) {
+          while (1) switch (_context.prev = _context.next) {
+            case 0:
+              vm = _this;
+              if (!(vm.tempCoordinates.length < 3)) {
+                _context.next = 4;
+                break;
+              }
+              vm.messages.error = "Должно быть задано 3 или более точки поля.";
+              return _context.abrupt("return");
+            case 4:
+              vm.geoJsonSource = "file";
+              _context.next = 7;
+              return vm.$nextTick();
+            case 7:
+              vm.$refs.geo_json.value = JSON.stringify(vm.tempCoordinates);
+              _context.next = 10;
+              return vm.$nextTick();
+            case 10:
+              vm.tempCoordinates = [];
+            case 11:
+            case "end":
+              return _context.stop();
+          }
+        }, _callee);
+      }))();
+    },
+    /**
+     * Удаляет все контуры и объекты с карты
+     */
+    clearMap: function clearMap() {
+      var _grasslandMap;
+      (_grasslandMap = grasslandMap) === null || _grasslandMap === void 0 || _grasslandMap.geoObjects.removeAll();
+      this.$refs.geo_json.value = null;
+    },
+    /**
      *Обработчик события подтверждения формы создания объекта "Поле"
      *
      * @param {Object} data
@@ -21862,26 +21934,26 @@ var appPublicGrasslands = {
      * принудительное обновление карты
      */
     forceRerenderMap: function forceRerenderMap() {
-      var _this = this;
-      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
+      var _this2 = this;
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
         var vm;
-        return _regeneratorRuntime().wrap(function _callee$(_context) {
-          while (1) switch (_context.prev = _context.next) {
+        return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+          while (1) switch (_context2.prev = _context2.next) {
             case 0:
-              vm = _this; // Remove MyComponent from the DOM
+              vm = _this2; // Remove MyComponent from the DOM
               vm.showMap = false;
 
               // Wait for the change to get flushed to the DOM
-              _context.next = 4;
+              _context2.next = 4;
               return vm.$nextTick();
             case 4:
               // Add the component back in
               vm.showMap = true;
             case 5:
             case "end":
-              return _context.stop();
+              return _context2.stop();
           }
-        }, _callee);
+        }, _callee2);
       }))();
     },
     /**
@@ -21913,11 +21985,23 @@ var appPublicGrasslands = {
      * @returns {Map} объект яндекс карта
      */
     initMap: function initMap(selector) {
+      var vm = this;
       var map = new ymaps.Map(selector, {
         center: [45, 45],
         zoom: 13
       }, {
         searchControlProvider: "yandex#search"
+      });
+      map.events.add("click", function (e) {
+        if (vm.geoJsonSource === "file") {
+          return;
+        }
+        var coordsClicked = e.get("coords");
+        var clickedPoint = new ymaps.Placemark(coordsClicked, {
+          hintContent: "точка контура поля"
+        });
+        vm.tempCoordinates.push(coordsClicked);
+        map.geoObjects.add(clickedPoint);
       });
       return map;
     },

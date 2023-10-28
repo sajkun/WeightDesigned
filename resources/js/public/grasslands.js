@@ -77,6 +77,19 @@ const appPublicGrasslands = {
          * @param {Boolean}
          */
         showMap: true,
+
+        /**
+         * источник данных о границах поля
+         * загрузка из файла или выбор вручную кликами на карте
+         *
+         * @param {Enum} : file | map
+         */
+        geoJsonSource: "file",
+
+        /**
+         * Координаты точек, заданных вручную
+         */
+        tempCoordinates: [],
     },
 
     mounted() {
@@ -101,6 +114,36 @@ const appPublicGrasslands = {
     },
 
     watch: {
+        /**
+         * @param {String} geoJsonSource
+         */
+        geoJsonSource(geoJsonSource) {
+            if (geoJsonSource == "map") {
+                this.clearMap();
+            }
+
+            if (geoJsonSource == "file") {
+                const vm = this;
+                const grassland = vm.grasslandToEdit;
+                if (
+                    Boolean(grassland.geo_json) ||
+                    vm.tempCoordinates.length > 0
+                ) {
+                    const points =
+                        vm.tempCoordinates.length > 0
+                            ? vm.tempCoordinates
+                            : JSON.parse(grassland.geo_json);
+                    grasslandMap.geoObjects.removeAll();
+                    if (points.length > 2) {
+                        vm.grasslandToEdit.size = vm.drawGrassland(
+                            points,
+                            grasslandMap
+                        );
+                    }
+                }
+            }
+        },
+
         /**
          * режим работы страницы
          *
@@ -247,6 +290,32 @@ const appPublicGrasslands = {
         },
 
         /**
+         * Отрисовка контура карты по вручную заданным точкам
+         */
+        async applyMannualMap() {
+            const vm = this;
+
+            if (vm.tempCoordinates.length < 3) {
+                vm.messages.error =
+                    "Должно быть задано 3 или более точки поля.";
+                return;
+            }
+            vm.geoJsonSource = "file";
+            await vm.$nextTick();
+            vm.$refs.geo_json.value = JSON.stringify(vm.tempCoordinates);
+            await vm.$nextTick();
+            vm.tempCoordinates = [];
+        },
+
+        /**
+         * Удаляет все контуры и объекты с карты
+         */
+        clearMap() {
+            grasslandMap?.geoObjects.removeAll();
+            this.$refs.geo_json.value = null;
+        },
+
+        /**
          *Обработчик события подтверждения формы создания объекта "Поле"
          *
          * @param {Object} data
@@ -255,11 +324,9 @@ const appPublicGrasslands = {
          */
         createGrassland(grasslandData) {
             const vm = this;
-
             grasslandData.geo_json = grasslandData.geo_json
                 ? JSON.parse(grasslandData.geo_json)
                 : "";
-
             const postData = {
                 user_id: vm.userId,
                 organisation_id: vm.organisationId,
@@ -335,6 +402,7 @@ const appPublicGrasslands = {
          * @returns {Map} объект яндекс карта
          */
         initMap(selector) {
+            const vm = this;
             let map = new ymaps.Map(
                 selector,
                 {
@@ -346,6 +414,20 @@ const appPublicGrasslands = {
                 }
             );
 
+            map.events.add("click", (e) => {
+                if (vm.geoJsonSource === "file") {
+                    return;
+                }
+
+                let coordsClicked = e.get("coords");
+
+                const clickedPoint = new ymaps.Placemark(coordsClicked, {
+                    hintContent: "точка контура поля",
+                });
+
+                vm.tempCoordinates.push(coordsClicked);
+                map.geoObjects.add(clickedPoint);
+            });
             return map;
         },
 
