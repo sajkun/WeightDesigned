@@ -48,16 +48,6 @@ const appPublicGrasslands = {
 
     data: {
         /**
-         * ключ, определяющий отображать
-         * - список полей или
-         * - форму редактирования выбранного поля или
-         * - форму создания нового поля
-         *
-         * @param {Enum} : list | edit | create
-         */
-        mode: "list",
-
-        /**
          * список полей организации
          *
          * @param {Array}
@@ -70,10 +60,28 @@ const appPublicGrasslands = {
          * @param {Object}
          */
         grasslandToEdit: {},
+
+        /**
+         * ключ, определяющий отображать
+         * - список полей или
+         * - форму редактирования выбранного поля или
+         * - форму создания нового поля
+         *
+         * @param {Enum} : list | edit | create
+         */
+        mode: "list",
+
+        /**
+         * Признак отображения карты. Нужен для ее интерактивного обновления
+         *
+         * @param {Boolean}
+         */
+        showMap: true,
     },
 
     mounted() {
         const vm = this;
+        // vm.observer = vm.initObserver();
 
         /**
          * Запрос полей организации
@@ -105,6 +113,36 @@ const appPublicGrasslands = {
                     vm.grasslandToEdit = {};
                     vm.$refs.createGrasslandForm?.clear();
                     vm.$refs.editGrasslandForm?.clear();
+                });
+            }
+
+            /**
+             * отслеживание изменений размера окна и перезапуск карты
+             */
+            if (["edit", "create"].indexOf(mode) >= 0) {
+                vm.$nextTick(() => {
+                    const observeEl = vm.$refs["map-container"];
+                    vm.forceRerenderMap();
+                });
+            }
+        },
+
+        /**
+         * отслеживания состояния отображения или скрытия карты
+         *
+         * @param {Boolean} showMap
+         */
+        showMap(showMap) {
+            if (showMap) {
+                const vm = this;
+                vm.$nextTick(() => {
+                    grasslandMap = vm.initMap("map-container");
+                    const grassland = vm.grasslandToEdit;
+                    if (Boolean(grassland.geo_json)) {
+                        const points = JSON.parse(grassland.geo_json);
+                        grasslandMap.geoObjects.removeAll();
+                        vm.drawGrassland(points, grasslandMap);
+                    }
                 });
             }
         },
@@ -204,7 +242,7 @@ const appPublicGrasslands = {
             vm.mode = "create";
 
             vm.$nextTick(() => {
-                grasslandMap = vm.initMap("map-container");
+                vm.forceRerenderMap();
             });
         },
 
@@ -247,6 +285,22 @@ const appPublicGrasslands = {
                 name: item.name,
             };
             vm.deleteEntity(postData, `/grasslands/delete`);
+        },
+
+        /**
+         * принудительное обновление карты
+         */
+        async forceRerenderMap() {
+            const vm = this;
+
+            // Remove MyComponent from the DOM
+            vm.showMap = false;
+
+            // Wait for the change to get flushed to the DOM
+            await vm.$nextTick();
+
+            // Add the component back in
+            vm.showMap = true;
         },
 
         /**

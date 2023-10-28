@@ -1,4 +1,4 @@
-<div class="p-3 d-flex flex-column h-100" v-show='mode==="edit"'>
+<div class="flex-column flex-grow-1" v-show='mode==="edit"' :class="{ 'd-flex': mode==='edit' }">
     @can('update', [App\Models\Grassland::class, $organisation_id])
         <h3 class="h6">Редактирование поля @{{ grasslandToEdit.name }}</h3>
     @elsecan('viewAny', [App\Models\Grassland::class, $organisation_id])
@@ -26,7 +26,7 @@
                             <input type="hidden" name='id' :value='grasslandToEdit.id'>
                             <input type="hidden" name='geo_json' ref='geo_json'>
                         </the-form>
-                       @elsecan('viewAny', [App\Models\Grassland::class, $organisation_id])
+                    @elsecan('viewAny', [App\Models\Grassland::class, $organisation_id])
                         <div class="row narrow-row">
                             <div class="col-12 col-md-6 mt-2 form-control-custom">
                                 <input type="text" v-model='grasslandToEdit.name' readonly id='grasslandName'
@@ -48,12 +48,16 @@
                         </div>
                         <div class="text-end mt-2">
                             <button class="btn btn-borders-grey" type='button' @click='mode="list"'>Закрыть</button>
-                        </div> @endcan
+                        </div>
+{{-- --------------- --}} @endcan{{-- --------------- --}}
                             </div>
                     </div>
                 </div>
-                <div class="col-12 col-md-6">
-                    <div class="h-100" id='map-container'></div>
+                <div class="col-12 col-md-6" v-if='showMap'>
+                    <div class="h-100 d-flex flex-column">
+                        <div class="flex-grow-1" id='map-container' ref='map-container'></div>
+                    </div>
                 </div>
             </div>
         </div>
+    </div>

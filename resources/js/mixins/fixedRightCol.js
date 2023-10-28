@@ -8,7 +8,7 @@ export default {
     data() {
         return {
             /**
-             *  Объекь наблюдатель за изменением ширины
+             *  Объект наблюдатель за изменением ширины
              *
              * @param {Object: ResizeObserver}
              */
@@ -80,7 +80,7 @@ export default {
          */
         calculatePositionData() {
             const vm = this;
-            if (!vm.ifEnoughtHeight()) {
+            if (!vm.ifEnoughHeight()) {
                 vm.resertFixedElement();
                 return;
             }
@@ -220,7 +220,7 @@ export default {
          *
          * @returns {Boolean}
          */
-        ifEnoughtHeight() {
+        ifEnoughHeight() {
             const vm = this;
             const targetElement = vm.$refs[vm.targetRef];
             const compareHeight =
