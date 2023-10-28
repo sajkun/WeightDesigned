@@ -33,20 +33,18 @@ export default {
         // добавление данных на карту при их изменении
         bvsData(data) {
             const vm = this;
-
-            if (!grasslandMap) return;
-
-            grasslandMap.geoObjects.removeAll();
-            vm.drawBvsData(data);
-            if (grasslandMap.geoObjects.getLength()) {
-                grasslandMap.setBounds(grasslandMap.geoObjects.getBounds());
-            }
+            vm.drawMapObjects(grasslandMap, strip(data));
         },
 
         // обновление данных от родителя
         _grasslandsData(data) {
             const vm = this;
             vm.grasslandsData = data;
+        },
+
+        grasslandsData(data) {
+            const vm = this;
+            vm.drawMapObjects(grasslandMap, strip(vm.bvsData));
         },
     },
 
@@ -77,18 +75,8 @@ export default {
 
         vm.$nextTick(() => {
             ymaps.ready(function () {
-                const data = strip(vm.bvsData);
                 grasslandMap = vm.initMap(vm.id);
-                vm.drawBvsData(data);
-
-                if (grasslandMap.geoObjects.getLength()) {
-                    grasslandMap.setBounds(grasslandMap.geoObjects.getBounds());
-                }
-
-                for (const _grassland of vm.grasslandsData) {
-                    const points = JSON.parse(_grassland.geo_json);
-                    vm.drawGrassland(points, grasslandMap);
-                }
+                vm.drawMapObjects(grasslandMap, strip(vm.bvsData));
             });
         });
     },
@@ -286,6 +274,32 @@ export default {
             }, initialValue);
 
             return totalSum;
+        },
+
+        /**
+         * рисует все объекты на карте
+         *
+         * @param {Map} grasslandMap  яндекс карта
+         * @param {Object} bvsData данные от БВС
+         */
+        drawMapObjects(grasslandMap, bvsData) {
+            const vm = this;
+            if (!grasslandMap) return;
+            grasslandMap.geoObjects.removeAll();
+            vm.drawBvsData(bvsData);
+
+            if (grasslandMap.geoObjects.getLength() > 0) {
+                grasslandMap.setBounds(grasslandMap.geoObjects.getBounds());
+            } else {
+                grasslandMap.setZoom(9);
+            }
+
+            vm.$nextTick(() => {
+                for (const _grassland of vm.grasslandsData) {
+                    const points = JSON.parse(_grassland.geo_json);
+                    vm.drawGrassland(points, grasslandMap);
+                }
+            });
         },
     },
 };

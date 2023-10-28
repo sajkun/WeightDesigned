@@ -15224,17 +15224,16 @@ var grasslandMap;
     // добавление данных на карту при их изменении
     bvsData: function bvsData(data) {
       var vm = this;
-      if (!grasslandMap) return;
-      grasslandMap.geoObjects.removeAll();
-      vm.drawBvsData(data);
-      if (grasslandMap.geoObjects.getLength()) {
-        grasslandMap.setBounds(grasslandMap.geoObjects.getBounds());
-      }
+      vm.drawMapObjects(grasslandMap, (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(data));
     },
     // обновление данных от родителя
     _grasslandsData: function _grasslandsData(data) {
       var vm = this;
       vm.grasslandsData = data;
+    },
+    grasslandsData: function grasslandsData(data) {
+      var vm = this;
+      vm.drawMapObjects(grasslandMap, (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.bvsData));
     }
   },
   props: {
@@ -15262,25 +15261,8 @@ var grasslandMap;
     vm.id = vm._id;
     vm.$nextTick(function () {
       ymaps.ready(function () {
-        var data = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.bvsData);
         grasslandMap = vm.initMap(vm.id);
-        vm.drawBvsData(data);
-        if (grasslandMap.geoObjects.getLength()) {
-          grasslandMap.setBounds(grasslandMap.geoObjects.getBounds());
-        }
-        var _iterator = _createForOfIteratorHelper(vm.grasslandsData),
-          _step;
-        try {
-          for (_iterator.s(); !(_step = _iterator.n()).done;) {
-            var _grassland = _step.value;
-            var points = JSON.parse(_grassland.geo_json);
-            vm.drawGrassland(points, grasslandMap);
-          }
-        } catch (err) {
-          _iterator.e(err);
-        } finally {
-          _iterator.f();
-        }
+        vm.drawMapObjects(grasslandMap, (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.bvsData));
       });
     });
   },
@@ -15325,11 +15307,11 @@ var grasslandMap;
         clusterDisableClickZoom: true
       });
       var placemarks = [];
-      var _iterator2 = _createForOfIteratorHelper((0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(data)),
-        _step2;
+      var _iterator = _createForOfIteratorHelper((0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(data)),
+        _step;
       try {
-        for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
-          var bvsData = _step2.value;
+        for (_iterator.s(); !(_step = _iterator.n()).done;) {
+          var bvsData = _step.value;
           // вычисление размера метки
           var newDiv = document.createElement("div");
           newDiv.setAttribute("id", "check");
@@ -15381,9 +15363,9 @@ var grasslandMap;
           grasslandMap.geoObjects.add(point);
         }
       } catch (err) {
-        _iterator2.e(err);
+        _iterator.e(err);
       } finally {
-        _iterator2.f();
+        _iterator.f();
       }
       clusterer.add(placemarks);
       grasslandMap.geoObjects.add(clusterer);
@@ -15426,6 +15408,38 @@ var grasslandMap;
         return [(accumulator[0] + val[0]) / 2, (accumulator[1] + val[1]) / 2];
       }, initialValue);
       return totalSum;
+    },
+    /**
+     * рисует все объекты на карте
+     *
+     * @param {Map} grasslandMap  яндекс карта
+     * @param {Object} bvsData данные от БВС
+     */
+    drawMapObjects: function drawMapObjects(grasslandMap, bvsData) {
+      var vm = this;
+      if (!grasslandMap) return;
+      grasslandMap.geoObjects.removeAll();
+      vm.drawBvsData(bvsData);
+      if (grasslandMap.geoObjects.getLength() > 0) {
+        grasslandMap.setBounds(grasslandMap.geoObjects.getBounds());
+      } else {
+        grasslandMap.setZoom(9);
+      }
+      vm.$nextTick(function () {
+        var _iterator2 = _createForOfIteratorHelper(vm.grasslandsData),
+          _step2;
+        try {
+          for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+            var _grassland = _step2.value;
+            var points = JSON.parse(_grassland.geo_json);
+            vm.drawGrassland(points, grasslandMap);
+          }
+        } catch (err) {
+          _iterator2.e(err);
+        } finally {
+          _iterator2.f();
+        }
+      });
     }
   }
 });
