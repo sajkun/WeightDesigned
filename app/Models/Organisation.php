@@ -48,12 +48,17 @@ class Organisation extends Model
      *
      * @return Object|false
      */
-    public function getBvsData($ownerId = -1, $ownerType = null)
+    public function bvsDataByOwner($ownerId = -1, $ownerType = null)
     {
         $owners = ['bunker', 'tractor', 'harvester', 'transporter', 'employee'];
+
         if ($ownerId < 0 || !in_array($ownerType, $owners)) {
             return false;
         }
+
+        // switch($ownerType){
+        //     case
+        // }
 
         return $this->id;
     }

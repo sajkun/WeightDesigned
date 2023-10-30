@@ -31,6 +31,41 @@ export default {
         },
 
         /**
+        /**
+         * запрашивает данные бункера весовой по переданной id и типу техники
+         * или по ответсвенному лицу
+         *
+         * @param {Number} id техники
+         * @param {Enum} type
+         *
+         * @returns {Promise}
+         */
+        getBvsDataFiltered(id, type) {
+            const vm = this;
+
+            const postData = {
+                user_id: vm.userId,
+                organisation_id: vm.organisationId,
+                params: {
+                    id,
+                    type,
+                },
+            };
+
+            return axios
+                .post(`/bvsdata/by-owner`, postData)
+                .then((response) => {
+                    clog("%c getBvsData response", "color:green", response);
+
+                    return response.data;
+                })
+                .catch((e) => {
+                    clog("%c getBvsData error", "color: red", e.response);
+                    return e.response;
+                });
+        },
+
+        /**
          * запрос списка сотрудников
          *
          * @return {Promise}
@@ -93,6 +128,9 @@ export default {
          */
         getVehicles() {
             const vm = this;
+            if (vm.$refs.organisationId < 0) {
+                return;
+            }
             return axios
                 .get("/vehicles/list")
                 .then((response) => {
@@ -101,6 +139,7 @@ export default {
                 })
                 .catch((e) => {
                     clog("%c getVehicles error", "color: red", e.response);
+                    vm.messages.error = `${e.response.status} ${e.response.statusText} : ${e.response.data.message}`;
                     return e.response;
                 });
         },

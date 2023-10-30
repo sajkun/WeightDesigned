@@ -32,6 +32,12 @@ const appPublicVehicles = {
             activeTab: "info",
 
             /**
+             * данные от весовой системы БП
+             * @param {Array}
+             */
+            bvsData: new Map(),
+
+            /**
              * Выбранная к просмотру единица техники
              * @param {Object}
              */
@@ -306,7 +312,8 @@ const appPublicVehicles = {
             vm.reset();
             vm.$refs.formCreateVehicle?.reset();
             vm.$nextTick(() => {
-                // vm.enableInputs();
+                vm.enableInputs();
+                vm.pincode = null;
             });
         },
 
@@ -323,6 +330,7 @@ const appPublicVehicles = {
 
             if (activeTab === "activity") {
                 clog(strip(vm.editedVehicle));
+                vm.getBvsDataBy(vm.editedVehicle.id, vm.editedVehicle.type);
             }
         },
 
@@ -391,22 +399,6 @@ const appPublicVehicles = {
             const vm = this;
             vm.mayBeGroupedVehicles = strip(vm.group);
             vm.popup = null;
-        },
-
-        enableInputs() {
-            const inputs = document.querySelectorAll(
-                ".form-control-custom input"
-            );
-
-            inputs.forEach((el) => {
-                el.addEventListener("input", (e) => {
-                    if (e.target.value) {
-                        e.target.nextElementSibling.classList.add("active");
-                    } else {
-                        e.target.nextElementSibling.classList.remove("active");
-                    }
-                });
-            });
         },
 
         checkPin(createOrEdit) {
@@ -530,6 +522,68 @@ const appPublicVehicles = {
                 });
         },
 
+        enableInputs() {
+            const inputs = document.querySelectorAll(
+                ".form-control-custom input"
+            );
+
+            inputs.forEach((el) => {
+                el.addEventListener("input", (e) => {
+                    if (e.target.value) {
+                        e.target.nextElementSibling.classList.add("active");
+                    } else {
+                        e.target.nextElementSibling.classList.remove("active");
+                    }
+                });
+            });
+        },
+
+        /**
+         * запрашивает данные бункера весовой по переданной id и типу техники
+         *
+         * @param {Number} id техники
+         * @param {Enum} type
+         *
+         * @returns {False|Object}
+         */
+        getBvsDataBy(id, type) {
+            const vm = this;
+
+            if (vm.bvsData.has(id)) {
+                return false;
+            }
+
+            vm.getBvsDataFiltered(id, type).then((response) => {
+                clog(response);
+            });
+        },
+
+        removeRfid(rfid) {
+            const vm = this;
+            const index = Object.values(vm.rfids).findIndex((item) => {
+                return rfid.label === item.label && rfid.value === item.value;
+            });
+
+            vm.rfids.splice(index, 1);
+        },
+
+        removeFromGroup(item, save) {
+            const vm = this;
+            const group = Object.values(vm.group);
+            const index = group.findIndex((el) => {
+                return el.id === item.id;
+            });
+
+            if (index >= 0) {
+                group.splice(index, 1);
+                vm.group = group;
+            }
+
+            if (save) {
+                vm.mayBeGroupedVehicles = strip(vm.group);
+            }
+        },
+
         reset() {
             const vm = this;
             vm.mayBeResponsiblePerson = null;
@@ -611,32 +665,6 @@ const appPublicVehicles = {
             vm.rfids = strip(item).rfids;
             vm.mayBeGroupedVehicles = strip(item).group;
             vm.group = strip(item).group;
-        },
-
-        removeRfid(rfid) {
-            const vm = this;
-            const index = Object.values(vm.rfids).findIndex((item) => {
-                return rfid.label === item.label && rfid.value === item.value;
-            });
-
-            vm.rfids.splice(index, 1);
-        },
-
-        removeFromGroup(item, save) {
-            const vm = this;
-            const group = Object.values(vm.group);
-            const index = group.findIndex((el) => {
-                return el.id === item.id;
-            });
-
-            if (index >= 0) {
-                group.splice(index, 1);
-                vm.group = group;
-            }
-
-            if (save) {
-                vm.mayBeGroupedVehicles = strip(vm.group);
-            }
         },
     },
 };

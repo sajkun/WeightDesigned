@@ -26,7 +26,7 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::group(['namespace' => 'PublicArea\BvsData', 'prefix' => 'bvsdata'], function () {
         Route::post('/list', 'ListController')->name('public.bvsdata.list');
-        Route::post('/get-by-owner', 'SingleItemController')->name('public.bvsdata.by.owner');
+        Route::post('/by-owner', 'SingleItemController')->name('public.bvsdata.by.owner');
     });
 
     Route::group(['namespace' => 'PublicArea\Info', 'prefix' => 'data'], function () {
