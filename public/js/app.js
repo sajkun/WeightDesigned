@@ -23327,32 +23327,126 @@ var appPublicVehicles = {
   },
   data: function data() {
     return {
-      mode: "list",
-      // list | edit | create | details
-      vehicleAddType: null,
-      vehicleType: null,
-      // bunker | transporter | tractor | harvester
-      mayBeResponsiblePerson: null,
-      rfids: [],
-      mayBeGroupedVehicles: [],
-      popup: null,
-      // employees | vehicles
-      employees: [],
-      employeeSearch: "",
+      /**
+       * активная вкладка в правой колонке при режиме редактирования техники
+       * @param {Enum} : info | activity | settings
+       */
       activeTab: "info",
-      pincode: null,
+      /**
+       * Выбранная к просмотру единица техники
+       * @param {Object}
+       */
+      editedVehicle: {},
+      /**
+       * Список сотрудников организации
+       * @param {Array}
+       */
+      employees: [],
+      /**
+       * Строка поиска по сотрудникам организации
+       * @param {String}
+       */
+      employeeSearch: "",
+      /**
+       * Группы техники, для объединения комбайна и БП
+       * @param {Array}
+       */
       group: [],
+      /**
+       * Временная переменная для создания группы техники
+       * @param {Array}
+       */
+      mayBeGroupedVehicles: [],
+      /**
+       * Режим отображения форм добавления/редактирования техники и списка техники
+       * @param {Enum} // list | edit | create | details
+       */
+      mode: "list",
+      /**
+       * Временная переменная для назначения ответственного лица
+       *  @param {Object}
+       */
+      mayBeResponsiblePerson: null,
+      /**
+       * Ключ для отображения всплывающий окон со списком сотрудников и техники
+       * @param {Enum} // employees | vehicles
+       */
+      popup: null,
+      /**
+       * Введенный пинкод
+       * @param {Number} 10e4
+       */
+      pincode: null,
+      /**
+       * Списко RFID меток организации
+       * @param {Array}
+       */
+      rfids: [],
+      /**
+       * Тип добавляемой техники, используется для переключателей техники в форме добавления техники
+       * @param {Enum} // bunker | transporter | tractor | harvester
+       */
+      vehicleAddType: null,
+      /** */
+      vehicleGroupType: null,
+      /**
+       * Перечень техники организации, сгруппированной по типам
+       * @param {Object}
+       */
       vehicles: {
         bunkers: [],
         transporters: [],
         tractors: [],
         harvesters: []
       },
-      vehicleGroupType: null,
-      editedVehicle: {}
+      /**
+       * Тип техники которая сейчас просматривается
+       * @param {Enum} // bunker | transporter | tractor | harvester
+       */
+      vehicleType: null
     };
   },
   computed: {
+    /**
+     * HTML класс колонки, содержащей список техники
+     *
+     * @returns {String}
+     */
+    columnClass: function columnClass() {
+      var vm = this;
+      var tableClass = vm.mode === "details" ? "col-12 col-md-6 d-none d-md-block" : "col-12";
+      return {
+        tableClass: tableClass
+      };
+    },
+    /**
+     * отфильтрованный список сотрудников.
+     * Зависит от введенной строки поиска по сотрудникам
+     *
+     * @returns {Array}
+     */
+    employeesList: function employeesList() {
+      var vm = this;
+      if (vm.employeeSearch.length < 3) {
+        return vm.employees;
+      }
+      return vm.employees.filter(function (e) {
+        return e.first_name.toLowerCase().search(vm.employeeSearch.toLowerCase()) >= 0 || e.last_name.toLowerCase().search(vm.employeeSearch.toLowerCase()) >= 0 || e.middle_name.toLowerCase().search(vm.employeeSearch.toLowerCase()) >= 0 || e.phone.toLowerCase().search(vm.employeeSearch.toLowerCase()) >= 0 || e.specialisation.toLowerCase().search(vm.employeeSearch.toLowerCase()) >= 0;
+      });
+    },
+    /**
+     * Список моделей БП Лилиани
+     *
+     * @returns {Array<string>}
+     */
+    bunkerModels: function bunkerModels() {
+      return ["БП-16/20", "БП-22/28", "БП-22/28 габаритный", "БП-22/28 (8 колес)", "БП-22/31", "БП-22/31 хоппер", "БП-22/31 габаритный", "БП-22/31 8 колес", "БП-33/42 хоппер", "БП-33/42 8 колес", "БП-40/50"];
+    },
+    /**
+     * Человеко понятные имена типов техники
+     *
+     * @returns {Object}
+     */
     vehicleTypesList: function vehicleTypesList() {
       return {
         bunker: {
@@ -23369,33 +23463,29 @@ var appPublicVehicles = {
         }
       };
     },
+    /**
+     * Название типа техники
+     * @returns {String}
+     */
     vehicleName: function vehicleName() {
       var _this$vehicleTypesLis;
       return (_this$vehicleTypesLis = this.vehicleTypesList[this.vehicleType]) === null || _this$vehicleTypesLis === void 0 ? void 0 : _this$vehicleTypesLis.name;
     },
-    columnClass: function columnClass() {
-      var vm = this;
-      var tableClass = vm.mode === "details" ? "col-12 col-md-6 d-none d-md-block" : "col-12";
-      return {
-        tableClass: tableClass
-      };
-    },
-    employeesList: function employeesList() {
-      var vm = this;
-      if (vm.employeeSearch.length < 3) {
-        return vm.employees;
-      }
-      return vm.employees.filter(function (e) {
-        return e.first_name.toLowerCase().search(vm.employeeSearch.toLowerCase()) >= 0 || e.last_name.toLowerCase().search(vm.employeeSearch.toLowerCase()) >= 0 || e.middle_name.toLowerCase().search(vm.employeeSearch.toLowerCase()) >= 0 || e.phone.toLowerCase().search(vm.employeeSearch.toLowerCase()) >= 0 || e.specialisation.toLowerCase().search(vm.employeeSearch.toLowerCase()) >= 0;
-      });
-    },
-    bunkerModels: function bunkerModels() {
-      return ["БП-16/20", "БП-22/28", "БП-22/28 габаритный", "БП-22/28 (8 колес)", "БП-22/31", "БП-22/31 хоппер", "БП-22/31 габаритный", "БП-22/31 8 колес", "БП-33/42 хоппер", "БП-33/42 8 колес", "БП-40/50"];
-    },
+    /**
+     * Текущий список техники
+     *
+     * @returns {Array}
+     */
     vehiclesCurrent: function vehiclesCurrent() {
       var vehicles = this.vehicles["".concat(this.vehicleType, "s")] ? this.vehicles["".concat(this.vehicleType, "s")] : {};
       return Object.values(vehicles);
     },
+    /**
+     * перечень не сгруппированной техники
+     * или техники в одной группе с выбранной единицей техники
+     *
+     * @returns {Array}
+     */
     vehiclesGrouped: function vehiclesGrouped() {
       var vm = this;
       var vehicles = Object.values(vm.vehicles["".concat(vm.vehicleGroupType, "s")]);
@@ -23405,14 +23495,21 @@ var appPublicVehicles = {
       vehicles = Boolean(vm.editedVehicle.id) ? vehicles.filter(function (item) {
         return item.id !== vm.editedVehicle.id;
       }) : vehicles;
-      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)(vehicles);
       return vehicles;
     },
+    /**
+     * список РФИд  меток
+     *
+     * @returns {Array}
+     */
     rfidsComputed: function rfidsComputed() {
       return this.rfids;
     }
   },
   watch: {
+    /**
+     * @param {Enum} mode  // list | edit | create | details
+     */
     mode: function mode(_mode) {
       var vm = this;
       if (_mode !== "details") {
@@ -23432,20 +23529,31 @@ var appPublicVehicles = {
         });
       }
     },
+    /**
+     * обнуление форм при смене типа добавляемой техники
+     */
     vehicleAddType: function vehicleAddType() {
       var _vm$$refs$formCreateV;
       var vm = this;
       vm.reset();
       (_vm$$refs$formCreateV = vm.$refs.formCreateVehicle) === null || _vm$$refs$formCreateV === void 0 || _vm$$refs$formCreateV.reset();
       vm.$nextTick(function () {
-        vm.enableInputs();
+        // vm.enableInputs();
       });
     },
-    activeTab: function activeTab() {
+    /**
+     * отправка запроса при выборе закладки  активность
+     *
+     * @param {Enum} activeTab info | activity | settings
+     */
+    activeTab: function activeTab(_activeTab) {
       var vm = this;
       vm.$nextTick(function () {
         vm.enableInputs();
       });
+      if (_activeTab === "activity") {
+        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)((0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.editedVehicle));
+      }
     },
     popup: function popup() {
       var vm = this;

@@ -25,51 +25,106 @@ const appPublicVehicles = {
 
     data() {
         return {
-            mode: "list", // list | edit | create | details
-            vehicleAddType: null,
-            vehicleType: null, // bunker | transporter | tractor | harvester
-            mayBeResponsiblePerson: null,
-            rfids: [],
-            mayBeGroupedVehicles: [],
-            popup: null, // employees | vehicles
-            employees: [],
-            employeeSearch: "",
+            /**
+             * активная вкладка в правой колонке при режиме редактирования техники
+             * @param {Enum} : info | activity | settings
+             */
             activeTab: "info",
-            pincode: null,
+
+            /**
+             * Выбранная к просмотру единица техники
+             * @param {Object}
+             */
+            editedVehicle: {},
+
+            /**
+             * Список сотрудников организации
+             * @param {Array}
+             */
+            employees: [],
+
+            /**
+             * Строка поиска по сотрудникам организации
+             * @param {String}
+             */
+            employeeSearch: "",
+
+            /**
+             * Группы техники, для объединения комбайна и БП
+             * @param {Array}
+             */
             group: [],
+
+            /**
+             * Временная переменная для создания группы техники
+             * @param {Array}
+             */
+            mayBeGroupedVehicles: [],
+
+            /**
+             * Режим отображения форм добавления/редактирования техники и списка техники
+             * @param {Enum} // list | edit | create | details
+             */
+            mode: "list",
+
+            /**
+             * Временная переменная для назначения ответственного лица
+             *  @param {Object}
+             */
+            mayBeResponsiblePerson: null,
+
+            /**
+             * Ключ для отображения всплывающий окон со списком сотрудников и техники
+             * @param {Enum} // employees | vehicles
+             */
+            popup: null,
+
+            /**
+             * Введенный пинкод
+             * @param {Number} 10e4
+             */
+            pincode: null,
+
+            /**
+             * Списко RFID меток организации
+             * @param {Array}
+             */
+            rfids: [],
+
+            /**
+             * Тип добавляемой техники, используется для переключателей техники в форме добавления техники
+             * @param {Enum} // bunker | transporter | tractor | harvester
+             */
+            vehicleAddType: null,
+
+            /** */
+            vehicleGroupType: null,
+
+            /**
+             * Перечень техники организации, сгруппированной по типам
+             * @param {Object}
+             */
             vehicles: {
                 bunkers: [],
                 transporters: [],
                 tractors: [],
                 harvesters: [],
             },
-            vehicleGroupType: null,
-            editedVehicle: {},
+
+            /**
+             * Тип техники которая сейчас просматривается
+             * @param {Enum} // bunker | transporter | tractor | harvester
+             */
+            vehicleType: null,
         };
     },
 
     computed: {
-        vehicleTypesList() {
-            return {
-                bunker: {
-                    name: "Бункер перегрузчик",
-                },
-                transporter: {
-                    name: "Грузовик",
-                },
-                tractor: {
-                    name: "Трактор",
-                },
-                harvester: {
-                    name: "Комбайн",
-                },
-            };
-        },
-
-        vehicleName() {
-            return this.vehicleTypesList[this.vehicleType]?.name;
-        },
-
+        /**
+         * HTML класс колонки, содержащей список техники
+         *
+         * @returns {String}
+         */
         columnClass() {
             const vm = this;
             const tableClass =
@@ -81,6 +136,12 @@ const appPublicVehicles = {
             };
         },
 
+        /**
+         * отфильтрованный список сотрудников.
+         * Зависит от введенной строки поиска по сотрудникам
+         *
+         * @returns {Array}
+         */
         employeesList() {
             const vm = this;
             if (vm.employeeSearch.length < 3) {
@@ -108,6 +169,11 @@ const appPublicVehicles = {
             });
         },
 
+        /**
+         * Список моделей БП Лилиани
+         *
+         * @returns {Array<string>}
+         */
         bunkerModels() {
             return [
                 "БП-16/20",
@@ -124,6 +190,41 @@ const appPublicVehicles = {
             ];
         },
 
+        /**
+         * Человеко понятные имена типов техники
+         *
+         * @returns {Object}
+         */
+        vehicleTypesList() {
+            return {
+                bunker: {
+                    name: "Бункер перегрузчик",
+                },
+                transporter: {
+                    name: "Грузовик",
+                },
+                tractor: {
+                    name: "Трактор",
+                },
+                harvester: {
+                    name: "Комбайн",
+                },
+            };
+        },
+
+        /**
+         * Название типа техники
+         * @returns {String}
+         */
+        vehicleName() {
+            return this.vehicleTypesList[this.vehicleType]?.name;
+        },
+
+        /**
+         * Текущий список техники
+         *
+         * @returns {Array}
+         */
         vehiclesCurrent() {
             const vehicles = this.vehicles[`${this.vehicleType}s`]
                 ? this.vehicles[`${this.vehicleType}s`]
@@ -132,6 +233,12 @@ const appPublicVehicles = {
             return Object.values(vehicles);
         },
 
+        /**
+         * перечень не сгруппированной техники
+         * или техники в одной группе с выбранной единицей техники
+         *
+         * @returns {Array}
+         */
         vehiclesGrouped() {
             const vm = this;
             let vehicles = Object.values(
@@ -150,16 +257,23 @@ const appPublicVehicles = {
                   })
                 : vehicles;
 
-            clog(vehicles);
             return vehicles;
         },
 
+        /**
+         * список РФИд  меток
+         *
+         * @returns {Array}
+         */
         rfidsComputed() {
             return this.rfids;
         },
     },
 
     watch: {
+        /**
+         * @param {Enum} mode  // list | edit | create | details
+         */
         mode(mode) {
             const vm = this;
             if (mode !== "details") {
@@ -184,20 +298,32 @@ const appPublicVehicles = {
             }
         },
 
+        /**
+         * обнуление форм при смене типа добавляемой техники
+         */
         vehicleAddType() {
             const vm = this;
             vm.reset();
             vm.$refs.formCreateVehicle?.reset();
             vm.$nextTick(() => {
-                vm.enableInputs();
+                // vm.enableInputs();
             });
         },
 
-        activeTab() {
+        /**
+         * отправка запроса при выборе закладки  активность
+         *
+         * @param {Enum} activeTab info | activity | settings
+         */
+        activeTab(activeTab) {
             const vm = this;
             vm.$nextTick(() => {
                 vm.enableInputs();
             });
+
+            if (activeTab === "activity") {
+                clog(strip(vm.editedVehicle));
+            }
         },
 
         popup() {
