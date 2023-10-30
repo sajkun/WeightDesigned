@@ -91,6 +91,10 @@ export default {
 
             // целевой фиксируемый элемент
             const el = vm.$refs[vm.targetRef];
+
+            if (!el) {
+                return;
+            }
             const elHeight = el.offsetHeight;
 
             // Внутренние отступы родительского элемента
@@ -223,6 +227,10 @@ export default {
         ifEnoughHeight() {
             const vm = this;
             const targetElement = vm.$refs[vm.targetRef];
+
+            if (!targetElement) {
+                return true;
+            }
             const compareHeight =
                 targetElement.offsetHeight + vm.getHeightBefore();
             return compareHeight < getDocHeight();
@@ -247,6 +255,11 @@ export default {
         resertFixedElement() {
             const vm = this;
             const el = vm?.$refs[vm?.targetRef];
+
+            if (!el) {
+                return;
+            }
+
             const capitalLetters = new RegExp("[A-Z]", "gu");
 
             Object.keys(vm.fixData).forEach((propertyName) => {

@@ -150,6 +150,7 @@ const appPublicVehicles = {
                   })
                 : vehicles;
 
+            clog(vehicles);
             return vehicles;
         },
 
@@ -217,8 +218,24 @@ const appPublicVehicles = {
     mounted() {
         const vm = this;
         vm.vehicleType = vm.$refs.vehicleType.value;
-        vm.getEmployees();
-        vm.getVehicles();
+        vm.getEmployees().then((e) => {
+            vm.employees = e.employees;
+        });
+
+        vm.getVehicles().then((vehicles) => {
+            vm.vehicles = vehicles;
+        });
+
+        document.addEventListener("updateList", () => {
+            vm.getEmployees().then((e) => {
+                clog(e);
+                vm.employees = e.employees;
+            });
+
+            vm.getVehicles().then((vehicles) => {
+                vm.vehicles = vehicles;
+            });
+        });
     },
 
     methods: {

@@ -20015,32 +20015,71 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _misc_helpers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/misc/helpers */ "./resources/js/misc/helpers.js");
+/**
+ * методы для чтения, записи, удаления сущностей
+ */
+
 
 var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 var crud = {
   methods: {
-    confirmActionCb: function confirmActionCb() {
-      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("confirmActionCb");
+    /**
+     * Событие при подтверждении запроса
+     * во всплывающем окне: "вы уверены что..."
+     *
+     * @returns {Void}
+     */
+    confirmActionHandler: function confirmActionHandler() {
       document.dispatchEvent(new CustomEvent("submitConfirmEvent"));
     },
-    cancelConfirmActionCb: function cancelConfirmActionCb() {
-      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("cancelConfirmActionCb");
+    /**
+     * Событие при отмене запроса
+     * во всплывающем окне: "вы уверены что..."
+     *
+     * @returns {Void}
+     */
+    cancelConfirmActionHandler: function cancelConfirmActionHandler() {
+      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("cancelConfirmActionHandler");
       document.dispatchEvent(new CustomEvent("cancelConfirmEvent"));
     },
+    /**
+     * Запрос на создание новой сущности
+     *
+     * @param {Object} postData тело запроса
+     * @param {String} url адрес запроса
+     * @returns {Promise}
+     */
     createEntity: function createEntity(postData, url) {
       return this.sendRequest(postData, url);
     },
+    /**
+     * Запрос на удаление новой сущности
+     * Вызывает всплывающее  окно, если еще нет такого, иначе
+     * отменяет все назначеные Event Listeners
+     *
+     * @param {Object} postData тело запроса
+     * @param {String} url адрес запроса
+     * @returns {Void}
+     */
     deleteEntity: function deleteEntity(postData, url) {
       var vm = this;
       var _handlerSubmit = null;
       var _handlerCancel = null;
+
+      /**
+       * действия в случае, если пользователь подтвердит выбор
+       */
       _handlerSubmit = function handlerSubmit() {
-        vm.deleteEntityCb(postData, url);
+        vm.deleteEntityHandler(postData, url);
         document.removeEventListener("submitConfirmEvent", _handlerSubmit, false);
         vm.$nextTick(function () {
           vm.clearMessages(true);
         });
       };
+
+      /**
+       * действия в случае, если пользователь отменит выбор
+       */
       _handlerCancel = function handlerCancel() {
         document.removeEventListener("submitConfirmEvent", _handlerSubmit, false);
         document.removeEventListener("cancelConfirmEvent", _handlerCancel, false);
@@ -20048,6 +20087,11 @@ var crud = {
           vm.clearMessages(true);
         });
       };
+
+      /**
+       * Если еще не всплывающего  окна с запросом на подтверждение действия, показать его и назначить handlerSubmit и handlerCancel в слушатели событий (addEventListener)
+       * Иначе отмена действия
+       */
       if (!vm.messages.confirm) {
         document.addEventListener("submitConfirmEvent", _handlerSubmit);
         document.addEventListener("cancelConfirmEvent", _handlerCancel);
@@ -20060,12 +20104,34 @@ var crud = {
         });
       }
     },
-    deleteEntityCb: function deleteEntityCb(postData, url) {
+    /**
+     * Запрос на удаление новой сущности
+     *
+     * @param {Object} postData тело запроса
+     * @param {String} url адрес запроса
+     * @returns {Promise}
+     */
+    deleteEntityHandler: function deleteEntityHandler(postData, url) {
       return this.sendRequest(postData, url);
     },
+    /**
+     * Запрос на редактирование сущности
+     *
+     * @param {Object} postData тело запроса
+     * @param {String} url адрес запроса
+     * @returns {Promise}
+     */
     editEntity: function editEntity(postData, url) {
       return this.sendRequest(postData, url);
     },
+    /**
+     * функция отправки запроса
+     * так же логирует в консоль полученные и отправленные данные
+     *
+     * @param {Object} postData тело запроса
+     * @param {String} url адрес запроса
+     * @returns {Promise}
+     */
     sendRequest: function sendRequest(postData, url) {
       (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c sendRequest fire", "color:blue", url, postData);
       var vm = this;
@@ -20290,6 +20356,9 @@ __webpack_require__.r(__webpack_exports__);
 
       // целевой фиксируемый элемент
       var el = vm.$refs[vm.targetRef];
+      if (!el) {
+        return;
+      }
       var elHeight = el.offsetHeight;
 
       // Внутренние отступы родительского элемента
@@ -20403,6 +20472,9 @@ __webpack_require__.r(__webpack_exports__);
     ifEnoughHeight: function ifEnoughHeight() {
       var vm = this;
       var targetElement = vm.$refs[vm.targetRef];
+      if (!targetElement) {
+        return true;
+      }
       var compareHeight = targetElement.offsetHeight + vm.getHeightBefore();
       return compareHeight < (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.getDocHeight)();
     },
@@ -20424,6 +20496,9 @@ __webpack_require__.r(__webpack_exports__);
     resertFixedElement: function resertFixedElement() {
       var vm = this;
       var el = vm === null || vm === void 0 ? void 0 : vm.$refs[vm === null || vm === void 0 ? void 0 : vm.targetRef];
+      if (!el) {
+        return;
+      }
       var capitalLetters = new RegExp("[A-Z]", "gu");
       Object.keys(vm.fixData).forEach(function (propertyName) {
         var prop = propertyName.replace(capitalLetters, function (letter) {
@@ -21491,6 +21566,7 @@ var appPublicEmployees = {
     },
     deleteEmployee: function deleteEmployee(person) {
       var vm = this;
+      vm.editMode = false;
       var postData = {
         user_id: vm.userId,
         organisation_id: vm.organisationId,
@@ -23329,6 +23405,7 @@ var appPublicVehicles = {
       vehicles = Boolean(vm.editedVehicle.id) ? vehicles.filter(function (item) {
         return item.id !== vm.editedVehicle.id;
       }) : vehicles;
+      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)(vehicles);
       return vehicles;
     },
     rfidsComputed: function rfidsComputed() {
@@ -23386,8 +23463,21 @@ var appPublicVehicles = {
   mounted: function mounted() {
     var vm = this;
     vm.vehicleType = vm.$refs.vehicleType.value;
-    vm.getEmployees();
-    vm.getVehicles();
+    vm.getEmployees().then(function (e) {
+      vm.employees = e.employees;
+    });
+    vm.getVehicles().then(function (vehicles) {
+      vm.vehicles = vehicles;
+    });
+    document.addEventListener("updateList", function () {
+      vm.getEmployees().then(function (e) {
+        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)(e);
+        vm.employees = e.employees;
+      });
+      vm.getVehicles().then(function (vehicles) {
+        vm.vehicles = vehicles;
+      });
+    });
   },
   methods: {
     addVehicle: function addVehicle(type) {

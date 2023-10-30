@@ -10,8 +10,8 @@
 
         {{-- компонент отображения сообщений  --}}
         {{-- ************************************************ --}}
-        <messages-component :_messages='messages' v-on:cancel-msg='cancelConfirmActionCb' v-on:confirm-msg='confirmActionCb'
-            v-on:clear-msg='clearMessages'></messages-component>
+        <messages-component :_messages='messages' v-on:cancel-msg='cancelConfirmActionHandler'
+            v-on:confirm-msg='confirmActionHandler' v-on:clear-msg='clearMessages'></messages-component>
         {{-- ************************************************ --}}
 
         {{-- шапка со списком выбора вариантов сортировки и выбора месяца или года отображения --}}

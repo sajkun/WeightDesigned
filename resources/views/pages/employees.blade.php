@@ -7,8 +7,8 @@
 
         {{-- Компонент сообщений --}}
         {{-- ********************** --}}
-        <messages-component :_messages='messages' v-on:cancel-msg='cancelConfirmActionCb' v-on:confirm-msg='confirmActionCb'
-            v-on:clear-msg='clearMessages'></messages-component>
+        <messages-component :_messages='messages' v-on:cancel-msg='cancelConfirmActionHandler'
+            v-on:confirm-msg='confirmActionHandler' v-on:clear-msg='clearMessages'></messages-component>
         {{-- ********************** --}}
         <h2 class="h5 px-3 mt-3" ref='beforeStickyPosition'>Сотрудники</h2>
 

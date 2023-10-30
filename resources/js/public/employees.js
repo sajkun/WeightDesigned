@@ -207,6 +207,7 @@ const appPublicEmployees = {
 
         deleteEmployee(person) {
             const vm = this;
+            vm.editMode = false;
 
             const postData = {
                 user_id: vm.userId,

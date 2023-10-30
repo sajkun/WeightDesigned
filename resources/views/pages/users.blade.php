@@ -2,8 +2,8 @@
 
 @section('content')
     <div class="container-fluid d-none" id='public-users'>
-        <messages-component :_messages='messages' v-on:cancel-msg='cancelConfirmActionCb' v-on:confirm-msg='confirmActionCb'
-            v-on:clear-msg='clearMessages'></messages-component>
+        <messages-component :_messages='messages' v-on:cancel-msg='cancelConfirmActionHandler'
+            v-on:confirm-msg='confirmActionHandler' v-on:clear-msg='clearMessages'></messages-component>
 
         <input type="hidden" ref='organisationId' value='{{ $organisation_id }}'>
         <input type="hidden" ref='userId' value='{{ $user_id }}'>

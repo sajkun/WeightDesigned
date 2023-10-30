@@ -1,28 +1,62 @@
+/**
+ * методы для чтения, записи, удаления сущностей
+ */
+
 import { clog } from "@/misc/helpers";
 const axios = require("axios");
 const crud = {
     methods: {
-        confirmActionCb() {
-            clog("confirmActionCb");
+        /**
+         * Событие при подтверждении запроса
+         * во всплывающем окне: "вы уверены что..."
+         *
+         * @returns {Void}
+         */
+        confirmActionHandler() {
             document.dispatchEvent(new CustomEvent("submitConfirmEvent"));
         },
 
-        cancelConfirmActionCb() {
-            clog("cancelConfirmActionCb");
+        /**
+         * Событие при отмене запроса
+         * во всплывающем окне: "вы уверены что..."
+         *
+         * @returns {Void}
+         */
+        cancelConfirmActionHandler() {
+            clog("cancelConfirmActionHandler");
             document.dispatchEvent(new CustomEvent("cancelConfirmEvent"));
         },
 
+        /**
+         * Запрос на создание новой сущности
+         *
+         * @param {Object} postData тело запроса
+         * @param {String} url адрес запроса
+         * @returns {Promise}
+         */
         createEntity(postData, url) {
             return this.sendRequest(postData, url);
         },
 
+        /**
+         * Запрос на удаление новой сущности
+         * Вызывает всплывающее  окно, если еще нет такого, иначе
+         * отменяет все назначеные Event Listeners
+         *
+         * @param {Object} postData тело запроса
+         * @param {String} url адрес запроса
+         * @returns {Void}
+         */
         deleteEntity(postData, url) {
             const vm = this;
             let handlerSubmit = null;
             let handlerCancel = null;
 
+            /**
+             * действия в случае, если пользователь подтвердит выбор
+             */
             handlerSubmit = () => {
-                vm.deleteEntityCb(postData, url);
+                vm.deleteEntityHandler(postData, url);
 
                 document.removeEventListener(
                     "submitConfirmEvent",
@@ -35,6 +69,9 @@ const crud = {
                 });
             };
 
+            /**
+             * действия в случае, если пользователь отменит выбор
+             */
             handlerCancel = () => {
                 document.removeEventListener(
                     "submitConfirmEvent",
@@ -53,6 +90,10 @@ const crud = {
                 });
             };
 
+            /**
+             * Если еще не всплывающего  окна с запросом на подтверждение действия, показать его и назначить handlerSubmit и handlerCancel в слушатели событий (addEventListener)
+             * Иначе отмена действия
+             */
             if (!vm.messages.confirm) {
                 document.addEventListener("submitConfirmEvent", handlerSubmit);
                 document.addEventListener("cancelConfirmEvent", handlerCancel);
@@ -76,14 +117,36 @@ const crud = {
             }
         },
 
-        deleteEntityCb(postData, url) {
+        /**
+         * Запрос на удаление новой сущности
+         *
+         * @param {Object} postData тело запроса
+         * @param {String} url адрес запроса
+         * @returns {Promise}
+         */
+        deleteEntityHandler(postData, url) {
             return this.sendRequest(postData, url);
         },
 
+        /**
+         * Запрос на редактирование сущности
+         *
+         * @param {Object} postData тело запроса
+         * @param {String} url адрес запроса
+         * @returns {Promise}
+         */
         editEntity(postData, url) {
             return this.sendRequest(postData, url);
         },
 
+        /**
+         * функция отправки запроса
+         * так же логирует в консоль полученные и отправленные данные
+         *
+         * @param {Object} postData тело запроса
+         * @param {String} url адрес запроса
+         * @returns {Promise}
+         */
         sendRequest(postData, url) {
             clog("%c sendRequest fire", "color:blue", url, postData);
             const vm = this;
