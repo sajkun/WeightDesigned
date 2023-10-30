@@ -36,7 +36,7 @@ export default {
          * или по ответсвенному лицу
          *
          * @param {Number} id техники
-         * @param {Enum} type
+         * @param {Enum} type bunker | tractor | harvester | transporter | employee
          *
          * @returns {Promise}
          */
@@ -55,12 +55,20 @@ export default {
             return axios
                 .post(`/bvsdata/by-owner`, postData)
                 .then((response) => {
-                    clog("%c getBvsData response", "color:green", response);
+                    clog(
+                        "%c getBvsDataFiltered response",
+                        "color:green",
+                        response
+                    );
 
                     return response.data;
                 })
                 .catch((e) => {
-                    clog("%c getBvsData error", "color: red", e.response);
+                    clog(
+                        "%c getBvsDataFiltered error",
+                        "color: red",
+                        e.response
+                    );
                     return e.response;
                 });
         },

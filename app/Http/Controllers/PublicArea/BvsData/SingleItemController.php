@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Выдает данные от БВС, отфильтрованные по принадлежности к
+ * определенной единице техники или сотруднику
+ */
+
 namespace App\Http\Controllers\PublicArea\BvsData;
 
 use App\Models\Organisation;
@@ -29,6 +34,8 @@ class SingleItemController extends Controller
 
             return response()->json([
                 'bvs_data' => $bvs_data,
+                'owner_id' => $request->params['id'],
+                'owner_type' => $request->params['type']
             ], 200);
         } catch (\Exception $e) {
             return response()->json([

@@ -14,14 +14,9 @@ class Organisation extends Model
 
     protected $guarded = false;
 
-    /**
-     * получение всех имеющихся данных от зарегистированных бункеров перегрузчиков
-     *
-     * @return Array
-     */
-    public function bvsData()
+
+    public function authorizedBunkers($mode = 'object')
     {
-        $bunkers = [];
         $vehicles = $this->vehicles()->get();
 
         /**
@@ -31,14 +26,28 @@ class Organisation extends Model
             return $vehicle['type'] === 'bunker' && count($vehicle->pincode()->get()) !== 0;
         });
 
-        $bunkerNames = $bunkers->map(function ($bunker) {
-            return $bunker['name'];
-        })->toArray();
+        $data = $mode === 'object' ?
+            $bunkers :
+            $bunkers->map(function ($bunker) use ($mode) {
+                return $bunker[$mode];
+            });
 
+        return $data;
+    }
+
+    /**
+     * получение всех имеющихся данных от зарегистированных бункеров перегрузчиков
+     *
+     * @return Array
+     */
+    public function bvsData()
+    {
+        $bunkerNames = $this->authorizedBunkers('name')->toArray();
         $bvsData = BvsData::whereIn('bvs_name', $bunkerNames)->get()->toArray();
-
         return $bvsData;
     }
+
+
 
     /**
      * получет все данные об активности выбранной сущности
@@ -51,16 +60,79 @@ class Organisation extends Model
     public function bvsDataByOwner($ownerId = -1, $ownerType = null)
     {
         $owners = ['bunker', 'tractor', 'harvester', 'transporter', 'employee'];
-
         if ($ownerId < 0 || !in_array($ownerType, $owners)) {
             return false;
         }
 
-        // switch($ownerType){
-        //     case
-        // }
+        $owner = $ownerType === 'employee' ? Employee::find($ownerId) : Vehicle::find($ownerId);
 
-        return $this->id;
+        if ((int)$owner['organisation_id'] !== (int)$this->id) {
+            return [];
+        }
+
+        $data = $ownerType === 'employee' ? $this->bvsDataByEmployee($owner) : $this->bvsDataByVehicle($owner);
+
+        return $data;
+    }
+
+
+    /**
+     * получет все данные об активности выбранной техники
+     *
+     * @param vehicle - Vehicle
+     *
+     * @return Object|false
+     */
+    public function bvsDataByVehicle(Vehicle $vehicle)
+    {
+        if ((int)$vehicle['organisation_id'] !== (int)$this->id) {
+            return [];
+        }
+
+        $bvsData = [];
+        $key = 'bvs_name';
+        $vehicleName = null;
+
+        /**
+         * определяем имя техники и нвзывание колонки в базе, с которым сравнивать имя техники
+         */
+        switch ($vehicle['type']) {
+            case 'tractor':
+                if ($vehicle['group_id']) {
+                    $groupBunkers = Group::find($vehicle['group_id'])->vehicles()->get()->filter(function ($vh) {
+                        return $vh['type'] === 'bunker';
+                    });
+                    $bunker = $groupBunkers->first();
+                    $vehicleName = $bunker['name'];
+                }
+                break;
+            default:
+                $vehicleName = $vehicle['name'];
+                $key = $vehicle['type'] === 'harvester' ? 'from' : $key;
+                $key = $vehicle['type'] === 'transporter' ? 'to' : $key;
+                break;
+        }
+
+        /**
+         * Имена авторизованных бункеров перегрузчиков
+         */
+        $bunkerNames = $this->authorizedBunkers('name')->filter(function ($name) use ($key, $vehicleName) {
+            return $key === 'bvs_name' ? $vehicleName === $name : true;
+        })->toArray();
+
+        $bvsData = BvsData::where($key, $vehicleName)->get();
+
+        $bvsData =  $key === 'bvs_name' ? $bvsData->toArray() : $bvsData->filter(function ($d) use ($bunkerNames) {
+            return in_array($d['bvs_name'], $bunkerNames);
+        })->toArray();
+
+        return $bvsData;
+    }
+
+    public function bvsDataByEmployee(Employee $employee)
+    {
+
+        return [];
     }
 
     /**

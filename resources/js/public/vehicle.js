@@ -16,12 +16,13 @@ import publicAuthData from "@/mixins/publicAuthData";
 
 //компоненты
 import MessagesComponent from "@/components/MessagesComponent/";
+import BvsOperationComponent from "@/components/BvsOperationComponent";
 
 const axios = require("axios");
 const appPublicVehicles = {
     mixins: [axiosRequests, crud, fixedRightCol, publicAuthData, messages],
 
-    components: { MessagesComponent },
+    components: { MessagesComponent, BvsOperation: BvsOperationComponent },
 
     data() {
         return {
@@ -175,6 +176,21 @@ const appPublicVehicles = {
             });
         },
 
+        bvsOperations() {
+            const vm = this;
+            const key = vm.editedVehicle.id;
+
+            if (!key) {
+                return [];
+            }
+
+            if (!vm.bvsData.has(key)) {
+                return [];
+            }
+
+            return vm.bvsData.get(key);
+        },
+
         /**
          * Список моделей БП Лилиани
          *
@@ -278,6 +294,51 @@ const appPublicVehicles = {
 
     watch: {
         /**
+         * отправка запроса при выборе закладки  активность
+         *
+         * @param {Enum} activeTab info | activity | settings
+         */
+        activeTab(activeTab) {
+            const vm = this;
+            clog({ activeTab });
+            vm.$nextTick(() => {
+                vm.enableInputs();
+            });
+
+            if (activeTab === "activity") {
+                vm.getBvsDataBy(
+                    vm.editedVehicle.id,
+                    vm.editedVehicle.type
+                ).then((e) => {
+                    if (!vm.bvsData.has(e.owner_id)) {
+                        vm.bvsData.set(e.owner_id, e.bvs_data);
+                    }
+                });
+            }
+        },
+
+        bvsData(bvsData) {
+            clog(bvsData);
+        },
+
+        /**
+         * @param {Object} vehicle
+         */
+        editedVehicle(vehicle) {
+            const vm = this;
+            if (vm.activeTab === "activity") {
+                vm.getBvsDataBy(
+                    vm.editedVehicle.id,
+                    vm.editedVehicle.type
+                ).then((e) => {
+                    if (!vm.bvsData.has(e.owner_id)) {
+                        vm.bvsData.set(e.owner_id, e.bvs_data);
+                    }
+                });
+            }
+        },
+
+        /**
          * @param {Enum} mode  // list | edit | create | details
          */
         mode(mode) {
@@ -304,6 +365,13 @@ const appPublicVehicles = {
             }
         },
 
+        popup() {
+            const vm = this;
+            vm.$nextTick(() => {
+                vm.enableInputs();
+            });
+        },
+
         /**
          * обнуление форм при смене типа добавляемой техники
          */
@@ -314,30 +382,6 @@ const appPublicVehicles = {
             vm.$nextTick(() => {
                 vm.enableInputs();
                 vm.pincode = null;
-            });
-        },
-
-        /**
-         * отправка запроса при выборе закладки  активность
-         *
-         * @param {Enum} activeTab info | activity | settings
-         */
-        activeTab(activeTab) {
-            const vm = this;
-            vm.$nextTick(() => {
-                vm.enableInputs();
-            });
-
-            if (activeTab === "activity") {
-                clog(strip(vm.editedVehicle));
-                vm.getBvsDataBy(vm.editedVehicle.id, vm.editedVehicle.type);
-            }
-        },
-
-        popup() {
-            const vm = this;
-            vm.$nextTick(() => {
-                vm.enableInputs();
             });
         },
 
@@ -546,16 +590,15 @@ const appPublicVehicles = {
          *
          * @returns {False|Object}
          */
-        getBvsDataBy(id, type) {
+        async getBvsDataBy(id, type) {
             const vm = this;
 
             if (vm.bvsData.has(id)) {
+                clog(vm.bvsData);
                 return false;
             }
 
-            vm.getBvsDataFiltered(id, type).then((response) => {
-                clog(response);
-            });
+            return vm.getBvsDataFiltered(id, type);
         },
 
         removeRfid(rfid) {

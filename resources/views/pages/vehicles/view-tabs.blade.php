@@ -5,9 +5,9 @@
                 <button class="btn  btn-tab" :class="{ 'active': activeTab === 'info' }" @click="activeTab = 'info'"
                     type='button'>Информация</button>
             </li>
-            <li v-if='editedVehicle.pin'>
-                <button class="btn btn-tab" :class="{ 'active': activeTab === 'activity' }"
-                    @click="activeTab = 'activity'" type='button'>Активность</button>
+            <li>
+                <button class="btn btn-tab" :class="{ 'active': activeTab === 'activity' }" @click="activeTab = 'activity'"
+                    type='button'>Активность</button>
             </li>
             <li>
                 <button class="btn btn-tab" :class="{ 'active': activeTab === 'settings' }"

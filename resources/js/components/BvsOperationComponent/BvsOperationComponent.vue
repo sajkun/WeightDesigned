@@ -10,15 +10,11 @@
                 <b>Операция №{{ info.id }}</b>
             </div>
             <div class="col-6 text-end">
-                <span class="label">{{ operationTime.formatted }}</span>
+                <span class="date">{{ operationTime }}</span>
             </div>
             <div class="col-4">
                 <p class="m-0 label">Статус:</p>
                 <span>{{ operationInfo.formatted }}</span>
-            </div>
-            <div class="col-4">
-                <p class="m-0 label">{{ operationInfo.type }}:</p>
-                <span>{{ operationInfo.object }}</span>
             </div>
             <div class="col-4">
                 <p class="m-0 label">Вес в бункере:</p>
@@ -30,9 +26,19 @@
                     status.check.text
                 }}</span>
             </div>
-            <div class="col-8">
+            <div class="col-4">
+                <p class="m-0 label">Выгрузил:</p>
+                <span>{{ info.from }}</span>
+            </div>
+            <div class="col-4">
+                <p class="m-0 label">Принял:</p>
+                <span>{{ info.to }}</span>
+            </div>
+            <div class="col-4">
                 <p class="m-0 label">RFID:</p>
-                <span :class="status.rfid.status">{{ status.rfid.text }}</span>
+                <span style="font-size: 0.75rem" :class="status.rfid.status">{{
+                    status.rfid.text
+                }}</span>
             </div>
         </div>
     </div>
@@ -64,10 +70,12 @@ export default {
          * @returns {String}
          */
         operationTime() {
+            console.log(this?.info.operation_time);
             const dateString = this?.info.operation_time;
-
             moment.locale("ru");
             const date = moment(dateString).format("D MMMM YYYY в hh:mm");
+
+            clog(date);
             return date;
         },
 
@@ -203,6 +211,10 @@ export default {
     &.selected {
         box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.3);
     }
+}
+
+.date {
+    font-size: 0.75rem;
 }
 .error {
     color: var(--red);
