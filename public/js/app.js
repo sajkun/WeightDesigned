@@ -15486,11 +15486,9 @@ __webpack_require__.r(__webpack_exports__);
      * @returns {String}
      */
     operationTime: function operationTime() {
-      console.log(this === null || this === void 0 ? void 0 : this.info.operation_time);
       var dateString = this === null || this === void 0 ? void 0 : this.info.operation_time;
       moment__WEBPACK_IMPORTED_MODULE_0___default().locale("ru");
       var date = moment__WEBPACK_IMPORTED_MODULE_0___default()(dateString).format("D MMMM YYYY в hh:mm");
-      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_2__.clog)(date);
       return date;
     },
     /**
@@ -16687,10 +16685,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _misc_helpers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/misc/helpers */ "./resources/js/misc/helpers.js");
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _mixins_momentFormats__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @/mixins/momentFormats */ "./resources/js/mixins/momentFormats.js");
-/* harmony import */ var _components_CalendarComponent__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @/components/CalendarComponent */ "./resources/js/components/CalendarComponent/index.js");
+/* harmony import */ var _directives_click_outside__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @/directives/click-outside */ "./resources/js/directives/click-outside.js");
+/* harmony import */ var _mixins_momentFormats__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @/mixins/momentFormats */ "./resources/js/mixins/momentFormats.js");
+/* harmony import */ var _components_CalendarComponent__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @/components/CalendarComponent */ "./resources/js/components/CalendarComponent/index.js");
 //хэлперы
 
+
+
+// директивы
 
 
 //миксины
@@ -16699,6 +16701,9 @@ __webpack_require__.r(__webpack_exports__);
 //компоненты
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  directives: {
+    clickOutside: _directives_click_outside__WEBPACK_IMPORTED_MODULE_2__["default"]
+  },
   watch: {
     /**
      * Наследование параметра от родителя при смене свойства (props)
@@ -16805,6 +16810,10 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   methods: {
+    close: function close() {
+      this.focused = false;
+      this.showDropdown = false;
+    },
     /**
      * Коллбэк для ввода в поле редактирования даты
      *
@@ -16882,9 +16891,9 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   components: {
-    Calendar: _components_CalendarComponent__WEBPACK_IMPORTED_MODULE_3__["default"]
+    Calendar: _components_CalendarComponent__WEBPACK_IMPORTED_MODULE_4__["default"]
   },
-  mixins: [_mixins_momentFormats__WEBPACK_IMPORTED_MODULE_2__["default"]]
+  mixins: [_mixins_momentFormats__WEBPACK_IMPORTED_MODULE_3__["default"]]
 });
 
 /***/ }),
@@ -17238,9 +17247,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _directives_click_outside__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @/directives/click-outside */ "./resources/js/directives/click-outside.js");
 //  хэлперы
 
+
+// директивы
+
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  directives: {
+    clickOutside: _directives_click_outside__WEBPACK_IMPORTED_MODULE_1__["default"]
+  },
   data: function data() {
     return {
       year: null,
@@ -17297,11 +17313,6 @@ __webpack_require__.r(__webpack_exports__);
       month: vm.month,
       year: vm.year
     });
-    document.addEventListener("click", function (e) {
-      if (!e.target.closest(".month-picker")) {
-        vm.showDropdown = false;
-      }
-    });
   },
   methods: {
     /**
@@ -17314,6 +17325,9 @@ __webpack_require__.r(__webpack_exports__);
     chaYear: function chaYear(delta) {
       this.year += delta;
       return;
+    },
+    close: function close() {
+      this.showDropdown = false;
     },
     /**
      * Задает значение месяца
@@ -18005,7 +18019,8 @@ var _hoisted_8 = {
 };
 function render(_ctx, _cache, $props, $setup, $data, $options) {
   var _component_Calendar = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("Calendar");
-  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", {
+  var _directive_click_outside = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveDirective)("click-outside");
+  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)(((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", {
     "class": "component-holder",
     onKeydown: _cache[5] || (_cache[5] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.withKeys)(function ($event) {
       $options.setFocus(false);
@@ -18061,7 +18076,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       }, null, 8 /* PROPS */, ["onSelectedDate", "_initial-date"])])];
     }),
     _: 1 /* STABLE */
-  }, 512 /* NEED_PATCH */), [[vue__WEBPACK_IMPORTED_MODULE_0__.vShow, $data.showDropdown]])], 32 /* HYDRATE_EVENTS */);
+  }, 512 /* NEED_PATCH */), [[vue__WEBPACK_IMPORTED_MODULE_0__.vShow, $data.showDropdown]])], 32 /* HYDRATE_EVENTS */)), [[_directive_click_outside, $options.close]]);
 }
 
 /***/ }),
@@ -18342,7 +18357,8 @@ var _hoisted_11 = {
 };
 var _hoisted_12 = ["onClick"];
 function render(_ctx, _cache, $props, $setup, $data, $options) {
-  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" отображение выбранного месяца и года "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+  var _directive_click_outside = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveDirective)("click-outside");
+  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)(((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" отображение выбранного месяца и года "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
     type: "button",
     "class": "btn btn-borders",
     onClick: _cache[0] || (_cache[0] = function ($event) {
@@ -18385,7 +18401,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       }), 128 /* KEYED_FRAGMENT */))])])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)];
     }),
     _: 1 /* STABLE */
-  })]);
+  })])), [[_directive_click_outside, $options.close]]);
 }
 
 /***/ }),
@@ -18900,6 +18916,37 @@ __webpack_require__.r(__webpack_exports__);
     }
   }
 });
+
+/***/ }),
+
+/***/ "./resources/js/directives/click-outside.js":
+/*!**************************************************!*\
+  !*** ./resources/js/directives/click-outside.js ***!
+  \**************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/**
+ * обработчик клика за пределами переданного элемента el
+ */
+var clickOutside = {
+  beforeMount: function beforeMount(el, binding) {
+    el.clickOutsideEvent = function (event) {
+      if (!(el == event.target || el.contains(event.target))) {
+        binding.value();
+      }
+    };
+    document.body.addEventListener("click", el.clickOutsideEvent);
+  },
+  unmounted: function unmounted(el) {
+    document.body.removeEventListener("click", el.clickOutsideEvent);
+  }
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (clickOutside);
 
 /***/ }),
 
@@ -23584,34 +23631,22 @@ var appPublicVehicles = {
      */
     activeTab: function activeTab(_activeTab) {
       var vm = this;
-      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)({
-        activeTab: _activeTab
-      });
       vm.$nextTick(function () {
         vm.enableInputs();
       });
       if (_activeTab === "activity") {
-        vm.getBvsDataBy(vm.editedVehicle.id, vm.editedVehicle.type).then(function (e) {
-          if (!vm.bvsData.has(e.owner_id)) {
-            vm.bvsData.set(e.owner_id, e.bvs_data);
-          }
-        });
+        vm.getActivityData();
       }
     },
-    bvsData: function bvsData(_bvsData) {
-      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)(_bvsData);
-    },
     /**
+     * запрос данных об активности техники при выборе закладки активности
+     *
      * @param {Object} vehicle
      */
     editedVehicle: function editedVehicle(vehicle) {
       var vm = this;
       if (vm.activeTab === "activity") {
-        vm.getBvsDataBy(vm.editedVehicle.id, vm.editedVehicle.type).then(function (e) {
-          if (!vm.bvsData.has(e.owner_id)) {
-            vm.bvsData.set(e.owner_id, e.bvs_data);
-          }
-        });
+        vm.getActivityData();
       }
     },
     /**
@@ -23835,6 +23870,14 @@ var appPublicVehicles = {
         });
       });
     },
+    getActivityData: function getActivityData() {
+      var vm = this;
+      vm.getBvsDataBy(vm.editedVehicle.id, vm.editedVehicle.type).then(function (e) {
+        if (!vm.bvsData.has(e.owner_id)) {
+          vm.bvsData.set(e.owner_id, e.bvs_data);
+        }
+      });
+    },
     /**
      * запрашивает данные бункера весовой по переданной id и типу техники
      *
@@ -23852,14 +23895,13 @@ var appPublicVehicles = {
             case 0:
               vm = _this;
               if (!vm.bvsData.has(id)) {
-                _context.next = 4;
+                _context.next = 3;
                 break;
               }
-              (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)(vm.bvsData);
               return _context.abrupt("return", false);
-            case 4:
+            case 3:
               return _context.abrupt("return", vm.getBvsDataFiltered(id, type));
-            case 5:
+            case 4:
             case "end":
               return _context.stop();
           }

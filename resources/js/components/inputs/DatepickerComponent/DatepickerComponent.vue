@@ -7,6 +7,7 @@
             setFocus(false);
             showDropdown = false;
         "
+        v-click-outside="close"
     >
         <Transition name="fade">
             <div class="comment p-2" v-if="focused">
@@ -58,12 +59,18 @@
 import { strip, clog } from "@/misc/helpers";
 import moment from "moment";
 
+// директивы
+import clickOutside from "@/directives/click-outside";
+
 //миксины
 import momentFormats from "@/mixins/momentFormats";
 
 //компоненты
 import CalendarComponent from "@/components/CalendarComponent";
 export default {
+    directives: {
+        clickOutside,
+    },
     watch: {
         /**
          * Наследование параметра от родителя при смене свойства (props)
@@ -175,6 +182,10 @@ export default {
     },
 
     methods: {
+        close() {
+            this.focused = false;
+            this.showDropdown = false;
+        },
         /**
          * Коллбэк для ввода в поле редактирования даты
          *

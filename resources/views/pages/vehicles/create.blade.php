@@ -142,7 +142,7 @@
                 </div>
                 <div class="col">
                     <button class="btn btn-borders w-100 h-100" type="button" @click='popup="employees"'>Назначить
-                        отвественного</button>
+                        ответственного</button>
                 </div>
             </div>
         </div>

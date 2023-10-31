@@ -300,41 +300,24 @@ const appPublicVehicles = {
          */
         activeTab(activeTab) {
             const vm = this;
-            clog({ activeTab });
             vm.$nextTick(() => {
                 vm.enableInputs();
             });
 
             if (activeTab === "activity") {
-                vm.getBvsDataBy(
-                    vm.editedVehicle.id,
-                    vm.editedVehicle.type
-                ).then((e) => {
-                    if (!vm.bvsData.has(e.owner_id)) {
-                        vm.bvsData.set(e.owner_id, e.bvs_data);
-                    }
-                });
+                vm.getActivityData();
             }
         },
 
-        bvsData(bvsData) {
-            clog(bvsData);
-        },
-
         /**
+         * запрос данных об активности техники при выборе закладки активности
+         *
          * @param {Object} vehicle
          */
         editedVehicle(vehicle) {
             const vm = this;
             if (vm.activeTab === "activity") {
-                vm.getBvsDataBy(
-                    vm.editedVehicle.id,
-                    vm.editedVehicle.type
-                ).then((e) => {
-                    if (!vm.bvsData.has(e.owner_id)) {
-                        vm.bvsData.set(e.owner_id, e.bvs_data);
-                    }
-                });
+                vm.getActivityData();
             }
         },
 
@@ -582,6 +565,17 @@ const appPublicVehicles = {
             });
         },
 
+        getActivityData() {
+            const vm = this;
+            vm.getBvsDataBy(vm.editedVehicle.id, vm.editedVehicle.type).then(
+                (e) => {
+                    if (!vm.bvsData.has(e.owner_id)) {
+                        vm.bvsData.set(e.owner_id, e.bvs_data);
+                    }
+                }
+            );
+        },
+
         /**
          * запрашивает данные бункера весовой по переданной id и типу техники
          *
@@ -594,7 +588,6 @@ const appPublicVehicles = {
             const vm = this;
 
             if (vm.bvsData.has(id)) {
-                clog(vm.bvsData);
                 return false;
             }
 

@@ -108,7 +108,7 @@
 
             </div>
             <button class="btn btn-borders w-100 mt-2" type="button" @click='popup="employees"'>Назначить
-                отвественного</button>
+                ответственного</button>
         </div>
         <div class="horisontal-separator my-4"></div>
 

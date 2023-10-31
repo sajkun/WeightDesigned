@@ -70,12 +70,10 @@ export default {
          * @returns {String}
          */
         operationTime() {
-            console.log(this?.info.operation_time);
             const dateString = this?.info.operation_time;
             moment.locale("ru");
             const date = moment(dateString).format("D MMMM YYYY в hh:mm");
 
-            clog(date);
             return date;
         },
 

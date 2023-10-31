@@ -35,7 +35,8 @@
                                         <input id="email" type="email"
                                             class="form-control @error('email') is-invalid @enderror" name="email"
                                             value="{{ old('email') }}" required autocomplete="email" autofocus>
-                                        <label for="email">Email</label>
+                                        <label class='@if (old('email')) active @endif'
+                                            for="email">Email</label>
                                     </div>
 
                                     @error('email')

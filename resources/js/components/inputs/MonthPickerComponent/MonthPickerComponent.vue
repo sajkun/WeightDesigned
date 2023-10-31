@@ -1,6 +1,6 @@
 <!-- Компонент выбора месяца-->
 <template>
-    <div class="month-picker">
+    <div class="month-picker" v-click-outside="close">
         <!-- отображение выбранного месяца и года -->
         <button
             type="button"
@@ -59,7 +59,11 @@
 <script>
 //  хэлперы
 import moment from "moment";
+
+// директивы
+import clickOutside from "@/directives/click-outside";
 export default {
+    directives: { clickOutside },
     data() {
         return {
             year: null, // выбранный год
@@ -116,12 +120,6 @@ export default {
         vm.year = parseInt(moment(today).format("Y"));
 
         vm.$emit("selected", { month: vm.month, year: vm.year });
-
-        document.addEventListener("click", (e) => {
-            if (!e.target.closest(".month-picker")) {
-                vm.showDropdown = false;
-            }
-        });
     },
     methods: {
         /**
@@ -134,6 +132,10 @@ export default {
         chaYear(delta) {
             this.year += delta;
             return;
+        },
+
+        close() {
+            this.showDropdown = false;
         },
 
         /**
