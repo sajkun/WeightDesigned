@@ -15277,7 +15277,8 @@ var grasslandMap;
     initMap: function initMap(selector) {
       var map = new ymaps.Map(selector, {
         center: [45, 45],
-        zoom: 12
+        zoom: 12,
+        type: "yandex#hybrid"
       }, {
         searchControlProvider: "yandex#search"
       });
@@ -22166,7 +22167,8 @@ var appPublicGrasslands = {
       var vm = this;
       var map = new ymaps.Map(selector, {
         center: [45, 45],
-        zoom: 13
+        zoom: 13,
+        type: "yandex#hybrid"
       }, {
         searchControlProvider: "yandex#search"
       });

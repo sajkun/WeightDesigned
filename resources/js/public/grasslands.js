@@ -414,6 +414,7 @@ const appPublicGrasslands = {
                 {
                     center: [45, 45],
                     zoom: 13,
+                    type: "yandex#hybrid",
                 },
                 {
                     searchControlProvider: "yandex#search",

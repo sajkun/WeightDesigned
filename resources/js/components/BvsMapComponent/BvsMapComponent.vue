@@ -94,6 +94,7 @@ export default {
                 {
                     center: [45, 45],
                     zoom: 12,
+                    type: "yandex#hybrid",
                 },
                 {
                     searchControlProvider: "yandex#search",
