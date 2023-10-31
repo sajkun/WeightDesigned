@@ -122,6 +122,7 @@ const appPublicGrasslands = {
                 this.clearMap();
             }
 
+            // отрисовка контура поля, если есть сохраненные точки
             if (geoJsonSource == "file") {
                 const vm = this;
                 const grassland = vm.grasslandToEdit;
@@ -311,8 +312,12 @@ const appPublicGrasslands = {
          * Удаляет все контуры и объекты с карты
          */
         clearMap() {
+            const vm = this;
             grasslandMap?.geoObjects.removeAll();
-            this.$refs.geo_json.value = null;
+            vm.tempCoordinates = [];
+            if (vm.$refs?.geo_json?.value) {
+                vm.$refs.geo_json.value = null;
+            }
         },
 
         /**
@@ -334,6 +339,7 @@ const appPublicGrasslands = {
             };
 
             vm.createEntity(postData, "/grasslands/store").then(() => {
+                vm.grasslandToEdit = {};
                 vm.$refs.createGrasslandForm.clear();
             });
         },

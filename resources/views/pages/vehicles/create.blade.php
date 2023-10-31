@@ -79,7 +79,7 @@
                         <div class="form-control-custom">
                             <input type="text" id='vehiclePin' name='pin' ref='bunkerPin' key='bunkerPin'
                                 v-model='pincode'>
-                            <label for="vehiclePin" :class='{ "active": pincode }'> Пин код </label>
+                            <label for="vehiclePin" :class='{ "active": pincode }'> Пин-код </label>
                         </div>
                     </div>
 

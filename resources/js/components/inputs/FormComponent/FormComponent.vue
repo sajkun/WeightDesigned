@@ -4,7 +4,7 @@
         <div class="row">
             <Field
                 v-for="(info, key) in fields"
-                :key="'input' + key + info.id"
+                :key="'input' + key"
                 :_info="info"
                 :_forceRender="info.value"
                 @change-field="changedHandler"
@@ -113,9 +113,11 @@ export default {
          */
         clear() {
             this.structure = this.structure.map((el) => {
-                el.value = null;
+                el.value = "";
                 return el;
             });
+
+            this.$refs.form.reset();
 
             return;
         },

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\PublicArea\Vehicle;
 
 use App\Models\Vehicle;
@@ -33,7 +34,7 @@ class CheckPinController extends Controller
 
             return  response()->json([
                 'type' => 'success',
-                'message' => 'Пинкод верен',
+                'message' => 'Пин-код верен',
 
             ]);
         } catch (\Exception  $e) {

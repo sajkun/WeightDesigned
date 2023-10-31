@@ -437,7 +437,7 @@ const appPublicVehicles = {
                     : vm.$refs.bunkerName.value;
 
             if (!Boolean(pin)) {
-                vm.messages.error = "Пинкод не задан";
+                vm.messages.error = "Пин-код не задан";
                 return;
             }
             if (!Boolean(name)) {
@@ -446,7 +446,7 @@ const appPublicVehicles = {
             }
 
             if (pin.length !== 5) {
-                vm.messages.error = "Пинкод должен быть из 5 символов";
+                vm.messages.error = "Пин-код должен быть из 5 символов";
                 return;
             }
 

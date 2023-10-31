@@ -46,7 +46,7 @@
                         <div class="form-control-custom">
                             <input type="text" id='vehicleEditPin' v-model='pincode' key='bunkerEditPin'
                                 name='pin'>
-                            <label for="vehicleEditPin" :class='{ "active": pincode }'>Пин код</label>
+                            <label for="vehicleEditPin" :class='{ "active": pincode }'>Пин-код</label>
                         </div>
                     </div>
 

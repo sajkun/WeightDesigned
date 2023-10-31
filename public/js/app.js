@@ -17162,9 +17162,10 @@ __webpack_require__.r(__webpack_exports__);
      */
     clear: function clear() {
       this.structure = this.structure.map(function (el) {
-        el.value = null;
+        el.value = "";
         return el;
       });
+      this.$refs.form.reset();
       return;
     },
     /**
@@ -18241,7 +18242,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     ref: "form"
   }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_1, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($options.fields, function (info, key) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_Field, {
-      key: 'input' + key + info.id,
+      key: 'input' + key,
       _info: info,
       _forceRender: info.value,
       onChangeField: $options.changedHandler,
@@ -21890,6 +21891,8 @@ var appPublicGrasslands = {
       if (_geoJsonSource == "map") {
         this.clearMap();
       }
+
+      // отрисовка контура поля, если есть сохраненные точки
       if (_geoJsonSource == "file") {
         var vm = this;
         var grassland = vm.grasslandToEdit;
@@ -22062,9 +22065,13 @@ var appPublicGrasslands = {
      * Удаляет все контуры и объекты с карты
      */
     clearMap: function clearMap() {
-      var _grasslandMap;
+      var _grasslandMap, _vm$$refs;
+      var vm = this;
       (_grasslandMap = grasslandMap) === null || _grasslandMap === void 0 || _grasslandMap.geoObjects.removeAll();
-      this.$refs.geo_json.value = null;
+      vm.tempCoordinates = [];
+      if ((_vm$$refs = vm.$refs) !== null && _vm$$refs !== void 0 && (_vm$$refs = _vm$$refs.geo_json) !== null && _vm$$refs !== void 0 && _vm$$refs.value) {
+        vm.$refs.geo_json.value = null;
+      }
     },
     /**
      *Обработчик события подтверждения формы создания объекта "Поле"
@@ -22082,6 +22089,7 @@ var appPublicGrasslands = {
         grassland_data: grasslandData
       };
       vm.createEntity(postData, "/grasslands/store").then(function () {
+        vm.grasslandToEdit = {};
         vm.$refs.createGrasslandForm.clear();
       });
     },
@@ -23745,7 +23753,7 @@ var appPublicVehicles = {
       var pin = vm.pincode;
       var name = createOrEdit === "edit" ? vm.editedVehicle.name : vm.$refs.bunkerName.value;
       if (!Boolean(pin)) {
-        vm.messages.error = "Пинкод не задан";
+        vm.messages.error = "Пин-код не задан";
         return;
       }
       if (!Boolean(name)) {
@@ -23753,7 +23761,7 @@ var appPublicVehicles = {
         return;
       }
       if (pin.length !== 5) {
-        vm.messages.error = "Пинкод должен быть из 5 символов";
+        vm.messages.error = "Пин-код должен быть из 5 символов";
         return;
       }
       axios.post("/vehicles/pincode", {
