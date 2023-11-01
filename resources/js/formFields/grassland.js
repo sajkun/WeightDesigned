@@ -44,7 +44,6 @@ export default {
                     class: "col-md-6 col-12 mt-2 ",
                     required: true,
                     options: this.cultures,
-                    value: "",
                 },
                 size: {
                     id: "grassland-size",

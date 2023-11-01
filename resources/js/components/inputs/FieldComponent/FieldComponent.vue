@@ -122,6 +122,10 @@ export default {
         _forceRender() {
             this.forceRerender();
         },
+
+        renderComponent(renderComponent) {
+            clog(renderComponent);
+        },
     },
 
     computed: {

@@ -46,50 +46,52 @@ const appPublicGrasslands = {
         TheForm: FormComponent,
     },
 
-    data: {
-        /**
-         * список полей организации
-         *
-         * @param {Array}
-         */
-        grasslands: [],
+    data() {
+        return {
+            /**
+             * список полей организации
+             *
+             * @param {Array}
+             */
+            grasslands: [],
 
-        /**
-         * данные редактируемого или создаваемого поля
-         *
-         * @param {Object}
-         */
-        grasslandToEdit: {},
+            /**
+             * данные редактируемого или создаваемого поля
+             *
+             * @param {Object}
+             */
+            grasslandToEdit: {},
 
-        /**
-         * ключ, определяющий отображать
-         * - список полей или
-         * - форму редактирования выбранного поля или
-         * - форму создания нового поля
-         *
-         * @param {Enum} : list | edit | create
-         */
-        mode: "list",
+            /**
+             * ключ, определяющий отображать
+             * - список полей или
+             * - форму редактирования выбранного поля или
+             * - форму создания нового поля
+             *
+             * @param {Enum} : list | edit | create
+             */
+            mode: "list",
 
-        /**
-         * Признак отображения карты. Нужен для ее интерактивного обновления
-         *
-         * @param {Boolean}
-         */
-        showMap: true,
+            /**
+             * Признак отображения карты. Нужен для ее интерактивного обновления
+             *
+             * @param {Boolean}
+             */
+            showMap: true,
 
-        /**
-         * источник данных о границах поля
-         * загрузка из файла или выбор вручную кликами на карте
-         *
-         * @param {Enum} : file | map
-         */
-        geoJsonSource: "file",
+            /**
+             * источник данных о границах поля
+             * загрузка из файла или выбор вручную кликами на карте
+             *
+             * @param {Enum} : file | map
+             */
+            geoJsonSource: "file",
 
-        /**
-         * Координаты точек, заданных вручную
-         */
-        tempCoordinates: [],
+            /**
+             * Координаты точек, заданных вручную
+             */
+            tempCoordinates: [],
+        };
     },
 
     mounted() {
@@ -114,6 +116,14 @@ const appPublicGrasslands = {
     },
 
     watch: {
+        grasslandToEdit: {
+            handler(data) {
+                clog(strip(data));
+            },
+
+            deep: true,
+        },
+
         /**
          * @param {String} geoJsonSource
          */

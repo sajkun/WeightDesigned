@@ -16720,6 +16720,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     },
     _forceRender: function _forceRender() {
       this.forceRerender();
+    },
+    renderComponent: function renderComponent(_renderComponent) {
+      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)(_renderComponent);
     }
   },
   computed: {
@@ -17167,10 +17170,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _mixins_inputEvents__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/mixins/inputEvents */ "./resources/js/mixins/inputEvents.js");
+/* harmony import */ var _misc_helpers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/misc/helpers */ "./resources/js/misc/helpers.js");
+/* harmony import */ var _mixins_inputEvents__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @/mixins/inputEvents */ "./resources/js/mixins/inputEvents.js");
+//хэлперы
+
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  mixins: [_mixins_inputEvents__WEBPACK_IMPORTED_MODULE_0__["default"]],
+  mixins: [_mixins_inputEvents__WEBPACK_IMPORTED_MODULE_1__["default"]],
   props: ["_info", "_value"],
   data: function data() {
     var _this$_info, _this$_info2, _this$_info3, _this$_info4;
@@ -17184,8 +17190,15 @@ __webpack_require__.r(__webpack_exports__);
   },
   watch: {
     _value: function _value(v) {
+      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)(v);
       this.value = v;
+    },
+    value: function value() {
+      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("Select updated. Id: ".concat(this.id, ", name: ").concat(this.name), "Value: ".concat(this.value));
     }
+  },
+  created: function created() {
+    (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("Select created. Id: ".concat(this.id, ", name: ").concat(this.name), "Value: ".concat(this.value));
   },
   computed: {
     options: function options() {
@@ -18354,8 +18367,9 @@ var _hoisted_1 = {
   "class": "form-control-custom"
 };
 var _hoisted_2 = ["name", "id", "required"];
-var _hoisted_3 = ["value"];
-var _hoisted_4 = ["for"];
+var _hoisted_3 = ["selected"];
+var _hoisted_4 = ["value"];
+var _hoisted_5 = ["for"];
 function render(_ctx, _cache, $props, $setup, $data, $options) {
   return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("select", {
     name: $data.name,
@@ -18374,14 +18388,19 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     onInput: _cache[2] || (_cache[2] = function () {
       return _ctx.input && _ctx.input.apply(_ctx, arguments);
     })
-  }, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($options.options, function (name, key) {
+  }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("option", {
+    key: "default",
+    hidden: "",
+    selected: !$data.value
+  }, null, 8 /* PROPS */, _hoisted_3), ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($options.options, function (name, key) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("option", {
       key: 'options' + key,
       value: key
-    }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(name), 9 /* TEXT, PROPS */, _hoisted_3);
+    }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(name), 9 /* TEXT, PROPS */, _hoisted_4);
   }), 128 /* KEYED_FRAGMENT */))], 42 /* CLASS, PROPS, HYDRATE_EVENTS */, _hoisted_2), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelSelect, $data.value]]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", {
-    "for": $data.id
-  }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.label), 9 /* TEXT, PROPS */, _hoisted_4)]);
+    "for": $data.id,
+    "class": "{active: value}"
+  }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.label), 9 /* TEXT, PROPS */, _hoisted_5)]);
 }
 
 /***/ }),
@@ -19176,8 +19195,7 @@ __webpack_require__.r(__webpack_exports__);
           type: "select",
           "class": "col-md-6 col-12 mt-2 ",
           required: true,
-          options: this.cultures,
-          value: ""
+          options: this.cultures
         },
         size: {
           id: "grassland-size",
@@ -21909,45 +21927,47 @@ var appPublicGrasslands = {
     MessagesComponent: _components_common_MessagesComponent___WEBPACK_IMPORTED_MODULE_11__["default"],
     TheForm: _components_inputs_FormComponent___WEBPACK_IMPORTED_MODULE_10__["default"]
   },
-  data: {
-    /**
-     * список полей организации
-     *
-     * @param {Array}
-     */
-    grasslands: [],
-    /**
-     * данные редактируемого или создаваемого поля
-     *
-     * @param {Object}
-     */
-    grasslandToEdit: {},
-    /**
-     * ключ, определяющий отображать
-     * - список полей или
-     * - форму редактирования выбранного поля или
-     * - форму создания нового поля
-     *
-     * @param {Enum} : list | edit | create
-     */
-    mode: "list",
-    /**
-     * Признак отображения карты. Нужен для ее интерактивного обновления
-     *
-     * @param {Boolean}
-     */
-    showMap: true,
-    /**
-     * источник данных о границах поля
-     * загрузка из файла или выбор вручную кликами на карте
-     *
-     * @param {Enum} : file | map
-     */
-    geoJsonSource: "file",
-    /**
-     * Координаты точек, заданных вручную
-     */
-    tempCoordinates: []
+  data: function data() {
+    return {
+      /**
+       * список полей организации
+       *
+       * @param {Array}
+       */
+      grasslands: [],
+      /**
+       * данные редактируемого или создаваемого поля
+       *
+       * @param {Object}
+       */
+      grasslandToEdit: {},
+      /**
+       * ключ, определяющий отображать
+       * - список полей или
+       * - форму редактирования выбранного поля или
+       * - форму создания нового поля
+       *
+       * @param {Enum} : list | edit | create
+       */
+      mode: "list",
+      /**
+       * Признак отображения карты. Нужен для ее интерактивного обновления
+       *
+       * @param {Boolean}
+       */
+      showMap: true,
+      /**
+       * источник данных о границах поля
+       * загрузка из файла или выбор вручную кликами на карте
+       *
+       * @param {Enum} : file | map
+       */
+      geoJsonSource: "file",
+      /**
+       * Координаты точек, заданных вручную
+       */
+      tempCoordinates: []
+    };
   },
   mounted: function mounted() {
     var vm = this;
@@ -21970,6 +21990,12 @@ var appPublicGrasslands = {
     });
   },
   watch: {
+    grasslandToEdit: {
+      handler: function handler(data) {
+        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)((0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(data));
+      },
+      deep: true
+    },
     /**
      * @param {String} geoJsonSource
      */
