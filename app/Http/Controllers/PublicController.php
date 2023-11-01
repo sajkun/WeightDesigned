@@ -1,8 +1,10 @@
 <?php
+
 /**
  * Контроллер родитель для всех контроллеро публичной зоны
  * Подготавливает общие данные для все шаблонов
  */
+
 namespace App\Http\Controllers;
 
 use App\Models\User;
@@ -47,8 +49,76 @@ class PublicController extends Controller
         view()->share('employees', $organisation->employees()->get());
         view()->share('grasslands', $organisation->grasslands()->get());
         view()->share('useYamap', $this->useYamap());
+        view()->share('menu',  $this->getMainMenu());
     }
 
+    /**
+     * Структура главного меню пукбличной зоны
+     *
+     * @return Array
+     */
+    protected function getMainMenu()
+    {
+        $submenuVehicles = [
+            [
+                'url' => route('public.vehicle.index', ['type' => 'bunker']),
+                'title' => 'Бункеры перегрузчики'
+            ],
+            [
+                'url' => route('public.vehicle.index', ['type' => 'tractor']), 'title' => 'Тракторы'
+            ],
+            [
+                'url' => route('public.vehicle.index', ['type' => 'transporter']), 'title' => 'Грузовики'
+            ],
+            [
+                'url' => route('public.vehicle.index', ['type' => 'harvester']), 'title' => 'Комбайны'
+            ]
+        ];
+
+        /**
+         * Главное меню
+         */
+        $menu = [
+            [
+                'url' => route('public.grassland.index'),
+                'title' => 'Поля',
+                'icon' => false,
+                'submenu' => false,
+            ],
+            [
+                'url' => route('public.vehicle.index', ['type' => 'harvester']),
+                'title' => 'Техника',
+                'icon' => false,
+                'submenu' => $submenuVehicles,
+            ],
+            [
+                'url' => route('public.employee.index'),
+                'title' => 'Сотрудники',
+                'icon' => false,
+                'submenu' => false,
+            ],
+            [
+                'url' => route('public.users.index'),
+                'title' => 'Пользователи',
+                'icon' => false,
+                'submenu' => false,
+            ],
+            [
+                'url' => route('public.data.rating'),
+                'title' => 'Рейтинг',
+                'icon' => 'fa-star',
+                'submenu' => false,
+            ],
+            [
+                'url' => route('public.data.statistics'),
+                'title' => 'Статистика',
+                'icon' => false,
+                'submenu' => false,
+            ],
+        ];
+
+        return $menu;
+    }
 
     /**
      * Метод определяющий нужно ли загружать скрипт API яндекс карт
@@ -64,6 +134,6 @@ class PublicController extends Controller
     protected function applyExternalJsLibs()
     {
         view()->share('jslibs', []);
-        return ;
+        return;
     }
 }
