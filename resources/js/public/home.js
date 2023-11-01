@@ -13,10 +13,10 @@ import fixedRightCol from "@/mixins/fixedRightCol";
 import publicAuthData from "@/mixins/publicAuthData";
 
 //компоненты
-import BvsMapComponent from "@/components/BvsMapComponent/";
+import BvsMapComponent from "@/components/Bvs/MapComponent/";
 import CalendarComponent from "@/components/CalendarComponent";
-import BvsShortComponent from "@/components/BvsShortComponent";
-import BvsOperationComponent from "@/components/BvsOperationComponent";
+import BvsShortComponent from "@/components/Bvs/ShortComponent";
+import BvsOperationComponent from "@/components/Bvs/OperationComponent";
 import SwitcherComponent from "@/components/SwitcherComponent";
 
 const homePage = {
