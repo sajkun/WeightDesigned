@@ -116,14 +116,6 @@ const appPublicGrasslands = {
     },
 
     watch: {
-        grasslandToEdit: {
-            handler(data) {
-                clog(strip(data));
-            },
-
-            deep: true,
-        },
-
         /**
          * @param {String} geoJsonSource
          */

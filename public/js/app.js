@@ -16720,9 +16720,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     },
     _forceRender: function _forceRender() {
       this.forceRerender();
-    },
-    renderComponent: function renderComponent(_renderComponent) {
-      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)(_renderComponent);
     }
   },
   computed: {
@@ -17190,15 +17187,8 @@ __webpack_require__.r(__webpack_exports__);
   },
   watch: {
     _value: function _value(v) {
-      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)(v);
       this.value = v;
-    },
-    value: function value() {
-      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("Select updated. Id: ".concat(this.id, ", name: ").concat(this.name), "Value: ".concat(this.value));
     }
-  },
-  created: function created() {
-    (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("Select created. Id: ".concat(this.id, ", name: ").concat(this.name), "Value: ".concat(this.value));
   },
   computed: {
     options: function options() {
@@ -20266,10 +20256,602 @@ var getDocHeight = function getDocHeight() {
 /***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
 
 //скрипты, которые будут задействованы сразу после загрузки страницы
-__webpack_require__(/*! @/ready/dadata */ "./resources/js/ready/dadata.js");
-__webpack_require__(/*! @/ready/menu */ "./resources/js/ready/menu.js");
-__webpack_require__(/*! @/ready/formFields */ "./resources/js/ready/formFields.js");
-__webpack_require__(/*! @/ready/passwordStrength */ "./resources/js/ready/passwordStrength.js");
+__webpack_require__(/*! @/misc/ready/dadata */ "./resources/js/misc/ready/dadata.js");
+__webpack_require__(/*! @/misc/ready/menu */ "./resources/js/misc/ready/menu.js");
+__webpack_require__(/*! @/misc/ready/formFields */ "./resources/js/misc/ready/formFields.js");
+__webpack_require__(/*! @/misc/ready/passwordStrength */ "./resources/js/misc/ready/passwordStrength.js");
+
+/***/ }),
+
+/***/ "./resources/js/misc/ready/dadata.js":
+/*!*******************************************!*\
+  !*** ./resources/js/misc/ready/dadata.js ***!
+  \*******************************************/
+/***/ (() => {
+
+/**
+ * отправка запроса в дадата при регистрации
+ *
+ */
+
+var nameInput = document.getElementById("organisation-name");
+var taxInput = document.getElementById("tax-number");
+var isFetching = false;
+
+//инициализация события при вводе в поле ИНН или имя организации
+["input"].forEach(function (eventName) {
+  nameInput === null || nameInput === void 0 || nameInput.addEventListener(eventName, function (e) {
+    if (!e.target.value) {
+      return;
+    }
+    if (e.target.value.length < 3) {
+      var _document$querySelect;
+      (_document$querySelect = document.querySelector(".dropdown-container")) === null || _document$querySelect === void 0 || _document$querySelect.remove();
+      return;
+    }
+    if (isFetching) {
+      return;
+    }
+    checkQuery(e.target.value, "#dropdown-place-name");
+  });
+  taxInput === null || taxInput === void 0 || taxInput.addEventListener(eventName, function (e) {
+    if (!e.target.value) {
+      return;
+    }
+    if (e.target.value.length < 3) {
+      var _document$querySelect2;
+      (_document$querySelect2 = document.querySelector(".dropdown-container")) === null || _document$querySelect2 === void 0 || _document$querySelect2.remove();
+      return;
+    }
+    if (isFetching) {
+      return;
+    }
+    checkQuery(e.target.value, "#dropdown-place-tax");
+  });
+});
+
+/**
+ * отправка запроса в dadata.ru и отображение полученного результата
+ *
+ * @param {String} query - текст из поля ввода, что ищем часть ИНН или наименования
+ * @param {String} selector - HTML селектор соседа, предшествующего выпадающему списку перечня организаций
+ */
+function checkQuery(query, selector) {
+  isFetching = true;
+  var url = "https://suggestions.dadata.ru/suggestions/api/4_1/rs/suggest/party";
+  var token = "83ff13189cdfe8176a112ab02dcde133ca20ea84";
+  var options = {
+    method: "POST",
+    mode: "cors",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+      Authorization: "Token " + token
+    },
+    body: JSON.stringify({
+      query: query
+    })
+  };
+  fetch(url, options).then(function (response) {
+    return response.text();
+  }).then(function (result) {
+    isFetching = false;
+    showSuggestions(selector, JSON.parse(result));
+  })["catch"](function (error) {
+    console.log("error", error);
+    isFetching = false;
+  });
+}
+
+/**
+ * обработка выбора из выпадающего списка организаций
+ *
+ * @param {Event} e
+ */
+function applyOrganisation(e) {
+  var _document$querySelect3;
+  nameInput.value = e.target.closest("button").dataset.name;
+  taxInput.value = e.target.closest("button").dataset.taxnumber;
+  nameInput.classList.add("active");
+  taxInput.classList.add("active");
+  (_document$querySelect3 = document.querySelector(".dropdown-container")) === null || _document$querySelect3 === void 0 || _document$querySelect3.remove();
+}
+
+/**
+ * показывает список организаций на основе данных поля ввода
+ * @param {string} selector - HTML селектор соседа, предшествующего выпадающему списку перечня организаций
+ * @param {Object} data - объект содержащий перечень организаций
+ * @returns
+ */
+function showSuggestions(selector, data) {
+  var neighbor = document.querySelectorAll(selector);
+  if (!neighbor) {
+    return;
+  }
+  if (data.suggestions.length === 0) {
+    var _document$querySelect4;
+    (_document$querySelect4 = document.querySelector(".dropdown-container")) === null || _document$querySelect4 === void 0 || _document$querySelect4.remove();
+    return;
+  }
+  neighbor.forEach(function (htmlNode) {
+    var mayBeDropdown = htmlNode.nextElementSibling;
+    if (mayBeDropdown !== null && mayBeDropdown !== void 0 && mayBeDropdown.classList.contains("dropdown-container")) {
+      mayBeDropdown.remove();
+    }
+  });
+  var dropdownWrapper = document.getElementById("dropdownWrapper");
+  var dropdown = dropdownWrapper.content.cloneNode(true);
+  var buttonTemplate = document.getElementById("dropdownItem");
+  neighbor.forEach(function (htmlNode) {
+    data.suggestions.forEach(function (d) {
+      var button = buttonTemplate.content.cloneNode(true);
+      button.firstElementChild.querySelector("span").innerText = d.value;
+      button.firstElementChild.querySelector("span").after(" \u0418\u041D\u041D: ".concat(d.data.inn));
+      button.firstElementChild.dataset.name = d.value;
+      button.firstElementChild.dataset.taxnumber = d.data.inn;
+      button.firstElementChild.addEventListener("click", applyOrganisation);
+      dropdown.firstElementChild.firstElementChild.append(button);
+    });
+    htmlNode.after(dropdown);
+  });
+}
+if (nameInput) {
+  var buttonIndex = -1;
+  // обработчик клика вне выпадающего списка
+  document.addEventListener("click", function (e) {
+    var _e$target$closest;
+    if (!((_e$target$closest = e.target.closest(".dropdown")) !== null && _e$target$closest !== void 0 && _e$target$closest.length)) {
+      var _document$querySelect5;
+      (_document$querySelect5 = document.querySelectorAll(".dropdown")) === null || _document$querySelect5 === void 0 || _document$querySelect5.forEach(function (el) {
+        el.remove();
+      });
+    }
+  });
+  document.addEventListener("keydown", function (e) {
+    var dropdown = document.querySelector(".dropdown-container");
+    if (!dropdown) {
+      buttonIndex = -1;
+      return;
+    }
+    var buttons = Array.from(dropdown.querySelectorAll(".btn-list-imitation"));
+    if (!buttons.length) {
+      buttonIndex = -1;
+      return;
+    }
+    var focusedButton = Array.from(dropdown.querySelectorAll(".btn-list-imitation:focus")).pop();
+    buttonIndex = focusedButton ? buttons.indexOf(focusedButton) : buttonIndex;
+    if (focusedButton) {
+      focusedButton.blur();
+    }
+    buttonIndex = [37, 38].indexOf(e.keyCode) >= 0 ? buttonIndex - 1 : [39, 40].indexOf(e.keyCode) >= 0 ? buttonIndex + 1 : buttonIndex;
+    buttonIndex = buttonIndex >= buttons.length ? 0 : buttonIndex;
+    buttonIndex = buttonIndex < 0 ? buttons.length - 1 : buttonIndex;
+    buttons[buttonIndex].focus();
+  });
+}
+
+/***/ }),
+
+/***/ "./resources/js/misc/ready/formFields.js":
+/*!***********************************************!*\
+  !*** ./resources/js/misc/ready/formFields.js ***!
+  \***********************************************/
+/***/ (() => {
+
+/**
+ * Отображение подсказок к полям ввода
+ * в форме регистрации
+ */
+
+// перечень полей, если есть
+var formFields = document.querySelectorAll(".form-auth .form-control-custom input");
+
+/**
+ * сохранение в переменную события разворачивания элемента
+ *
+ * @param {HTMLElement} el - HTML элеент содержащий комментарий
+ */
+var triggerExpand = function triggerExpand(el) {
+  document.dispatchEvent(new CustomEvent("expandElement", {
+    detail: {
+      target: el
+    }
+  }));
+};
+
+/**
+ * проверка на наличие елемента или соответсвующего класса
+ *
+ * @param {HTMLElement} el - HTML элеент содержащий комментарий
+ */
+var checkTarget = function checkTarget(el) {
+  return el && el.classList.contains("form-control-comment");
+};
+
+/**
+ *сохранение в переменную события свёртывания
+ *
+ * @param {HTMLElement} el - HTML элеент содержащий комментарий
+ */
+var triggerCollapse = function triggerCollapse(el) {
+  document.dispatchEvent(new CustomEvent("collapseElement", {
+    detail: {
+      target: el
+    }
+  }));
+};
+
+/**
+ * Скрытие всех отображенных комментариев
+ */
+var clearComments = function clearComments() {
+  formFields === null || formFields === void 0 || formFields.forEach(function (input) {
+    var target = input.closest(".form-control-custom").nextElementSibling;
+    if (!checkTarget(target)) {
+      return;
+    }
+    target.style.height = 0;
+    target.classList.remove("active");
+  });
+};
+
+//добавление событий к каждому найденному элементу
+formFields === null || formFields === void 0 || formFields.forEach(function (el) {
+  // обработка события фокусировки и ввода в поле
+  ["input", "focus"].forEach(function (eventName) {
+    el.addEventListener(eventName, function (event) {
+      var target = event.target.closest(".form-control-custom").nextElementSibling;
+      clearComments();
+      if (!checkTarget(target)) return;
+      triggerExpand(target);
+    });
+  });
+});
+
+// обаботчик события разворачивания элемента
+document.addEventListener("expandElement", function (event) {
+  var el = event.detail.target;
+  var height = el.children[0].offsetHeight;
+  el.style.height = "".concat(height, "px");
+  el.classList.add("active");
+});
+
+/***/ }),
+
+/***/ "./resources/js/misc/ready/menu.js":
+/*!*****************************************!*\
+  !*** ./resources/js/misc/ready/menu.js ***!
+  \*****************************************/
+/***/ (() => {
+
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
+function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function _classPrivateMethodInitSpec(obj, privateSet) { _checkPrivateRedeclaration(obj, privateSet); privateSet.add(obj); }
+function _classPrivateFieldInitSpec(obj, privateMap, value) { _checkPrivateRedeclaration(obj, privateMap); privateMap.set(obj, value); }
+function _checkPrivateRedeclaration(obj, privateCollection) { if (privateCollection.has(obj)) { throw new TypeError("Cannot initialize the same private elements twice on an object"); } }
+function _classPrivateMethodGet(receiver, privateSet, fn) { if (!privateSet.has(receiver)) { throw new TypeError("attempted to get private field on non-instance"); } return fn; }
+function _classPrivateFieldGet(receiver, privateMap) { var descriptor = _classExtractFieldDescriptor(receiver, privateMap, "get"); return _classApplyDescriptorGet(receiver, descriptor); }
+function _classApplyDescriptorGet(receiver, descriptor) { if (descriptor.get) { return descriptor.get.call(receiver); } return descriptor.value; }
+function _classPrivateFieldSet(receiver, privateMap, value) { var descriptor = _classExtractFieldDescriptor(receiver, privateMap, "set"); _classApplyDescriptorSet(receiver, descriptor, value); return value; }
+function _classExtractFieldDescriptor(receiver, privateMap, action) { if (!privateMap.has(receiver)) { throw new TypeError("attempted to " + action + " private field on non-instance"); } return privateMap.get(receiver); }
+function _classApplyDescriptorSet(receiver, descriptor, value) { if (descriptor.set) { descriptor.set.call(receiver, value); } else { if (!descriptor.writable) { throw new TypeError("attempted to set read only private field"); } descriptor.value = value; } }
+var _menu = /*#__PURE__*/new WeakMap();
+var _mobileSwitcher = /*#__PURE__*/new WeakMap();
+var _menuStateOnMobile = /*#__PURE__*/new WeakMap();
+var _submenuSwitchers = /*#__PURE__*/new WeakMap();
+var _bindEvents = /*#__PURE__*/new WeakSet();
+var _bindSubmenuToggleByClick = /*#__PURE__*/new WeakSet();
+var _hideAllSubmenues = /*#__PURE__*/new WeakSet();
+var _hideOnClickOutside = /*#__PURE__*/new WeakSet();
+var _initMobileMenuSwitcher = /*#__PURE__*/new WeakSet();
+var _getHtmlElementSelector = /*#__PURE__*/new WeakSet();
+var _getSubmenuSwitchers = /*#__PURE__*/new WeakSet();
+var _menuClicked = /*#__PURE__*/new WeakSet();
+var _mobileSwitcherClicked = /*#__PURE__*/new WeakSet();
+var _setMenuState = /*#__PURE__*/new WeakSet();
+/**
+ * обработчики событий для главного меню сайта
+ */
+var menuActions = /*#__PURE__*/_createClass(
+/**
+ * @param {String} menu уникальный HTML селектор
+ * @param {String} mobileSwitcher ХТМЛ селектор для переключателя меню
+ */
+function menuActions(menu, mobileSwitcher) {
+  var _document;
+  _classCallCheck(this, menuActions);
+  /**
+   * Меняет статус мобильного меню
+   *
+   * @param {Enum} state shown | hidden
+   *
+   * @returns {Void}
+   */
+  _classPrivateMethodInitSpec(this, _setMenuState);
+  /**
+   * определяет кликнут ли переключатель мобильного меню
+   *
+   * @param {PointerEvent} e
+   *
+   * @return {Boolean}
+   */
+  _classPrivateMethodInitSpec(this, _mobileSwitcherClicked);
+  /**
+   * определяет кликнуто ли меню
+   *
+   * @param {PointerEvent} e
+   *
+   * @return {Boolean}
+   */
+  _classPrivateMethodInitSpec(this, _menuClicked);
+  /**
+   * получает массив ссылок, у которых есть субменю
+   *
+   * @returns {Array<HTMLElement>} submenuSwitchers
+   */
+  _classPrivateMethodInitSpec(this, _getSubmenuSwitchers);
+  /**
+   * формирует селектор ХТМЛ элемента
+   *
+   * @param {HTMLElement} el
+   *
+   * @returns {String}
+   */
+  _classPrivateMethodInitSpec(this, _getHtmlElementSelector);
+  /**
+   * Добавляет слушатель событий для
+   * клика на переключатель мобильного меню
+   *
+   * @returns {Void}
+   */
+  _classPrivateMethodInitSpec(this, _initMobileMenuSwitcher);
+  /**
+   * Сворачивание и скрытие меню и сабменю по клику вне
+   *
+   * @returns {Void}
+   */
+  _classPrivateMethodInitSpec(this, _hideOnClickOutside);
+  /**
+   * скрывает все отображенные меню
+   *
+   * @returns {Void}
+   */
+  _classPrivateMethodInitSpec(this, _hideAllSubmenues);
+  /**
+   * Добавляет слушатель событий для
+   * - клика на ссылку у которое есть под меню
+   *
+   * отображение выпадающего списка меню
+   * при клике на ссылку уровнем выше
+   *
+   * @returns {Void}
+   */
+  _classPrivateMethodInitSpec(this, _bindSubmenuToggleByClick);
+  /**
+   * Добавляет слушатель событий для
+   * - клика на переключатель мобильного меню
+   * - клика на ссылку у которое есть под меню
+   *
+   * @returns {Void}
+   */
+  _classPrivateMethodInitSpec(this, _bindEvents);
+  /**
+   * @param {HTMLElement} главное меню
+   */
+  _classPrivateFieldInitSpec(this, _menu, {
+    writable: true,
+    value: void 0
+  });
+  /**
+   * @param {HTMLElement} мобильный переключатель меню
+   */
+  _classPrivateFieldInitSpec(this, _mobileSwitcher, {
+    writable: true,
+    value: void 0
+  });
+  /**
+   * состояние мобильного меню
+   * @param {Enum} : hidden|shown
+   */
+  _classPrivateFieldInitSpec(this, _menuStateOnMobile, {
+    writable: true,
+    value: void 0
+  });
+  /**
+   * @param {HTMLElement} все ссылки у которых есть субменю
+   */
+  _classPrivateFieldInitSpec(this, _submenuSwitchers, {
+    writable: true,
+    value: void 0
+  });
+  var _t = this;
+  if (!menu || !mobileSwitcher) {
+    return;
+  }
+  _classPrivateFieldSet(_t, _menu, (_document = document) === null || _document === void 0 ? void 0 : _document.querySelector(menu));
+  _classPrivateFieldSet(_t, _mobileSwitcher, document.querySelector(mobileSwitcher));
+  if (!_classPrivateFieldGet(_t, _menu) || !_classPrivateFieldGet(_t, _mobileSwitcher)) {
+    return;
+  }
+  _classPrivateFieldSet(_t, _submenuSwitchers, _classPrivateMethodGet(_t, _getSubmenuSwitchers, _getSubmenuSwitchers2).call(_t));
+  _classPrivateFieldSet(_t, _menuStateOnMobile, "hidden");
+  _classPrivateMethodGet(_t, _bindEvents, _bindEvents2).call(_t);
+});
+function _bindEvents2() {
+  _classPrivateMethodGet(this, _initMobileMenuSwitcher, _initMobileMenuSwitcher2).call(this);
+  _classPrivateMethodGet(this, _bindSubmenuToggleByClick, _bindSubmenuToggleByClick2).call(this);
+  _classPrivateMethodGet(this, _hideOnClickOutside, _hideOnClickOutside2).call(this);
+  return;
+}
+function _bindSubmenuToggleByClick2() {
+  var t = this;
+  _classPrivateFieldGet(t, _submenuSwitchers).forEach(function (el) {
+    var submenu = el.nextSibling;
+    if (Boolean(submenu)) {
+      el.addEventListener("click", function (e) {
+        e.preventDefault();
+        _classPrivateMethodGet(t, _hideAllSubmenues, _hideAllSubmenues2).call(t);
+        e.target.closest("li").classList.add("selected");
+      });
+    }
+  });
+  return;
+}
+function _hideAllSubmenues2() {
+  _classPrivateFieldGet(this, _submenuSwitchers).forEach(function (el) {
+    el.closest("li").classList.remove("selected");
+  });
+  return;
+}
+function _hideOnClickOutside2() {
+  var t = this;
+  document.addEventListener("click", function (e) {
+    if (!_classPrivateMethodGet(t, _menuClicked, _menuClicked2).call(t, e) && !_classPrivateMethodGet(t, _mobileSwitcherClicked, _mobileSwitcherClicked2).call(t, e)) {
+      _classPrivateMethodGet(t, _hideAllSubmenues, _hideAllSubmenues2).call(t);
+      _classPrivateMethodGet(t, _setMenuState, _setMenuState2).call(t, "hidden");
+    } else if (!_classPrivateMethodGet(t, _menuClicked, _menuClicked2).call(t, e)) {
+      _classPrivateMethodGet(t, _hideAllSubmenues, _hideAllSubmenues2).call(t);
+    }
+  });
+  return;
+}
+function _initMobileMenuSwitcher2() {
+  var t = this;
+  _classPrivateFieldGet(t, _mobileSwitcher).addEventListener("click", function () {
+    var state = _classPrivateFieldGet(t, _menuStateOnMobile) === "shown" ? "hidden" : "shown";
+    _classPrivateMethodGet(t, _setMenuState, _setMenuState2).call(t, state);
+  });
+  return;
+}
+function _getHtmlElementSelector2(el) {
+  // имя ХТМЛ тага меню
+  var tagName = el.tagName;
+  // все классы меню
+  var classNames = el.getAttribute("class").split(" ");
+  //ID меню
+  var idName = el.getAttribute("id");
+
+  // формирование селектора
+  var idSelectorPart = idName ? "#".concat(idName) : "";
+  var classesSelectorPart = classNames.length ? ".".concat(classNames.join(".")) : "";
+  var selector = "".concat(tagName).concat(idSelectorPart).concat(classesSelectorPart).toLowerCase();
+  return selector;
+}
+function _getSubmenuSwitchers2() {
+  var submenuSwitchers = Array.from(_classPrivateFieldGet(this, _menu).querySelectorAll("a")).filter(function (el) {
+    return Boolean(el.nextSibling);
+  });
+  return submenuSwitchers;
+}
+function _menuClicked2(e) {
+  var selector = _classPrivateMethodGet(this, _getHtmlElementSelector, _getHtmlElementSelector2).call(this, _classPrivateFieldGet(this, _menu));
+  var menuClicked = e.target.closest(selector) === _classPrivateFieldGet(this, _menu);
+  return menuClicked;
+}
+function _mobileSwitcherClicked2(e) {
+  var selector = _classPrivateMethodGet(this, _getHtmlElementSelector, _getHtmlElementSelector2).call(this, _classPrivateFieldGet(this, _mobileSwitcher));
+  var mobileSwitcherClicked = e.target.closest(selector) === _classPrivateFieldGet(this, _mobileSwitcher);
+  return mobileSwitcherClicked;
+}
+function _setMenuState2(state) {
+  var t = this;
+  _classPrivateFieldSet(t, _menuStateOnMobile, state);
+  if (state === "shown") {
+    _classPrivateFieldGet(t, _menu).classList.add("shown");
+    _classPrivateFieldGet(t, _mobileSwitcher).classList.add("active");
+  } else {
+    _classPrivateFieldGet(t, _menu).classList.remove("shown");
+    _classPrivateFieldGet(t, _mobileSwitcher).classList.remove("active");
+  }
+  return;
+}
+new menuActions(".main-menu", "#mobile-menu-toggle");
+
+/***/ }),
+
+/***/ "./resources/js/misc/ready/passwordStrength.js":
+/*!*****************************************************!*\
+  !*** ./resources/js/misc/ready/passwordStrength.js ***!
+  \*****************************************************/
+/***/ (() => {
+
+/**
+ * Проверка надежности пароля
+ */
+
+var detectPasswordStrength = function detectPasswordStrength(password) {
+  var s_letters = "qwertyuiopasdfghjklzxcvbnm"; // Буквы в нижнем регистре
+  var b_letters = "QWERTYUIOPLKJHGFDSAZXCVBNM"; // Буквы в верхнем регистре
+  var digits = "0123456789"; // Цифры
+  var specials = "!@#$%^&*()_-+=|/.,:;[]{}"; // Спецсимволы
+  var is_s = false; // Есть ли в пароле буквы в нижнем регистре
+  var is_b = false; // Есть ли в пароле буквы в верхнем регистре
+  var is_d = false; // Есть ли в пароле цифры
+  var is_sp = false; // Есть ли в пароле спецсимволы
+  for (var i = 0; i < password.length; i++) {
+    /* Проверяем каждый символ пароля на принадлежность к тому или иному типу */
+    if (!is_s && s_letters.indexOf(password[i]) != -1) is_s = true;else if (!is_b && b_letters.indexOf(password[i]) != -1) is_b = true;else if (!is_d && digits.indexOf(password[i]) != -1) is_d = true;else if (!is_sp && specials.indexOf(password[i]) != -1) is_sp = true;
+  }
+  var rating = 0;
+  var text = "";
+  if (is_s) rating++; // Если в пароле есть символы в нижнем регистре, то увеличиваем рейтинг сложности
+  if (is_b) rating++; // Если в пароле есть символы в верхнем регистре, то увеличиваем рейтинг сложности
+  if (is_d) rating++; // Если в пароле есть цифры, то увеличиваем рейтинг сложности
+  if (is_sp) rating++; // Если в пароле есть спецсимволы, то увеличиваем рейтинг сложности
+  /* Далее идёт анализ длины пароля и полученного рейтинга, и на основании этого готовится текстовое описание сложности пароля */
+  if (password.length < 6 && rating < 3) text = "Простой";else if (password.length < 6 && rating >= 3) text = "Средний";else if (password.length >= 8 && rating < 3) text = "Средний";else if (password.length >= 8 && rating >= 3) text = "Сложный";else if (password.length >= 6 && rating == 1) text = "Простой";else if (password.length >= 6 && rating > 1 && rating < 4) text = "Средний";else if (password.length >= 6 && rating == 4) text = "Сложный";
+  return text; // Форму не отправляем
+};
+
+// поле ввода пароля
+var passwordField = document.getElementById("password");
+
+// инициализация события на ввод пароля
+passwordField === null || passwordField === void 0 || passwordField.addEventListener("input", function (e) {
+  var password = e.target.value;
+  var strength = detectPasswordStrength(password);
+  var className;
+  switch (strength) {
+    case "Простой":
+      className = "weak";
+      break;
+    case "Средний":
+      className = "neutral";
+      break;
+    case "Сложный":
+      className = "strong";
+      break;
+  }
+  var strengthHTML = document.getElementById("passwordStrength");
+  if (!strengthHTML) return;
+  var wrapper = strengthHTML.closest(".password-strength");
+  ["weak", "neutral", "strong"].forEach(function (name) {
+    wrapper.classList.remove(name);
+  });
+  strengthHTML.innerText = strength.toLowerCase();
+  if (password.length > 0) {
+    wrapper.classList.add(className);
+  }
+});
+
+// кнопка сменя режима пароля
+var passwordModeSwitcher = document.getElementById("show-password");
+
+// отображения значения в поле пароля
+passwordModeSwitcher === null || passwordModeSwitcher === void 0 ? void 0 : passwordModeSwitcher.addEventListener("click", function () {
+  passwordModeSwitcher.classList.toggle("toggled");
+  var passwordInputs = document.querySelectorAll("[data-mode]");
+  passwordInputs.forEach(function (el) {
+    var type = el.dataset.mode;
+    var newType = type === "password" ? "text" : "password";
+    el.setAttribute("type", newType);
+    el.setAttribute("data-mode", newType);
+  });
+});
 
 /***/ }),
 
@@ -21990,12 +22572,6 @@ var appPublicGrasslands = {
     });
   },
   watch: {
-    grasslandToEdit: {
-      handler: function handler(data) {
-        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)((0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(data));
-      },
-      deep: true
-    },
     /**
      * @param {String} geoJsonSource
      */
@@ -24129,598 +24705,6 @@ var appPublicVehicles = {
   }
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (appPublicVehicles);
-
-/***/ }),
-
-/***/ "./resources/js/ready/dadata.js":
-/*!**************************************!*\
-  !*** ./resources/js/ready/dadata.js ***!
-  \**************************************/
-/***/ (() => {
-
-/**
- * отправка запроса в дадата при регистрации
- *
- */
-
-var nameInput = document.getElementById("organisation-name");
-var taxInput = document.getElementById("tax-number");
-var isFetching = false;
-
-//инициализация события при вводе в поле ИНН или имя организации
-["input"].forEach(function (eventName) {
-  nameInput === null || nameInput === void 0 || nameInput.addEventListener(eventName, function (e) {
-    if (!e.target.value) {
-      return;
-    }
-    if (e.target.value.length < 3) {
-      var _document$querySelect;
-      (_document$querySelect = document.querySelector(".dropdown-container")) === null || _document$querySelect === void 0 || _document$querySelect.remove();
-      return;
-    }
-    if (isFetching) {
-      return;
-    }
-    checkQuery(e.target.value, "#dropdown-place-name");
-  });
-  taxInput === null || taxInput === void 0 || taxInput.addEventListener(eventName, function (e) {
-    if (!e.target.value) {
-      return;
-    }
-    if (e.target.value.length < 3) {
-      var _document$querySelect2;
-      (_document$querySelect2 = document.querySelector(".dropdown-container")) === null || _document$querySelect2 === void 0 || _document$querySelect2.remove();
-      return;
-    }
-    if (isFetching) {
-      return;
-    }
-    checkQuery(e.target.value, "#dropdown-place-tax");
-  });
-});
-
-/**
- * отправка запроса в dadata.ru и отображение полученного результата
- *
- * @param {String} query - текст из поля ввода, что ищем часть ИНН или наименования
- * @param {String} selector - HTML селектор соседа, предшествующего выпадающему списку перечня организаций
- */
-function checkQuery(query, selector) {
-  isFetching = true;
-  var url = "https://suggestions.dadata.ru/suggestions/api/4_1/rs/suggest/party";
-  var token = "83ff13189cdfe8176a112ab02dcde133ca20ea84";
-  var options = {
-    method: "POST",
-    mode: "cors",
-    headers: {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-      Authorization: "Token " + token
-    },
-    body: JSON.stringify({
-      query: query
-    })
-  };
-  fetch(url, options).then(function (response) {
-    return response.text();
-  }).then(function (result) {
-    isFetching = false;
-    showSuggestions(selector, JSON.parse(result));
-  })["catch"](function (error) {
-    console.log("error", error);
-    isFetching = false;
-  });
-}
-
-/**
- * обработка выбора из выпадающего списка организаций
- *
- * @param {Event} e
- */
-function applyOrganisation(e) {
-  var _document$querySelect3;
-  nameInput.value = e.target.closest("button").dataset.name;
-  taxInput.value = e.target.closest("button").dataset.taxnumber;
-  nameInput.classList.add("active");
-  taxInput.classList.add("active");
-  (_document$querySelect3 = document.querySelector(".dropdown-container")) === null || _document$querySelect3 === void 0 || _document$querySelect3.remove();
-}
-
-/**
- * показывает список организаций на основе данных поля ввода
- * @param {string} selector - HTML селектор соседа, предшествующего выпадающему списку перечня организаций
- * @param {Object} data - объект содержащий перечень организаций
- * @returns
- */
-function showSuggestions(selector, data) {
-  var neighbor = document.querySelectorAll(selector);
-  if (!neighbor) {
-    return;
-  }
-  if (data.suggestions.length === 0) {
-    var _document$querySelect4;
-    (_document$querySelect4 = document.querySelector(".dropdown-container")) === null || _document$querySelect4 === void 0 || _document$querySelect4.remove();
-    return;
-  }
-  neighbor.forEach(function (htmlNode) {
-    var mayBeDropdown = htmlNode.nextElementSibling;
-    if (mayBeDropdown !== null && mayBeDropdown !== void 0 && mayBeDropdown.classList.contains("dropdown-container")) {
-      mayBeDropdown.remove();
-    }
-  });
-  var dropdownWrapper = document.getElementById("dropdownWrapper");
-  var dropdown = dropdownWrapper.content.cloneNode(true);
-  var buttonTemplate = document.getElementById("dropdownItem");
-  neighbor.forEach(function (htmlNode) {
-    data.suggestions.forEach(function (d) {
-      var button = buttonTemplate.content.cloneNode(true);
-      button.firstElementChild.querySelector("span").innerText = d.value;
-      button.firstElementChild.querySelector("span").after(" \u0418\u041D\u041D: ".concat(d.data.inn));
-      button.firstElementChild.dataset.name = d.value;
-      button.firstElementChild.dataset.taxnumber = d.data.inn;
-      button.firstElementChild.addEventListener("click", applyOrganisation);
-      dropdown.firstElementChild.firstElementChild.append(button);
-    });
-    htmlNode.after(dropdown);
-  });
-}
-if (nameInput) {
-  var buttonIndex = -1;
-  // обработчик клика вне выпадающего списка
-  document.addEventListener("click", function (e) {
-    var _e$target$closest;
-    if (!((_e$target$closest = e.target.closest(".dropdown")) !== null && _e$target$closest !== void 0 && _e$target$closest.length)) {
-      var _document$querySelect5;
-      (_document$querySelect5 = document.querySelectorAll(".dropdown")) === null || _document$querySelect5 === void 0 || _document$querySelect5.forEach(function (el) {
-        el.remove();
-      });
-    }
-  });
-  document.addEventListener("keydown", function (e) {
-    var dropdown = document.querySelector(".dropdown-container");
-    if (!dropdown) {
-      buttonIndex = -1;
-      return;
-    }
-    var buttons = Array.from(dropdown.querySelectorAll(".btn-list-imitation"));
-    if (!buttons.length) {
-      buttonIndex = -1;
-      return;
-    }
-    var focusedButton = Array.from(dropdown.querySelectorAll(".btn-list-imitation:focus")).pop();
-    buttonIndex = focusedButton ? buttons.indexOf(focusedButton) : buttonIndex;
-    if (focusedButton) {
-      focusedButton.blur();
-    }
-    buttonIndex = [37, 38].indexOf(e.keyCode) >= 0 ? buttonIndex - 1 : [39, 40].indexOf(e.keyCode) >= 0 ? buttonIndex + 1 : buttonIndex;
-    buttonIndex = buttonIndex >= buttons.length ? 0 : buttonIndex;
-    buttonIndex = buttonIndex < 0 ? buttons.length - 1 : buttonIndex;
-    buttons[buttonIndex].focus();
-  });
-}
-
-/***/ }),
-
-/***/ "./resources/js/ready/formFields.js":
-/*!******************************************!*\
-  !*** ./resources/js/ready/formFields.js ***!
-  \******************************************/
-/***/ (() => {
-
-/**
- * Отображение подсказок к полям ввода
- * в форме регистрации
- */
-
-// перечень полей, если есть
-var formFields = document.querySelectorAll(".form-auth .form-control-custom input");
-
-/**
- * сохранение в переменную события разворачивания элемента
- *
- * @param {HTMLElement} el - HTML элеент содержащий комментарий
- */
-var triggerExpand = function triggerExpand(el) {
-  document.dispatchEvent(new CustomEvent("expandElement", {
-    detail: {
-      target: el
-    }
-  }));
-};
-
-/**
- * проверка на наличие елемента или соответсвующего класса
- *
- * @param {HTMLElement} el - HTML элеент содержащий комментарий
- */
-var checkTarget = function checkTarget(el) {
-  return el && el.classList.contains("form-control-comment");
-};
-
-/**
- *сохранение в переменную события свёртывания
- *
- * @param {HTMLElement} el - HTML элеент содержащий комментарий
- */
-var triggerCollapse = function triggerCollapse(el) {
-  document.dispatchEvent(new CustomEvent("collapseElement", {
-    detail: {
-      target: el
-    }
-  }));
-};
-
-/**
- * Скрытие всех отображенных комментариев
- */
-var clearComments = function clearComments() {
-  formFields === null || formFields === void 0 || formFields.forEach(function (input) {
-    var target = input.closest(".form-control-custom").nextElementSibling;
-    if (!checkTarget(target)) {
-      return;
-    }
-    target.style.height = 0;
-    target.classList.remove("active");
-  });
-};
-
-//добавление событий к каждому найденному элементу
-formFields === null || formFields === void 0 || formFields.forEach(function (el) {
-  // обработка события фокусировки и ввода в поле
-  ["input", "focus"].forEach(function (eventName) {
-    el.addEventListener(eventName, function (event) {
-      var target = event.target.closest(".form-control-custom").nextElementSibling;
-      clearComments();
-      if (!checkTarget(target)) return;
-      triggerExpand(target);
-    });
-  });
-});
-
-// обаботчик события разворачивания элемента
-document.addEventListener("expandElement", function (event) {
-  var el = event.detail.target;
-  var height = el.children[0].offsetHeight;
-  el.style.height = "".concat(height, "px");
-  el.classList.add("active");
-});
-
-/***/ }),
-
-/***/ "./resources/js/ready/menu.js":
-/*!************************************!*\
-  !*** ./resources/js/ready/menu.js ***!
-  \************************************/
-/***/ (() => {
-
-function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
-function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
-function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-function _classPrivateMethodInitSpec(obj, privateSet) { _checkPrivateRedeclaration(obj, privateSet); privateSet.add(obj); }
-function _classPrivateFieldInitSpec(obj, privateMap, value) { _checkPrivateRedeclaration(obj, privateMap); privateMap.set(obj, value); }
-function _checkPrivateRedeclaration(obj, privateCollection) { if (privateCollection.has(obj)) { throw new TypeError("Cannot initialize the same private elements twice on an object"); } }
-function _classPrivateMethodGet(receiver, privateSet, fn) { if (!privateSet.has(receiver)) { throw new TypeError("attempted to get private field on non-instance"); } return fn; }
-function _classPrivateFieldGet(receiver, privateMap) { var descriptor = _classExtractFieldDescriptor(receiver, privateMap, "get"); return _classApplyDescriptorGet(receiver, descriptor); }
-function _classApplyDescriptorGet(receiver, descriptor) { if (descriptor.get) { return descriptor.get.call(receiver); } return descriptor.value; }
-function _classPrivateFieldSet(receiver, privateMap, value) { var descriptor = _classExtractFieldDescriptor(receiver, privateMap, "set"); _classApplyDescriptorSet(receiver, descriptor, value); return value; }
-function _classExtractFieldDescriptor(receiver, privateMap, action) { if (!privateMap.has(receiver)) { throw new TypeError("attempted to " + action + " private field on non-instance"); } return privateMap.get(receiver); }
-function _classApplyDescriptorSet(receiver, descriptor, value) { if (descriptor.set) { descriptor.set.call(receiver, value); } else { if (!descriptor.writable) { throw new TypeError("attempted to set read only private field"); } descriptor.value = value; } }
-var _menu = /*#__PURE__*/new WeakMap();
-var _mobileSwitcher = /*#__PURE__*/new WeakMap();
-var _menuStateOnMobile = /*#__PURE__*/new WeakMap();
-var _submenuSwitchers = /*#__PURE__*/new WeakMap();
-var _bindEvents = /*#__PURE__*/new WeakSet();
-var _bindSubmenuToggleByClick = /*#__PURE__*/new WeakSet();
-var _hideAllSubmenues = /*#__PURE__*/new WeakSet();
-var _hideOnClickOutside = /*#__PURE__*/new WeakSet();
-var _initMobileMenuSwitcher = /*#__PURE__*/new WeakSet();
-var _getHtmlElementSelector = /*#__PURE__*/new WeakSet();
-var _getSubmenuSwitchers = /*#__PURE__*/new WeakSet();
-var _menuClicked = /*#__PURE__*/new WeakSet();
-var _mobileSwitcherClicked = /*#__PURE__*/new WeakSet();
-var _setMenuState = /*#__PURE__*/new WeakSet();
-/**
- * обработчики событий для главного меню сайта
- */
-var menuActions = /*#__PURE__*/_createClass(
-/**
- * @param {String} menu уникальный HTML селектор
- * @param {String} mobileSwitcher ХТМЛ селектор для переключателя меню
- */
-function menuActions(menu, mobileSwitcher) {
-  var _document;
-  _classCallCheck(this, menuActions);
-  /**
-   * Меняет статус мобильного меню
-   *
-   * @param {Enum} state shown | hidden
-   *
-   * @returns {Void}
-   */
-  _classPrivateMethodInitSpec(this, _setMenuState);
-  /**
-   * определяет кликнут ли переключатель мобильного меню
-   *
-   * @param {PointerEvent} e
-   *
-   * @return {Boolean}
-   */
-  _classPrivateMethodInitSpec(this, _mobileSwitcherClicked);
-  /**
-   * определяет кликнуто ли меню
-   *
-   * @param {PointerEvent} e
-   *
-   * @return {Boolean}
-   */
-  _classPrivateMethodInitSpec(this, _menuClicked);
-  /**
-   * получает массив ссылок, у которых есть субменю
-   *
-   * @returns {Array<HTMLElement>} submenuSwitchers
-   */
-  _classPrivateMethodInitSpec(this, _getSubmenuSwitchers);
-  /**
-   * формирует селектор ХТМЛ элемента
-   *
-   * @param {HTMLElement} el
-   *
-   * @returns {String}
-   */
-  _classPrivateMethodInitSpec(this, _getHtmlElementSelector);
-  /**
-   * Добавляет слушатель событий для
-   * клика на переключатель мобильного меню
-   *
-   * @returns {Void}
-   */
-  _classPrivateMethodInitSpec(this, _initMobileMenuSwitcher);
-  /**
-   * Сворачивание и скрытие меню и сабменю по клику вне
-   *
-   * @returns {Void}
-   */
-  _classPrivateMethodInitSpec(this, _hideOnClickOutside);
-  /**
-   * скрывает все отображенные меню
-   *
-   * @returns {Void}
-   */
-  _classPrivateMethodInitSpec(this, _hideAllSubmenues);
-  /**
-   * Добавляет слушатель событий для
-   * - клика на ссылку у которое есть под меню
-   *
-   * отображение выпадающего списка меню
-   * при клике на ссылку уровнем выше
-   *
-   * @returns {Void}
-   */
-  _classPrivateMethodInitSpec(this, _bindSubmenuToggleByClick);
-  /**
-   * Добавляет слушатель событий для
-   * - клика на переключатель мобильного меню
-   * - клика на ссылку у которое есть под меню
-   *
-   * @returns {Void}
-   */
-  _classPrivateMethodInitSpec(this, _bindEvents);
-  /**
-   * @param {HTMLElement} главное меню
-   */
-  _classPrivateFieldInitSpec(this, _menu, {
-    writable: true,
-    value: void 0
-  });
-  /**
-   * @param {HTMLElement} мобильный переключатель меню
-   */
-  _classPrivateFieldInitSpec(this, _mobileSwitcher, {
-    writable: true,
-    value: void 0
-  });
-  /**
-   * состояние мобильного меню
-   * @param {Enum} : hidden|shown
-   */
-  _classPrivateFieldInitSpec(this, _menuStateOnMobile, {
-    writable: true,
-    value: void 0
-  });
-  /**
-   * @param {HTMLElement} все ссылки у которых есть субменю
-   */
-  _classPrivateFieldInitSpec(this, _submenuSwitchers, {
-    writable: true,
-    value: void 0
-  });
-  var _t = this;
-  if (!menu || !mobileSwitcher) {
-    return;
-  }
-  _classPrivateFieldSet(_t, _menu, (_document = document) === null || _document === void 0 ? void 0 : _document.querySelector(menu));
-  _classPrivateFieldSet(_t, _mobileSwitcher, document.querySelector(mobileSwitcher));
-  if (!_classPrivateFieldGet(_t, _menu) || !_classPrivateFieldGet(_t, _mobileSwitcher)) {
-    return;
-  }
-  _classPrivateFieldSet(_t, _submenuSwitchers, _classPrivateMethodGet(_t, _getSubmenuSwitchers, _getSubmenuSwitchers2).call(_t));
-  _classPrivateFieldSet(_t, _menuStateOnMobile, "hidden");
-  _classPrivateMethodGet(_t, _bindEvents, _bindEvents2).call(_t);
-});
-function _bindEvents2() {
-  _classPrivateMethodGet(this, _initMobileMenuSwitcher, _initMobileMenuSwitcher2).call(this);
-  _classPrivateMethodGet(this, _bindSubmenuToggleByClick, _bindSubmenuToggleByClick2).call(this);
-  _classPrivateMethodGet(this, _hideOnClickOutside, _hideOnClickOutside2).call(this);
-  return;
-}
-function _bindSubmenuToggleByClick2() {
-  var t = this;
-  _classPrivateFieldGet(t, _submenuSwitchers).forEach(function (el) {
-    var submenu = el.nextSibling;
-    if (Boolean(submenu)) {
-      el.addEventListener("click", function (e) {
-        e.preventDefault();
-        _classPrivateMethodGet(t, _hideAllSubmenues, _hideAllSubmenues2).call(t);
-        e.target.closest("li").classList.add("selected");
-      });
-    }
-  });
-  return;
-}
-function _hideAllSubmenues2() {
-  _classPrivateFieldGet(this, _submenuSwitchers).forEach(function (el) {
-    el.closest("li").classList.remove("selected");
-  });
-  return;
-}
-function _hideOnClickOutside2() {
-  var t = this;
-  document.addEventListener("click", function (e) {
-    if (!_classPrivateMethodGet(t, _menuClicked, _menuClicked2).call(t, e) && !_classPrivateMethodGet(t, _mobileSwitcherClicked, _mobileSwitcherClicked2).call(t, e)) {
-      _classPrivateMethodGet(t, _hideAllSubmenues, _hideAllSubmenues2).call(t);
-      _classPrivateMethodGet(t, _setMenuState, _setMenuState2).call(t, "hidden");
-    } else if (!_classPrivateMethodGet(t, _menuClicked, _menuClicked2).call(t, e)) {
-      _classPrivateMethodGet(t, _hideAllSubmenues, _hideAllSubmenues2).call(t);
-    }
-  });
-  return;
-}
-function _initMobileMenuSwitcher2() {
-  var t = this;
-  _classPrivateFieldGet(t, _mobileSwitcher).addEventListener("click", function () {
-    var state = _classPrivateFieldGet(t, _menuStateOnMobile) === "shown" ? "hidden" : "shown";
-    _classPrivateMethodGet(t, _setMenuState, _setMenuState2).call(t, state);
-  });
-  return;
-}
-function _getHtmlElementSelector2(el) {
-  // имя ХТМЛ тага меню
-  var tagName = el.tagName;
-  // все классы меню
-  var classNames = el.getAttribute("class").split(" ");
-  //ID меню
-  var idName = el.getAttribute("id");
-
-  // формирование селектора
-  var idSelectorPart = idName ? "#".concat(idName) : "";
-  var classesSelectorPart = classNames.length ? ".".concat(classNames.join(".")) : "";
-  var selector = "".concat(tagName).concat(idSelectorPart).concat(classesSelectorPart).toLowerCase();
-  return selector;
-}
-function _getSubmenuSwitchers2() {
-  var submenuSwitchers = Array.from(_classPrivateFieldGet(this, _menu).querySelectorAll("a")).filter(function (el) {
-    return Boolean(el.nextSibling);
-  });
-  return submenuSwitchers;
-}
-function _menuClicked2(e) {
-  var selector = _classPrivateMethodGet(this, _getHtmlElementSelector, _getHtmlElementSelector2).call(this, _classPrivateFieldGet(this, _menu));
-  var menuClicked = e.target.closest(selector) === _classPrivateFieldGet(this, _menu);
-  return menuClicked;
-}
-function _mobileSwitcherClicked2(e) {
-  var selector = _classPrivateMethodGet(this, _getHtmlElementSelector, _getHtmlElementSelector2).call(this, _classPrivateFieldGet(this, _mobileSwitcher));
-  var mobileSwitcherClicked = e.target.closest(selector) === _classPrivateFieldGet(this, _mobileSwitcher);
-  return mobileSwitcherClicked;
-}
-function _setMenuState2(state) {
-  var t = this;
-  _classPrivateFieldSet(t, _menuStateOnMobile, state);
-  if (state === "shown") {
-    _classPrivateFieldGet(t, _menu).classList.add("shown");
-    _classPrivateFieldGet(t, _mobileSwitcher).classList.add("active");
-  } else {
-    _classPrivateFieldGet(t, _menu).classList.remove("shown");
-    _classPrivateFieldGet(t, _mobileSwitcher).classList.remove("active");
-  }
-  return;
-}
-new menuActions(".main-menu", "#mobile-menu-toggle");
-
-/***/ }),
-
-/***/ "./resources/js/ready/passwordStrength.js":
-/*!************************************************!*\
-  !*** ./resources/js/ready/passwordStrength.js ***!
-  \************************************************/
-/***/ (() => {
-
-/**
- * Проверка надежности пароля
- */
-
-var detectPasswordStrength = function detectPasswordStrength(password) {
-  var s_letters = "qwertyuiopasdfghjklzxcvbnm"; // Буквы в нижнем регистре
-  var b_letters = "QWERTYUIOPLKJHGFDSAZXCVBNM"; // Буквы в верхнем регистре
-  var digits = "0123456789"; // Цифры
-  var specials = "!@#$%^&*()_-+=|/.,:;[]{}"; // Спецсимволы
-  var is_s = false; // Есть ли в пароле буквы в нижнем регистре
-  var is_b = false; // Есть ли в пароле буквы в верхнем регистре
-  var is_d = false; // Есть ли в пароле цифры
-  var is_sp = false; // Есть ли в пароле спецсимволы
-  for (var i = 0; i < password.length; i++) {
-    /* Проверяем каждый символ пароля на принадлежность к тому или иному типу */
-    if (!is_s && s_letters.indexOf(password[i]) != -1) is_s = true;else if (!is_b && b_letters.indexOf(password[i]) != -1) is_b = true;else if (!is_d && digits.indexOf(password[i]) != -1) is_d = true;else if (!is_sp && specials.indexOf(password[i]) != -1) is_sp = true;
-  }
-  var rating = 0;
-  var text = "";
-  if (is_s) rating++; // Если в пароле есть символы в нижнем регистре, то увеличиваем рейтинг сложности
-  if (is_b) rating++; // Если в пароле есть символы в верхнем регистре, то увеличиваем рейтинг сложности
-  if (is_d) rating++; // Если в пароле есть цифры, то увеличиваем рейтинг сложности
-  if (is_sp) rating++; // Если в пароле есть спецсимволы, то увеличиваем рейтинг сложности
-  /* Далее идёт анализ длины пароля и полученного рейтинга, и на основании этого готовится текстовое описание сложности пароля */
-  if (password.length < 6 && rating < 3) text = "Простой";else if (password.length < 6 && rating >= 3) text = "Средний";else if (password.length >= 8 && rating < 3) text = "Средний";else if (password.length >= 8 && rating >= 3) text = "Сложный";else if (password.length >= 6 && rating == 1) text = "Простой";else if (password.length >= 6 && rating > 1 && rating < 4) text = "Средний";else if (password.length >= 6 && rating == 4) text = "Сложный";
-  return text; // Форму не отправляем
-};
-
-// поле ввода пароля
-var passwordField = document.getElementById("password");
-
-// инициализация события на ввод пароля
-passwordField === null || passwordField === void 0 || passwordField.addEventListener("input", function (e) {
-  var password = e.target.value;
-  var strength = detectPasswordStrength(password);
-  var className;
-  switch (strength) {
-    case "Простой":
-      className = "weak";
-      break;
-    case "Средний":
-      className = "neutral";
-      break;
-    case "Сложный":
-      className = "strong";
-      break;
-  }
-  var strengthHTML = document.getElementById("passwordStrength");
-  if (!strengthHTML) return;
-  var wrapper = strengthHTML.closest(".password-strength");
-  ["weak", "neutral", "strong"].forEach(function (name) {
-    wrapper.classList.remove(name);
-  });
-  strengthHTML.innerText = strength.toLowerCase();
-  if (password.length > 0) {
-    wrapper.classList.add(className);
-  }
-});
-
-// кнопка сменя режима пароля
-var passwordModeSwitcher = document.getElementById("show-password");
-
-// отображения значения в поле пароля
-passwordModeSwitcher === null || passwordModeSwitcher === void 0 ? void 0 : passwordModeSwitcher.addEventListener("click", function () {
-  passwordModeSwitcher.classList.toggle("toggled");
-  var passwordInputs = document.querySelectorAll("[data-mode]");
-  passwordInputs.forEach(function (el) {
-    var type = el.dataset.mode;
-    var newType = type === "password" ? "text" : "password";
-    el.setAttribute("type", newType);
-    el.setAttribute("data-mode", newType);
-  });
-});
 
 /***/ }),
 

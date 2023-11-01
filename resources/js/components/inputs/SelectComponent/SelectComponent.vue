@@ -43,23 +43,8 @@ export default {
     },
     watch: {
         _value(v) {
-            clog(v);
             this.value = v;
         },
-
-        value() {
-            clog(
-                `Select updated. Id: ${this.id}, name: ${this.name}`,
-                `Value: ${this.value}`
-            );
-        },
-    },
-
-    created() {
-        clog(
-            `Select created. Id: ${this.id}, name: ${this.name}`,
-            `Value: ${this.value}`
-        );
     },
 
     computed: {
