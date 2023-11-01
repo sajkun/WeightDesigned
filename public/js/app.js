@@ -18965,10 +18965,10 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./resources/js/formFields/employees/add.js":
-/*!**************************************************!*\
-  !*** ./resources/js/formFields/employees/add.js ***!
-  \**************************************************/
+/***/ "./resources/js/formFields/employees.js":
+/*!**********************************************!*\
+  !*** ./resources/js/formFields/employees.js ***!
+  \**********************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -18976,8 +18976,40 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+/* harmony import */ var _misc_helpers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/misc/helpers */ "./resources/js/misc/helpers.js");
+/* harmony import */ var _formFields_patterns__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @/formFields/patterns */ "./resources/js/formFields/patterns.js");
+/**
+ * Структуры форм добавления и редактирования сотрудников
+ *
+ * @see Employee в app/Models/Employee.php
+ */
+
+
+
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  data: function data() {
+    return {
+      editedEmployee: {}
+    };
+  },
   computed: {
+    /**
+     * Специализации сотрудников
+     *
+     * @returns {Object}
+     */
+    specialisations: function specialisations() {
+      return {
+        "Водитель Зерновоза": "Водитель Зерновоза",
+        "Водитель Комбайна": "Водитель Комбайна",
+        "Водитель Трактора": "Водитель Трактора"
+      };
+    },
+    /**
+     * Структура формы добавления сотрудника
+     *
+     * @returns {Object<Object>}
+     */
     addEmployeeFormStructure: function addEmployeeFormStructure() {
       return [{
         id: "last_name-new-employee",
@@ -18986,8 +19018,8 @@ __webpack_require__.r(__webpack_exports__);
         type: "text",
         required: true,
         "class": "col-md-6 col-lg-4 mt-2 ",
-        pattern: "[А-Яа-я]{1,}",
-        title: "Допустимы только русские буквы. Удалите пробелы"
+        pattern: _formFields_patterns__WEBPACK_IMPORTED_MODULE_1__["default"].russianLetter.pattern,
+        title: _formFields_patterns__WEBPACK_IMPORTED_MODULE_1__["default"].russianLetter.title
       }, {
         id: "first_name-new-employee",
         name: "first_name",
@@ -18995,16 +19027,16 @@ __webpack_require__.r(__webpack_exports__);
         type: "text",
         required: true,
         "class": "col-md-6 col-lg-4 mt-2 ",
-        pattern: "[А-Яа-я]{1,}",
-        title: "Допустимы только русские буквы. Удалите пробелы"
+        pattern: _formFields_patterns__WEBPACK_IMPORTED_MODULE_1__["default"].russianLetter.pattern,
+        title: _formFields_patterns__WEBPACK_IMPORTED_MODULE_1__["default"].russianLetter.title
       }, {
         id: "middle_name-new-employee",
         name: "middle_name",
         label: "Отчество",
         type: "text",
         "class": "mt-2 col-lg-4  ",
-        pattern: "[А-Яа-я]{1,}",
-        title: "Допустимы только русские буквы. Удалите пробелы"
+        pattern: _formFields_patterns__WEBPACK_IMPORTED_MODULE_1__["default"].russianLetter.pattern,
+        title: _formFields_patterns__WEBPACK_IMPORTED_MODULE_1__["default"].russianLetter.title
       }, {
         id: "phone-new-employee",
         name: "phone",
@@ -19013,8 +19045,8 @@ __webpack_require__.r(__webpack_exports__);
         required: true,
         "class": "mt-2 ",
         minlength: 6,
-        title: "Допустимы цифры, и символы (, ), +, -",
-        pattern: "[+]{0,1}[0-9\\-\\(\\)]{1,}"
+        pattern: _formFields_patterns__WEBPACK_IMPORTED_MODULE_1__["default"].phone.pattern,
+        title: _formFields_patterns__WEBPACK_IMPORTED_MODULE_1__["default"].phone.title
       }, {
         id: "specialisation-new-employee",
         name: "specialisation",
@@ -19024,27 +19056,12 @@ __webpack_require__.r(__webpack_exports__);
         required: true,
         options: this.specialisations
       }];
-    }
-  }
-});
-
-/***/ }),
-
-/***/ "./resources/js/formFields/employees/edit.js":
-/*!***************************************************!*\
-  !*** ./resources/js/formFields/employees/edit.js ***!
-  \***************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _misc_helpers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../misc/helpers */ "./resources/js/misc/helpers.js");
-
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  computed: {
+    },
+    /**
+     * Структура формы редактирования сотрудника
+     *
+     * @returns {Object<Object>}
+     */
     editEmployeeFormStructure: function editEmployeeFormStructure() {
       var vm = this;
       var structure = [{
@@ -19054,8 +19071,8 @@ __webpack_require__.r(__webpack_exports__);
         type: "text",
         required: true,
         "class": "col-md-6 col-lg-4 mt-2 ",
-        pattern: "[А-Яа-я]{1,}",
-        title: "Допустимы только русские буквы. Удалите пробелы"
+        pattern: _formFields_patterns__WEBPACK_IMPORTED_MODULE_1__["default"].russianLetter.pattern,
+        title: _formFields_patterns__WEBPACK_IMPORTED_MODULE_1__["default"].russianLetter.title
       }, {
         id: "first_name-new-employee",
         name: "first_name",
@@ -19063,16 +19080,16 @@ __webpack_require__.r(__webpack_exports__);
         type: "text",
         required: true,
         "class": "col-md-6 col-lg-4 mt-2 ",
-        pattern: "[А-Яа-я]{1,}",
-        title: "Допустимы только русские буквы. Удалите пробелы"
+        pattern: _formFields_patterns__WEBPACK_IMPORTED_MODULE_1__["default"].russianLetter.pattern,
+        title: _formFields_patterns__WEBPACK_IMPORTED_MODULE_1__["default"].russianLetter.title
       }, {
         id: "middle_name-new-employee",
         name: "middle_name",
         label: "Отчество",
         type: "text",
         "class": "mt-2 col-lg-4  ",
-        pattern: "[А-Яа-я]{1,}",
-        title: "Допустимы только русские буквы. Удалите пробелы"
+        pattern: _formFields_patterns__WEBPACK_IMPORTED_MODULE_1__["default"].russianLetter.pattern,
+        title: _formFields_patterns__WEBPACK_IMPORTED_MODULE_1__["default"].russianLetter.title
       }, {
         id: "phone-new-employee",
         name: "phone",
@@ -19081,8 +19098,8 @@ __webpack_require__.r(__webpack_exports__);
         required: true,
         "class": "mt-2 ",
         minlength: 6,
-        title: "Допустимы цифры, и символы (, ), +, -",
-        pattern: "[+]{0,1}[0-9\\-\\(\\)]{1,}"
+        pattern: _formFields_patterns__WEBPACK_IMPORTED_MODULE_1__["default"].phone.pattern,
+        title: _formFields_patterns__WEBPACK_IMPORTED_MODULE_1__["default"].phone.title
       }, {
         id: "specialisation-new-employee",
         name: "specialisation",
@@ -19090,7 +19107,7 @@ __webpack_require__.r(__webpack_exports__);
         type: "select",
         "class": "mt-2 ",
         required: true,
-        options: this.specialisations
+        options: vm.specialisations
       }];
       var employeeData = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.editedEmployee);
       structure.map(function (f) {
@@ -19115,9 +19132,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+/* harmony import */ var _formFields_patterns__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/formFields/patterns */ "./resources/js/formFields/patterns.js");
 /**
  * Структура форм создания и редактирования поля (grassland)
+ *
+ * @see Grassland в app/Models/Grassland.php
  */
+
+
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   computed: {
     /**
@@ -19142,8 +19164,8 @@ __webpack_require__.r(__webpack_exports__);
           type: "text",
           required: true,
           "class": "col-md-6 col-12 mt-2 ",
-          pattern: "[a-zA-Zа-яёА-ЯЁ\\d\\s]{1,}",
-          title: "Допустимы буквы, цифры и пробелы",
+          pattern: _formFields_patterns__WEBPACK_IMPORTED_MODULE_0__["default"].wordsDigitsSpace.pattern,
+          title: _formFields_patterns__WEBPACK_IMPORTED_MODULE_0__["default"].wordsDigitsSpace.title,
           minlength: 4,
           value: ""
         },
@@ -19164,8 +19186,8 @@ __webpack_require__.r(__webpack_exports__);
           type: "text",
           required: true,
           "class": "col-md-6 col-12 mt-2 ",
-          pattern: "\\d*\\.?\\d{1}",
-          title: "Допустимы только цифры и разделитель регистра (.) После точки должна быть строго 1 цифра"
+          pattern: _formFields_patterns__WEBPACK_IMPORTED_MODULE_0__["default"]["float"].pattern,
+          title: _formFields_patterns__WEBPACK_IMPORTED_MODULE_0__["default"]["float"].title
         },
         type: {
           id: "grassland-file",
@@ -19192,10 +19214,10 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./resources/js/formFields/users.js":
-/*!******************************************!*\
-  !*** ./resources/js/formFields/users.js ***!
-  \******************************************/
+/***/ "./resources/js/formFields/patterns.js":
+/*!*********************************************!*\
+  !*** ./resources/js/formFields/patterns.js ***!
+  \*********************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -19203,15 +19225,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _misc_helpers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/misc/helpers */ "./resources/js/misc/helpers.js");
-/**
- * Структуры форм добавления и редактирования пользователей
- *
- * @see User в app/Models/User.php
- */
-
-//хэлперы
-
 var patternData = {
   russianLetter: {
     pattern: "[А-Яа-я]{1,}",
@@ -19224,8 +19237,42 @@ var patternData = {
   phone: {
     pattern: "[+]{0,1}[0-9\\-\\(\\)\\s]{1,}",
     title: "Допустимы цифры, и символы (, ), +, -"
+  },
+  "float": {
+    pattern: "\\d*\\.?\\d{1}",
+    title: "Допустимы только цифры и разделитель регистра (.) После точки должна быть строго 1 цифра"
+  },
+  wordsDigitsSpace: {
+    pattern: "[a-zA-Zа-яёА-ЯЁ\\d\\s]{1,}",
+    title: "Допустимы буквы, цифры и пробелы"
   }
 };
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (patternData);
+
+/***/ }),
+
+/***/ "./resources/js/formFields/users.js":
+/*!******************************************!*\
+  !*** ./resources/js/formFields/users.js ***!
+  \******************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _misc_helpers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/misc/helpers */ "./resources/js/misc/helpers.js");
+/* harmony import */ var _formFields_patterns__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @/formFields/patterns */ "./resources/js/formFields/patterns.js");
+/**
+ * Структуры форм добавления и редактирования пользователей
+ *
+ * @see User в app/Models/User.php
+ */
+
+//хэлперы
+
+
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
@@ -19268,8 +19315,8 @@ var patternData = {
         minlength: 2,
         required: true,
         "class": "col-md-6 col-lg-4 mt-2 ",
-        pattern: patternData.russianLetter.pattern,
-        title: patternData.russianLetter.title
+        pattern: _formFields_patterns__WEBPACK_IMPORTED_MODULE_1__["default"].russianLetter.pattern,
+        title: _formFields_patterns__WEBPACK_IMPORTED_MODULE_1__["default"].russianLetter.title
       }, {
         id: "first_name-new-user",
         name: "first_name",
@@ -19277,16 +19324,16 @@ var patternData = {
         type: "text",
         required: true,
         "class": "col-md-6 col-lg-4 mt-2 ",
-        pattern: patternData.russianLetter.pattern,
-        title: patternData.russianLetter.title
+        pattern: _formFields_patterns__WEBPACK_IMPORTED_MODULE_1__["default"].russianLetter.pattern,
+        title: _formFields_patterns__WEBPACK_IMPORTED_MODULE_1__["default"].russianLetter.title
       }, {
         id: "middle_name-new-user",
         name: "middle_name",
         label: "Отчество",
         type: "text",
         "class": "mt-2 col-lg-4  ",
-        pattern: patternData.russianLetter.pattern,
-        title: patternData.russianLetter.title
+        pattern: _formFields_patterns__WEBPACK_IMPORTED_MODULE_1__["default"].russianLetter.pattern,
+        title: _formFields_patterns__WEBPACK_IMPORTED_MODULE_1__["default"].russianLetter.title
       }, {
         id: "email-new-user",
         name: "email",
@@ -19294,8 +19341,8 @@ var patternData = {
         type: "email",
         required: true,
         "class": " mt-2 ",
-        pattern: patternData.email.pattern,
-        title: patternData.email.title
+        pattern: _formFields_patterns__WEBPACK_IMPORTED_MODULE_1__["default"].email.pattern,
+        title: _formFields_patterns__WEBPACK_IMPORTED_MODULE_1__["default"].email.title
       }, {
         id: "phone-new-user",
         name: "phone",
@@ -19304,8 +19351,8 @@ var patternData = {
         required: true,
         "class": "mt-2 ",
         minlength: 6,
-        pattern: patternData.phone.pattern,
-        title: patternData.phone.title
+        pattern: _formFields_patterns__WEBPACK_IMPORTED_MODULE_1__["default"].phone.pattern,
+        title: _formFields_patterns__WEBPACK_IMPORTED_MODULE_1__["default"].phone.title
       }, {
         id: "password-new-user",
         name: "password",
@@ -19338,8 +19385,8 @@ var patternData = {
         type: "text",
         required: true,
         "class": "col-md-6 col-lg-4 mt-2 ",
-        pattern: patternData.russianLetter.pattern,
-        title: patternData.russianLetter.title,
+        pattern: _formFields_patterns__WEBPACK_IMPORTED_MODULE_1__["default"].russianLetter.pattern,
+        title: _formFields_patterns__WEBPACK_IMPORTED_MODULE_1__["default"].russianLetter.title,
         minlength: 2
       }, {
         id: "first_name-new-user",
@@ -19348,16 +19395,16 @@ var patternData = {
         type: "text",
         required: true,
         "class": "col-md-6 col-lg-4 mt-2 ",
-        pattern: patternData.russianLetter.pattern,
-        title: patternData.russianLetter.title
+        pattern: _formFields_patterns__WEBPACK_IMPORTED_MODULE_1__["default"].russianLetter.pattern,
+        title: _formFields_patterns__WEBPACK_IMPORTED_MODULE_1__["default"].russianLetter.title
       }, {
         id: "middle_name-new-user",
         name: "middle_name",
         label: "Отчество",
         type: "text",
         "class": "mt-2 col-lg-4  ",
-        pattern: patternData.russianLetter.pattern,
-        title: patternData.russianLetter.title
+        pattern: _formFields_patterns__WEBPACK_IMPORTED_MODULE_1__["default"].russianLetter.pattern,
+        title: _formFields_patterns__WEBPACK_IMPORTED_MODULE_1__["default"].russianLetter.title
       }, {
         id: "email-new-user",
         name: "email",
@@ -19365,8 +19412,8 @@ var patternData = {
         type: "email",
         required: true,
         "class": "col-md-6 mt-2 ",
-        pattern: patternData.email.pattern,
-        title: patternData.email.title
+        pattern: _formFields_patterns__WEBPACK_IMPORTED_MODULE_1__["default"].email.pattern,
+        title: _formFields_patterns__WEBPACK_IMPORTED_MODULE_1__["default"].email.title
       }, {
         id: "phone-new-user",
         name: "phone",
@@ -19375,8 +19422,8 @@ var patternData = {
         required: true,
         "class": "col-md-6 mt-2 ",
         minlength: 6,
-        pattern: patternData.phone.pattern,
-        title: patternData.phone.title
+        pattern: _formFields_patterns__WEBPACK_IMPORTED_MODULE_1__["default"].phone.pattern,
+        title: _formFields_patterns__WEBPACK_IMPORTED_MODULE_1__["default"].phone.title
       }];
       var rolesField = {
         id: "roles-new-user",
@@ -21525,17 +21572,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _misc_helpers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/misc/helpers */ "./resources/js/misc/helpers.js");
-/* harmony import */ var _formFields_employees_add__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @/formFields/employees/add */ "./resources/js/formFields/employees/add.js");
-/* harmony import */ var _mixins_crud__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @/mixins/crud */ "./resources/js/mixins/crud.js");
-/* harmony import */ var _formFields_employees_edit__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @/formFields/employees/edit */ "./resources/js/formFields/employees/edit.js");
-/* harmony import */ var _mixins_fixedRightCol__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @/mixins/fixedRightCol */ "./resources/js/mixins/fixedRightCol.js");
-/* harmony import */ var _mixins_formatName__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @/mixins/formatName */ "./resources/js/mixins/formatName.js");
-/* harmony import */ var _mixins_messages__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @/mixins/messages */ "./resources/js/mixins/messages.js");
-/* harmony import */ var _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @/mixins/publicAuthData */ "./resources/js/mixins/publicAuthData.js");
-/* harmony import */ var _components_inputs_FieldComponent__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @/components/inputs/FieldComponent */ "./resources/js/components/inputs/FieldComponent/index.js");
-/* harmony import */ var _components_inputs_FormComponent___WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @/components/inputs/FormComponent/ */ "./resources/js/components/inputs/FormComponent/index.js");
-/* harmony import */ var _components_inputs_InputComponent__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @/components/inputs/InputComponent */ "./resources/js/components/inputs/InputComponent/index.js");
-/* harmony import */ var _components_common_MessagesComponent___WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! @/components/common/MessagesComponent/ */ "./resources/js/components/common/MessagesComponent/index.js");
+/* harmony import */ var _mixins_crud__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @/mixins/crud */ "./resources/js/mixins/crud.js");
+/* harmony import */ var _mixins_fixedRightCol__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @/mixins/fixedRightCol */ "./resources/js/mixins/fixedRightCol.js");
+/* harmony import */ var _mixins_formatName__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @/mixins/formatName */ "./resources/js/mixins/formatName.js");
+/* harmony import */ var _mixins_messages__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @/mixins/messages */ "./resources/js/mixins/messages.js");
+/* harmony import */ var _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @/mixins/publicAuthData */ "./resources/js/mixins/publicAuthData.js");
+/* harmony import */ var _formFields_employees__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @/formFields/employees */ "./resources/js/formFields/employees.js");
+/* harmony import */ var _components_inputs_FieldComponent__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @/components/inputs/FieldComponent */ "./resources/js/components/inputs/FieldComponent/index.js");
+/* harmony import */ var _components_inputs_FormComponent___WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @/components/inputs/FormComponent/ */ "./resources/js/components/inputs/FormComponent/index.js");
+/* harmony import */ var _components_inputs_InputComponent__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @/components/inputs/InputComponent */ "./resources/js/components/inputs/InputComponent/index.js");
+/* harmony import */ var _components_common_MessagesComponent___WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @/components/common/MessagesComponent/ */ "./resources/js/components/common/MessagesComponent/index.js");
 /**
  *
  * Приложение отвечающее за внешний вид и отправку
@@ -21553,7 +21599,6 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-
 //компоненты
 
 
@@ -21561,12 +21606,12 @@ __webpack_require__.r(__webpack_exports__);
 
 var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 var appPublicEmployees = {
-  mixins: [_formFields_employees_add__WEBPACK_IMPORTED_MODULE_1__["default"], _mixins_crud__WEBPACK_IMPORTED_MODULE_2__["default"], _formFields_employees_edit__WEBPACK_IMPORTED_MODULE_3__["default"], _mixins_fixedRightCol__WEBPACK_IMPORTED_MODULE_4__["default"], _mixins_formatName__WEBPACK_IMPORTED_MODULE_5__["default"], _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_7__["default"], _mixins_messages__WEBPACK_IMPORTED_MODULE_6__["default"]],
+  mixins: [_mixins_crud__WEBPACK_IMPORTED_MODULE_1__["default"], _mixins_fixedRightCol__WEBPACK_IMPORTED_MODULE_2__["default"], _mixins_formatName__WEBPACK_IMPORTED_MODULE_3__["default"], _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_5__["default"], _mixins_messages__WEBPACK_IMPORTED_MODULE_4__["default"], _formFields_employees__WEBPACK_IMPORTED_MODULE_6__["default"]],
   components: {
-    FieldComponent: _components_inputs_FieldComponent__WEBPACK_IMPORTED_MODULE_8__["default"],
-    Field: _components_inputs_InputComponent__WEBPACK_IMPORTED_MODULE_10__["default"],
-    TheForm: _components_inputs_FormComponent___WEBPACK_IMPORTED_MODULE_9__["default"],
-    MessagesComponent: _components_common_MessagesComponent___WEBPACK_IMPORTED_MODULE_11__["default"]
+    FieldComponent: _components_inputs_FieldComponent__WEBPACK_IMPORTED_MODULE_7__["default"],
+    Field: _components_inputs_InputComponent__WEBPACK_IMPORTED_MODULE_9__["default"],
+    TheForm: _components_inputs_FormComponent___WEBPACK_IMPORTED_MODULE_8__["default"],
+    MessagesComponent: _components_common_MessagesComponent___WEBPACK_IMPORTED_MODULE_10__["default"]
   },
   data: function data() {
     return {
@@ -21586,11 +21631,6 @@ var appPublicEmployees = {
         phone: null,
         organisation_id: null,
         specialisation: null
-      },
-      specialisations: {
-        "Водитель Зерновоза": "Водитель Зерновоза",
-        "Водитель Комбайна": "Водитель Комбайна",
-        "Водитель Трактора": "Водитель Трактора"
       },
       vehicles: [],
       validationMessages: {

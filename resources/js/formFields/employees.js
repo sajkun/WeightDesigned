@@ -1,64 +1,52 @@
 /**
- * Структуры форм добавления и редактирования пользователей
+ * Структуры форм добавления и редактирования сотрудников
  *
- * @see User в app/Models/User.php
+ * @see Employee в app/Models/Employee.php
  */
 
-//хэлперы
 import { strip } from "@/misc/helpers";
 import patternData from "@/formFields/patterns";
 
 export default {
     data() {
         return {
-            /**
-             * Редактируемый пользователь, необъходимо переопределить в месте применения миксина
-             *
-             * @param {Object}
-             */
-            editedUser: {},
+            editedEmployee: {},
         };
     },
 
     computed: {
         /**
-         * Список ролей, необъходимо переопределить в месте применения миксина
+         * Специализации сотрудников
          *
-         * @returns {Array}
+         * @returns {Object}
          */
-        rolesList() {
-            return [];
+        specialisations() {
+            return {
+                "Водитель Зерновоза": "Водитель Зерновоза",
+                "Водитель Комбайна": "Водитель Комбайна",
+                "Водитель Трактора": "Водитель Трактора",
+            };
         },
 
         /**
-         * Структура формы добавления пользователя
+         * Структура формы добавления сотрудника
          *
          * @returns {Object<Object>}
          */
-        addUserFormStructure() {
+        addEmployeeFormStructure() {
             return [
                 {
-                    id: "login-new-user",
-                    name: "login",
-                    label: "Имя учетной записи",
-                    type: "text",
-                    required: true,
-                    class: "mt-2",
-                    minlength: 5,
-                },
-                {
-                    id: "last_name-new-user",
+                    id: "last_name-new-employee",
                     name: "last_name",
                     label: "Фамилия",
                     type: "text",
-                    minlength: 2,
                     required: true,
                     class: "col-md-6 col-lg-4 mt-2 ",
                     pattern: patternData.russianLetter.pattern,
                     title: patternData.russianLetter.title,
                 },
                 {
-                    id: "first_name-new-user",
+                    id: "first_name-new-employee",
                     name: "first_name",
                     label: "Имя",
                     type: "text",
@@ -68,7 +56,7 @@ export default {
                     title: patternData.russianLetter.title,
                 },
                 {
-                    id: "middle_name-new-user",
+                    id: "middle_name-new-employee",
                     name: "middle_name",
                     label: "Отчество",
                     type: "text",
@@ -77,17 +65,7 @@ export default {
                     title: patternData.russianLetter.title,
                 },
                 {
-                    id: "email-new-user",
-                    name: "email",
-                    label: "E-mail",
-                    type: "email",
-                    required: true,
-                    class: " mt-2 ",
-                    pattern: patternData.email.pattern,
-                    title: patternData.email.title,
-                },
-                {
-                    id: "phone-new-user",
+                    id: "phone-new-employee",
                     name: "phone",
                     label: "Телефон",
                     type: "text",
@@ -98,36 +76,27 @@ export default {
                     title: patternData.phone.title,
                 },
                 {
-                    id: "password-new-user",
-                    name: "password",
-                    label: "Пароль",
-                    type: "password",
-                    class: "mt-2 ",
-                    mode: "generate",
-                    required: true,
-                },
-                {
-                    id: "roles-new-user",
-                    name: "role",
+                    id: "specialisation-new-employee",
+                    name: "specialisation",
                     label: "Роль",
                     type: "select",
                     class: "mt-2 ",
                     required: true,
-                    options: this.rolesList,
+                    options: this.specialisations,
                 },
             ];
         },
 
         /**
-         * Структура формы редактирования пользователя
+         * Структура формы редактирования сотрудника
          *
          * @returns {Object<Object>}
          */
-        editUserFormStructure() {
+        editEmployeeFormStructure() {
             const vm = this;
             let structure = [
                 {
-                    id: "last_name-new-user",
+                    id: "last_name-new-employee",
                     name: "last_name",
                     label: "Фамилия",
                     type: "text",
@@ -135,10 +104,9 @@ export default {
                     class: "col-md-6 col-lg-4 mt-2 ",
                     pattern: patternData.russianLetter.pattern,
                     title: patternData.russianLetter.title,
-                    minlength: 2,
                 },
                 {
-                    id: "first_name-new-user",
+                    id: "first_name-new-employee",
                     name: "first_name",
                     label: "Имя",
                     type: "text",
@@ -148,7 +116,7 @@ export default {
                     title: patternData.russianLetter.title,
                 },
                 {
-                    id: "middle_name-new-user",
+                    id: "middle_name-new-employee",
                     name: "middle_name",
                     label: "Отчество",
                     type: "text",
@@ -157,47 +125,32 @@ export default {
                     title: patternData.russianLetter.title,
                 },
                 {
-                    id: "email-new-user",
-                    name: "email",
-                    label: "E-mail",
-                    type: "email",
-                    required: true,
-                    class: "col-md-6 mt-2 ",
-                    pattern: patternData.email.pattern,
-                    title: patternData.email.title,
-                },
-                {
-                    id: "phone-new-user",
+                    id: "phone-new-employee",
                     name: "phone",
                     label: "Телефон",
                     type: "text",
                     required: true,
-                    class: "col-md-6 mt-2 ",
+                    class: "mt-2 ",
                     minlength: 6,
                     pattern: patternData.phone.pattern,
                     title: patternData.phone.title,
                 },
+                {
+                    id: "specialisation-new-employee",
+                    name: "specialisation",
+                    label: "Роль",
+                    type: "select",
+                    class: "mt-2 ",
+                    required: true,
+                    options: vm.specialisations,
+                },
             ];
 
-            let rolesField = {
-                id: "roles-new-user",
-                name: "role",
-                label: "Роль",
-                type: "select",
-                class: "mt-2 ",
-                options: this.rolesList,
-            };
-
-            if (parseInt(vm.editedUser.id) !== parseInt(vm.userId)) {
-                structure.push(rolesField);
-            }
-
-            const userData = strip(vm.editedUser);
+            const employeeData = strip(vm.editedEmployee);
             structure.map((f) => {
-                f.value = userData[f.name];
+                f.value = employeeData[f.name];
                 return f;
             });
-
             return structure;
         },
     },

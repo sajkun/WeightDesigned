@@ -8,13 +8,12 @@
 import { strip, clog, getFormData } from "@/misc/helpers";
 
 //миксины
-import addEmployeeForm from "@/formFields/employees/add";
 import crud from "@/mixins/crud";
-import editEmployeeForm from "@/formFields/employees/edit";
 import fixedRightCol from "@/mixins/fixedRightCol";
 import formatName from "@/mixins/formatName";
 import messages from "@/mixins/messages";
 import publicAuthData from "@/mixins/publicAuthData";
+import employeeForm from "@/formFields/employees";
 
 //компоненты
 import FieldComponent from "@/components/inputs/FieldComponent";
@@ -25,13 +24,12 @@ import MessagesComponent from "@/components/common/MessagesComponent/";
 const axios = require("axios");
 const appPublicEmployees = {
     mixins: [
-        addEmployeeForm,
         crud,
-        editEmployeeForm,
         fixedRightCol,
         formatName,
         publicAuthData,
         messages,
+        employeeForm,
     ],
     components: {
         FieldComponent,
@@ -56,11 +54,6 @@ const appPublicEmployees = {
                 phone: null,
                 organisation_id: null,
                 specialisation: null,
-            },
-            specialisations: {
-                "Водитель Зерновоза": "Водитель Зерновоза",
-                "Водитель Комбайна": "Водитель Комбайна",
-                "Водитель Трактора": "Водитель Трактора",
             },
 
             vehicles: [],

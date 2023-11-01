@@ -1,6 +1,10 @@
 /**
  * Структура форм создания и редактирования поля (grassland)
+ *
+ * @see Grassland в app/Models/Grassland.php
  */
+
+import patternData from "@/formFields/patterns";
 export default {
     computed: {
         /**
@@ -26,8 +30,8 @@ export default {
                     type: "text",
                     required: true,
                     class: "col-md-6 col-12 mt-2 ",
-                    pattern: "[a-zA-Zа-яёА-ЯЁ\\d\\s]{1,}",
-                    title: "Допустимы буквы, цифры и пробелы",
+                    pattern: patternData.wordsDigitsSpace.pattern,
+                    title: patternData.wordsDigitsSpace.title,
                     minlength: 4,
                     value: "",
                 },
@@ -49,9 +53,10 @@ export default {
                     type: "text",
                     required: true,
                     class: "col-md-6 col-12 mt-2 ",
-                    pattern: "\\d*\\.?\\d{1}",
-                    title: "Допустимы только цифры и разделитель регистра (.) После точки должна быть строго 1 цифра",
+                    pattern: patternData.float.pattern,
+                    title: patternData.float.title,
                 },
+
                 type: {
                     id: "grassland-file",
                     label: "Файл поля(.shp,.kml,.kmz)",
