@@ -47,8 +47,9 @@ const crud = {
          * @param {String} url адрес запроса
          * @returns {Void}
          */
-        deleteEntity(postData, url) {
+        async deleteEntity(postData, url) {
             const vm = this;
+            await vm.$nextTick();
             let handlerSubmit = null;
             let handlerCancel = null;
 
@@ -94,11 +95,8 @@ const crud = {
              * Если еще не всплывающего  окна с запросом на подтверждение действия, показать его и назначить handlerSubmit и handlerCancel в слушатели событий (addEventListener)
              * Иначе отмена действия
              */
+
             if (!vm.messages.confirm) {
-                document.addEventListener("submitConfirmEvent", handlerSubmit);
-                document.addEventListener("cancelConfirmEvent", handlerCancel);
-                vm.messages.confirm = `Вы уверены, что хотите удалить ${postData?.name}?`;
-            } else {
                 document.removeEventListener(
                     "submitConfirmEvent",
                     handlerSubmit,
@@ -111,10 +109,11 @@ const crud = {
                     false
                 );
 
-                vm.$nextTick(() => {
-                    vm.clearMessages(true);
-                });
+                document.addEventListener("submitConfirmEvent", handlerSubmit);
+                document.addEventListener("cancelConfirmEvent", handlerCancel);
             }
+
+            vm.messages.confirm = `Вы уверены, что хотите удалить ${postData?.name}?`;
         },
 
         /**

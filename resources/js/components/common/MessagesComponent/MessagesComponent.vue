@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div class="container" v-click-outside="clear">
         <Transition
             :key="'msg' + key"
             name="bounce"
@@ -39,7 +39,11 @@
 </template>
 
 <script>
+import clickOutside from "@/directives/click-outside";
 export default {
+    directives: {
+        clickOutside,
+    },
     data() {
         return {
             messages: this._messages,
@@ -57,9 +61,11 @@ export default {
         confirm() {
             this.$emit("confirm-msg", {});
         },
+
         cancel() {
             this.$emit("cancel-msg", {});
         },
+
         clear() {
             this.$emit("clear-msg", {});
         },
