@@ -7,6 +7,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Contracts\Auth\Access\Gate;
 use App\Models\User;
 use App\Models\Organisation;
 use Illuminate\Http\Request;
@@ -84,38 +85,49 @@ class PublicController extends Controller
                 'title' => 'Поля',
                 'icon' => false,
                 'submenu' => false,
+                'model' => 'App\Models\Grassland',
             ],
             [
                 'url' => route('public.vehicle.index', ['type' => 'bunker']),
                 'title' => 'Техника',
                 'icon' => false,
                 'submenu' => $submenuVehicles,
+                'model' => 'App\Models\Vehicle',
             ],
             [
                 'url' => route('public.employee.index'),
                 'title' => 'Сотрудники',
                 'icon' => false,
                 'submenu' => false,
+                'model' => 'App\Models\Employee',
             ],
             [
                 'url' => route('public.users.index'),
                 'title' => 'Пользователи',
                 'icon' => false,
                 'submenu' => false,
+                'model' => 'App\Models\User',
             ],
             [
                 'url' => route('public.data.rating'),
                 'title' => 'Рейтинг',
                 'icon' => 'fa-star',
                 'submenu' => false,
+                'model' => 'App\Models\BvsData'
             ],
             [
                 'url' => route('public.data.statistics'),
                 'title' => 'Статистика',
                 'icon' => false,
                 'submenu' => false,
+                'model' => 'App\Models\BvsData'
             ],
         ];
+
+
+        $menu = array_filter($menu, function ($el) {
+            return true;
+        });
 
         return $menu;
     }
@@ -127,7 +139,6 @@ class PublicController extends Controller
     {
         return false;
     }
-
     /**
      * Определяет для view массив путей сторонних библиотек
      */

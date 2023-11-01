@@ -383,14 +383,8 @@ const appPublicGrasslands = {
          */
         async forceRerenderMap() {
             const vm = this;
-
-            // Remove MyComponent from the DOM
             vm.showMap = false;
-
-            // Wait for the change to get flushed to the DOM
             await vm.$nextTick();
-
-            // Add the component back in
             vm.showMap = true;
         },
 
@@ -559,7 +553,9 @@ const appPublicGrasslands = {
         },
 
         /**
-         * Обработчик редактирования поля
+         * Обработчик события редактирования поля
+         *
+         * @param {grasslandData} данные о выбранном поле
          */
         editGrassland(grasslandData) {
             const vm = this;

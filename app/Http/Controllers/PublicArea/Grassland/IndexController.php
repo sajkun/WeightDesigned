@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\PublicArea\Grassland;
 
 use App\Models\Grassland;
@@ -37,7 +38,7 @@ class IndexController extends PublicController
 
         view()->share('jslibs', $jslibs);
 
-        return ;
+        return;
     }
 
     /**

@@ -60,26 +60,28 @@
                         <div class="col flex-grow-0 align-self-center">
                             <ul class="main-menu" id='main-menu'>
                                 @foreach ($menu as $link)
-                                    <li
-                                        @if ($link['icon']) class='ms-md-2 d-flex align-items-center' @endif>
-                                        @if ($link['icon'])
-                                            <span class="icon-holder me-2 d-none d-md-flex">
-                                                <i class="fa {{ $link['icon'] }}"></i></span>
-                                        @endif
-                                        <a title='{{ $link['title'] }}'
-                                            href="{{ $link['url'] }}">{{ $link['title'] }}</a>
-                                        @if ($link['submenu'])
-                                            <nav class="submenu">
-                                                <ul class="submenu-list">
-                                                    @foreach ($link['submenu'] as $link_submenu)
-                                                        <li><a style='white-space:nowrap'
-                                                                href="{{ $link_submenu['url'] }}">{{ $link_submenu['title'] }}</a>
-                                                        </li>
-                                                    @endforeach
-                                                </ul>
-                                            </nav>
-                                        @endif
-                                    </li>
+                                    @can('viewAny', [$link['model'], $organisation_id])
+                                        <li
+                                            @if ($link['icon']) class='ms-md-2 d-flex align-items-center' @endif>
+                                            @if ($link['icon'])
+                                                <span class="icon-holder me-2 d-none d-md-flex">
+                                                    <i class="fa {{ $link['icon'] }}"></i></span>
+                                            @endif
+                                            <a title='{{ $link['title'] }}'
+                                                href="{{ $link['url'] }}">{{ $link['title'] }}</a>
+                                            @if ($link['submenu'])
+                                                <nav class="submenu">
+                                                    <ul class="submenu-list">
+                                                        @foreach ($link['submenu'] as $link_submenu)
+                                                            <li><a style='white-space:nowrap'
+                                                                    href="{{ $link_submenu['url'] }}">{{ $link_submenu['title'] }}</a>
+                                                            </li>
+                                                        @endforeach
+                                                    </ul>
+                                                </nav>
+                                            @endif
+                                        </li>
+                                    @endcan
                                 @endforeach
                             </ul>
                         </div>

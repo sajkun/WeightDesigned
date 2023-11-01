@@ -22815,14 +22815,11 @@ var appPublicGrasslands = {
         return _regeneratorRuntime().wrap(function _callee2$(_context2) {
           while (1) switch (_context2.prev = _context2.next) {
             case 0:
-              vm = _this2; // Remove MyComponent from the DOM
+              vm = _this2;
               vm.showMap = false;
-
-              // Wait for the change to get flushed to the DOM
               _context2.next = 4;
               return vm.$nextTick();
             case 4:
-              // Add the component back in
               vm.showMap = true;
             case 5:
             case "end":
@@ -22960,7 +22957,9 @@ var appPublicGrasslands = {
       });
     },
     /**
-     * Обработчик редактирования поля
+     * Обработчик события редактирования поля
+     *
+     * @param {grasslandData} данные о выбранном поле
      */
     editGrassland: function editGrassland(grasslandData) {
       var vm = this;
