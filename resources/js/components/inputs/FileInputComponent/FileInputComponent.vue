@@ -1,3 +1,4 @@
+<!-- компонент выбора файла -->
 <template>
     <div class="form-control-custom relative">
         <input
@@ -40,6 +41,11 @@ export default {
         },
     },
     methods: {
+        /**
+         * Обработчик события изменения файла
+         *
+         * @param {Event} event
+         */
         changeFile(event) {
             const vm = this;
             vm.fileName = event.target.files[0]?.name

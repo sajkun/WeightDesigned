@@ -1,3 +1,4 @@
+<!-- поле пароля с кнопкой генерации произвольного пароля -->
 <template>
     <div>
         <input-component
@@ -33,6 +34,9 @@ export default {
             return this.value;
         },
 
+        /**
+         * вариативный тип поля ввода, в случае если надо отображать сгенерированный пароль
+         */
         inputInfo() {
             const info = strip(this.info);
             if (info.mode === "generate") {
@@ -48,6 +52,9 @@ export default {
         };
     },
     methods: {
+        /**
+         * генерация произвольного пароля
+         */
         generatePassword() {
             this.value = Math.random().toString(24).slice(-12);
         },

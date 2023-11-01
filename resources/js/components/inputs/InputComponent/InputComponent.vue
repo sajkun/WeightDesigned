@@ -1,4 +1,7 @@
-:
+<!--
+    Обёртка для input.
+    Метка анимированно уезжает вверх при вводе значения
+ -->
 <template>
     <div class="form-control-custom">
         <input

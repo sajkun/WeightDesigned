@@ -25,9 +25,6 @@
 </template>
 
 <script>
-//хэлперы
-import { clog, strip } from "@/misc/helpers";
-
 import inputEvents from "@/mixins/inputEvents";
 export default {
     mixins: [inputEvents],
