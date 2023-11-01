@@ -18143,7 +18143,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     ref: "form"
   }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_1, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($options.fields, function (info, key) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_Field, {
-      key: 'input' + key,
+      key: 'input' + key + info.id,
       _info: info,
       _forceRender: info.value,
       onChangeField: $options.changedHandler,
@@ -22572,6 +22572,12 @@ var appPublicGrasslands = {
     });
   },
   watch: {
+    grasslandToEdit: {
+      handler: function handler(data) {
+        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c Изменение даных о поле (grasslandToEdit)", "color: cyan", (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(data));
+      },
+      deep: true
+    },
     /**
      * @param {String} geoJsonSource
      */
@@ -22667,11 +22673,11 @@ var appPublicGrasslands = {
     editFormStructure: function editFormStructure() {
       var vm = this;
       // данные о поле
-      var grasslandProps = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.grasslandToEdit);
+      var grasslandProps = vm.grasslandToEdit;
 
       //структура формы
       var structure = vm.getFormStructure(vm.grasslandFormStructure, grasslandProps, false).map(function (f) {
-        f.id = "edit-".concat(f.id);
+        f.id = "edit-".concat(grasslandProps.id, "-").concat(f.id);
         return f;
       });
       return structure;
@@ -22702,6 +22708,9 @@ var appPublicGrasslands = {
         Хмель: "Хмель",
         Семечка: "Семечка"
       };
+    },
+    grasslandsList: function grasslandsList() {
+      return (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(this.grasslands);
     }
   },
   methods: {
@@ -22836,9 +22845,7 @@ var appPublicGrasslands = {
       _structure = Object.values(_structure);
       _structure = _structure.map(function (item) {
         var value = grasslandProps[item.name];
-        if (value) {
-          item.value = value;
-        }
+        item.value = value ? value : null;
         return item;
       });
       return _structure;

@@ -116,6 +116,18 @@ const appPublicGrasslands = {
     },
 
     watch: {
+        grasslandToEdit: {
+            handler(data) {
+                clog(
+                    "%c Изменение даных о поле (grasslandToEdit)",
+                    "color: cyan",
+                    strip(data)
+                );
+            },
+
+            deep: true,
+        },
+
         /**
          * @param {String} geoJsonSource
          */
@@ -230,7 +242,7 @@ const appPublicGrasslands = {
         editFormStructure() {
             const vm = this;
             // данные о поле
-            const grasslandProps = strip(vm.grasslandToEdit);
+            const grasslandProps = vm.grasslandToEdit;
 
             //структура формы
             let structure = vm
@@ -240,7 +252,7 @@ const appPublicGrasslands = {
                     false
                 )
                 .map((f) => {
-                    f.id = `edit-${f.id}`;
+                    f.id = `edit-${grasslandProps.id}-${f.id}`;
                     return f;
                 });
             return structure;
@@ -276,6 +288,10 @@ const appPublicGrasslands = {
                 Хмель: "Хмель",
                 Семечка: "Семечка",
             };
+        },
+
+        grasslandsList() {
+            return strip(this.grasslands);
         },
     },
 
@@ -391,11 +407,7 @@ const appPublicGrasslands = {
 
             _structure = _structure.map((item) => {
                 const value = grasslandProps[item.name];
-
-                if (value) {
-                    item.value = value;
-                }
-
+                item.value = value ? value : null;
                 return item;
             });
 
