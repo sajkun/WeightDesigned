@@ -46,9 +46,6 @@ class PublicController extends Controller
         view()->share('organisation', $organisation->name);
         view()->share('organisation_id', $organisation->id);
         view()->share('user_id', $user->id);
-        view()->share('users', $organisation->users()->get());
-        view()->share('employees', $organisation->employees()->get());
-        view()->share('grasslands', $organisation->grasslands()->get());
         view()->share('useYamap', $this->useYamap());
         view()->share('menu',  $this->getMainMenu());
     }
@@ -139,6 +136,7 @@ class PublicController extends Controller
     {
         return false;
     }
+
     /**
      * Определяет для view массив путей сторонних библиотек
      */
