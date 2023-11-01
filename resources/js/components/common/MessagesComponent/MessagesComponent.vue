@@ -1,3 +1,5 @@
+<!-- Отображение всплывающих сообщений
+аналог alert() и confirm() -->
 <template>
     <div class="container" v-click-outside="clear">
         <Transition
@@ -49,7 +51,6 @@ export default {
             messages: this._messages,
         };
     },
-
     props: ["_messages"],
 
     watch: {

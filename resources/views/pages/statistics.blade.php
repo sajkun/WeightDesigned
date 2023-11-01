@@ -78,8 +78,7 @@
             {{-- ************************************************ --}}
             <Transition name='fade'>
                 <div class='col-12 col-md-6 d-none d-md-block' v-show='ratingData.length'>
-                    <transition-group tag='div' class='statistics-list' :css="false"
-                        v-on:before-enter="onBeforeEnter" v-on:enter="onEnter" v-on:leave="onLeave" name='sort'>
+                    <transition-group tag='div' class='statistics-list' :css="false" name='sort'>
                         <div v-for='data, key in ratingData' :data-index='key' :key='data.pid'>
                             <div class='statistics-row' :class="'statistics' + (key + 1)">
                                 <div class='d-flex'>
@@ -171,8 +170,7 @@
                             </h3>
                             <div class="row">
                                 <div class="col-12">
-                                    <transition-group :css="false" v-on:before-enter="onBeforeEnter"
-                                        v-on:enter="onEnter" v-on:leave="onLeave" name='sort'>
+                                    <transition-group :css="false" name='sort'>
                                         <div class="statistics-best-item" v-for='item,key in top5' :key='"top5" + item.pid'
                                             :data-index='key'>
                                             <i class="statistics-best-item__icon"

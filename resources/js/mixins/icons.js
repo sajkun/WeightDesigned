@@ -1,3 +1,4 @@
+//SVG изображения
 export default {
     computed: {
         bvsIcon() {

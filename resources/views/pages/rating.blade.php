@@ -34,8 +34,7 @@
             {{-- Список отфильтрованных данных --}}
             {{-- ************************************************ --}}
             <div class='col-12 col-md-6 col-xl-7 rating-list' v-show='ratingData.length'>
-                <transition-group :css="false" v-on:before-enter="onBeforeEnter" v-on:enter="onEnter"
-                    v-on:leave="onLeave" name='sort'>
+                <transition-group :css="false" name='sort'>
                     <div v-for='data, key in ratingData' :data-index='key' :key='data.pid'>
                         <div class='rating-row' :class="'rating' + (key + 1)">
                             <div class='d-flex'>

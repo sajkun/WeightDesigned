@@ -28,7 +28,7 @@
 
             <!-- список наименования -->
             <div class="d-flex mt-4 align-items-end">
-                <transition-group name="sort" v-on:leave="onLeave" :css="false">
+                <transition-group name="sort" :css="false">
                     <div
                         class="column-5 text-start"
                         v-for="item in info"
@@ -70,9 +70,7 @@
 <script>
 import { strip, clog } from "@/misc/helpers";
 
-import sortAnimation from "@/mixins/sortAnimation";
 export default {
-    mixins: [sortAnimation],
     watch: {
         _maxValue(val) {
             const vm = this;

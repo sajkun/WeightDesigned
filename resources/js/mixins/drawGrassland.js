@@ -1,4 +1,6 @@
-import { strip, clog, getFormData } from "@/misc/helpers";
+/**
+ * Рисование конуров на яндекс картах
+ */
 import { getCenterByPoints } from "@/misc/dbf";
 
 export default {

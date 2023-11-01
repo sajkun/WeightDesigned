@@ -90,12 +90,9 @@ const crud = {
                     vm.clearMessages(true);
                 });
             };
-
             /**
-             * Если еще не всплывающего  окна с запросом на подтверждение действия, показать его и назначить handlerSubmit и handlerCancel в слушатели событий (addEventListener)
-             * Иначе отмена действия
+             * убирание дублирующихся слушателей событий и назначение новых
              */
-
             if (!vm.messages.confirm) {
                 document.removeEventListener(
                     "submitConfirmEvent",

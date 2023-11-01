@@ -13,7 +13,6 @@ import fixedRightCol from "@/mixins/fixedRightCol";
 import messages from "@/mixins/messages";
 import professions from "@/mixins/professions";
 import publicAuthData from "@/mixins/publicAuthData";
-import sortAnimation from "@/mixins/sortAnimation";
 import statData from "@/mixins/statData";
 import vehicleTypes from "@/mixins/vehicleTypes";
 
@@ -30,7 +29,6 @@ const appPublicRating = {
         messages,
         professions,
         publicAuthData,
-        sortAnimation,
         statData,
         vehicleTypes,
     ],
