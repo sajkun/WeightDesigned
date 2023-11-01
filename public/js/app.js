@@ -18568,7 +18568,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _pages_statistics_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./pages/statistics.js */ "./resources/js/pages/statistics.js");
 /**
  * Основной файл, собирающий весь скрипт приложения
- *
  */
 
 
@@ -18578,12 +18577,13 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-
+__webpack_require__(/*! ./misc/ready.js */ "./resources/js/misc/ready.js");
 
 // инициализация домашней страницы для публичной зоны
 if (document.getElementById("home-page")) {
   (0,vue__WEBPACK_IMPORTED_MODULE_0__.createApp)(_pages_home_js__WEBPACK_IMPORTED_MODULE_1__["default"]).mount("#home-page");
 }
+
 // инициализация приложения пользователей для публичной зоны
 if (document.getElementById("public-users")) {
   (0,vue__WEBPACK_IMPORTED_MODULE_0__.createApp)(_pages_users_js__WEBPACK_IMPORTED_MODULE_2__["default"]).mount("#public-users");
@@ -18613,7 +18613,6 @@ if (document.getElementById("public-rating")) {
 if (document.getElementById("public-statistics")) {
   (0,vue__WEBPACK_IMPORTED_MODULE_0__.createApp)(_pages_statistics_js__WEBPACK_IMPORTED_MODULE_7__["default"]).mount("#public-statistics");
 }
-__webpack_require__(/*! ./misc/ready.js */ "./resources/js/misc/ready.js");
 
 /***/ }),
 
@@ -23751,7 +23750,7 @@ var appPublicStatistics = {
         info.axis.x.after = value > 1000 ? "т." : info.axis.x.after;
 
         // обновление  максимального значения по оси OY
-        info.axis.y.maxValue = parseInt(Math.max(info.axis.y.maxValue, newValue) * 1.05);
+        info.axis.y.maxValue = parseInt(Math.max(info.axis.y.maxValue, newValue));
 
         // метки по оси Х задаются в зависимости от выбранного периода, они могу быть и строка и число
         info.labels.x[parseInt(xValue)] = format;
@@ -23760,6 +23759,7 @@ var appPublicStatistics = {
           y: newValue
         };
       });
+      info.axis.y.maxValue = Math.ceil(info.axis.y.maxValue * 1.05);
       info.axis.x.maxValue = Object.values(info.points).length + 1;
       return info;
     },

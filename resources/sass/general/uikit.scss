@@ -310,3 +310,9 @@
         color: var(--green);
     }
 }
+
+.datepicker-holder {
+    display: grid;
+    grid-template-columns: 1rem auto;
+    align-items: center;
+}

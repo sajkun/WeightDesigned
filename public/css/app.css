@@ -13541,6 +13541,12 @@ body {
   color: var(--green);
 }
 
+.datepicker-holder {
+  display: grid;
+  grid-template-columns: 1rem auto;
+  align-items: center;
+}
+
 .btn-primary-alt {
   --bs-btn-color: var(--lightest);
   --bs-btn-bg: var(--green);
@@ -14063,17 +14069,27 @@ body.auth #app {
   height: 100%;
 }
 .statistics-data__label {
-  font-size: 1rem;
+  font-size: 0.75rem;
   font-weight: 400;
   color: var(--grey-medium);
   margin: 0;
   flex-grow: 1;
 }
+@media (min-width: 768px) {
+  .statistics-data__label {
+    font-size: 1rem;
+  }
+}
 .statistics-data__value {
   font-weight: 700;
   margin: 0.25em 0 0;
   color: var(--dark);
-  font-size: 1.25rem;
+  font-size: 1rem;
+}
+@media (min-width: 768px) {
+  .statistics-data__value {
+    font-size: 1.25rem;
+  }
 }
 .statistics-data__value_secondary {
   font-size: 1rem;

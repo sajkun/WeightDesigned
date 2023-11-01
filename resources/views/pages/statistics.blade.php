@@ -18,6 +18,9 @@
         {{-- ************************************************ --}}
         <div class="mt-4 mb-4 statistics-header" ref='beforeStickyPosition'>
             <div class="row align-items-center">
+
+                {{-- Выпадающий список: какие объекты показвать в колонке лучших --}}
+                {{-- ********************************* --}}
                 <div class="col-12 col-md-auto">
                     <p class="m-0 h-6 d-inline">Статистика:</p>
                     <select v-model='ratingBy' :size='ratingBy' class='ms-2  inline-select'>
@@ -27,21 +30,37 @@
                     </select>
                 </div>
 
-                <div class="mt-4 mt-md-0 col-auto d-flex align-items-center">
-                    <span class="label">с </span>
-                    <datepicker class='ms-2' :_date='dateRange.start' @date-changed='setDate("start", $event)' />
+                {{-- Выбор даты начала периода отображения --}}
+                {{-- ********************************* --}}
+                <div class="mt-2 mt-md-0 col-auto">
+                    <div class="datepicker-holder">
+                        <span class="label">с </span>
+                        <datepicker class='ms-2' :_date='dateRange.start' @date-changed='setDate("start", $event)' />
+                    </div>
                 </div>
-                <div class="mt-4 mt-md-0 col-auto d-flex align-items-center">
-                    <span class="label">
-                        по </span>
-                    <datepicker :_date='dateRange.end' class='ms-2' @date-changed='setDate("end", $event)' />
+                {{-- ********************************* --}}
+
+                {{-- Выбор даты завершения периода отображения --}}
+                {{-- ********************************* --}}
+                <div class="mt-2 mt-md-0 col-auto d-flex align-items-center">
+                    <div class="datepicker-holder">
+                        <span class="label">
+                            по </span>
+                        <datepicker :_date='dateRange.end' class='ms-2' @date-changed='setDate("end", $event)' />
+                    </div>
                 </div>
-                <div class="col-md-auto mt-4 mt-md-0 col-12">
-                    <button class="btn btn-sm btn-primary-alt" type='button' @click='setPeriod("month")'>Месяц</button>
-                    <button class="btn btn-sm btn-primary-alt ms-2" type='button'
+                {{-- ********************************* --}}
+
+                {{-- кнопки выбора фиксированных периодов --}}
+                {{-- ********************************* --}}
+                <div class="col-12 col-sm-auto mt-2 mt-md-0 d-flex d-sm-block">
+                    <button class="btn btn-sm btn-primary-alt col" type='button' @click='setPeriod("month")'>Месяц</button>
+                    <button class="btn btn-sm btn-primary-alt ms-2 col" type='button'
                         @click='setPeriod("quarter")'>Квартал</button>
-                    <button class="btn btn-sm btn-primary-alt ms-2" type='button' @click='setPeriod("year")'>Год</button>
+                    <button class="btn btn-sm btn-primary-alt ms-2 col" type='button'
+                        @click='setPeriod("year")'>Год</button>
                 </div>
+                {{-- ********************************* --}}
 
             </div>
         </div>
@@ -97,7 +116,7 @@
                         --}}
                         {{-- ************************************************ --}}
                         <div class="row">
-                            <div class="col-12 col-md-4">
+                            <div class="col-6 col-sm-4">
                                 <div class="statistics-data">
                                     <h3 class="statistics-data__label">Собрано урожая</h3>
                                     <Transition name='fade'>
@@ -107,7 +126,7 @@
                                     </Transition>
                                 </div>
                             </div>
-                            <div class="col-12 col-md-4 mt-2 mt-md-0">
+                            <div class="col-6 col-sm-4">
                                 <div class="statistics-data">
                                     <h3 class="statistics-data__label">Рабочих дней</h3>
                                     <Transition name='fade'>
@@ -117,7 +136,7 @@
                                     </Transition>
                                 </div>
                             </div>
-                            <div class="col-12 col-md-4 mt-2 mt-md-0">
+                            <div class="col-12 col-sm-4 mt-2 mt-sm-0">
                                 <div class="statistics-data">
                                     <h3 class="statistics-data__label">Лучший сбор за день</h3>
                                     <Transition name='fade'>
@@ -130,6 +149,7 @@
                             </div>
                         </div>
                         {{-- ************************************************ --}}
+
                         {{-- график динамики уборки  --}}
                         {{-- ************************************************ --}}
                         <div class="flex-grow-1 mt-2 d-flex flex-column">
@@ -150,7 +170,7 @@
                                 @{{ top5Title }}
                             </h3>
                             <div class="row">
-                                <div class="col-7">
+                                <div class="col-12">
                                     <transition-group :css="false" v-on:before-enter="onBeforeEnter"
                                         v-on:enter="onEnter" v-on:leave="onLeave" name='sort'>
                                         <div class="statistics-best-item" v-for='item,key in top5' :key='"top5" + item.pid'
@@ -162,9 +182,7 @@
                                         </div>
                                     </transition-group>
                                 </div>
-                                <div class="col-5">
-                                    <div class="diagram"></div>
-                                </div>
+
                             </div>
                         </div>
                         {{-- ************************************************ --}}
