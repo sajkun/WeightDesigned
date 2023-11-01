@@ -17,7 +17,7 @@ import BvsMapComponent from "@/components/Bvs/MapComponent/";
 import CalendarComponent from "@/components/common/CalendarComponent";
 import BvsShortComponent from "@/components/Bvs/ShortComponent";
 import BvsOperationComponent from "@/components/Bvs/OperationComponent";
-import SwitcherComponent from "@/components/home/SwitcherComponent";
+import SwitcherComponent from "@/components/pageHome/SwitcherComponent";
 
 const homePage = {
     mixins: [axiosRequests, crud, fixedRightCol, publicAuthData],

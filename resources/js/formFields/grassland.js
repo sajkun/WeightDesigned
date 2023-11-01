@@ -63,7 +63,7 @@ export default {
                     type: "file",
                     class: "col-md-6 col-12 mt-2 ",
                     title: "Загрузите файл поля",
-                    accept: ".shp,.kml,kmz",
+                    accept: ".shp,.kml, .kmz",
                     value: "",
                 },
                 comment: {
