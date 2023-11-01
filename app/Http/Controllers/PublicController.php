@@ -51,9 +51,9 @@ class PublicController extends Controller
     }
 
     /**
-     * Структура главного меню пукбличной зоны
+     * Структура главного меню публичной зоны
      *
-     * @return Array
+     * @return array
      */
     protected function getMainMenu()
     {
@@ -131,6 +131,8 @@ class PublicController extends Controller
 
     /**
      * Метод определяющий нужно ли загружать скрипт API яндекс карт
+     *
+     * @return boolean
      */
     protected function useYamap()
     {
@@ -139,6 +141,8 @@ class PublicController extends Controller
 
     /**
      * Определяет для view массив путей сторонних библиотек
+     *
+     * @return void
      */
     protected function applyExternalJsLibs()
     {

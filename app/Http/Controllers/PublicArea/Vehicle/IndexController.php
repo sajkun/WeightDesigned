@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\PublicArea\Vehicle;
 
 use Illuminate\Http\Request;
@@ -12,13 +13,12 @@ class IndexController extends PublicController
      * Handle the incoming request.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return Illuminate\Support\Facades\View
      */
     public function __invoke(Request $request, string $type)
     {
         $this->authorize('viewAny', [Vehicle::class]);
         $this->prepareData();
-
         return view('pages.vehicles', ['type' => $type]);
     }
 }

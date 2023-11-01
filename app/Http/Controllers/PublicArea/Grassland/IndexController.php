@@ -14,7 +14,7 @@ class IndexController extends PublicController
      * Handle the incoming request.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return Illuminate\Support\Facades\View
      */
     public function __invoke(Request $request)
     {
@@ -26,6 +26,8 @@ class IndexController extends PublicController
 
     /**
      * Определяет для view массив путей сторонних библиотек
+     *
+     * @return void
      */
     public function applyExternalJsLibs()
     {
@@ -43,6 +45,8 @@ class IndexController extends PublicController
 
     /**
      * Метод определяющий нужно ли загружать скрипт API яндекс карт
+     *
+     * @return boolean
      */
     protected function useYamap()
     {
