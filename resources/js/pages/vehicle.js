@@ -15,8 +15,8 @@ import messages from "@/mixins/messages";
 import publicAuthData from "@/mixins/publicAuthData";
 
 //компоненты
-import MessagesComponent from "@/components/MessagesComponent/";
-import BvsOperationComponent from "@/components/BvsOperationComponent";
+import MessagesComponent from "@/components/common/MessagesComponent/";
+import BvsOperationComponent from "@/components/Bvs/OperationComponent";
 
 const axios = require("axios");
 const appPublicVehicles = {

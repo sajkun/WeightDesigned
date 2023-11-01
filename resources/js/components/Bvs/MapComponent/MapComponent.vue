@@ -6,7 +6,7 @@
 
 <script>
 import { strip, clog } from "@/misc/helpers";
-import bvs from "@/components/svg/bvs.js";
+import bvs from "@/mixins/icons";
 
 import drawGrassland from "@/mixins/drawGrassland";
 

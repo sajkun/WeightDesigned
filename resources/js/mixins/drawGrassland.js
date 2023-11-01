@@ -1,5 +1,5 @@
 import { strip, clog, getFormData } from "@/misc/helpers";
-import { getCenterByPoints } from "@/public/dbf";
+import { getCenterByPoints } from "@/misc/dbf";
 
 export default {
     mounted() {

@@ -6,31 +6,29 @@
 import { strip, clog } from "@/misc/helpers";
 
 //миксины
-import addUserForm from "@/formFields/addUser";
 import crud from "@/mixins/crud";
 import editPasswordForm from "@/formFields/editPwd";
-import editUserForm from "@/formFields/editUser";
 import fixedRightCol from "@/mixins/fixedRightCol";
 import formatName from "@/mixins/formatName";
 import messages from "@/mixins/messages";
 import publicAuthData from "@/mixins/publicAuthData";
+import userForms from "@/formFields/users";
 
 //компоненты
 import FormComponent from "@/components/inputs/FormComponent/";
 import InputComponent from "@/components/inputs/InputComponent";
-import MessagesComponent from "@/components/MessagesComponent/";
+import MessagesComponent from "@/components/common/MessagesComponent/";
 
 const axios = require("axios");
 const appPublicUsers = {
     mixins: [
-        addUserForm,
         editPasswordForm,
-        editUserForm,
         crud,
         fixedRightCol,
         formatName,
         publicAuthData,
         messages,
+        userForms,
     ],
 
     components: {

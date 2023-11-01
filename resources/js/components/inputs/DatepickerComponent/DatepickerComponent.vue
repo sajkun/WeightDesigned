@@ -66,7 +66,7 @@ import clickOutside from "@/directives/click-outside";
 import momentFormats from "@/mixins/momentFormats";
 
 //компоненты
-import CalendarComponent from "@/components/CalendarComponent";
+import CalendarComponent from "@/components/common/CalendarComponent";
 export default {
     directives: {
         clickOutside,

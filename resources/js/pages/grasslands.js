@@ -5,7 +5,7 @@
 //хэлперы
 import { strip, clog, getFormData } from "@/misc/helpers";
 import { kml } from "@/../../node_modules/@tmcw/togeojson";
-import { readBinaryShapeFile, getPointsForGrassland } from "@/public/dbf";
+import { readBinaryShapeFile, getPointsForGrassland } from "@/misc/dbf";
 
 // миксины
 import axiosRequests from "@/mixins/axiosRequests";
@@ -18,7 +18,7 @@ import publicAuthData from "@/mixins/publicAuthData";
 //компоненты
 import FileInputComponent from "@/components/inputs/FileInputComponent";
 import FormComponent from "@/components/inputs/FormComponent/";
-import MessagesComponent from "@/components/MessagesComponent/";
+import MessagesComponent from "@/components/common/MessagesComponent/";
 
 /**
  * глобальня переменная для объекта яндекс карта

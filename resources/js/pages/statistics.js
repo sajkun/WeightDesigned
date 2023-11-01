@@ -22,7 +22,7 @@ import statData from "@/mixins/statData";
 import vehicleTypes from "@/mixins/vehicleTypes";
 
 // компоненты
-import MessagesComponent from "@/components/MessagesComponent";
+import MessagesComponent from "@/components/common/MessagesComponent";
 import GraphicComponent from "@/components/GraphicComponent";
 import MonthPickerComponent from "@/components/inputs/MonthPickerComponent";
 import DatepickerComponent from "@/components/inputs/DatepickerComponent";

@@ -18,9 +18,9 @@ import statData from "@/mixins/statData";
 import vehicleTypes from "@/mixins/vehicleTypes";
 
 // компоненты
-import MessagesComponent from "@/components/MessagesComponent";
+import MessagesComponent from "@/components/common/MessagesComponent";
 import MonthPickerComponent from "@/components/inputs/MonthPickerComponent";
-import RatingColumsComponent from "@/components/RatingColumsComponent";
+import RatingColumsComponent from "@/components/rating/ColumsComponent";
 
 const appPublicRating = {
     mixins: [

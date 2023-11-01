@@ -20,7 +20,7 @@ import publicAuthData from "@/mixins/publicAuthData";
 import FieldComponent from "@/components/inputs/FieldComponent";
 import FormComponent from "@/components/inputs/FormComponent/";
 import InputComponent from "@/components/inputs/InputComponent";
-import MessagesComponent from "@/components/MessagesComponent/";
+import MessagesComponent from "@/components/common/MessagesComponent/";
 
 const axios = require("axios");
 const appPublicEmployees = {

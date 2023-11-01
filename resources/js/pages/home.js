@@ -14,10 +14,10 @@ import publicAuthData from "@/mixins/publicAuthData";
 
 //компоненты
 import BvsMapComponent from "@/components/Bvs/MapComponent/";
-import CalendarComponent from "@/components/CalendarComponent";
+import CalendarComponent from "@/components/common/CalendarComponent";
 import BvsShortComponent from "@/components/Bvs/ShortComponent";
 import BvsOperationComponent from "@/components/Bvs/OperationComponent";
-import SwitcherComponent from "@/components/SwitcherComponent";
+import SwitcherComponent from "@/components/home/SwitcherComponent";
 
 const homePage = {
     mixins: [axiosRequests, crud, fixedRightCol, publicAuthData],
