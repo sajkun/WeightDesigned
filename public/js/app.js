@@ -20693,6 +20693,7 @@ function _bindSubmenuToggleByClick2() {
     var submenu = el.nextSibling;
     if (Boolean(submenu)) {
       el.addEventListener("click", function (e) {
+        if (window.innerWidth > 1200) return;
         e.preventDefault();
         _classPrivateMethodGet(t, _hideAllSubmenues, _hideAllSubmenues2).call(t);
         e.target.closest("li").classList.add("selected");

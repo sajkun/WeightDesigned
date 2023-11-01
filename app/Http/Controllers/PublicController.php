@@ -86,7 +86,7 @@ class PublicController extends Controller
                 'submenu' => false,
             ],
             [
-                'url' => route('public.vehicle.index', ['type' => 'harvester']),
+                'url' => route('public.vehicle.index', ['type' => 'bunker']),
                 'title' => 'Техника',
                 'icon' => false,
                 'submenu' => $submenuVehicles,

@@ -37,7 +37,7 @@
         <div class="container-fluid">
             <div class="row align-content-center">
                 <div class="flex-grow-0 logo align-self-center">
-                    <button class="btn btn-link p-0 d-md-none" type='button' id='mobile-menu-toggle'>
+                    <button class="btn btn-link p-0 d-lg-none" type='button' id='mobile-menu-toggle'>
                         <svg width="24" height="20" class='open' viewBox="0 0 24 20" fill="none"
                             xmlns="http://www.w3.org/2000/svg">
                             <path d="M3.75 4.75H20.25M3.75 10H20.25M3.75 15.25H20.25" stroke="white" stroke-width="1.5"

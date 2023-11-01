@@ -13823,12 +13823,12 @@ body.auth #app {
 .main-menu.shown {
   visibility: visible;
 }
-@media (max-width: 768px) {
+@media (max-width: 991px) {
   .main-menu.shown {
     opacity: 0.9;
   }
 }
-@media (min-width: 768px) {
+@media (min-width: 993px) {
   .main-menu {
     visibility: initial;
     opacity: initial;
@@ -13842,7 +13842,7 @@ body.auth #app {
 .main-menu .submenu {
   padding-left: 1rem;
 }
-@media (min-width: 768px) {
+@media (min-width: 992px) {
   .main-menu .submenu {
     position: absolute;
     top: 100%;
@@ -13884,7 +13884,7 @@ body.auth #app {
   visibility: visible;
   opacity: 1;
 }
-@media (max-width: 768px) {
+@media (max-width: 991px) {
   .main-menu > li {
     border-bottom: 1px solid var(--grey-light);
   }
@@ -13894,7 +13894,7 @@ body.auth #app {
   color: var(--darkest);
   padding: 0.5rem 1rem !important;
 }
-@media (min-width: 768px) {
+@media (min-width: 992px) {
   .main-menu button {
     color: var(--link-color);
     padding: 0 !important;
@@ -13914,12 +13914,12 @@ body.auth #app {
   color: var(--darkest);
   padding: 0.5rem 1rem;
 }
-@media (max-width: 768px) {
+@media (max-width: 991px) {
   .main-menu a {
     font-size: 1.25rem;
   }
 }
-@media (min-width: 768px) {
+@media (min-width: 992px) {
   .main-menu a {
     color: var(--link-color);
     padding: 0 0.5rem;
