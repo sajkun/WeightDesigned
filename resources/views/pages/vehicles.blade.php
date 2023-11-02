@@ -38,9 +38,9 @@
                                     <tr v-for='item, key in vehiclesCurrent' :key='"vehicklerow" + key'
                                         @click='viewVehicle(item)'>
                                         <td>@{{ key + 1 }}</td>
-                                        <td>@{{ item.name }}</td>
-                                        <td>@{{ item.model }}</td>
-                                        <td>@{{ item.employee_name }}</td>
+                                        <td title='Название:'>@{{ item.name }}</td>
+                                        <td title='Модель:'>@{{ item.model }}</td>
+                                        <td title='Ответственный:'>@{{ item.employee_name }}</td>
                                         <th width='100' class='text-end'>
                                             @can('delete', [App\Models\Vehicle::class, $organisation_id])
                                                 <button class='btn p-1' @click.prevent.stop='deleteVehicle(item)'>

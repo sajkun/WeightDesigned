@@ -10,7 +10,7 @@
         <h2 class="h5 px-3 mt-3" ref='beforeStickyPosition'>Пользователи</h2>
 
         <div class="row h-100 position-relative">
-            <div class="p-3 align-self-start" :class='listClass'
+            <div class="p-sm-3 align-self-start" :class='listClass'
                 :style="!editMode ? 'transition: width .15s ease .1s' : ''">
 
                 <div class="d-lg-flex flex-column org-wrapper h-100">
@@ -44,7 +44,7 @@
             </div>
 
             <Transition name="fade">
-                <div class="col-12 col-lg-6 p-3 org-details" v-show='editMode' ref='observeResize'>
+                <div class="col-12 col-lg-6 p-sm-3 org-details" v-show='editMode' ref='observeResize'>
                     <div class="d-lg-flex flex-column org-wrapper p-3" v-if='showForm' :ref='"fixposition"'>
                         <the-form ref='createUserForm' :_structure='addUserFormStructure' @exec-submit='storeUser'
                             @cancel-form='showForm=false; editMode=false'>

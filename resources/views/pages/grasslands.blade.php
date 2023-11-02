@@ -3,7 +3,7 @@
 
 @section('content')
     <div class="container-fluid d-none h-100" id='public-grasslands'>
-        <div class="p-3 h-100">
+        <div class="p-sm-3 h-100">
             <div class="d-flex flex-column h-100">
                 <input type="hidden" ref='organisationId' value='{{ $organisation_id }}'>
                 <input type="hidden" ref='userId' value='{{ $user_id }}'>
@@ -40,9 +40,9 @@
                                                 <tr v-for='item, key in grasslandsList' :key='"grassland" + key + item.id'
                                                     @click='viewGrassland(item)'>
                                                     <td>@{{ key + 1 }}</td>
-                                                    <td>@{{ item.name }}</td>
-                                                    <td>@{{ item.size }} га</td>
-                                                    <td>@{{ item.culture }} </td>
+                                                    <td title='Название:'>@{{ item.name }}</td>
+                                                    <td title='Площадь:'>@{{ item.size }} га</td>
+                                                    <td title='Культура:'>@{{ item.culture }} </td>
                                                     <td class='text-end'>
                                                         @can('delete', [App\Models\Grassland::class, $organisation_id])
                                                             <button class='btn p-1' @click.prevent.stop='deleteGrassland(item)'>

@@ -1,4 +1,4 @@
-<div class="p-3 align-self-start">
+<div class="p-sm-3 align-self-start">
     <div class="row">
         <div class="col-10">
             <h3 class='h5'>Добавление техники</h3>

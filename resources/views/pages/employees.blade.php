@@ -15,7 +15,7 @@
         <div class="row h-100 position-relative">
             {{-- Таблица со списком работников --}}
             {{-- ********************** --}}
-            <div class="p-3 align-self-start" :class='listClass'
+            <div class="p-sm-3 align-self-start" :class='listClass'
                 :style="!editMode ? 'transition: width .15s ease .1s' : ''">
 
                 <div class="d-lg-flex flex-column org-wrapper h-100">
@@ -55,7 +55,7 @@
             {{-- Данные о сотруднике и форма добавления нового сотрудника --}}
             {{-- ********************** --}}
             <Transition name="fade">
-                <div class="col-12 col-lg-6 p-3 org-details" v-show='editMode' ref='observeResize'>
+                <div class="col-12 col-lg-6 p-sm-3 org-details" v-show='editMode' ref='observeResize'>
 
                     {{-- Форма добавления нового сотрудника --}}
                     {{-- ********************** --}}
