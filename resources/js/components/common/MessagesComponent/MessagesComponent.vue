@@ -1,7 +1,7 @@
 <!-- Отображение всплывающих сообщений
 аналог alert() и confirm() -->
 <template>
-    <div class="container" v-click-outside="clear">
+    <div class="container" v-click-outside="close">
         <Transition
             :key="'msg' + key"
             name="bounce"
@@ -41,6 +41,10 @@
 </template>
 
 <script>
+//хэлперы
+import { strip, clog } from "@/misc/helpers";
+
+//диррективы
 import clickOutside from "@/directives/click-outside";
 export default {
     directives: {
@@ -49,13 +53,19 @@ export default {
     data() {
         return {
             messages: this._messages,
+            clicksOutside: 0,
         };
     },
     props: ["_messages"],
 
     watch: {
-        _messages(m) {
-            this.messages = m;
+        _messages: {
+            async handler(m) {
+                const vm = this;
+                vm.clicksOutside = 0;
+                vm.messages = m;
+            },
+            deep: true,
         },
     },
     methods: {
@@ -69,6 +79,15 @@ export default {
 
         clear() {
             this.$emit("clear-msg", {});
+        },
+
+        close() {
+            const vm = this;
+            if (vm.clicksOutside) {
+                vm.clear();
+            }
+
+            vm.clicksOutside++;
         },
     },
 };

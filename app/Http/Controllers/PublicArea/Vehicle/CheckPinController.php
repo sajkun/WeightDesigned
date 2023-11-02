@@ -19,13 +19,24 @@ class CheckPinController extends Controller
     public function __invoke(Request $request)
     {
         try {
+
+
+            $pincode = Pincode::where([
+                'name' => $request->name,
+            ])->first();
+
+
+            if (!$pincode) {
+                throw new \ErrorException('Для БВС с таким именем не зарегистрирован пин-код', 404);
+            };
+
             $pincode = Pincode::where([
                 'name' => $request->name,
                 'pin' => $request->pin
             ])->first();
 
             if (!$pincode) {
-                throw new \ErrorException(' Неверная пара имя - пинкод', 403);
+                throw new \ErrorException('Неверный пин-код', 404);
             };
 
             if (boolval($pincode->checkIfRegistered())) {

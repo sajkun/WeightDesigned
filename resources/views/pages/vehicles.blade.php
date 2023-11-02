@@ -8,7 +8,7 @@
 
         {{-- Компонент сообщений --}}
         {{-- ********************** --}}
-        <messages-component :_messages='messages' v-on:cancel-msg='cancelConfirmActionHandler'
+        <messages-component :_messages='messagesData' v-on:cancel-msg='cancelConfirmActionHandler'
             v-on:confirm-msg='confirmActionHandler' v-on:clear-msg='clearMessages'></messages-component>
         {{-- ********************** --}}
 

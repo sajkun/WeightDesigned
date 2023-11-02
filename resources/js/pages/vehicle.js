@@ -5,12 +5,13 @@
  */
 
 //хэлперы
-import { strip, clog } from "@/misc/helpers";
+import { strip, clog, getFormData } from "@/misc/helpers";
 
 //миксины
 import axiosRequests from "@/mixins/axiosRequests";
 import crud from "@/mixins/crud";
 import fixedRightCol from "@/mixins/fixedRightCol";
+import icons from "@/mixins/icons";
 import messages from "@/mixins/messages";
 import publicAuthData from "@/mixins/publicAuthData";
 
@@ -20,7 +21,14 @@ import BvsOperationComponent from "@/components/Bvs/OperationComponent";
 
 const axios = require("axios");
 const appPublicVehicles = {
-    mixins: [axiosRequests, crud, fixedRightCol, publicAuthData, messages],
+    mixins: [
+        axiosRequests,
+        crud,
+        fixedRightCol,
+        icons,
+        publicAuthData,
+        messages,
+    ],
 
     components: { MessagesComponent, BvsOperation: BvsOperationComponent },
 
@@ -215,6 +223,10 @@ const appPublicVehicles = {
                 "БП-33/42 8 колес",
                 "БП-40/50",
             ];
+        },
+
+        messagesData() {
+            return this.messages;
         },
 
         /**
@@ -442,22 +454,24 @@ const appPublicVehicles = {
          */
         checkPin(createOrEdit) {
             const vm = this;
-            const pin = vm.pincode;
+            clog(vm.pincode);
+            const pin = vm.pincode.toString();
             const name =
                 createOrEdit === "edit"
                     ? vm.editedVehicle.name
                     : vm.$refs.bunkerName.value;
 
-            if (!Boolean(pin)) {
-                vm.messages.error = "Пин-код не задан";
-                return;
-            }
             if (!Boolean(name)) {
                 vm.messages.error = "Имя техники не задано";
                 return;
             }
 
-            if (pin.length !== 5) {
+            if (!Boolean(pin)) {
+                vm.messages.error = "Пин-код не задан";
+                return;
+            }
+
+            if (pin.toString().length !== 5) {
                 vm.messages.error = "Пин-код должен быть из 5 символов";
                 return;
             }
@@ -478,6 +492,12 @@ const appPublicVehicles = {
                 });
         },
 
+        /**
+         * Проверка RFID на дубликаты в базе
+         * Выдает всплывающее сообщение о результате
+         *
+         * @returns {Void}
+         */
         checkRfid() {
             const vm = this;
             const formData = new FormData(vm.$refs.addRfid);
@@ -499,15 +519,15 @@ const appPublicVehicles = {
                 });
         },
 
-        createVehicle() {
+        /**
+         * Отправка запроса на создание новой техники
+         * отображение результатов выполнения запроса во всплывающем окне
+         *
+         * @returns {Promise}
+         */
+        async createVehicle() {
             const vm = this;
-            const formData = new FormData(vm.$refs.formCreateVehicle);
-
-            let postData = {};
-
-            for (const [key, value] of formData) {
-                postData[key] = value;
-            }
+            const postData = getFormData(vm.$refs.formCreateVehicle);
 
             const sendData = {
                 user_id: vm.userId,
@@ -517,25 +537,16 @@ const appPublicVehicles = {
                 rfids: vm.rfids,
                 group: Object.values(vm.mayBeGroupedVehicles).map((e) => e.id),
             };
-            clog("createVehicle: ", vm.vehicleType);
-            clog("createVehicle data: ", sendData);
-
-            axios
-                .post(`/vehicles/store`, sendData)
-                .then((response) => {
-                    clog("%c createVehicle response", "color:green", response);
-                    vm.messages[response.data.type] = response?.data?.message;
-                    vm.$refs.formCreateVehicle?.reset();
-                    vm.reset();
-                    vm.getVehicles();
-                })
-                .catch((e) => {
-                    clog("%c createVehicle error", "color: red", e.response);
-                    vm.messages.error = e.response.data.message;
-                });
+            return vm.createEntity(sendData, `/vehicles/store`);
         },
 
-        deleteVehicle(item) {
+        /**
+         * Отправка запроса на удаление техники
+         * отображение результатов выполнения запроса во всплывающем окне
+         *
+         * @returns {Promise}
+         */
+        async deleteVehicle(item) {
             clog("%c deleteVehicle", "color: blue", item);
             const vm = this;
 
@@ -545,21 +556,16 @@ const appPublicVehicles = {
                 user_id: vm.userId,
                 organisation_id: vm.organisationId,
                 delete_item: item,
+                name: item.name,
             };
 
-            axios
-                .post(`/vehicles/delete`, sendData)
-                .then((response) => {
-                    clog("%c deleteVehicle", "color:green", response);
-                    vm.messages[response.data.type] = response?.data?.message;
-                    vm.getVehicles();
-                })
-                .catch((e) => {
-                    clog("%c deleteVehicle error", "color: red", e.response);
-                    vm.messages.error = e.response.data.message;
-                });
+            vm.deleteEntity(sendData, `/vehicles/delete`);
         },
 
+        /**
+         * Инициализация сохранения положения
+         * меток в полях ввода
+         */
         enableInputs() {
             const inputs = document.querySelectorAll(
                 ".form-control-custom input"
@@ -576,6 +582,11 @@ const appPublicVehicles = {
             });
         },
 
+        /**
+         * Получение данных об активности выбранной техники
+         *
+         * @returns {Void}
+         */
         getActivityData() {
             const vm = this;
             vm.getBvsDataBy(vm.editedVehicle.id, vm.editedVehicle.type).then(
@@ -605,6 +616,11 @@ const appPublicVehicles = {
             return vm.getBvsDataFiltered(id, type);
         },
 
+        /**
+         * Удаление метки из временного массива меток
+         *
+         * @param {object} rfid
+         */
         removeRfid(rfid) {
             const vm = this;
             const index = Object.values(vm.rfids).findIndex((item) => {
@@ -614,6 +630,12 @@ const appPublicVehicles = {
             vm.rfids.splice(index, 1);
         },
 
+        /**
+         * Удаление единицы техники из группы техники
+         *
+         * @param {*} item
+         * @param {*} save
+         */
         removeFromGroup(item, save) {
             const vm = this;
             const group = Object.values(vm.group);
@@ -631,6 +653,9 @@ const appPublicVehicles = {
             }
         },
 
+        /**
+         * Обнуление данных приложения
+         */
         reset() {
             const vm = this;
             vm.mayBeResponsiblePerson = null;
@@ -641,6 +666,11 @@ const appPublicVehicles = {
             vm.group = [];
         },
 
+        /**
+         * выбор ответственного лица
+         *
+         * @param {Object} person
+         */
         selectResponsiblePerson(person) {
             const vm = this;
             vm.mayBeResponsiblePerson = person;
@@ -661,10 +691,16 @@ const appPublicVehicles = {
             vm.vehicleType = type;
         },
 
+        /**
+         * Хэндлер события создания формы
+         */
         submitCreate() {
             this.$refs.formCreateVehicle.requestSubmit();
         },
 
+        /**
+         * добавление метки в массив меток
+         */
         submitRfid() {
             const vm = this;
 
@@ -706,16 +742,17 @@ const appPublicVehicles = {
             return strip(group);
         },
 
-        updateVehicle() {
+        /**
+         * Отправка запроса на обновление данных техники
+         * отображение результатов выполнения запроса во всплывающем окне
+         *
+         * @returns {Promise}
+         */
+        async updateVehicle() {
             const vm = this;
             clog("%c updateVehicle", "color: blue", strip(vm.editedVehicle));
 
-            const formData = new FormData(vm.$refs.editVehicleForm);
-            let postData = {};
-
-            for (const [key, value] of formData) {
-                postData[key] = value;
-            }
+            const postData = getFormData(vm.$refs.editVehicleForm);
 
             const sendData = {
                 user_id: vm.userId,
@@ -726,19 +763,14 @@ const appPublicVehicles = {
                 group: Object.values(vm.mayBeGroupedVehicles).map((e) => e.id),
             };
 
-            axios
-                .post(`/vehicles/update`, sendData)
-                .then((response) => {
-                    clog("%c updateVehicle", "color:green", response);
-                    vm.messages[response.data.type] = response?.data?.message;
-                    vm.getVehicles();
-                })
-                .catch((e) => {
-                    clog("%c updateVehicle error", "color: red", e.response);
-                    vm.messages.error = e.response.data.message;
-                });
+            return vm.editEntity(sendData, `/vehicles/update`);
         },
 
+        /**
+         * Открытие колонки с данными единицы техники
+         *
+         * @param {Object} item
+         */
         viewVehicle(item) {
             clog("%c viewVehicle", "color: blue", strip(item));
             const vm = this;

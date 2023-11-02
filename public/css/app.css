@@ -13298,6 +13298,15 @@ body {
 .form-control-custom input[type=text]:active {
   border-color: var(--grey);
 }
+.form-control-custom input[type=number] {
+  -moz-appearance: textfield;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.form-control-custom input[type=number]::-webkit-outer-spin-button, .form-control-custom input[type=number]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
 .form-control-custom label {
   position: absolute;
   top: 50%;
