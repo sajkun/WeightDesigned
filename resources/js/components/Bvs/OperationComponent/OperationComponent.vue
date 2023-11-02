@@ -12,29 +12,29 @@
             <div class="col-6 text-end">
                 <span class="date">{{ operationTime }}</span>
             </div>
-            <div class="col-4">
+            <div class="col-6 col-lg-4">
                 <p class="m-0 label">Статус:</p>
                 <span>{{ operationInfo.formatted }}</span>
             </div>
-            <div class="col-4">
+            <div class="col-6 col-lg-4">
                 <p class="m-0 label">Вес в бункере:</p>
                 <span>{{ operationInfo.ammountInBunker }}</span>
             </div>
-            <div class="col-4">
+            <div class="col-6 col-lg-4">
                 <p class="m-0 label">Статус чека:</p>
                 <span :class="status.check.status">{{
                     status.check.text
                 }}</span>
             </div>
-            <div class="col-4">
+            <div class="col-6 col-lg-4">
                 <p class="m-0 label">Выгрузил:</p>
                 <span>{{ info.from }}</span>
             </div>
-            <div class="col-4">
+            <div class="col-6 col-lg-4">
                 <p class="m-0 label">Принял:</p>
                 <span>{{ info.to }}</span>
             </div>
-            <div class="col-4">
+            <div class="col-6 col-lg-4">
                 <p class="m-0 label">RFID:</p>
                 <span style="font-size: 0.75rem" :class="status.rfid.status">{{
                     status.rfid.text

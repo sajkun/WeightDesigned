@@ -46,7 +46,7 @@
                 {{--  КОНЕЦ БЛОКА отображения списка БВС --}}
 
                 {{-- НАЧАЛО БЛОКА  отображения списка операций --}}
-                <div class="py-2 ps-4 pe-1" v-if='display==="items"'>
+                <div class="py-2" v-if='display==="items"'>
                     <button class="btn btn-primary-alt w-100 text-center mt-2" type='button' v-if='mode!== "all"'
                         @click='changeDisplay("calendar")'>Выбрать другие даты</button>
                     <button class="btn btn-primary-alt w-100 text-center mt-2" type='button' v-if='mode === "all"'
