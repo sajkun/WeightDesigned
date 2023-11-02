@@ -22314,7 +22314,7 @@ var appPublicEmployees = {
       vm.editedEmployee.vehicles = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.group);
       vm.popup = null;
     },
-    addVehicleToGroup: function addVehicleToGroup(item) {
+    switchVehicleGroupMembership: function switchVehicleGroupMembership(item) {
       var vm = this;
       var group = Object.values(vm.group);
       var index = group.findIndex(function (el) {
@@ -24224,6 +24224,11 @@ var appPublicVehicles = {
         return e.first_name.toLowerCase().search(vm.employeeSearch.toLowerCase()) >= 0 || e.last_name.toLowerCase().search(vm.employeeSearch.toLowerCase()) >= 0 || e.middle_name.toLowerCase().search(vm.employeeSearch.toLowerCase()) >= 0 || e.phone.toLowerCase().search(vm.employeeSearch.toLowerCase()) >= 0 || e.specialisation.toLowerCase().search(vm.employeeSearch.toLowerCase()) >= 0;
       });
     },
+    /**
+     * Получает данные об операциях бвс для выбранной техники
+     *
+     * @returns {Array}
+     */
     bvsOperations: function bvsOperations() {
       var vm = this;
       var key = vm.editedVehicle.id;
@@ -24278,7 +24283,8 @@ var appPublicVehicles = {
      * @returns {Array}
      */
     vehiclesCurrent: function vehiclesCurrent() {
-      var vehicles = this.vehicles["".concat(this.vehicleType, "s")] ? this.vehicles["".concat(this.vehicleType, "s")] : {};
+      var vm = this;
+      var vehicles = vm.vehicles["".concat(vm.vehicleType, "s")] ? vm.vehicles["".concat(vm.vehicleType, "s")] : {};
       return Object.values(vehicles);
     },
     /**
@@ -24355,6 +24361,9 @@ var appPublicVehicles = {
         });
       }
     },
+    /**
+     * Инициализация полей ввода при отображении модальных окон
+     */
     popup: function popup() {
       var vm = this;
       vm.$nextTick(function () {
@@ -24374,6 +24383,11 @@ var appPublicVehicles = {
         vm.pincode = null;
       });
     },
+    /**
+     * Синхронизация типа добавляемой техники и группируемой техники с выбранным типом техники
+     *
+     * @param {Enum} vehicleType  Bunker|Harvester|Transporter|Tractor
+     */
     vehicleType: function vehicleType(_vehicleType) {
       this.vehicleAddType = _vehicleType;
       this.vehicleGroupType = _vehicleType;
@@ -24384,15 +24398,26 @@ var appPublicVehicles = {
   mounted: function mounted() {
     var vm = this;
     vm.vehicleType = vm.$refs.vehicleType.value;
+
+    /**
+     * получение списка сотрудников
+     */
     vm.getEmployees().then(function (e) {
       vm.employees = e.employees;
     });
+
+    /**
+     * Получение списка техники
+     */
     vm.getVehicles().then(function (vehicles) {
       vm.vehicles = vehicles;
     });
+
+    /**
+     * добавление события обновления списков сотрудников и техники при их изменении
+     */
     document.addEventListener("updateList", function () {
       vm.getEmployees().then(function (e) {
-        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)(e);
         vm.employees = e.employees;
       });
       vm.getVehicles().then(function (vehicles) {
@@ -24401,29 +24426,22 @@ var appPublicVehicles = {
     });
   },
   methods: {
-    addVehicle: function addVehicle(type) {
-      var vm = this;
-      vm.mode = "create";
-      vm.vehicleType = type;
-    },
-    addVehicleToGroup: function addVehicleToGroup(item) {
-      var vm = this;
-      var group = Object.values(vm.group);
-      var index = group.findIndex(function (el) {
-        return el.id === item.id;
-      });
-      if (index < 0) {
-        group.push(item);
-      } else {
-        group.splice(index, 1);
-      }
-      vm.group = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(group);
-    },
+    /**
+     * Сохранение данных о группе во временную переменную
+     */
     applyGroup: function applyGroup() {
       var vm = this;
       vm.mayBeGroupedVehicles = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.group);
       vm.popup = null;
     },
+    /**
+     * проверяет наличие и соответсвие введенного пинкода имени бункера весовой системы
+     * выводит сообщение от сервера о результате проверки
+     *
+     * @param {Enum} createOrEdit create|edit
+     *
+     * @returns {Void}
+     */
     checkPin: function checkPin(createOrEdit) {
       var vm = this;
       var pin = vm.pincode;
@@ -24628,6 +24646,18 @@ var appPublicVehicles = {
       vm.popup = null;
       (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c selectResponsiblePerson", "color: blue", (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(person));
     },
+    /**
+     * отображение формы добавления техники
+     *
+     * @param {Enum} type Bunker|Harvester|Transporter|Tractor
+     *
+     * @returns {Void}
+     */
+    showAddVehicleForm: function showAddVehicleForm(type) {
+      var vm = this;
+      vm.mode = "create";
+      vm.vehicleType = type;
+    },
     submitCreate: function submitCreate() {
       this.$refs.formCreateVehicle.requestSubmit();
     },
@@ -24649,11 +24679,31 @@ var appPublicVehicles = {
       } finally {
         _iterator3.f();
       }
-      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)(postData);
       vm.rfids.push(postData);
 
       // vm.$refs.addRfid?.reset();
       vm.popup = null;
+    },
+    /**
+     * Добавляет/удаляет технику из группы
+     *
+     * @param {Object} item
+     *
+     * @returns {Object} group
+     */
+    switchVehicleGroupMembership: function switchVehicleGroupMembership(item) {
+      var vm = this;
+      var group = Object.values(vm.group);
+      var index = group.findIndex(function (el) {
+        return el.id === item.id;
+      });
+      if (index < 0) {
+        group.push(item);
+      } else {
+        group.splice(index, 1);
+      }
+      vm.group = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(group);
+      return (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(group);
     },
     updateVehicle: function updateVehicle() {
       var _vm$mayBeResponsibleP2;
