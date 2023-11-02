@@ -16441,6 +16441,7 @@ var timeout;
       var vm = this;
       if (vm.blockClose) return;
       vm.clear();
+      document.dispatchEvent(new CustomEvent("cancelConfirmEvent"));
     },
     confirm: function confirm() {
       this.$emit("confirm-msg", {});
@@ -21090,10 +21091,11 @@ var crud = {
         return _regeneratorRuntime().wrap(function _callee$(_context) {
           while (1) switch (_context.prev = _context.next) {
             case 0:
+              (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("init deleteEntity");
               vm = _this;
-              _context.next = 3;
+              _context.next = 4;
               return vm.$nextTick();
-            case 3:
+            case 4:
               _handlerSubmit = null;
               _handlerCancel = null;
               /**
@@ -21127,7 +21129,7 @@ var crud = {
                 document.addEventListener("cancelConfirmEvent", _handlerCancel);
               }
               vm.messages.confirm = "\u0412\u044B \u0443\u0432\u0435\u0440\u0435\u043D\u044B, \u0447\u0442\u043E \u0445\u043E\u0442\u0438\u0442\u0435 \u0443\u0434\u0430\u043B\u0438\u0442\u044C ".concat(postData === null || postData === void 0 ? void 0 : postData.name, "?");
-            case 9:
+            case 10:
             case "end":
               return _context.stop();
           }

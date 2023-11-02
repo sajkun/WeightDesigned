@@ -47,6 +47,7 @@ const crud = {
          * @returns {Void}
          */
         async deleteEntity(postData, url) {
+            clog("init deleteEntity");
             const vm = this;
             await vm.$nextTick();
             let handlerSubmit = null;

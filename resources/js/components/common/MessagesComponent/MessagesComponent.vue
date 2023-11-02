@@ -91,6 +91,7 @@ export default {
             const vm = this;
             if (vm.blockClose) return;
             vm.clear();
+            document.dispatchEvent(new CustomEvent("cancelConfirmEvent"));
         },
 
         confirm() {
