@@ -16991,7 +16991,7 @@ __webpack_require__.r(__webpack_exports__);
   mixins: [_mixins_inputEvents__WEBPACK_IMPORTED_MODULE_0__["default"]],
   props: ["_info", "_value"],
   data: function data() {
-    var _this$_info, _this$_info2, _this$_info3, _this$_info4, _this$_info5, _this$_info6, _this$_info7, _this$_info8;
+    var _this$_info, _this$_info2, _this$_info3, _this$_info4, _this$_info5, _this$_info6, _this$_info7, _this$_info8, _this$_info9;
     return {
       value: this._value,
       id: (_this$_info = this._info) === null || _this$_info === void 0 ? void 0 : _this$_info.id,
@@ -17001,7 +17001,8 @@ __webpack_require__.r(__webpack_exports__);
       type: (_this$_info5 = this._info) === null || _this$_info5 === void 0 ? void 0 : _this$_info5.type,
       pattern: (_this$_info6 = this._info) === null || _this$_info6 === void 0 ? void 0 : _this$_info6.pattern,
       minlength: (_this$_info7 = this._info) === null || _this$_info7 === void 0 ? void 0 : _this$_info7.minlength,
-      title: (_this$_info8 = this._info) === null || _this$_info8 === void 0 ? void 0 : _this$_info8.title
+      title: (_this$_info8 = this._info) === null || _this$_info8 === void 0 ? void 0 : _this$_info8.title,
+      step: (_this$_info9 = this._info) === null || _this$_info9 === void 0 ? void 0 : _this$_info9.step
     };
   },
   watch: {
@@ -18211,7 +18212,7 @@ __webpack_require__.r(__webpack_exports__);
 var _hoisted_1 = {
   "class": "form-control-custom"
 };
-var _hoisted_2 = ["minlength", "pattern", "type", "title", "name", "id", "required"];
+var _hoisted_2 = ["minlength", "pattern", "type", "title", "name", "id", "step", "required"];
 var _hoisted_3 = ["for"];
 function render(_ctx, _cache, $props, $setup, $data, $options) {
   return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
@@ -18225,6 +18226,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       active: $data.value
     }),
     id: $data.id,
+    step: $data.step,
     required: $data.required,
     "onUpdate:modelValue": _cache[0] || (_cache[0] = function ($event) {
       return $data.value = $event;
@@ -19224,7 +19226,8 @@ __webpack_require__.r(__webpack_exports__);
           id: "grassland-size",
           name: "size",
           label: "Размер поля(га)",
-          type: "text",
+          type: "number",
+          step: "0.1",
           required: true,
           "class": "col-md-6 col-12 mt-2 ",
           pattern: _formFields_patterns__WEBPACK_IMPORTED_MODULE_0__["default"]["float"].pattern,
