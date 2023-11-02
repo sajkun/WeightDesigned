@@ -46,50 +46,52 @@ const appPublicGrasslands = {
         TheForm: FormComponent,
     },
 
-    data: {
-        /**
-         * список полей организации
-         *
-         * @param {Array}
-         */
-        grasslands: [],
+    data() {
+        return {
+            /**
+             * список полей организации
+             *
+             * @param {Array}
+             */
+            grasslands: [],
 
-        /**
-         * данные редактируемого или создаваемого поля
-         *
-         * @param {Object}
-         */
-        grasslandToEdit: {},
+            /**
+             * данные редактируемого или создаваемого поля
+             *
+             * @param {Object}
+             */
+            grasslandToEdit: {},
 
-        /**
-         * ключ, определяющий отображать
-         * - список полей или
-         * - форму редактирования выбранного поля или
-         * - форму создания нового поля
-         *
-         * @param {Enum} : list | edit | create
-         */
-        mode: "list",
+            /**
+             * ключ, определяющий отображать
+             * - список полей или
+             * - форму редактирования выбранного поля или
+             * - форму создания нового поля
+             *
+             * @param {Enum} : list | edit | create
+             */
+            mode: "list",
 
-        /**
-         * Признак отображения карты. Нужен для ее интерактивного обновления
-         *
-         * @param {Boolean}
-         */
-        showMap: true,
+            /**
+             * Признак отображения карты. Нужен для ее интерактивного обновления
+             *
+             * @param {Boolean}
+             */
+            showMap: true,
 
-        /**
-         * источник данных о границах поля
-         * загрузка из файла или выбор вручную кликами на карте
-         *
-         * @param {Enum} : file | map
-         */
-        geoJsonSource: "file",
+            /**
+             * источник данных о границах поля
+             * загрузка из файла или выбор вручную кликами на карте
+             *
+             * @param {Enum} : file | map
+             */
+            geoJsonSource: "file",
 
-        /**
-         * Координаты точек, заданных вручную
-         */
-        tempCoordinates: [],
+            /**
+             * Координаты точек, заданных вручную
+             */
+            tempCoordinates: [],
+        };
     },
 
     mounted() {
@@ -114,6 +116,18 @@ const appPublicGrasslands = {
     },
 
     watch: {
+        grasslandToEdit: {
+            handler(data) {
+                clog(
+                    "%c Изменение даных о поле (grasslandToEdit)",
+                    "color: cyan",
+                    strip(data)
+                );
+            },
+
+            deep: true,
+        },
+
         /**
          * @param {String} geoJsonSource
          */
@@ -228,7 +242,7 @@ const appPublicGrasslands = {
         editFormStructure() {
             const vm = this;
             // данные о поле
-            const grasslandProps = strip(vm.grasslandToEdit);
+            const grasslandProps = vm.grasslandToEdit;
 
             //структура формы
             let structure = vm
@@ -238,7 +252,7 @@ const appPublicGrasslands = {
                     false
                 )
                 .map((f) => {
-                    f.id = `edit-${f.id}`;
+                    f.id = `edit-${grasslandProps.id}-${f.id}`;
                     return f;
                 });
             return structure;
@@ -274,6 +288,10 @@ const appPublicGrasslands = {
                 Хмель: "Хмель",
                 Семечка: "Семечка",
             };
+        },
+
+        grasslandsList() {
+            return strip(this.grasslands);
         },
     },
 
@@ -365,14 +383,8 @@ const appPublicGrasslands = {
          */
         async forceRerenderMap() {
             const vm = this;
-
-            // Remove MyComponent from the DOM
             vm.showMap = false;
-
-            // Wait for the change to get flushed to the DOM
             await vm.$nextTick();
-
-            // Add the component back in
             vm.showMap = true;
         },
 
@@ -389,11 +401,7 @@ const appPublicGrasslands = {
 
             _structure = _structure.map((item) => {
                 const value = grasslandProps[item.name];
-
-                if (value) {
-                    item.value = value;
-                }
-
+                item.value = value ? value : null;
                 return item;
             });
 
@@ -545,7 +553,9 @@ const appPublicGrasslands = {
         },
 
         /**
-         * Обработчик редактирования поля
+         * Обработчик события редактирования поля
+         *
+         * @param {grasslandData} данные о выбранном поле
          */
         editGrassland(grasslandData) {
             const vm = this;

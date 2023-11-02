@@ -1,3 +1,9 @@
+/**
+ * Массив сообщений и метод очистки сообщений
+ * вместе с этитми миксином для отображения сообщений необходимо использовать компонент MessagesComponent
+ *
+ * @see resourses\js\components\common\MessagesComponent
+ */
 export default {
     data() {
         return {
@@ -10,26 +16,26 @@ export default {
         };
     },
 
-    mounted() {
-        const vm = this;
-        document.body.addEventListener("click", (e) => {
-            if (e.target.type !== "button") {
-                vm.clearMessages();
-            }
-        });
-    },
-
     methods: {
+        /**
+         * Очистка сообщений
+         *
+         * @param {Boolean} confirm было ли подтверждение
+         *
+         * @returns {Void}
+         */
         clearMessages(confirm) {
-            this.messages = {
+            const vm = this;
+
+            vm.messages = {
                 error: null,
                 info: null,
                 success: null,
-                confirm: this.messages.confirm,
+                confirm: vm.messages.confirm,
             };
 
             if (confirm) {
-                this.messages.confirm = null;
+                vm.messages.confirm = null;
             }
         },
     },

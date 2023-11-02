@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\PublicArea\Rfid;
 
 use App\Models\Rfid;
@@ -16,6 +17,13 @@ class CheckController extends Controller
     public function __invoke(Request $request)
     {
         try {
+            if (!$request->label) {
+                throw new \ErrorException('Укажите название RFID', 404);
+            }
+            if (!$request->value) {
+                throw new \ErrorException('Задайте значение RFID', 404);
+            }
+
             $rfid = Rfid::where(['value' => $request->value, 'organisation_id' => $request->organisation_id])->first();
 
             if ($rfid) {
@@ -24,6 +32,7 @@ class CheckController extends Controller
 
             return response()->json([
                 'type' => 'success',
+                'request' => $request->label,
                 'message' => 'Метка не зарегистрирована',
             ]);
         } catch (\Exception  $e) {

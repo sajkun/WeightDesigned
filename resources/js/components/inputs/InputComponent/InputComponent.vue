@@ -1,4 +1,7 @@
-:
+<!--
+    Обёртка для input.
+    Метка анимированно уезжает вверх при вводе значения
+ -->
 <template>
     <div class="form-control-custom">
         <input
@@ -10,6 +13,7 @@
             autocomplete="off"
             :class="{ active: value }"
             :id="id"
+            :step="step"
             :required="required"
             v-model="value"
             @change="change"
@@ -35,6 +39,7 @@ export default {
             pattern: this._info?.pattern,
             minlength: this._info?.minlength,
             title: this._info?.title,
+            step: this._info?.step,
         };
     },
 

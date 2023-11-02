@@ -32,6 +32,17 @@
         }
     }
 
+    input[type="number"] {
+        -moz-appearance: textfield;
+        -webkit-appearance: none;
+        appearance: none;
+        &::-webkit-outer-spin-button,
+        &::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+    }
+
     --shift-top: -125%;
 
     label {
@@ -309,4 +320,10 @@
         font-size: 1.15rem;
         color: var(--green);
     }
+}
+
+.datepicker-holder {
+    display: grid;
+    grid-template-columns: 1rem auto;
+    align-items: center;
 }

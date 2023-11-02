@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\PublicArea\User;
 
 use App\Models\User;
@@ -12,7 +13,7 @@ class IndexController extends PublicController
      * Handle the incoming request.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return Illuminate\Support\Facades\View
      */
     public function __invoke(Request $request)
     {

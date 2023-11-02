@@ -60,7 +60,7 @@
                         <th></th>
                     </tr>
                     <tr v-for='item, key in vehiclesGrouped' :key='"vehicklerow" + key'
-                        @click='addVehicleToGroup(item)'>
+                        @click='switchVehicleGroupMembership(item)'>
                         <td>@{{ key }}</td>
                         <td>@{{ item.name }}</td>
                         <td>@{{ item.model }}</td>

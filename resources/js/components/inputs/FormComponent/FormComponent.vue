@@ -4,7 +4,7 @@
         <div class="row">
             <Field
                 v-for="(info, key) in fields"
-                :key="'input' + key"
+                :key="'input' + key + info.id"
                 :_info="info"
                 :_forceRender="info.value"
                 @change-field="changedHandler"

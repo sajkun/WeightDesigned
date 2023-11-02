@@ -99,6 +99,10 @@ const homePage = {
                 vm.selectedOperationsIds = [];
             }
 
+            vm.$nextTick(() => {
+                vm.startFixElement("fixposition", "observeResize", true);
+            });
+
             return null;
         },
 
@@ -117,6 +121,8 @@ const homePage = {
                 vm.period.end = null;
                 vm.display = "list";
             }
+
+            clog("mode changed");
 
             return null;
         },

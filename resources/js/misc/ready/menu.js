@@ -76,6 +76,7 @@ class menuActions {
             const submenu = el.nextSibling;
             if (Boolean(submenu)) {
                 el.addEventListener("click", (e) => {
+                    if (window.innerWidth > 1200) return;
                     e.preventDefault();
                     t.#hideAllSubmenues();
                     e.target.closest("li").classList.add("selected");

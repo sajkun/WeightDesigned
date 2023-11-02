@@ -113,7 +113,7 @@ export default {
             let minShiftY = Math.min(maxHeight - el.offsetHeight, 0);
             let shiftY = vm.shiftY;
 
-            if (vm.getScrolldirection() === "down") {
+            if (vm.getScrollDirection() === "down") {
                 shiftY -= shiftVelocity;
                 shiftY = Math.max(minShiftY, shiftY);
             } else {
@@ -146,7 +146,7 @@ export default {
             const fixBottomEdgeShift =
                 elPartSizeBelowBottomEdge > 0 &&
                 leftToBottomEdge < elPartSizeBelowBottomEdge &&
-                vm.getScrolldirection() === "down"
+                vm.getScrollDirection() === "down"
                     ? leftToBottomEdge - elPartSizeBelowBottomEdge
                     : 0;
 
@@ -181,7 +181,7 @@ export default {
          *
          * @returns {Enum} up / down
          */
-        getScrolldirection() {
+        getScrollDirection() {
             const vm = this;
             const pos = window.scrollY;
             const delta = vm.scrollData.prev - pos;
@@ -294,6 +294,8 @@ export default {
             controllHeight = false,
             extraElements = []
         ) {
+            clog("startFixElement");
+
             const vm = this;
             const observeEl = vm.$refs[observeRef];
             const targetElement = vm.$refs[targetRef];

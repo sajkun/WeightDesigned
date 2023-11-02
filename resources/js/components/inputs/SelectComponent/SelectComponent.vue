@@ -1,3 +1,4 @@
+<!-- Компонент выпадающего списка -->
 <template>
     <div class="form-control-custom">
         <select
@@ -10,6 +11,7 @@
             @change="change"
             @input="input"
         >
+            <option key="default" hidden :selected="!value"></option>
             <option
                 v-for="(name, key) in options"
                 :key="'options' + key"
@@ -18,8 +20,7 @@
                 {{ name }}
             </option>
         </select>
-
-        <label :for="id">{{ label }}</label>
+        <label :for="id" class="{active: value}">{{ label }}</label>
     </div>
 </template>
 

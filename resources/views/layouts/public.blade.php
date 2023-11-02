@@ -37,7 +37,7 @@
         <div class="container-fluid">
             <div class="row align-content-center">
                 <div class="flex-grow-0 logo align-self-center">
-                    <button class="btn btn-link p-0 d-md-none" type='button' id='mobile-menu-toggle'>
+                    <button class="btn btn-link p-0 d-lg-none" type='button' id='mobile-menu-toggle'>
                         <svg width="24" height="20" class='open' viewBox="0 0 24 20" fill="none"
                             xmlns="http://www.w3.org/2000/svg">
                             <path d="M3.75 4.75H20.25M3.75 10H20.25M3.75 15.25H20.25" stroke="white" stroke-width="1.5"
@@ -59,38 +59,30 @@
                     <div class="row align-content-center ">
                         <div class="col flex-grow-0 align-self-center">
                             <ul class="main-menu" id='main-menu'>
-                                @can('viewAny', [App\Models\Grassland::class, $organisation_id])
-                                    <li><a href="{{ route('public.grassland.index') }}">Поля</a></li>
-                                @endcan
-                                @can('viewAny', [App\Models\Vehicle::class, $organisation_id])
-                                    <li><a href="{{ route('public.vehicle.index', ['type' => 'bunker']) }}">Техника</a>
-                                        <nav class="submenu">
-                                            <ul class="submenu-list">
-                                                <li><a href="{{ route('public.vehicle.index', ['type' => 'bunker']) }}">
-                                                        Бункеры&nbsp;перегрузчики</a></li>
-                                                <li><a href="{{ route('public.vehicle.index', ['type' => 'tractor']) }}">
-                                                        Тракторы</a></li>
-                                                <li><a
-                                                        href="{{ route('public.vehicle.index', ['type' => 'transporter']) }}">
-                                                        Грузовики</a></li>
-                                                <li><a href="{{ route('public.vehicle.index', ['type' => 'harvester']) }}">
-                                                        Комбайны</a></li>
-                                            </ul>
-                                        </nav>
-                                    </li>
-                                @endcan
-                                @can('viewAny', [App\Models\Employee::class, $organisation_id])
-                                    <li><a href="{{ route('public.employee.index') }}">Сотрудники</a></li>
-                                @endcan
-
-                                @can('viewAny', [App\Models\User::class, $organisation_id])
-                                    <li><a href="{{ route('public.users.index') }}">Пользователи</a></li>
-                                @endcan
-                                <li class='ms-md-2 d-flex align-items-center'><span
-                                        class="icon-holder me-2 d-none d-md-flex">
-                                        <i class="fa fa-star"></i></span> <a class='ps-md-0'
-                                        href="{{ route('public.data.rating') }}">Рейтинг</a></li>
-                                <li> <a href="{{ route('public.data.statistics') }}">Статистика</a></li>
+                                @foreach ($menu as $link)
+                                    @can('viewAny', [$link['model'], $organisation_id])
+                                        <li
+                                            @if ($link['icon']) class='ms-md-2 d-flex align-items-center' @endif>
+                                            @if ($link['icon'])
+                                                <span class="icon-holder me-2 d-none d-md-flex">
+                                                    <i class="fa {{ $link['icon'] }}"></i></span>
+                                            @endif
+                                            <a title='{{ $link['title'] }}'
+                                                href="{{ $link['url'] }}">{{ $link['title'] }}</a>
+                                            @if ($link['submenu'])
+                                                <nav class="submenu">
+                                                    <ul class="submenu-list">
+                                                        @foreach ($link['submenu'] as $link_submenu)
+                                                            <li><a style='white-space:nowrap'
+                                                                    href="{{ $link_submenu['url'] }}">{{ $link_submenu['title'] }}</a>
+                                                            </li>
+                                                        @endforeach
+                                                    </ul>
+                                                </nav>
+                                            @endif
+                                        </li>
+                                    @endcan
+                                @endforeach
                             </ul>
                         </div>
                         <div class="col flex-grow-1 align-self-center">

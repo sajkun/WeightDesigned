@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\PublicArea;
 
 use App\Http\Controllers\PublicController;
@@ -19,7 +20,7 @@ class IndexController extends PublicController
     /**
      * Метод определяющий нужно ли загружать скрипт API яндекс карт
      *
-     * @return Boolean
+     * @return boolean
      */
     protected function useYamap()
     {

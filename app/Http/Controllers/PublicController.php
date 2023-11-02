@@ -1,10 +1,13 @@
 <?php
+
 /**
  * Контроллер родитель для всех контроллеро публичной зоны
  * Подготавливает общие данные для все шаблонов
  */
+
 namespace App\Http\Controllers;
 
+use Illuminate\Contracts\Auth\Access\Gate;
 use App\Models\User;
 use App\Models\Organisation;
 use Illuminate\Http\Request;
@@ -43,15 +46,93 @@ class PublicController extends Controller
         view()->share('organisation', $organisation->name);
         view()->share('organisation_id', $organisation->id);
         view()->share('user_id', $user->id);
-        view()->share('users', $organisation->users()->get());
-        view()->share('employees', $organisation->employees()->get());
-        view()->share('grasslands', $organisation->grasslands()->get());
         view()->share('useYamap', $this->useYamap());
+        view()->share('menu',  $this->getMainMenu());
     }
 
+    /**
+     * Структура главного меню публичной зоны
+     *
+     * @return array
+     */
+    protected function getMainMenu()
+    {
+        $submenuVehicles = [
+            [
+                'url' => route('public.vehicle.index', ['type' => 'bunker']),
+                'title' => 'Бункеры перегрузчики'
+            ],
+            [
+                'url' => route('public.vehicle.index', ['type' => 'tractor']), 'title' => 'Тракторы'
+            ],
+            [
+                'url' => route('public.vehicle.index', ['type' => 'transporter']), 'title' => 'Грузовики'
+            ],
+            [
+                'url' => route('public.vehicle.index', ['type' => 'harvester']), 'title' => 'Комбайны'
+            ]
+        ];
+
+        /**
+         * Главное меню
+         */
+        $menu = [
+            [
+                'url' => route('public.grassland.index'),
+                'title' => 'Поля',
+                'icon' => false,
+                'submenu' => false,
+                'model' => 'App\Models\Grassland',
+            ],
+            [
+                'url' => route('public.vehicle.index', ['type' => 'bunker']),
+                'title' => 'Техника',
+                'icon' => false,
+                'submenu' => $submenuVehicles,
+                'model' => 'App\Models\Vehicle',
+            ],
+            [
+                'url' => route('public.employee.index'),
+                'title' => 'Сотрудники',
+                'icon' => false,
+                'submenu' => false,
+                'model' => 'App\Models\Employee',
+            ],
+            [
+                'url' => route('public.users.index'),
+                'title' => 'Пользователи',
+                'icon' => false,
+                'submenu' => false,
+                'model' => 'App\Models\User',
+            ],
+            [
+                'url' => route('public.data.rating'),
+                'title' => 'Рейтинг',
+                'icon' => 'fa-star',
+                'submenu' => false,
+                'model' => 'App\Models\BvsData'
+            ],
+            [
+                'url' => route('public.data.statistics'),
+                'title' => 'Статистика',
+                'icon' => false,
+                'submenu' => false,
+                'model' => 'App\Models\BvsData'
+            ],
+        ];
+
+
+        $menu = array_filter($menu, function ($el) {
+            return true;
+        });
+
+        return $menu;
+    }
 
     /**
      * Метод определяющий нужно ли загружать скрипт API яндекс карт
+     *
+     * @return boolean
      */
     protected function useYamap()
     {
@@ -60,10 +141,12 @@ class PublicController extends Controller
 
     /**
      * Определяет для view массив путей сторонних библиотек
+     *
+     * @return void
      */
     protected function applyExternalJsLibs()
     {
         view()->share('jslibs', []);
-        return ;
+        return;
     }
 }

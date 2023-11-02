@@ -162,7 +162,14 @@ const appPublicEmployees = {
             vm.popup = null;
         },
 
-        addVehicleToGroup(item) {
+        /**
+         * Добавляет/удаляет технику из группы
+         *
+         * @param {Object} item
+         *
+         * @returns {Object} group
+         */
+        switchVehicleGroupMembership(item) {
             const vm = this;
             let group = Object.values(vm.group);
             const index = group.findIndex((el) => {

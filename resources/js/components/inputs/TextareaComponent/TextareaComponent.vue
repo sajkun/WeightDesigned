@@ -1,4 +1,4 @@
-:
+<!-- многострочное поле ввода -->
 <template>
     <div class="form-control-custom">
         <textarea
@@ -51,6 +51,9 @@ export default {
     },
 
     methods: {
+        /**
+         * Задает высоту поля ввода равной высоте содержимого
+         */
         matchHeight() {
             const vm = this;
             const el = vm.$refs.textarea;
@@ -58,6 +61,9 @@ export default {
             el.style.height = `${el.scrollHeight}px`;
         },
 
+        /**
+         * Обработчик события ввода
+         */
         input() {
             const vm = this;
             vm.matchHeight();

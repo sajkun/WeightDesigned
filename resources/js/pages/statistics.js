@@ -17,7 +17,6 @@ import fixedRightCol from "@/mixins/fixedRightCol";
 import messages from "@/mixins/messages";
 import professions from "@/mixins/professions";
 import publicAuthData from "@/mixins/publicAuthData";
-import sortAnimation from "@/mixins/sortAnimation";
 import statData from "@/mixins/statData";
 import vehicleTypes from "@/mixins/vehicleTypes";
 
@@ -36,7 +35,6 @@ const appPublicStatistics = {
         professions,
         publicAuthData,
         statData,
-        sortAnimation,
         vehicleTypes,
     ],
 
@@ -304,7 +302,7 @@ const appPublicStatistics = {
 
                 // обновление  максимального значения по оси OY
                 info.axis.y.maxValue = parseInt(
-                    Math.max(info.axis.y.maxValue, newValue) * 1.05
+                    Math.max(info.axis.y.maxValue, newValue)
                 );
 
                 // метки по оси Х задаются в зависимости от выбранного периода, они могу быть и строка и число
@@ -316,8 +314,9 @@ const appPublicStatistics = {
                 };
             });
 
-            info.axis.x.maxValue = Object.values(info.points).length + 1;
+            info.axis.y.maxValue = Math.ceil(info.axis.y.maxValue * 1.05);
 
+            info.axis.x.maxValue = Object.values(info.points).length + 1;
             return info;
         },
 

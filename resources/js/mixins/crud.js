@@ -23,7 +23,6 @@ const crud = {
          * @returns {Void}
          */
         cancelConfirmActionHandler() {
-            clog("cancelConfirmActionHandler");
             document.dispatchEvent(new CustomEvent("cancelConfirmEvent"));
         },
 
@@ -47,8 +46,9 @@ const crud = {
          * @param {String} url адрес запроса
          * @returns {Void}
          */
-        deleteEntity(postData, url) {
+        async deleteEntity(postData, url) {
             const vm = this;
+            await vm.$nextTick();
             let handlerSubmit = null;
             let handlerCancel = null;
 
@@ -89,16 +89,10 @@ const crud = {
                     vm.clearMessages(true);
                 });
             };
-
             /**
-             * Если еще не всплывающего  окна с запросом на подтверждение действия, показать его и назначить handlerSubmit и handlerCancel в слушатели событий (addEventListener)
-             * Иначе отмена действия
+             * убирание дублирующихся слушателей событий и назначение новых
              */
             if (!vm.messages.confirm) {
-                document.addEventListener("submitConfirmEvent", handlerSubmit);
-                document.addEventListener("cancelConfirmEvent", handlerCancel);
-                vm.messages.confirm = `Вы уверены, что хотите удалить ${postData?.name}?`;
-            } else {
                 document.removeEventListener(
                     "submitConfirmEvent",
                     handlerSubmit,
@@ -111,10 +105,11 @@ const crud = {
                     false
                 );
 
-                vm.$nextTick(() => {
-                    vm.clearMessages(true);
-                });
+                document.addEventListener("submitConfirmEvent", handlerSubmit);
+                document.addEventListener("cancelConfirmEvent", handlerCancel);
             }
+
+            vm.messages.confirm = `Вы уверены, что хотите удалить ${postData?.name}?`;
         },
 
         /**
@@ -147,7 +142,7 @@ const crud = {
          * @param {String} url адрес запроса
          * @returns {Promise}
          */
-        sendRequest(postData, url) {
+        async sendRequest(postData, url) {
             clog("%c sendRequest fire", "color:blue", url, postData);
             const vm = this;
             return axios

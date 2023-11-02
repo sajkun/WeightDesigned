@@ -13298,6 +13298,15 @@ body {
 .form-control-custom input[type=text]:active {
   border-color: var(--grey);
 }
+.form-control-custom input[type=number] {
+  -moz-appearance: textfield;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.form-control-custom input[type=number]::-webkit-outer-spin-button, .form-control-custom input[type=number]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
 .form-control-custom label {
   position: absolute;
   top: 50%;
@@ -13539,6 +13548,12 @@ body {
 .icon-holder i {
   font-size: 1.15rem;
   color: var(--green);
+}
+
+.datepicker-holder {
+  display: grid;
+  grid-template-columns: 1rem auto;
+  align-items: center;
 }
 
 .btn-primary-alt {
@@ -13823,12 +13838,12 @@ body.auth #app {
 .main-menu.shown {
   visibility: visible;
 }
-@media (max-width: 768px) {
+@media (max-width: 991px) {
   .main-menu.shown {
     opacity: 0.9;
   }
 }
-@media (min-width: 768px) {
+@media (min-width: 993px) {
   .main-menu {
     visibility: initial;
     opacity: initial;
@@ -13842,7 +13857,7 @@ body.auth #app {
 .main-menu .submenu {
   padding-left: 1rem;
 }
-@media (min-width: 768px) {
+@media (min-width: 992px) {
   .main-menu .submenu {
     position: absolute;
     top: 100%;
@@ -13884,7 +13899,7 @@ body.auth #app {
   visibility: visible;
   opacity: 1;
 }
-@media (max-width: 768px) {
+@media (max-width: 991px) {
   .main-menu > li {
     border-bottom: 1px solid var(--grey-light);
   }
@@ -13894,7 +13909,7 @@ body.auth #app {
   color: var(--darkest);
   padding: 0.5rem 1rem !important;
 }
-@media (min-width: 768px) {
+@media (min-width: 992px) {
   .main-menu button {
     color: var(--link-color);
     padding: 0 !important;
@@ -13914,12 +13929,12 @@ body.auth #app {
   color: var(--darkest);
   padding: 0.5rem 1rem;
 }
-@media (max-width: 768px) {
+@media (max-width: 991px) {
   .main-menu a {
     font-size: 1.25rem;
   }
 }
-@media (min-width: 768px) {
+@media (min-width: 992px) {
   .main-menu a {
     color: var(--link-color);
     padding: 0 0.5rem;
@@ -14063,17 +14078,27 @@ body.auth #app {
   height: 100%;
 }
 .statistics-data__label {
-  font-size: 1rem;
+  font-size: 0.75rem;
   font-weight: 400;
   color: var(--grey-medium);
   margin: 0;
   flex-grow: 1;
 }
+@media (min-width: 768px) {
+  .statistics-data__label {
+    font-size: 1rem;
+  }
+}
 .statistics-data__value {
   font-weight: 700;
   margin: 0.25em 0 0;
   color: var(--dark);
-  font-size: 1.25rem;
+  font-size: 1rem;
+}
+@media (min-width: 768px) {
+  .statistics-data__value {
+    font-size: 1.25rem;
+  }
 }
 .statistics-data__value_secondary {
   font-size: 1rem;
