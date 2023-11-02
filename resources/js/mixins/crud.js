@@ -23,7 +23,6 @@ const crud = {
          * @returns {Void}
          */
         cancelConfirmActionHandler() {
-            clog("cancelConfirmActionHandler");
             document.dispatchEvent(new CustomEvent("cancelConfirmEvent"));
         },
 

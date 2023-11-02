@@ -1,13 +1,13 @@
 <!-- Отображение всплывающих сообщений
 аналог alert() и confirm() -->
 <template>
-    <div class="container" v-click-outside="close">
+    <div class="container">
         <Transition
             :key="'msg' + key"
             name="bounce"
             v-for="(msg, key) in messages"
         >
-            <div :class="key + '-message'" v-if="msg">
+            <div :class="key + '-message'" v-click-outside="close" v-if="msg">
                 {{ msg }}
                 <div class="row" v-if="key === 'confirm'">
                     <div class="col-12 col-md-6 mt-2">
@@ -46,6 +46,7 @@ import { strip, clog } from "@/misc/helpers";
 
 //диррективы
 import clickOutside from "@/directives/click-outside";
+let timeout;
 export default {
     directives: {
         clickOutside,
@@ -53,26 +54,31 @@ export default {
     data() {
         return {
             messages: this._messages,
-            clicksOutside: 0,
+            blockClose: 0,
         };
     },
     props: ["_messages"],
 
     watch: {
         _messages: {
-            async handler(m) {
+            handler(m) {
                 const vm = this;
-                vm.clicksOutside = 0;
+                vm.blockClose = 1;
                 vm.messages = m;
+
+                if (timeout) {
+                    clearTimeout(timeout);
+                }
+
+                timeout = setTimeout(() => {
+                    vm.blockClose = 0;
+                }, 150);
             },
             deep: true,
         },
     },
-    methods: {
-        confirm() {
-            this.$emit("confirm-msg", {});
-        },
 
+    methods: {
         cancel() {
             this.$emit("cancel-msg", {});
         },
@@ -83,11 +89,12 @@ export default {
 
         close() {
             const vm = this;
-            if (vm.clicksOutside) {
-                vm.clear();
-            }
+            if (vm.blockClose) return;
+            vm.clear();
+        },
 
-            vm.clicksOutside++;
+        confirm() {
+            this.$emit("confirm-msg", {});
         },
     },
 };

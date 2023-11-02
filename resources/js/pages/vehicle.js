@@ -454,8 +454,11 @@ const appPublicVehicles = {
          */
         checkPin(createOrEdit) {
             const vm = this;
-            clog(vm.pincode);
-            const pin = vm.pincode.toString();
+            const pin = vm.pincode;
+            if (!Boolean(pin)) {
+                vm.messages.error = "Пин-код не задан";
+                return;
+            }
             const name =
                 createOrEdit === "edit"
                     ? vm.editedVehicle.name
@@ -463,11 +466,6 @@ const appPublicVehicles = {
 
             if (!Boolean(name)) {
                 vm.messages.error = "Имя техники не задано";
-                return;
-            }
-
-            if (!Boolean(pin)) {
-                vm.messages.error = "Пин-код не задан";
                 return;
             }
 
