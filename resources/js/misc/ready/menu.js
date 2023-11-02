@@ -73,7 +73,7 @@ class menuActions {
         const t = this;
 
         t.#submenuSwitchers.forEach((el) => {
-            const submenu = el.nextSibling;
+            const submenu = el.nextElementSibling;
             if (Boolean(submenu)) {
                 el.addEventListener("click", (e) => {
                     if (window.innerWidth > 1200) return;

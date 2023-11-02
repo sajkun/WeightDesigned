@@ -1,7 +1,7 @@
 <!-- МИодуль отобраения данных от бвс на яндекс карте -->
 <template>
-    <div class="h-100 w-100" :id="id"></div>
     <div id="placemarks"></div>
+    <div class="h-100 w-100" :id="id"></div>
 </template>
 
 <script>

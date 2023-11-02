@@ -17560,16 +17560,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
 
-var _hoisted_1 = ["id"];
-var _hoisted_2 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
+var _hoisted_1 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
   id: "placemarks"
 }, null, -1 /* HOISTED */);
-
+var _hoisted_2 = ["id"];
 function render(_ctx, _cache, $props, $setup, $data, $options) {
-  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
+  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, [_hoisted_1, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
     "class": "h-100 w-100",
     id: $data.id
-  }, null, 8 /* PROPS */, _hoisted_1), _hoisted_2], 64 /* STABLE_FRAGMENT */);
+  }, null, 8 /* PROPS */, _hoisted_2)], 64 /* STABLE_FRAGMENT */);
 }
 
 /***/ }),
@@ -20727,7 +20726,7 @@ function _bindEvents2() {
 function _bindSubmenuToggleByClick2() {
   var t = this;
   _classPrivateFieldGet(t, _submenuSwitchers).forEach(function (el) {
-    var submenu = el.nextSibling;
+    var submenu = el.nextElementSibling;
     if (Boolean(submenu)) {
       el.addEventListener("click", function (e) {
         if (window.innerWidth > 1200) return;
