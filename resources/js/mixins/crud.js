@@ -142,7 +142,7 @@ const crud = {
          * @param {String} url адрес запроса
          * @returns {Promise}
          */
-        sendRequest(postData, url) {
+        async sendRequest(postData, url) {
             clog("%c sendRequest fire", "color:blue", url, postData);
             const vm = this;
             return axios

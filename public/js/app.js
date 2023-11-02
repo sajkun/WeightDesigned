@@ -21160,20 +21160,32 @@ var crud = {
      * @returns {Promise}
      */
     sendRequest: function sendRequest(postData, url) {
-      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c sendRequest fire", "color:blue", url, postData);
-      var vm = this;
-      return axios.post(url, postData).then(function (response) {
-        vm.messages[response.data.type] = response.data.message;
-        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c sendRequest success", "color:green", response);
-        return response;
-      }).then(function (response) {
-        document.dispatchEvent(new CustomEvent("updateList"));
-        return response;
-      })["catch"](function (e) {
-        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c sendRequest error", "color:red", e.response);
-        vm.messages.error = "".concat(e.response.status, " ").concat(e.response.statusText, " : ").concat(e.response.data.message);
-        return e.response;
-      });
+      var _this2 = this;
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
+        var vm;
+        return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+          while (1) switch (_context2.prev = _context2.next) {
+            case 0:
+              (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c sendRequest fire", "color:blue", url, postData);
+              vm = _this2;
+              return _context2.abrupt("return", axios.post(url, postData).then(function (response) {
+                vm.messages[response.data.type] = response.data.message;
+                (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c sendRequest success", "color:green", response);
+                return response;
+              }).then(function (response) {
+                document.dispatchEvent(new CustomEvent("updateList"));
+                return response;
+              })["catch"](function (e) {
+                (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c sendRequest error", "color:red", e.response);
+                vm.messages.error = "".concat(e.response.status, " ").concat(e.response.statusText, " : ").concat(e.response.data.message);
+                return e.response;
+              }));
+            case 3:
+            case "end":
+              return _context2.stop();
+          }
+        }, _callee2);
+      }))();
     }
   }
 };
@@ -21553,6 +21565,7 @@ __webpack_require__.r(__webpack_exports__);
     startFixElement: function startFixElement(targetRef, observeRef) {
       var controllHeight = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
       var extraElements = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : [];
+      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("startFixElement");
       var vm = this;
       var observeEl = vm.$refs[observeRef];
       var targetElement = vm.$refs[targetRef];
@@ -23131,6 +23144,9 @@ var homePage = {
         vm.selectedBvs = [];
         vm.selectedOperationsIds = [];
       }
+      vm.$nextTick(function () {
+        vm.startFixElement("fixposition", "observeResize", true);
+      });
       return null;
     },
     /**
@@ -23148,6 +23164,7 @@ var homePage = {
         vm.period.end = null;
         vm.display = "list";
       }
+      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("mode changed");
       return null;
     },
     /**
@@ -25109,7 +25126,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.relative[data-v-46cd5498] {\n    position: relative;\n}\n.file[data-v-46cd5498] {\n    opacity: 0;\n    cursor: pointer;\n    z-index: 10;\n    position: absolute;\n    top: 0;\n    bottom: 0;\n    left: 0;\n    right: 0;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.relative[data-v-46cd5498] {\r\n    position: relative;\n}\n.file[data-v-46cd5498] {\r\n    opacity: 0;\r\n    cursor: pointer;\r\n    z-index: 10;\r\n    position: absolute;\r\n    top: 0;\r\n    bottom: 0;\r\n    left: 0;\r\n    right: 0;\n}\r\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -25133,7 +25150,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\ntextarea[data-v-10b97548] {\n    overflow: hidden;\n    line-height: 1.5;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\ntextarea[data-v-10b97548] {\r\n    overflow: hidden;\r\n    line-height: 1.5;\n}\r\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
