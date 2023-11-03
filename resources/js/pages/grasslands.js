@@ -3,12 +3,13 @@
  */
 
 //хэлперы
-import { strip, clog, getFormData } from "@/misc/helpers";
+import { strip, clog, replaceUrlState, getPropFromUrl } from "@/misc/helpers";
 import { kml } from "@/../../node_modules/@tmcw/togeojson";
 import { readBinaryShapeFile, getPointsForGrassland } from "@/misc/dbf";
 
 // миксины
 import axiosRequests from "@/mixins/axiosRequests";
+import changeDisplayMode from "@/mixins/changeDisplayMode";
 import crud from "@/mixins/crud";
 import grasslandFormStructure from "@/formFields/grassland";
 import drawGrassland from "@/mixins/drawGrassland";
@@ -33,6 +34,7 @@ let grasslandMap;
 const appPublicGrasslands = {
     mixins: [
         axiosRequests,
+        changeDisplayMode,
         crud,
         drawGrassland,
         grasslandFormStructure,
@@ -68,7 +70,7 @@ const appPublicGrasslands = {
              * - форму редактирования выбранного поля или
              * - форму создания нового поля
              *
-             * @param {Enum} : list | edit | create
+             * @param {Enum} : list | details | create
              */
             mode: "list",
 
@@ -103,6 +105,14 @@ const appPublicGrasslands = {
          */
         vm.getGrasslands().then((r) => {
             vm.grasslands = r.grasslands;
+            const id = parseInt(getPropFromUrl("id"));
+
+            if (!id) return;
+
+            const mayBeItem = strip(vm.grasslands)
+                .filter((i) => i.id === id)
+                .pop();
+            vm.grasslandToEdit = mayBeItem ? mayBeItem : vm.grasslandToEdit;
         });
 
         /**
@@ -162,9 +172,10 @@ const appPublicGrasslands = {
         /**
          * режим работы страницы
          *
-         * @param {Enum} mode  list|create|edit
+         * @param {Enum} mode  list|create|details
          */
         mode(mode) {
+            clog(mode);
             const vm = this;
             if (["list", "create"].indexOf(mode) >= 0) {
                 vm.$nextTick(() => {
@@ -177,12 +188,14 @@ const appPublicGrasslands = {
             /**
              * отслеживание изменений размера окна и перезапуск карты
              */
-            if (["edit", "create"].indexOf(mode) >= 0) {
+            if (["details", "create"].indexOf(mode) >= 0) {
                 vm.$nextTick(() => {
                     const observeEl = vm.$refs["map-container"];
                     vm.forceRerenderMap();
                 });
             }
+
+            vm.updateUrlParams();
         },
 
         /**
@@ -542,13 +555,14 @@ const appPublicGrasslands = {
             clog("%c viewGrassland", "color:blue", grassland);
             const vm = this;
             const points = JSON.parse(grassland.geo_json);
-            vm.mode = "edit";
+            vm.mode = "details";
             vm.grasslandToEdit = grassland;
 
             vm.$nextTick(() => {
                 grasslandMap = vm.initMap("map-container");
                 grasslandMap.geoObjects.removeAll();
                 vm.drawGrassland(points, grasslandMap);
+                vm.updateUrlParams(grassland);
             });
         },
 

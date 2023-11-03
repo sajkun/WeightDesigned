@@ -443,10 +443,10 @@ const appPublicVehicles = {
 
             if (!id) return;
 
-            const mayBeVehicle = strip(vm.vehiclesCurrent)
+            const mayBeItem = strip(vm.vehiclesCurrent)
                 .filter((i) => i.id === id)
                 .pop();
-            vm.editedVehicle = mayBeVehicle ? mayBeVehicle : vm.editedVehicle;
+            vm.editedVehicle = mayBeItem ? mayBeItem : vm.editedVehicle;
         });
 
         /**
@@ -770,33 +770,6 @@ const appPublicVehicles = {
         },
 
         /**
-         * Обновляет урл при изменении режима просмотра приложения
-         */
-        updateUrlParams() {
-            const vm = this;
-            // обновление данные по переданному урл
-            let newUrlParams = [{ prop: "mode", value: vm.mode }];
-            let mayBeId = getPropFromUrl("id");
-
-            //добавление id техники к урл если выбранна техника
-
-            if (mayBeId && vm.mode === "details") {
-                newUrlParams.push({
-                    prop: "id",
-                    value: mayBeId,
-                });
-
-                newUrlParams.push({
-                    prop: "activeTab",
-                    value: vm.activeTab,
-                });
-            }
-
-            //обновляет урл без перезагрузки при смене страниц
-            replaceUrlState(newUrlParams);
-        },
-
-        /**
          * Отправка запроса на обновление данных техники
          * отображение результатов выполнения запроса во всплывающем окне
          *
@@ -835,7 +808,7 @@ const appPublicVehicles = {
             vm.mayBeGroupedVehicles = strip(item).group;
             vm.group = strip(item).group;
 
-            vm.updateUrlParams();
+            vm.updateUrlParams(item);
         },
     },
 };
