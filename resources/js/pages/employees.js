@@ -69,15 +69,7 @@ const appPublicEmployees = {
              *
              * @param {Object}
              */
-            editedEmployee: {
-                id: -1,
-                first_name: null,
-                last_name: null,
-                middle_name: null,
-                phone: null,
-                organisation_id: null,
-                specialisation: null,
-            },
+            editedEmployee: {},
 
             /**
              * ключ, определяющий отображать
@@ -243,15 +235,7 @@ const appPublicEmployees = {
          */
         clearEmployee() {
             const vm = this;
-            vm.editedEmployee = {
-                id: -1,
-                first_name: null,
-                last_name: null,
-                middle_name: null,
-                phone: null,
-                organisation_id: null,
-                specialisation: null,
-            };
+            vm.editedEmployee = {};
         },
 
         /**
@@ -404,7 +388,7 @@ const appPublicEmployees = {
          *
          * @returns {Void}
          */
-        async updateData(updateUrl = false) {
+        updateData(updateUrl = false) {
             const vm = this;
 
             // обновление данных о сотрудниках
@@ -414,18 +398,24 @@ const appPublicEmployees = {
                 /**
                  *  выбрать из полученных сотрудников активного по id, переданному в урл
                  */
-                if (updateUrl) {
-                    const id = parseInt(getPropFromUrl("id"));
+                if (!updateUrl) return;
 
-                    if (!id) return;
+                const id = parseInt(getPropFromUrl("id"));
 
-                    const mayBeItem = strip(vm.employees)
-                        .filter((i) => i.id === id)
-                        .pop();
-                    vm.editedEmployee = mayBeItem
-                        ? mayBeItem
-                        : vm.editedEmployee;
+                if (!id) return;
+
+                const mayBeItem = strip(vm.employees)
+                    .filter((i) => i.id === id)
+                    .pop();
+                vm.editedEmployee = mayBeItem ? mayBeItem : vm.editedEmployee;
+
+                if (vm.editedEmployee.hasOwnProperty("id")) {
+                    return;
                 }
+
+                vm.$nextTick(() => {
+                    vm.mode = "list";
+                });
             });
 
             // обновление данных о технике

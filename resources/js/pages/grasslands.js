@@ -98,30 +98,17 @@ const appPublicGrasslands = {
 
     mounted() {
         const vm = this;
-        // vm.observer = vm.initObserver();
 
         /**
          * Запрос полей организации
          */
-        vm.getGrasslands().then((r) => {
-            vm.grasslands = r.grasslands;
-            const id = parseInt(getPropFromUrl("id"));
-
-            if (!id) return;
-
-            const mayBeItem = strip(vm.grasslands)
-                .filter((i) => i.id === id)
-                .pop();
-            vm.grasslandToEdit = mayBeItem ? mayBeItem : vm.grasslandToEdit;
-        });
+        vm.updateData(true);
 
         /**
          * обновление полей организации
          */
         document.addEventListener("updateList", () => {
-            vm.getGrasslands().then((r) => {
-                vm.grasslands = r.grasslands;
-            });
+            vm.updateData();
         });
     },
 
@@ -588,6 +575,44 @@ const appPublicGrasslands = {
             };
 
             vm.editEntity(postData, "/grasslands/update/");
+        },
+
+        /**
+         * Получает данные о полях
+         * обновляет значение переменных grasslandss
+         *
+         * @param {Boolean} updateUrl
+         *
+         * @returns {Void}
+         */
+        updateData(updateUrl = false) {
+            const vm = this;
+
+            // обновление данных о полях
+            /**
+             * Запрос полей организации
+             */
+            vm.getGrasslands().then((r) => {
+                vm.grasslands = r.grasslands;
+
+                if (!updateUrl) return;
+                const id = parseInt(getPropFromUrl("id"));
+
+                if (!id) return;
+
+                const mayBeItem = strip(vm.grasslands)
+                    .filter((i) => i.id === id)
+                    .pop();
+                vm.grasslandToEdit = mayBeItem ? mayBeItem : vm.grasslandToEdit;
+
+                if (vm.grasslandToEdit.hasOwnProperty("id")) {
+                    return;
+                }
+
+                vm.$nextTick(() => {
+                    vm.mode = "list";
+                });
+            });
         },
     },
 };

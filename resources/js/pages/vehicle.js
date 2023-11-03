@@ -387,39 +387,13 @@ const appPublicVehicles = {
         const vm = this;
         vm.vehicleType = vm.$refs.vehicleType.value;
 
-        /**
-         * получение списка сотрудников
-         */
-        vm.getEmployees().then((e) => {
-            vm.employees = e.employees;
-        });
-
-        /**
-         * Получение списка техники
-         */
-        vm.getVehicles().then((vehicles) => {
-            vm.vehicles = vehicles;
-            const id = parseInt(getPropFromUrl("id"));
-
-            if (!id) return;
-
-            const mayBeItem = strip(vm.vehiclesCurrent)
-                .filter((i) => i.id === id)
-                .pop();
-            vm.editedVehicle = mayBeItem ? mayBeItem : vm.editedVehicle;
-        });
+        vm.updateData(true);
 
         /**
          * добавление события обновления списков сотрудников и техники при их изменении
          */
         document.addEventListener("updateList", () => {
-            vm.getEmployees().then((e) => {
-                vm.employees = e.employees;
-            });
-
-            vm.getVehicles().then((vehicles) => {
-                vm.vehicles = vehicles;
-            });
+            vm.updateData();
         });
     },
 
@@ -769,6 +743,49 @@ const appPublicVehicles = {
             vm.group = strip(item).group;
 
             vm.updateUrlParams(item);
+        },
+
+        /**
+         * Получает данные о технике и сотрудниках
+         * обновляет значение переменных vehicles employees
+         *
+         * @param {Boolean} updateUrl
+         *
+         * @returns {Void}
+         */
+        updateData(updateUrl = false) {
+            const vm = this;
+            /**
+             * получение списка сотрудников
+             */
+            vm.getEmployees().then((e) => {
+                vm.employees = e.employees;
+            });
+
+            /**
+             * Получение списка техники
+             */
+            vm.getVehicles().then((vehicles) => {
+                vm.vehicles = vehicles;
+
+                if (!updateUrl) return;
+                const id = parseInt(getPropFromUrl("id"));
+
+                if (!id) return;
+
+                const mayBeItem = strip(vm.vehiclesCurrent)
+                    .filter((i) => i.id === id)
+                    .pop();
+                vm.editedVehicle = mayBeItem ? mayBeItem : vm.editedVehicle;
+
+                if (vm.editedVehicle.hasOwnProperty("id")) {
+                    return;
+                }
+
+                vm.$nextTick(() => {
+                    vm.mode = "list";
+                });
+            });
         },
     },
 };

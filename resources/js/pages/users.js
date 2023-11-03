@@ -50,18 +50,7 @@ const appPublicUsers = {
              */
             activeTab: "info",
 
-            editedUser: {
-                id: -1,
-                email: null,
-                first_name: null,
-                last_name: null,
-                middle_name: null,
-                phone: null,
-                organisation_id: null,
-                role: null,
-                email: null,
-                login: null,
-            },
+            editedUser: {},
 
             /**
              * список ролей пользователей организации
@@ -199,19 +188,7 @@ const appPublicUsers = {
         },
 
         clearUser() {
-            this.editedUser = {
-                id: -1,
-                email: null,
-                first_name: null,
-                last_name: null,
-                middle_name: null,
-                phone: null,
-                organisation_id: null,
-                role: null,
-                email: null,
-                login: null,
-                role: null,
-            };
+            this.editedUser = {};
         },
 
         deleteUser(user) {
@@ -350,6 +327,14 @@ const appPublicUsers = {
                         .filter((i) => i.id === id)
                         .pop();
                     vm.editedUser = mayBeItem ? mayBeItem : vm.editedUser;
+
+                    if (vm.editedUser.hasOwnProperty("id")) {
+                        return;
+                    }
+
+                    vm.$nextTick(() => {
+                        vm.mode = "list";
+                    });
                 }
             });
         },
