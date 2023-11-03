@@ -21125,7 +21125,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _misc_helpers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/misc/helpers */ "./resources/js/misc/helpers.js");
-// изменяет урл без перезагрузки страницы
+// изменяет параметры приложения на основании УРЛ при загрузке страницы
 
 //хэлперы
 
@@ -21169,6 +21169,7 @@ var changeDisplayMode = {
         prop: "activeTab",
         value: vm.activeTab
       });
+      console.log(newUrlParams);
 
       //обновляет урл без перезагрузки при смене страниц
       (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.replaceUrlState)(newUrlParams);
@@ -22370,6 +22371,45 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/mixins/vehicleTypesList.js":
+/*!*************************************************!*\
+  !*** ./resources/js/mixins/vehicleTypesList.js ***!
+  \*************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  computed: {
+    /**
+     * Человеко понятные названия алиасов техники
+     *
+     * @returns {Object}
+     */
+    vehicleTypesList: function vehicleTypesList() {
+      return {
+        bunker: {
+          name: "Бункер перегрузчик"
+        },
+        transporter: {
+          name: "Грузовик"
+        },
+        tractor: {
+          name: "Трактор"
+        },
+        harvester: {
+          name: "Комбайн"
+        }
+      };
+    }
+  }
+});
+
+/***/ }),
+
 /***/ "./resources/js/pages/employees.js":
 /*!*****************************************!*\
   !*** ./resources/js/pages/employees.js ***!
@@ -22382,17 +22422,24 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _misc_helpers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/misc/helpers */ "./resources/js/misc/helpers.js");
-/* harmony import */ var _mixins_crud__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @/mixins/crud */ "./resources/js/mixins/crud.js");
-/* harmony import */ var _mixins_fixedRightCol__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @/mixins/fixedRightCol */ "./resources/js/mixins/fixedRightCol.js");
-/* harmony import */ var _mixins_formatName__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @/mixins/formatName */ "./resources/js/mixins/formatName.js");
-/* harmony import */ var _mixins_icons__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @/mixins/icons */ "./resources/js/mixins/icons.js");
-/* harmony import */ var _mixins_messages__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @/mixins/messages */ "./resources/js/mixins/messages.js");
-/* harmony import */ var _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @/mixins/publicAuthData */ "./resources/js/mixins/publicAuthData.js");
-/* harmony import */ var _formFields_employees__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @/formFields/employees */ "./resources/js/formFields/employees.js");
-/* harmony import */ var _components_inputs_FieldComponent__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @/components/inputs/FieldComponent */ "./resources/js/components/inputs/FieldComponent/index.js");
-/* harmony import */ var _components_inputs_FormComponent___WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @/components/inputs/FormComponent/ */ "./resources/js/components/inputs/FormComponent/index.js");
-/* harmony import */ var _components_inputs_InputComponent__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @/components/inputs/InputComponent */ "./resources/js/components/inputs/InputComponent/index.js");
-/* harmony import */ var _components_common_MessagesComponent___WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! @/components/common/MessagesComponent/ */ "./resources/js/components/common/MessagesComponent/index.js");
+/* harmony import */ var _mixins_axiosRequests__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @/mixins/axiosRequests */ "./resources/js/mixins/axiosRequests.js");
+/* harmony import */ var _mixins_changeDisplayMode__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @/mixins/changeDisplayMode */ "./resources/js/mixins/changeDisplayMode.js");
+/* harmony import */ var _mixins_crud__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @/mixins/crud */ "./resources/js/mixins/crud.js");
+/* harmony import */ var _formFields_employees__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @/formFields/employees */ "./resources/js/formFields/employees.js");
+/* harmony import */ var _mixins_fixedRightCol__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @/mixins/fixedRightCol */ "./resources/js/mixins/fixedRightCol.js");
+/* harmony import */ var _mixins_formatName__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @/mixins/formatName */ "./resources/js/mixins/formatName.js");
+/* harmony import */ var _mixins_icons__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @/mixins/icons */ "./resources/js/mixins/icons.js");
+/* harmony import */ var _mixins_messages__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @/mixins/messages */ "./resources/js/mixins/messages.js");
+/* harmony import */ var _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @/mixins/publicAuthData */ "./resources/js/mixins/publicAuthData.js");
+/* harmony import */ var _mixins_vehicleTypesList__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @/mixins/vehicleTypesList */ "./resources/js/mixins/vehicleTypesList.js");
+/* harmony import */ var _components_inputs_FieldComponent__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! @/components/inputs/FieldComponent */ "./resources/js/components/inputs/FieldComponent/index.js");
+/* harmony import */ var _components_inputs_FormComponent___WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! @/components/inputs/FormComponent/ */ "./resources/js/components/inputs/FormComponent/index.js");
+/* harmony import */ var _components_inputs_InputComponent__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! @/components/inputs/InputComponent */ "./resources/js/components/inputs/InputComponent/index.js");
+/* harmony import */ var _components_common_MessagesComponent___WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! @/components/common/MessagesComponent/ */ "./resources/js/components/common/MessagesComponent/index.js");
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function _regeneratorRuntime() { "use strict"; /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/facebook/regenerator/blob/main/LICENSE */ _regeneratorRuntime = function _regeneratorRuntime() { return e; }; var t, e = {}, r = Object.prototype, n = r.hasOwnProperty, o = Object.defineProperty || function (t, e, r) { t[e] = r.value; }, i = "function" == typeof Symbol ? Symbol : {}, a = i.iterator || "@@iterator", c = i.asyncIterator || "@@asyncIterator", u = i.toStringTag || "@@toStringTag"; function define(t, e, r) { return Object.defineProperty(t, e, { value: r, enumerable: !0, configurable: !0, writable: !0 }), t[e]; } try { define({}, ""); } catch (t) { define = function define(t, e, r) { return t[e] = r; }; } function wrap(t, e, r, n) { var i = e && e.prototype instanceof Generator ? e : Generator, a = Object.create(i.prototype), c = new Context(n || []); return o(a, "_invoke", { value: makeInvokeMethod(t, r, c) }), a; } function tryCatch(t, e, r) { try { return { type: "normal", arg: t.call(e, r) }; } catch (t) { return { type: "throw", arg: t }; } } e.wrap = wrap; var h = "suspendedStart", l = "suspendedYield", f = "executing", s = "completed", y = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} var p = {}; define(p, a, function () { return this; }); var d = Object.getPrototypeOf, v = d && d(d(values([]))); v && v !== r && n.call(v, a) && (p = v); var g = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(p); function defineIteratorMethods(t) { ["next", "throw", "return"].forEach(function (e) { define(t, e, function (t) { return this._invoke(e, t); }); }); } function AsyncIterator(t, e) { function invoke(r, o, i, a) { var c = tryCatch(t[r], t, o); if ("throw" !== c.type) { var u = c.arg, h = u.value; return h && "object" == _typeof(h) && n.call(h, "__await") ? e.resolve(h.__await).then(function (t) { invoke("next", t, i, a); }, function (t) { invoke("throw", t, i, a); }) : e.resolve(h).then(function (t) { u.value = t, i(u); }, function (t) { return invoke("throw", t, i, a); }); } a(c.arg); } var r; o(this, "_invoke", { value: function value(t, n) { function callInvokeWithMethodAndArg() { return new e(function (e, r) { invoke(t, n, e, r); }); } return r = r ? r.then(callInvokeWithMethodAndArg, callInvokeWithMethodAndArg) : callInvokeWithMethodAndArg(); } }); } function makeInvokeMethod(e, r, n) { var o = h; return function (i, a) { if (o === f) throw new Error("Generator is already running"); if (o === s) { if ("throw" === i) throw a; return { value: t, done: !0 }; } for (n.method = i, n.arg = a;;) { var c = n.delegate; if (c) { var u = maybeInvokeDelegate(c, n); if (u) { if (u === y) continue; return u; } } if ("next" === n.method) n.sent = n._sent = n.arg;else if ("throw" === n.method) { if (o === h) throw o = s, n.arg; n.dispatchException(n.arg); } else "return" === n.method && n.abrupt("return", n.arg); o = f; var p = tryCatch(e, r, n); if ("normal" === p.type) { if (o = n.done ? s : l, p.arg === y) continue; return { value: p.arg, done: n.done }; } "throw" === p.type && (o = s, n.method = "throw", n.arg = p.arg); } }; } function maybeInvokeDelegate(e, r) { var n = r.method, o = e.iterator[n]; if (o === t) return r.delegate = null, "throw" === n && e.iterator["return"] && (r.method = "return", r.arg = t, maybeInvokeDelegate(e, r), "throw" === r.method) || "return" !== n && (r.method = "throw", r.arg = new TypeError("The iterator does not provide a '" + n + "' method")), y; var i = tryCatch(o, e.iterator, r.arg); if ("throw" === i.type) return r.method = "throw", r.arg = i.arg, r.delegate = null, y; var a = i.arg; return a ? a.done ? (r[e.resultName] = a.value, r.next = e.nextLoc, "return" !== r.method && (r.method = "next", r.arg = t), r.delegate = null, y) : a : (r.method = "throw", r.arg = new TypeError("iterator result is not an object"), r.delegate = null, y); } function pushTryEntry(t) { var e = { tryLoc: t[0] }; 1 in t && (e.catchLoc = t[1]), 2 in t && (e.finallyLoc = t[2], e.afterLoc = t[3]), this.tryEntries.push(e); } function resetTryEntry(t) { var e = t.completion || {}; e.type = "normal", delete e.arg, t.completion = e; } function Context(t) { this.tryEntries = [{ tryLoc: "root" }], t.forEach(pushTryEntry, this), this.reset(!0); } function values(e) { if (e || "" === e) { var r = e[a]; if (r) return r.call(e); if ("function" == typeof e.next) return e; if (!isNaN(e.length)) { var o = -1, i = function next() { for (; ++o < e.length;) if (n.call(e, o)) return next.value = e[o], next.done = !1, next; return next.value = t, next.done = !0, next; }; return i.next = i; } } throw new TypeError(_typeof(e) + " is not iterable"); } return GeneratorFunction.prototype = GeneratorFunctionPrototype, o(g, "constructor", { value: GeneratorFunctionPrototype, configurable: !0 }), o(GeneratorFunctionPrototype, "constructor", { value: GeneratorFunction, configurable: !0 }), GeneratorFunction.displayName = define(GeneratorFunctionPrototype, u, "GeneratorFunction"), e.isGeneratorFunction = function (t) { var e = "function" == typeof t && t.constructor; return !!e && (e === GeneratorFunction || "GeneratorFunction" === (e.displayName || e.name)); }, e.mark = function (t) { return Object.setPrototypeOf ? Object.setPrototypeOf(t, GeneratorFunctionPrototype) : (t.__proto__ = GeneratorFunctionPrototype, define(t, u, "GeneratorFunction")), t.prototype = Object.create(g), t; }, e.awrap = function (t) { return { __await: t }; }, defineIteratorMethods(AsyncIterator.prototype), define(AsyncIterator.prototype, c, function () { return this; }), e.AsyncIterator = AsyncIterator, e.async = function (t, r, n, o, i) { void 0 === i && (i = Promise); var a = new AsyncIterator(wrap(t, r, n, o), i); return e.isGeneratorFunction(r) ? a : a.next().then(function (t) { return t.done ? t.value : a.next(); }); }, defineIteratorMethods(g), define(g, u, "Generator"), define(g, a, function () { return this; }), define(g, "toString", function () { return "[object Generator]"; }), e.keys = function (t) { var e = Object(t), r = []; for (var n in e) r.push(n); return r.reverse(), function next() { for (; r.length;) { var t = r.pop(); if (t in e) return next.value = t, next.done = !1, next; } return next.done = !0, next; }; }, e.values = values, Context.prototype = { constructor: Context, reset: function reset(e) { if (this.prev = 0, this.next = 0, this.sent = this._sent = t, this.done = !1, this.delegate = null, this.method = "next", this.arg = t, this.tryEntries.forEach(resetTryEntry), !e) for (var r in this) "t" === r.charAt(0) && n.call(this, r) && !isNaN(+r.slice(1)) && (this[r] = t); }, stop: function stop() { this.done = !0; var t = this.tryEntries[0].completion; if ("throw" === t.type) throw t.arg; return this.rval; }, dispatchException: function dispatchException(e) { if (this.done) throw e; var r = this; function handle(n, o) { return a.type = "throw", a.arg = e, r.next = n, o && (r.method = "next", r.arg = t), !!o; } for (var o = this.tryEntries.length - 1; o >= 0; --o) { var i = this.tryEntries[o], a = i.completion; if ("root" === i.tryLoc) return handle("end"); if (i.tryLoc <= this.prev) { var c = n.call(i, "catchLoc"), u = n.call(i, "finallyLoc"); if (c && u) { if (this.prev < i.catchLoc) return handle(i.catchLoc, !0); if (this.prev < i.finallyLoc) return handle(i.finallyLoc); } else if (c) { if (this.prev < i.catchLoc) return handle(i.catchLoc, !0); } else { if (!u) throw new Error("try statement without catch or finally"); if (this.prev < i.finallyLoc) return handle(i.finallyLoc); } } } }, abrupt: function abrupt(t, e) { for (var r = this.tryEntries.length - 1; r >= 0; --r) { var o = this.tryEntries[r]; if (o.tryLoc <= this.prev && n.call(o, "finallyLoc") && this.prev < o.finallyLoc) { var i = o; break; } } i && ("break" === t || "continue" === t) && i.tryLoc <= e && e <= i.finallyLoc && (i = null); var a = i ? i.completion : {}; return a.type = t, a.arg = e, i ? (this.method = "next", this.next = i.finallyLoc, y) : this.complete(a); }, complete: function complete(t, e) { if ("throw" === t.type) throw t.arg; return "break" === t.type || "continue" === t.type ? this.next = t.arg : "return" === t.type ? (this.rval = this.arg = t.arg, this.method = "return", this.next = "end") : "normal" === t.type && e && (this.next = e), y; }, finish: function finish(t) { for (var e = this.tryEntries.length - 1; e >= 0; --e) { var r = this.tryEntries[e]; if (r.finallyLoc === t) return this.complete(r.completion, r.afterLoc), resetTryEntry(r), y; } }, "catch": function _catch(t) { for (var e = this.tryEntries.length - 1; e >= 0; --e) { var r = this.tryEntries[e]; if (r.tryLoc === t) { var n = r.completion; if ("throw" === n.type) { var o = n.arg; resetTryEntry(r); } return o; } } throw new Error("illegal catch attempt"); }, delegateYield: function delegateYield(e, r, n) { return this.delegate = { iterator: values(e), resultName: r, nextLoc: n }, "next" === this.method && (this.arg = t), y; } }, e; }
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 /**
  *
  * Приложение отвечающее за внешний вид и отправку
@@ -22411,19 +22458,21 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
+
+
 //компоненты
 
 
 
 
-var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 var appPublicEmployees = {
-  mixins: [_mixins_crud__WEBPACK_IMPORTED_MODULE_1__["default"], _mixins_fixedRightCol__WEBPACK_IMPORTED_MODULE_2__["default"], _mixins_formatName__WEBPACK_IMPORTED_MODULE_3__["default"], _mixins_icons__WEBPACK_IMPORTED_MODULE_4__["default"], _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_6__["default"], _mixins_messages__WEBPACK_IMPORTED_MODULE_5__["default"], _formFields_employees__WEBPACK_IMPORTED_MODULE_7__["default"]],
+  mixins: [_mixins_axiosRequests__WEBPACK_IMPORTED_MODULE_1__["default"], _mixins_crud__WEBPACK_IMPORTED_MODULE_3__["default"], _mixins_changeDisplayMode__WEBPACK_IMPORTED_MODULE_2__["default"], _formFields_employees__WEBPACK_IMPORTED_MODULE_4__["default"], _mixins_fixedRightCol__WEBPACK_IMPORTED_MODULE_5__["default"], _mixins_formatName__WEBPACK_IMPORTED_MODULE_6__["default"], _mixins_icons__WEBPACK_IMPORTED_MODULE_7__["default"], _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_9__["default"], _mixins_messages__WEBPACK_IMPORTED_MODULE_8__["default"], _mixins_vehicleTypesList__WEBPACK_IMPORTED_MODULE_10__["default"]],
   components: {
-    FieldComponent: _components_inputs_FieldComponent__WEBPACK_IMPORTED_MODULE_8__["default"],
-    Field: _components_inputs_InputComponent__WEBPACK_IMPORTED_MODULE_10__["default"],
-    TheForm: _components_inputs_FormComponent___WEBPACK_IMPORTED_MODULE_9__["default"],
-    MessagesComponent: _components_common_MessagesComponent___WEBPACK_IMPORTED_MODULE_11__["default"]
+    FieldComponent: _components_inputs_FieldComponent__WEBPACK_IMPORTED_MODULE_11__["default"],
+    Field: _components_inputs_InputComponent__WEBPACK_IMPORTED_MODULE_13__["default"],
+    TheForm: _components_inputs_FormComponent___WEBPACK_IMPORTED_MODULE_12__["default"],
+    MessagesComponent: _components_common_MessagesComponent___WEBPACK_IMPORTED_MODULE_14__["default"]
   },
   data: function data() {
     return {
@@ -22437,7 +22486,15 @@ var appPublicEmployees = {
        * Перечень сотрудников организации
        */
       employees: [],
+      /**
+       *
+       */
       group: [],
+      /**
+       * редактируемый сотрудник
+       *
+       * @param {Object}
+       */
       editedEmployee: {
         id: -1,
         first_name: null,
@@ -22456,65 +22513,96 @@ var appPublicEmployees = {
        * @param {Enum} : list | details | create
        */
       mode: "list",
+      /**
+       * Название отображаемого модального окна
+       *
+       * @param {String}
+       */
       popup: null,
       validationMessages: {
         deleteEmployee: "Вы уверены, что хотите удалить сотрудника"
       },
       vehicleGroupType: "bunker",
+      /**
+       * список техники организации
+       *
+       * @param {Array}
+       */
       vehicles: []
     };
   },
   watch: {
-    editForm: function editForm() {
-      var vm = this;
-      vm.reset();
-      if (!vm.editMode) {
-        // обнуление фитксированного положение правой колонки
-        vm.stopFixElement();
-      } else if (vm.editMode) {
-        // применение sticky поведения для правой колонки
-        vm.startFixElement("fixposition", "observeResize", false, [vm.$refs.beforeStickyPosition]);
-      }
+    /**
+     * Отслеживание изменений закладки в настройках сотрудника
+     * Обновление урл страницы
+     */
+    activeTab: function activeTab() {
+      //обновление урл страницы без перезагрузки
+      this.updateUrlParams();
     },
+    /**
+     * отслеживание изменений режима работы страницы
+     * Фиксирование правой колонки
+     * Обновление урл страницы
+     *
+     * @param {Enum} mode
+     */
     mode: function mode(_mode) {
       var vm = this;
       if (_mode === "list") {
-        // обнуление фитксированного положение правой колонки
+        // обнуление фиксированного положение правой колонки
         vm.stopFixElement();
       } else {
         // применение sticky поведения для правой колонки
         vm.startFixElement("fixposition", "observeResize", false, [vm.$refs.beforeStickyPosition]);
       }
+
+      //обновление урл страницы без перезагрузки
+      vm.updateUrlParams();
     }
   },
   computed: {
+    /**
+     * Режим работы приложения
+     *
+     * @returns {Boolean}
+     */
     editMode: function editMode() {
-      return ["create", "details"].indexOf(this.mode) >= 0;
+      var _this$editedEmployee;
+      return ["create", "details"].indexOf(this.mode) >= 0 && ((_this$editedEmployee = this.editedEmployee) === null || _this$editedEmployee === void 0 ? void 0 : _this$editedEmployee.id);
     },
-    showForm: function showForm() {
-      return this.mode === "create";
-    },
+    /**
+     * HTML класс конткейнера списка сотрудников
+     *
+     * @returns {String}
+     */
     listClass: function listClass() {
       var editClass = "col-12 col-lg-6 d-none d-lg-block";
       var displayClass = "col-12 ";
       return this.editMode ? editClass : displayClass;
     },
-    vehicleTypesList: function vehicleTypesList() {
-      return {
-        bunker: {
-          name: "Бункер перегрузчик"
-        },
-        transporter: {
-          name: "Грузовик"
-        },
-        tractor: {
-          name: "Трактор"
-        },
-        harvester: {
-          name: "Комбайн"
-        }
-      };
+    /**
+     * От какого значения считать режим работы мобильным приложением
+     *
+     * @returns {Number}
+     */
+    mobileBreakPoint: function mobileBreakPoint() {
+      return 992;
     },
+    /**
+     * Признак согласного которого нужно отображать форму создания сотрудника или детали выбранного сотрудника
+     *
+     * @returns {Boolean}
+     */
+    showForm: function showForm() {
+      var _this$editedEmployee2;
+      return this.mode === "create" && ((_this$editedEmployee2 = this.editedEmployee) === null || _this$editedEmployee2 === void 0 ? void 0 : _this$editedEmployee2.id);
+    },
+    /**
+     * перечень техники без назначенного ответственного лица
+     *
+     * @returns {Object}
+     */
     vehiclesGrouped: function vehiclesGrouped() {
       var vm = this;
       var vehicles = Object.values(vm.vehicles["".concat(vm.vehicleGroupType, "s")]);
@@ -22522,25 +22610,150 @@ var appPublicEmployees = {
         return !el.employee_id || el.employee_id === vm.editedEmployee.id;
       });
       return vehicles;
-    },
-    mobileBreakPoint: function mobileBreakPoint() {
-      return 992;
     }
   },
   mounted: function mounted() {
     var vm = this;
-    vm.getEmployees();
-    vm.getVehicles();
+    vm.updateData(true);
     document.addEventListener("updateList", function () {
-      vm.getEmployees();
-      vm.getVehicles();
+      vm.updateData();
     });
   },
   methods: {
+    /**
+     * Применение сформированной группы
+     */
     applyGroup: function applyGroup() {
       var vm = this;
       vm.editedEmployee.vehicles = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.group);
       vm.popup = null;
+    },
+    /**
+     * Показывает форму создания нового сотрудника
+     */
+    addEmployee: function addEmployee() {
+      var vm = this;
+      vm.mode = "create";
+      vm.clearEmployee();
+    },
+    /**
+     * очистка данных о пользователе
+     */
+    clearEmployee: function clearEmployee() {
+      var vm = this;
+      vm.editedEmployee = {
+        id: -1,
+        first_name: null,
+        last_name: null,
+        middle_name: null,
+        phone: null,
+        organisation_id: null,
+        specialisation: null
+      };
+    },
+    /**
+     * Отправка запроса на удаление записи о сотруднике
+     *
+     * @param {Object} person
+     *
+     * @returns {Void}
+     */
+    deleteEmployee: function deleteEmployee(person) {
+      var vm = this;
+      vm.mode = "list";
+      var postData = {
+        user_id: vm.userId,
+        organisation_id: vm.organisationId,
+        delete_employee_id: person.id,
+        name: "".concat(person.specialisation, " ").concat(person.last_name)
+      };
+      vm.deleteEntity(postData, "./employees/delete");
+    },
+    /**
+     * получаети год по переданной строке
+     *
+     * @param {String} dateString
+     *
+     * @returns {String} Year
+     */
+    getDate: function getDate(dateString) {
+      var date = new Date(dateString);
+      return date.getFullYear();
+    },
+    /**
+     * Отправка запроса на редактирование записи о сотруднике
+     *
+     * @returns {Void}
+     */
+    patchEmployee: function patchEmployee() {
+      var vm = this;
+      var form = vm.$refs.submitFormEdit;
+      var data = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.getFormData)(form);
+      for (var key in data) {
+        vm.editedEmployee[key] = data[key];
+      }
+      var postData = {
+        user_id: vm.userId,
+        organisation_id: vm.organisationId,
+        edited_employee: vm.editedEmployee
+      };
+      vm.editEntity(postData, "/employees/update");
+    },
+    /**
+     * Удаление техники из перечня техники за которую ответственен пользователь
+     *
+     * @param {Object} item @see app\Models\Vehicle.php
+     *
+     * @param {Boolean} save
+     */
+    removeFromGroup: function removeFromGroup(item, save) {
+      var vm = this;
+      var group = Object.values(vm.group);
+      var index = group.findIndex(function (el) {
+        return el.id === item.id;
+      });
+      if (index >= 0) {
+        group.splice(index, 1);
+        vm.group = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(group);
+        if (save) {
+          vm.editedEmployee.vehicles = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(group);
+        }
+      }
+    },
+    /**
+     * Отображает данные о выбранном сотруднике
+     *
+     * @param {Object} person @see app\Models\Employee.php
+     *
+     * @returns {Void}
+     */
+    showEmployeeDetails: function showEmployeeDetails(person) {
+      var vm = this;
+      vm.mode = "details";
+      vm.editedEmployee = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(person);
+      vm.group = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(person.vehicles);
+      vm.updateUrlParams(person);
+    },
+    /**
+     * Отправка запроса на создание новой записи о сотруднике
+     *
+     * @param {Object} person @see app\Models\Employee.php
+     *
+     * @returns {Void}
+     */
+    storeEmployee: function storeEmployee(person) {
+      var vm = this;
+      var postData = {
+        user_id: vm.userId,
+        organisation_id: vm.organisationId,
+        edited_employee: person
+      };
+      vm.createEntity(postData, "/employees/store").then(function (e) {
+        if (e.status === 200) {
+          vm.clearEmployee();
+          vm.$refs.createEmployeeForm.clear();
+        }
+      });
     },
     /**
      * Добавляет/удаляет технику из группы
@@ -22562,110 +22775,55 @@ var appPublicEmployees = {
       }
       vm.group = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(group);
     },
-    addEmployee: function addEmployee() {
-      var vm = this;
-      vm.mode = "create";
-      vm.clearEmployee();
-    },
-    clearEmployee: function clearEmployee() {
-      var vm = this;
-      vm.editedEmployee = {
-        id: -1,
-        first_name: null,
-        last_name: null,
-        middle_name: null,
-        phone: null,
-        organisation_id: null,
-        specialisation: null
-      };
-    },
-    deleteEmployee: function deleteEmployee(person) {
-      var vm = this;
-      vm.mode = "list";
-      var postData = {
-        user_id: vm.userId,
-        organisation_id: vm.organisationId,
-        delete_employee_id: person.id,
-        name: "".concat(person.specialisation, " ").concat(person.last_name)
-      };
-      vm.deleteEntity(postData, "./employees/delete");
-    },
-    getDate: function getDate(dateString) {
-      var date = new Date(dateString);
-      return date.getFullYear();
-    },
-    edit: function edit(person) {
-      var vm = this;
-      vm.mode = "details";
-      vm.editedEmployee = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(person);
-      vm.group = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(person.vehicles);
-    },
-    getEmployees: function getEmployees() {
-      var vm = this;
-      if (vm.$refs.organisationId < 0) {
-        return;
-      }
-      axios.get("/employees/list", {
-        user_id: vm.userId
-      }).then(function (response) {
-        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c getEmployees", "color: green", response);
-        vm.employees = response.data.employees;
-      })["catch"](function (e) {
-        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c getVehicles error", "color: red", e.response);
-        vm.messages.error = e.response.data.message;
-      });
-    },
-    getVehicles: function getVehicles() {
-      var vm = this;
-      axios.get("/vehicles/list").then(function (response) {
-        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c getVehicles", "color: green", response);
-        vm.vehicles = response.data;
-      })["catch"](function (e) {
-        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c getVehicles error", "color: red", e.response);
-        vm.messages.error = e.response.data.message;
-      });
-    },
-    patchEmployee: function patchEmployee() {
-      var vm = this;
-      var form = vm.$refs.submitFormEdit;
-      var data = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.getFormData)(form);
-      for (var key in data) {
-        vm.editedEmployee[key] = data[key];
-      }
-      var postData = {
-        user_id: vm.userId,
-        organisation_id: vm.organisationId,
-        edited_employee: vm.editedEmployee
-      };
-      vm.editEntity(postData, "/employees/update");
-    },
-    storeEmployee: function storeEmployee(data) {
-      var vm = this;
-      var postData = {
-        user_id: vm.userId,
-        organisation_id: vm.organisationId,
-        edited_employee: data
-      };
-      vm.createEntity(postData, "/employees/store").then(function (e) {
-        if (e.status === 200) {
-          vm.clearEmployee();
-          vm.$refs.createEmployeeForm.clear();
-        }
-      });
-    },
-    removeFromGroup: function removeFromGroup(item, save) {
-      var vm = this;
-      var group = Object.values(vm.group);
-      var index = group.findIndex(function (el) {
-        return el.id === item.id;
-      });
-      if (index >= 0) {
-        group.splice(index, 1);
-        vm.group = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(group);
-        if (save) {
-          vm.editedEmployee.vehicles = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(group);
-        }
-      }
+    /**
+     * Получает данные о сотрудниках и техники организации
+     * обновляет значение переменных employees и  vehicles
+     *
+     * @param {Boolean} updateUrl
+     *
+     * @returns {Void}
+     */
+    updateData: function updateData() {
+      var _arguments = arguments,
+        _this = this;
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
+        var updateUrl, vm;
+        return _regeneratorRuntime().wrap(function _callee$(_context) {
+          while (1) switch (_context.prev = _context.next) {
+            case 0:
+              updateUrl = _arguments.length > 0 && _arguments[0] !== undefined ? _arguments[0] : false;
+              vm = _this; // обновление данных о сотрудниках
+              vm.getEmployees().then(function (e) {
+                vm.employees = e.employees;
+
+                /**
+                 *  выбрать из полученных сотрудников активного по id, переданному в урл
+                 */
+                if (updateUrl) {
+                  var id = parseInt((0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.getPropFromUrl)("id"));
+                  if (!id) return;
+                  var mayBeItem = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.employees).filter(function (i) {
+                    return i.id === id;
+                  }).pop();
+                  vm.editedEmployee = mayBeItem ? mayBeItem : vm.editedEmployee;
+                }
+              });
+
+              // обновление данных о технике
+              vm.getVehicles().then(function (e) {
+                vm.vehicles = {
+                  bunkers: Object.values(e.bunkers),
+                  harvesters: Object.values(e.harvesters),
+                  tractors: Object.values(e.tractors),
+                  transporters: Object.values(e.transporters)
+                };
+              });
+            case 4:
+            case "end":
+              return _context.stop();
+          }
+        }, _callee);
+      }))();
     }
   }
 };

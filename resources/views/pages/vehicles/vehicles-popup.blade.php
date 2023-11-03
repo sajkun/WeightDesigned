@@ -4,7 +4,7 @@
         <div class="popup__header ">
             <div class="row">
                 <div class="col-8">
-                    <p class="m-0">
+                    <p class="m-0 h5">
                         <i class="icon" v-html='chainIcon'></i>
                         Группировка техники
                     </p>
@@ -18,7 +18,7 @@
 
         <div class="popup__body">
             <div class="mt-3">
-                Добавленная техника
+                <span v-if='group.length'>Выбранная техника</span>
                 <div class="d-flex">
                     <div class="btn btn-borders me-1" v-for='item, key in group' :key="'vehicleTag' + key">
                         <div class="row

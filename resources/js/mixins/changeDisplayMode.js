@@ -1,4 +1,4 @@
-// изменяет урл без перезагрузки страницы
+// изменяет параметры приложения на основании УРЛ при загрузке страницы
 
 //хэлперы
 import { getPropFromUrl, replaceUrlState } from "@/misc/helpers";
@@ -43,6 +43,8 @@ const changeDisplayMode = {
                     prop: "activeTab",
                     value: vm.activeTab,
                 });
+
+            console.log(newUrlParams);
 
             //обновляет урл без перезагрузки при смене страниц
             replaceUrlState(newUrlParams);

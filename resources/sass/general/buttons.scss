@@ -51,6 +51,14 @@
     --bs-btn-disabled-bg: transparent;
     --bs-btn-disabled-border-color: transparent;
     --bs-btn-border-width: 2px;
+
+    .btn-close {
+        &,
+        &:hover {
+            background-color: none;
+            filter: contrast(0);
+        }
+    }
 }
 
 .btn-borders-contrast {
