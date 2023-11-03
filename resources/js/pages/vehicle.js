@@ -735,14 +735,23 @@ const appPublicVehicles = {
         viewVehicle(item) {
             clog("%c viewVehicle", "color: blue", strip(item));
             const vm = this;
-            this.mode = "details";
+            vm.mode = "details";
+            vm.viewVehiclePrepare(item);
+            vm.updateUrlParams(item);
+        },
+
+        /**
+         * Подготовка данных для показа техники
+         *
+         * @param {Object} item
+         */
+        viewVehiclePrepare(item) {
+            const vm = this;
             vm.editedVehicle = strip(item);
             vm.mayBeResponsiblePerson = strip(item).employee;
             vm.rfids = strip(item).rfids;
             vm.mayBeGroupedVehicles = strip(item).group;
             vm.group = strip(item).group;
-
-            vm.updateUrlParams(item);
         },
 
         /**
@@ -776,7 +785,8 @@ const appPublicVehicles = {
                 const mayBeItem = strip(vm.vehiclesCurrent)
                     .filter((i) => i.id === id)
                     .pop();
-                vm.editedVehicle = mayBeItem ? mayBeItem : vm.editedVehicle;
+                const item = mayBeItem ? mayBeItem : vm.editedVehicle;
+                vm.viewVehiclePrepare(item);
 
                 if (vm.editedVehicle.hasOwnProperty("id")) {
                     return;

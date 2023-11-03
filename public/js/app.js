@@ -25363,13 +25363,22 @@ var appPublicVehicles = {
     viewVehicle: function viewVehicle(item) {
       (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c viewVehicle", "color: blue", (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(item));
       var vm = this;
-      this.mode = "details";
+      vm.mode = "details";
+      vm.viewVehiclePrepare(item);
+      vm.updateUrlParams(item);
+    },
+    /**
+     * Подготовка данных для показа техники
+     *
+     * @param {Object} item
+     */
+    viewVehiclePrepare: function viewVehiclePrepare(item) {
+      var vm = this;
       vm.editedVehicle = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(item);
       vm.mayBeResponsiblePerson = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(item).employee;
       vm.rfids = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(item).rfids;
       vm.mayBeGroupedVehicles = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(item).group;
       vm.group = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(item).group;
-      vm.updateUrlParams(item);
     },
     /**
      * Получает данные о технике и сотрудниках
@@ -25400,7 +25409,8 @@ var appPublicVehicles = {
         var mayBeItem = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.vehiclesCurrent).filter(function (i) {
           return i.id === id;
         }).pop();
-        vm.editedVehicle = mayBeItem ? mayBeItem : vm.editedVehicle;
+        var item = mayBeItem ? mayBeItem : vm.editedVehicle;
+        vm.viewVehiclePrepare(item);
         if (vm.editedVehicle.hasOwnProperty("id")) {
           return;
         }
