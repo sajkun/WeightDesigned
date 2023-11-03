@@ -5,13 +5,7 @@
  */
 
 //хэлперы
-import {
-    strip,
-    clog,
-    getFormData,
-    replaceUrlState,
-    getPropFromUrl,
-} from "@/misc/helpers";
+import { strip, clog, getFormData, getPropFromUrl } from "@/misc/helpers";
 
 //миксины
 import axiosRequests from "@/mixins/axiosRequests";
@@ -21,9 +15,11 @@ import fixedRightCol from "@/mixins/fixedRightCol";
 import icons from "@/mixins/icons";
 import messages from "@/mixins/messages";
 import publicAuthData from "@/mixins/publicAuthData";
+import vehicleFormStructures from "@/formFields/vehicles";
 
 //компоненты
 import BvsOperationComponent from "@/components/Bvs/OperationComponent";
+import FieldComponent from "@/components/inputs/FieldComponent";
 import MessagesComponent from "@/components/common/MessagesComponent/";
 
 const axios = require("axios");
@@ -36,9 +32,14 @@ const appPublicVehicles = {
         icons,
         messages,
         publicAuthData,
+        vehicleFormStructures,
     ],
 
-    components: { MessagesComponent, BvsOperation: BvsOperationComponent },
+    components: {
+        BvsOperation: BvsOperationComponent,
+        FieldComponent,
+        MessagesComponent,
+    },
 
     data() {
         return {

@@ -32,7 +32,7 @@
                                 <th>Профессия</th>
                                 <td></td>
                             </tr>
-                            <tr v-for='person, key in employees' :key='"emp" + key' @click='edit(person, false )'>
+                            <tr v-for='person, key in employees' :key='"emp" + key' @click='edit(person )'>
                                 <td>@{{ key + 1 }}</td>
                                 <td title='ФИО'>@{{ formatName(person.last_name, person.first_name, person.middle_name) }}</td>
                                 <td title='Телефон'>@{{ person.phone }}</td>
@@ -62,7 +62,7 @@
                     <div class="d-lg-flex flex-column org-wrapper  p-4" v-if='showForm' :ref='"fixposition"'>
                         <h3 class="h4">Добавить нового сотрудника</h3>
                         <the-form ref='createEmployeeForm' :_structure='addEmployeeFormStructure'
-                            @exec-submit='storeEmployee' @cancel-form='showForm=false; editMode=false'>
+                            @exec-submit='storeEmployee' @cancel-form='mode="list"'>
                         </the-form>
 
                     </div>
@@ -81,7 +81,7 @@
                                 </h2>
                             </div>
                             <div class="col text-end">
-                                <button class='btn btn-close' @click.stop='editMode=false'> </button>
+                                <button class='btn btn-close' @click.stop='mode="list"'> </button>
                             </div>
                         </div>
                         <div class="row">

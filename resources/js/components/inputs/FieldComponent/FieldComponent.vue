@@ -121,6 +121,10 @@ export default {
         },
     },
 
+    mounted() {
+        this.forceRerender();
+    },
+
     computed: {
         /**
          * Параметр, определяющий какой типа поля ввода отображать

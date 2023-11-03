@@ -11,6 +11,7 @@ import { strip, clog, getFormData } from "@/misc/helpers";
 import crud from "@/mixins/crud";
 import fixedRightCol from "@/mixins/fixedRightCol";
 import formatName from "@/mixins/formatName";
+import icons from "@/mixins/icons";
 import messages from "@/mixins/messages";
 import publicAuthData from "@/mixins/publicAuthData";
 import employeeForm from "@/formFields/employees";
@@ -27,6 +28,7 @@ const appPublicEmployees = {
         crud,
         fixedRightCol,
         formatName,
+        icons,
         publicAuthData,
         messages,
         employeeForm,
@@ -39,13 +41,20 @@ const appPublicEmployees = {
     },
     data() {
         return {
-            editMode: false,
-            showForm: false,
+            /**
+             * Значение активной закладки при mode = details
+             *
+             * @param {Enum} // info | activity | settings
+             */
+            activeTab: "info",
+
+            /**
+             * Перечень сотрудников организации
+             */
             employees: [],
-            popup: null,
-            vehicleGroupType: "bunker",
+
             group: [],
-            activeTab: "info", // info | activity | settings
+
             editedEmployee: {
                 id: -1,
                 first_name: null,
@@ -56,11 +65,25 @@ const appPublicEmployees = {
                 specialisation: null,
             },
 
-            vehicles: [],
+            /**
+             * ключ, определяющий отображать
+             * - список сотрудников или
+             * - форму редактирования выбранного сотрудника или
+             * - форму создания нового сотрудника
+             *
+             * @param {Enum} : list | details | create
+             */
+            mode: "list",
+
+            popup: null,
 
             validationMessages: {
                 deleteEmployee: "Вы уверены, что хотите удалить сотрудника",
             },
+
+            vehicleGroupType: "bunker",
+
+            vehicles: [],
         };
     },
 
@@ -80,27 +103,30 @@ const appPublicEmployees = {
             }
         },
 
-        editMode(editMode) {
+        mode(mode) {
             const vm = this;
 
-            if (!editMode) {
-                vm.showForm = false;
+            if (mode === "list") {
                 // обнуление фитксированного положение правой колонки
                 vm.stopFixElement();
-            } else if (editMode) {
+            } else {
                 // применение sticky поведения для правой колонки
                 vm.startFixElement("fixposition", "observeResize", false, [
                     vm.$refs.beforeStickyPosition,
                 ]);
             }
-
-            if (editMode && vm.editedEmployee.id < 0) {
-                vm.showForm = true;
-            }
         },
     },
 
     computed: {
+        editMode() {
+            return ["create", "details"].indexOf(this.mode) >= 0;
+        },
+
+        showForm() {
+            return this.mode === "create";
+        },
+
         listClass() {
             const editClass = "col-12 col-lg-6 d-none d-lg-block";
             const displayClass = "col-12 ";
@@ -187,8 +213,7 @@ const appPublicEmployees = {
 
         addEmployee() {
             const vm = this;
-            vm.editMode = true;
-            vm.showForm = true;
+            vm.mode = "create";
             vm.clearEmployee();
         },
 
@@ -207,7 +232,7 @@ const appPublicEmployees = {
 
         deleteEmployee(person) {
             const vm = this;
-            vm.editMode = false;
+            vm.mode = "list";
 
             const postData = {
                 user_id: vm.userId,
@@ -224,14 +249,11 @@ const appPublicEmployees = {
             return date.getFullYear();
         },
 
-        edit(person, showForm) {
+        edit(person) {
             const vm = this;
-            vm.editMode = true;
+            vm.mode = "details";
             vm.editedEmployee = strip(person);
             vm.group = strip(person.vehicles);
-            vm.$nextTick(() => {
-                vm.showForm = Boolean(showForm);
-            });
         },
 
         getEmployees() {
