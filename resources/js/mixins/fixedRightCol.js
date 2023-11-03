@@ -294,8 +294,6 @@ export default {
             controllHeight = false,
             extraElements = []
         ) {
-            clog("startFixElement");
-
             const vm = this;
             const observeEl = vm.$refs[observeRef];
             const targetElement = vm.$refs[targetRef];

@@ -5,10 +5,17 @@
  */
 
 //хэлперы
-import { strip, clog, getFormData } from "@/misc/helpers";
+import {
+    strip,
+    clog,
+    getFormData,
+    replaceUrlState,
+    getPropFromUrl,
+} from "@/misc/helpers";
 
 //миксины
 import axiosRequests from "@/mixins/axiosRequests";
+import changeDisplayMode from "@/mixins/changeDisplayMode";
 import crud from "@/mixins/crud";
 import fixedRightCol from "@/mixins/fixedRightCol";
 import icons from "@/mixins/icons";
@@ -16,18 +23,19 @@ import messages from "@/mixins/messages";
 import publicAuthData from "@/mixins/publicAuthData";
 
 //компоненты
-import MessagesComponent from "@/components/common/MessagesComponent/";
 import BvsOperationComponent from "@/components/Bvs/OperationComponent";
+import MessagesComponent from "@/components/common/MessagesComponent/";
 
 const axios = require("axios");
 const appPublicVehicles = {
     mixins: [
         axiosRequests,
+        changeDisplayMode,
         crud,
         fixedRightCol,
         icons,
-        publicAuthData,
         messages,
+        publicAuthData,
     ],
 
     components: { MessagesComponent, BvsOperation: BvsOperationComponent },
@@ -78,7 +86,7 @@ const appPublicVehicles = {
 
             /**
              * Режим отображения форм добавления/редактирования техники и списка техники
-             * @param {Enum} // list | edit | create | details
+             * @param {Enum} // list | create | details
              */
             mode: "list",
 
@@ -143,7 +151,7 @@ const appPublicVehicles = {
         columnClass() {
             const vm = this;
             const tableClass =
-                vm.mode === "details"
+                vm.mode === "details" && vm.editedVehicle?.id
                     ? "col-12 col-md-6 d-none d-md-block"
                     : "col-12";
             return {
@@ -308,6 +316,13 @@ const appPublicVehicles = {
         rfidsComputed() {
             return this.rfids;
         },
+
+        /**
+         * Условия отображения деталей техники
+         */
+        showDetails() {
+            return this.mode === "details" && this.editedVehicle?.id;
+        },
     },
 
     watch: {
@@ -325,6 +340,8 @@ const appPublicVehicles = {
             if (activeTab === "activity") {
                 vm.getActivityData();
             }
+
+            vm.updateUrlParams();
         },
 
         /**
@@ -340,18 +357,21 @@ const appPublicVehicles = {
         },
 
         /**
-         * @param {Enum} mode  // list | edit | create | details
+         * @param {Enum} mode  // list | create | details
          */
         mode(mode) {
             const vm = this;
+
             if (mode !== "details") {
                 // обнуление фиксированного положение правой колонки
                 vm.stopFixElement();
+                // обнуление переменной, содержащей данные о выбранной технике
+                vm.editedVehicle = {};
             }
 
+            // применение sticky поведения для правой колонки
             vm.$nextTick(() => {
                 if (mode === "details") {
-                    // применение sticky поведения для правой колонки
                     vm.startFixElement("fixposition", "observeResize", false, [
                         vm.$refs.beforeStickyPosition,
                     ]);
@@ -364,6 +384,7 @@ const appPublicVehicles = {
                     vm.enableInputs();
                 });
             }
+            vm.updateUrlParams();
         },
 
         /**
@@ -418,6 +439,14 @@ const appPublicVehicles = {
          */
         vm.getVehicles().then((vehicles) => {
             vm.vehicles = vehicles;
+            const id = parseInt(getPropFromUrl("id"));
+
+            if (!id) return;
+
+            const mayBeVehicle = strip(vm.vehiclesCurrent)
+                .filter((i) => i.id === id)
+                .pop();
+            vm.editedVehicle = mayBeVehicle ? mayBeVehicle : vm.editedVehicle;
         });
 
         /**
@@ -741,6 +770,33 @@ const appPublicVehicles = {
         },
 
         /**
+         * Обновляет урл при изменении режима просмотра приложения
+         */
+        updateUrlParams() {
+            const vm = this;
+            // обновление данные по переданному урл
+            let newUrlParams = [{ prop: "mode", value: vm.mode }];
+            let mayBeId = getPropFromUrl("id");
+
+            //добавление id техники к урл если выбранна техника
+
+            if (mayBeId && vm.mode === "details") {
+                newUrlParams.push({
+                    prop: "id",
+                    value: mayBeId,
+                });
+
+                newUrlParams.push({
+                    prop: "activeTab",
+                    value: vm.activeTab,
+                });
+            }
+
+            //обновляет урл без перезагрузки при смене страниц
+            replaceUrlState(newUrlParams);
+        },
+
+        /**
          * Отправка запроса на обновление данных техники
          * отображение результатов выполнения запроса во всплывающем окне
          *
@@ -778,6 +834,8 @@ const appPublicVehicles = {
             vm.rfids = strip(item).rfids;
             vm.mayBeGroupedVehicles = strip(item).group;
             vm.group = strip(item).group;
+
+            vm.updateUrlParams();
         },
     },
 };
