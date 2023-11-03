@@ -69,6 +69,9 @@
 </template>
 
 <script>
+//хэлперы
+import { strip, clog } from "@/misc/helpers";
+
 // миксины
 import passevents from "@/mixins/passevents";
 
@@ -78,6 +81,7 @@ import FileInputComponent from "@/components/inputs/FileInputComponent";
 import PasswordInputComponent from "@/components/inputs/PasswordInputComponent";
 import SelectComponent from "@/components/inputs/SelectComponent";
 import TextareaComponent from "@/components/inputs/TextareaComponent";
+import { faCreativeCommonsSampling } from "@fortawesome/free-brands-svg-icons";
 
 export default {
     mixins: [passevents],
@@ -116,7 +120,7 @@ export default {
             deep: true,
         },
 
-        _forceRender() {
+        _forceRender(f) {
             this.forceRerender();
         },
     },

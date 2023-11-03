@@ -47,7 +47,7 @@
                 <div class="col-12 col-lg-6 p-sm-3 org-details" v-show='editMode' ref='observeResize'>
                     <div class="d-lg-flex flex-column org-wrapper p-3" v-if='showForm' :ref='"fixposition"'>
                         <the-form ref='createUserForm' :_structure='addUserFormStructure' @exec-submit='storeUser'
-                            @cancel-form='showForm=false; editMode=false'>
+                            @cancel-form='mode="list"'>
                         </the-form>
                     </div>
 
@@ -60,7 +60,7 @@
                                 </h2>
                             </div>
                             <div class="col-4 text-end">
-                                <button class='btn btn-close' @click.stop='editMode=false'> </button>
+                                <button class='btn btn-close' @click.stop='mode="list"'> </button>
 
                             </div>
                             @include('pages.users.tabs')

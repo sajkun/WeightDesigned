@@ -239,7 +239,7 @@ const appPublicGrasslands = {
                     true
                 )
                 .map((f) => {
-                    f.id = `add-${f.id}`;
+                    f.id = f.id.substring("add") < 0 ? `add-${f.id}` : f.id;
                     return f;
                 });
 
@@ -265,7 +265,10 @@ const appPublicGrasslands = {
                     false
                 )
                 .map((f) => {
-                    f.id = `edit-${grasslandProps.id}-${f.id}`;
+                    f.id =
+                        f.id.substring("edit") < 0
+                            ? `edit-${grasslandProps.id}-${f.id}`
+                            : f.id;
                     return f;
                 });
             return structure;

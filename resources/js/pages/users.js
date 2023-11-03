@@ -3,9 +3,11 @@
  */
 
 //хэлперы
-import { strip, clog } from "@/misc/helpers";
+import { strip, clog, getFormData, getPropFromUrl } from "@/misc/helpers";
 
 //миксины
+import axiosRequests from "@/mixins/axiosRequests";
+import changeDisplayMode from "@/mixins/changeDisplayMode";
 import crud from "@/mixins/crud";
 import editPasswordForm from "@/formFields/editPwd";
 import fixedRightCol from "@/mixins/fixedRightCol";
@@ -22,26 +24,32 @@ import MessagesComponent from "@/components/common/MessagesComponent/";
 const axios = require("axios");
 const appPublicUsers = {
     mixins: [
-        editPasswordForm,
+        axiosRequests,
+        changeDisplayMode,
         crud,
+        editPasswordForm,
         fixedRightCol,
         formatName,
-        publicAuthData,
         messages,
+        publicAuthData,
         userForms,
     ],
 
     components: {
         Field: InputComponent,
-        TheForm: FormComponent,
         MessagesComponent,
+        TheForm: FormComponent,
     },
 
     data() {
         return {
-            users: [],
-            roles: [],
+            /**
+             * Значение активной закладки при mode = details
+             *
+             * @param {Enum} // info | activity | settings
+             */
             activeTab: "info",
+
             editedUser: {
                 id: -1,
                 email: null,
@@ -55,6 +63,12 @@ const appPublicUsers = {
                 login: null,
             },
 
+            /**
+             * список ролей пользователей организации
+             * @param {Array}
+             */
+            roles: [],
+
             validationMessages: {
                 inputOldPassword: "Введите пожалуйста старый пароль",
                 inputNewPassword: "Задайте  пожалуйста новый пароль",
@@ -63,29 +77,48 @@ const appPublicUsers = {
             },
 
             confirmAction: null,
-            editMode: false,
-            showForm: false,
+
             editPassword: false,
+
+            /**
+             * ключ, определяющий отображать
+             * - список пользователей или
+             * - форму редактирования выбранного пользователя или
+             * - форму создания нового пользователя
+             *
+             * @param {Enum} : list | details | create
+             */
+            mode: "list",
+
+            /**
+             * Перечень полдьзователей системы организации
+             */
+            users: [],
         };
     },
 
     mounted() {
         const vm = this;
-        vm.getUsers();
+        vm.updateData(true);
 
         document.addEventListener("updateList", () => {
-            console.log("updateList fired");
-            vm.getUsers();
-        });
-
-        vm.$el.addEventListener("click", (e) => {
-            if (e.target.type !== "button") {
-                vm.clearMessages();
-            }
+            vm.updateData();
         });
     },
 
     computed: {
+        /**
+         * Режим работы приложения
+         *
+         * @returns {Boolean}
+         */
+        editMode() {
+            return (
+                ["create", "details"].indexOf(this.mode) >= 0 &&
+                this.editedUser?.id
+            );
+        },
+
         listClass() {
             const editClass = "col-12 col-lg-6 d-none d-lg-block";
             const displayClass = "col-12 ";
@@ -95,9 +128,28 @@ const appPublicUsers = {
         rolesList() {
             return this.roles;
         },
+
+        /**
+         * Признак согласного которого нужно отображать форму создания сотрудника или детали выбранного сотрудника
+         *
+         * @returns {Boolean}
+         */
+        showForm() {
+            return this.mode === "create" && this.editedUser?.id;
+        },
     },
 
     watch: {
+        /**
+         * Отслеживание изменений закладки в настройках сотрудника
+         * Обновление урл страницы
+         */
+        activeTab() {
+            //обновление урл страницы без перезагрузки
+            this.updateUrlParams();
+            this.reset();
+        },
+
         editForm() {
             const vm = this;
             vm.reset();
@@ -113,32 +165,37 @@ const appPublicUsers = {
             }
         },
 
-        editMode(editMode) {
+        /**
+         * отслеживание изменений режима работы страницы
+         * Фиксирование правой колонки
+         * Обновление урл страницы
+         *
+         * @param {Enum} mode
+         */
+        mode(mode) {
             const vm = this;
             vm.reset();
 
-            if (!editMode) {
-                // обнуление фитксированного положение правой колонки
+            if (mode === "list") {
+                // обнуление фиксированного положение правой колонки
                 vm.stopFixElement();
-            } else if (editMode) {
+            } else {
                 // применение sticky поведения для правой колонки
                 vm.startFixElement("fixposition", "observeResize", false, [
                     vm.$refs.beforeStickyPosition,
                 ]);
             }
-        },
 
-        activeTab() {
-            this.reset();
+            //обновление урл страницы без перезагрузки
+            vm.updateUrlParams();
         },
     },
 
     methods: {
         addUser() {
             this.clearUser();
-            this.editMode = true;
-            this.showForm = true;
             this.editPassword = false;
+            this.mode = "create";
         },
 
         clearUser() {
@@ -174,30 +231,10 @@ const appPublicUsers = {
 
         editUser(user) {
             const vm = this;
-            vm.editMode = true;
-            vm.showForm = false;
+            vm.mode = "details";
             vm.editPassword = false;
             vm.editedUser = JSON.parse(JSON.stringify(user));
-        },
-
-        getUsers() {
-            clog("%c getUser", "color:#f7f");
-            const vm = this;
-
-            if (vm.$refs.organisationId < 0) {
-                return;
-            }
-
-            axios
-                .get("/users/list")
-                .then((response) => {
-                    clog("%c getUsers успех", "color:green", response);
-                    vm.users = response.data.users;
-                    vm.roles = response.data.roles;
-                })
-                .catch((e) => {
-                    clog("%c getUsers ошибка", "color:red", e.response);
-                });
+            vm.updateUrlParams(user);
         },
 
         patchUser(data) {
@@ -283,6 +320,38 @@ const appPublicUsers = {
                 .catch((e) => {
                     vm.messages.error = `${e.response.status} ${e.response.statusText} : ${e.response.data.message}`;
                 });
+        },
+
+        /**
+         * Получает данные о сотрудниках и техники организации
+         * обновляет значение переменных employees и  vehicles
+         *
+         * @param {Boolean} updateUrl
+         *
+         * @returns {Void}
+         */
+        async updateData(updateUrl = false) {
+            const vm = this;
+
+            // обновление данных о пользователях и их ролях
+            vm.getUsers().then((e) => {
+                vm.users = e.data.users;
+                vm.roles = e.data.roles;
+
+                /**
+                 *  выбрать из полученных пользователей активного по id, переданному в урл
+                 */
+                if (updateUrl) {
+                    const id = parseInt(getPropFromUrl("id"));
+
+                    if (!id) return;
+
+                    const mayBeItem = strip(vm.users)
+                        .filter((i) => i.id === id)
+                        .pop();
+                    vm.editedUser = mayBeItem ? mayBeItem : vm.editedUser;
+                }
+            });
         },
     },
 };
