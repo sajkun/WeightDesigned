@@ -5,15 +5,19 @@
  */
 
 //хэлперы
-import { strip, clog, getFormData } from "@/misc/helpers";
+import { strip, clog, getFormData, getPropFromUrl } from "@/misc/helpers";
 
 //миксины
+import axiosRequests from "@/mixins/axiosRequests";
+import changeDisplayMode from "@/mixins/changeDisplayMode";
 import crud from "@/mixins/crud";
+import employeeForm from "@/formFields/employees";
 import fixedRightCol from "@/mixins/fixedRightCol";
 import formatName from "@/mixins/formatName";
+import icons from "@/mixins/icons";
 import messages from "@/mixins/messages";
 import publicAuthData from "@/mixins/publicAuthData";
-import employeeForm from "@/formFields/employees";
+import vehicleTypesList from "@/mixins/vehicleTypesList";
 
 //компоненты
 import FieldComponent from "@/components/inputs/FieldComponent";
@@ -21,16 +25,20 @@ import FormComponent from "@/components/inputs/FormComponent/";
 import InputComponent from "@/components/inputs/InputComponent";
 import MessagesComponent from "@/components/common/MessagesComponent/";
 
-const axios = require("axios");
 const appPublicEmployees = {
     mixins: [
+        axiosRequests,
         crud,
+        changeDisplayMode,
+        employeeForm,
         fixedRightCol,
         formatName,
+        icons,
         publicAuthData,
         messages,
-        employeeForm,
+        vehicleTypesList,
     ],
+
     components: {
         FieldComponent,
         Field: InputComponent,
@@ -39,13 +47,28 @@ const appPublicEmployees = {
     },
     data() {
         return {
-            editMode: false,
-            showForm: false,
+            /**
+             * Значение активной закладки при mode = details
+             *
+             * @param {Enum} // info | activity | settings
+             */
+            activeTab: "info",
+
+            /**
+             * Перечень сотрудников организации
+             */
             employees: [],
-            popup: null,
-            vehicleGroupType: "bunker",
+
+            /**
+             *
+             */
             group: [],
-            activeTab: "info", // info | activity | settings
+
+            /**
+             * редактируемый сотрудник
+             *
+             * @param {Object}
+             */
             editedEmployee: {
                 id: -1,
                 first_name: null,
@@ -56,76 +79,123 @@ const appPublicEmployees = {
                 specialisation: null,
             },
 
-            vehicles: [],
+            /**
+             * ключ, определяющий отображать
+             * - список сотрудников или
+             * - форму редактирования выбранного сотрудника или
+             * - форму создания нового сотрудника
+             *
+             * @param {Enum} : list | details | create
+             */
+            mode: "list",
+
+            /**
+             * Название отображаемого модального окна
+             *
+             * @param {String}
+             */
+            popup: null,
 
             validationMessages: {
                 deleteEmployee: "Вы уверены, что хотите удалить сотрудника",
             },
+
+            vehicleGroupType: "bunker",
+
+            /**
+             * список техники организации
+             *
+             * @param {Array}
+             */
+            vehicles: [],
         };
     },
 
     watch: {
-        editForm() {
-            const vm = this;
-            vm.reset();
-
-            if (!vm.editMode) {
-                // обнуление фитксированного положение правой колонки
-                vm.stopFixElement();
-            } else if (vm.editMode) {
-                // применение sticky поведения для правой колонки
-                vm.startFixElement("fixposition", "observeResize", false, [
-                    vm.$refs.beforeStickyPosition,
-                ]);
-            }
+        /**
+         * Отслеживание изменений закладки в настройках сотрудника
+         * Обновление урл страницы
+         */
+        activeTab() {
+            //обновление урл страницы без перезагрузки
+            this.updateUrlParams();
         },
 
-        editMode(editMode) {
+        /**
+         * отслеживание изменений режима работы страницы
+         * Фиксирование правой колонки
+         * Обновление урл страницы
+         *
+         * @param {Enum} mode
+         */
+        mode(mode) {
             const vm = this;
 
-            if (!editMode) {
-                vm.showForm = false;
-                // обнуление фитксированного положение правой колонки
+            if (mode === "list") {
+                // обнуление фиксированного положение правой колонки
                 vm.stopFixElement();
-            } else if (editMode) {
+            } else {
                 // применение sticky поведения для правой колонки
                 vm.startFixElement("fixposition", "observeResize", false, [
                     vm.$refs.beforeStickyPosition,
                 ]);
             }
 
-            if (editMode && vm.editedEmployee.id < 0) {
-                vm.showForm = true;
-            }
+            //обновление урл страницы без перезагрузки
+            vm.updateUrlParams();
         },
     },
 
     computed: {
+        /**
+         * Режим работы приложения
+         *
+         * @returns {Boolean}
+         */
+        editMode() {
+            return (
+                ["create", "details"].indexOf(this.mode) >= 0 &&
+                this.editedEmployee?.id
+            );
+        },
+
+        /**
+         * HTML класс конткейнера списка сотрудников
+         *
+         * @returns {String}
+         */
         listClass() {
             const editClass = "col-12 col-lg-6 d-none d-lg-block";
             const displayClass = "col-12 ";
             return this.editMode ? editClass : displayClass;
         },
 
-        vehicleTypesList() {
-            return {
-                bunker: {
-                    name: "Бункер перегрузчик",
-                },
-                transporter: {
-                    name: "Грузовик",
-                },
-                tractor: {
-                    name: "Трактор",
-                },
-                harvester: {
-                    name: "Комбайн",
-                },
-            };
+        /**
+         * От какого значения считать режим работы мобильным приложением
+         *
+         * @returns {Number}
+         */
+        mobileBreakPoint() {
+            return 992;
         },
 
+        /**
+         * Признак согласного которого нужно отображать форму создания сотрудника или детали выбранного сотрудника
+         *
+         * @returns {Boolean}
+         */
+        showForm() {
+            return this.mode === "create" && this.editedEmployee?.id;
+        },
+
+        /**
+         * перечень техники без назначенного ответственного лица
+         *
+         * @returns {Object}
+         */
         vehiclesGrouped() {
             const vm = this;
+
             let vehicles = Object.values(
                 vm.vehicles[`${vm.vehicleGroupType}s`]
             );
@@ -138,28 +208,169 @@ const appPublicEmployees = {
 
             return vehicles;
         },
-
-        mobileBreakPoint() {
-            return 992;
-        },
     },
 
     mounted() {
         const vm = this;
-        vm.getEmployees();
-        vm.getVehicles();
+        vm.updateData(true);
 
         document.addEventListener("updateList", () => {
-            vm.getEmployees();
-            vm.getVehicles();
+            vm.updateData();
         });
     },
 
     methods: {
+        /**
+         * Применение сформированной группы
+         */
         applyGroup() {
             const vm = this;
             vm.editedEmployee.vehicles = strip(vm.group);
             vm.popup = null;
+        },
+
+        /**
+         * Показывает форму создания нового сотрудника
+         */
+        addEmployee() {
+            const vm = this;
+            vm.mode = "create";
+            vm.clearEmployee();
+        },
+
+        /**
+         * очистка данных о пользователе
+         */
+        clearEmployee() {
+            const vm = this;
+            vm.editedEmployee = {
+                id: -1,
+                first_name: null,
+                last_name: null,
+                middle_name: null,
+                phone: null,
+                organisation_id: null,
+                specialisation: null,
+            };
+        },
+
+        /**
+         * Отправка запроса на удаление записи о сотруднике
+         *
+         * @param {Object} person
+         *
+         * @returns {Void}
+         */
+        deleteEmployee(person) {
+            const vm = this;
+            vm.mode = "list";
+
+            const postData = {
+                user_id: vm.userId,
+                organisation_id: vm.organisationId,
+                delete_employee_id: person.id,
+                name: `${person.specialisation} ${person.last_name}`,
+            };
+
+            vm.deleteEntity(postData, `./employees/delete`);
+        },
+
+        /**
+         * получаети год по переданной строке
+         *
+         * @param {String} dateString
+         *
+         * @returns {String} Year
+         */
+        getDate(dateString) {
+            const date = new Date(dateString);
+            return date.getFullYear();
+        },
+
+        /**
+         * Отправка запроса на редактирование записи о сотруднике
+         *
+         * @returns {Void}
+         */
+        patchEmployee() {
+            const vm = this;
+            const form = vm.$refs.submitFormEdit;
+            const data = getFormData(form);
+
+            for (const key in data) {
+                vm.editedEmployee[key] = data[key];
+            }
+
+            const postData = {
+                user_id: vm.userId,
+                organisation_id: vm.organisationId,
+                edited_employee: vm.editedEmployee,
+            };
+
+            vm.editEntity(postData, `/employees/update`);
+        },
+
+        /**
+         * Удаление техники из перечня техники за которую ответственен пользователь
+         *
+         * @param {Object} item @see app\Models\Vehicle.php
+         *
+         * @param {Boolean} save
+         */
+        removeFromGroup(item, save) {
+            const vm = this;
+            const group = Object.values(vm.group);
+            const index = group.findIndex((el) => {
+                return el.id === item.id;
+            });
+
+            if (index >= 0) {
+                group.splice(index, 1);
+                vm.group = strip(group);
+
+                if (save) {
+                    vm.editedEmployee.vehicles = strip(group);
+                }
+            }
+        },
+
+        /**
+         * Отображает данные о выбранном сотруднике
+         *
+         * @param {Object} person @see app\Models\Employee.php
+         *
+         * @returns {Void}
+         */
+        showEmployeeDetails(person) {
+            const vm = this;
+            vm.mode = "details";
+            vm.editedEmployee = strip(person);
+            vm.group = strip(person.vehicles);
+            vm.updateUrlParams(person);
+        },
+
+        /**
+         * Отправка запроса на создание новой записи о сотруднике
+         *
+         * @param {Object} person @see app\Models\Employee.php
+         *
+         * @returns {Void}
+         */
+        storeEmployee(person) {
+            const vm = this;
+
+            const postData = {
+                user_id: vm.userId,
+                organisation_id: vm.organisationId,
+                edited_employee: person,
+            };
+
+            vm.createEntity(postData, `/employees/store`).then((e) => {
+                if (e.status === 200) {
+                    vm.clearEmployee();
+                    vm.$refs.createEmployeeForm.clear();
+                }
+            });
         },
 
         /**
@@ -185,139 +396,47 @@ const appPublicEmployees = {
             vm.group = strip(group);
         },
 
-        addEmployee() {
-            const vm = this;
-            vm.editMode = true;
-            vm.showForm = true;
-            vm.clearEmployee();
-        },
-
-        clearEmployee() {
-            const vm = this;
-            vm.editedEmployee = {
-                id: -1,
-                first_name: null,
-                last_name: null,
-                middle_name: null,
-                phone: null,
-                organisation_id: null,
-                specialisation: null,
-            };
-        },
-
-        deleteEmployee(person) {
-            const vm = this;
-            vm.editMode = false;
-
-            const postData = {
-                user_id: vm.userId,
-                organisation_id: vm.organisationId,
-                delete_employee_id: person.id,
-                name: `${person.specialisation} ${person.last_name}`,
-            };
-
-            vm.deleteEntity(postData, `./employees/delete`);
-        },
-
-        getDate(dateString) {
-            const date = new Date(dateString);
-            return date.getFullYear();
-        },
-
-        edit(person, showForm) {
-            const vm = this;
-            vm.editMode = true;
-            vm.editedEmployee = strip(person);
-            vm.group = strip(person.vehicles);
-            vm.$nextTick(() => {
-                vm.showForm = Boolean(showForm);
-            });
-        },
-
-        getEmployees() {
+        /**
+         * Получает данные о сотрудниках и техники организации
+         * обновляет значение переменных employees и  vehicles
+         *
+         * @param {Boolean} updateUrl
+         *
+         * @returns {Void}
+         */
+        async updateData(updateUrl = false) {
             const vm = this;
 
-            if (vm.$refs.organisationId < 0) {
-                return;
-            }
-            axios
-                .get("/employees/list", {
-                    user_id: vm.userId,
-                })
-                .then((response) => {
-                    clog("%c getEmployees", "color: green", response);
-                    vm.employees = response.data.employees;
-                })
-                .catch((e) => {
-                    clog("%c getVehicles error", "color: red", e.response);
-                    vm.messages.error = e.response.data.message;
-                });
-        },
+            // обновление данных о сотрудниках
+            vm.getEmployees().then((e) => {
+                vm.employees = e.employees;
 
-        getVehicles() {
-            const vm = this;
-            axios
-                .get("/vehicles/list")
-                .then((response) => {
-                    clog("%c getVehicles", "color: green", response);
-                    vm.vehicles = response.data;
-                })
-                .catch((e) => {
-                    clog("%c getVehicles error", "color: red", e.response);
-                    vm.messages.error = e.response.data.message;
-                });
-        },
+                /**
+                 *  выбрать из полученных сотрудников активного по id, переданному в урл
+                 */
+                if (updateUrl) {
+                    const id = parseInt(getPropFromUrl("id"));
 
-        patchEmployee() {
-            const vm = this;
-            const form = vm.$refs.submitFormEdit;
-            const data = getFormData(form);
+                    if (!id) return;
 
-            for (const key in data) {
-                vm.editedEmployee[key] = data[key];
-            }
-
-            const postData = {
-                user_id: vm.userId,
-                organisation_id: vm.organisationId,
-                edited_employee: vm.editedEmployee,
-            };
-
-            vm.editEntity(postData, `/employees/update`);
-        },
-
-        storeEmployee(data) {
-            const vm = this;
-
-            const postData = {
-                user_id: vm.userId,
-                organisation_id: vm.organisationId,
-                edited_employee: data,
-            };
-
-            vm.createEntity(postData, `/employees/store`).then((e) => {
-                if (e.status === 200) {
-                    vm.clearEmployee();
-                    vm.$refs.createEmployeeForm.clear();
+                    const mayBeItem = strip(vm.employees)
+                        .filter((i) => i.id === id)
+                        .pop();
+                    vm.editedEmployee = mayBeItem
+                        ? mayBeItem
+                        : vm.editedEmployee;
                 }
             });
-        },
 
-        removeFromGroup(item, save) {
-            const vm = this;
-            const group = Object.values(vm.group);
-            const index = group.findIndex((el) => {
-                return el.id === item.id;
+            // обновление данных о технике
+            vm.getVehicles().then((e) => {
+                vm.vehicles = {
+                    bunkers: Object.values(e.bunkers),
+                    harvesters: Object.values(e.harvesters),
+                    tractors: Object.values(e.tractors),
+                    transporters: Object.values(e.transporters),
+                };
             });
-
-            if (index >= 0) {
-                group.splice(index, 1);
-                vm.group = strip(group);
-
-                if (save) {
-                    vm.editedEmployee.vehicles = strip(group);
-                }
-            }
         },
     },
 };

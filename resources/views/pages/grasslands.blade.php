@@ -17,9 +17,9 @@
 
                 {{-- таблица со списком полей --}}
 
-                <div class="h-100 position-relative" v-show='mode === "list" || mode === "details" '>
+                <div class="h-100 position-relative" v-show='mode === "list"'>
                     <Transition name="fade">
-                        <div class="align-self-start" v-if='mode === "list" || mode === "details" '>
+                        <div class="align-self-start" v-if='mode === "list"'>
                             <div class="row h-100">
                                 <div class='' :class="columnClass.tableClass">
                                     <div class="d-flex org-wrapper flex-column">

@@ -198,3 +198,48 @@ export const getDocHeight = () => {
 
     return height;
 };
+
+/**
+ * Обновляет адрес страницы без перезагрузки
+ *
+ * @param {Array<Object<String, String>>} props массив объектов {prop, value}
+ * @param {String} mode
+ *
+ * @returns {String}
+ */
+export const replaceUrlState = (props, title = "") => {
+    let nextURL = `?`;
+    let ampersand = "";
+    props.forEach((p) => {
+        nextURL = `${nextURL}${ampersand}${p.prop}=${p.value}`;
+        ampersand = "&";
+    });
+    const nextTitle = `Весовая система. ${title}`;
+    const nextState = {
+        additionalInformation: "Updated the URL with js",
+    };
+    window.history.replaceState(nextState, nextTitle, nextURL);
+    return nextURL;
+};
+
+/**
+ * ищет значение свойства в URL
+ *
+ * @param {String} prop имя свойства для поиска
+ *
+ * @returns {String|false}
+ */
+export const getPropFromUrl = (prop) => {
+    if (location.search.substring(prop) < 0) {
+        return false;
+    }
+    const parts = location.search
+        .substring(1)
+        .split("&")
+        .filter((p) => {
+            return p.indexOf(prop) >= 0;
+        });
+    if (!parts.length) return false;
+    const value = parts.pop().split("=").pop();
+    return value;
+};

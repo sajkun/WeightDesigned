@@ -55,7 +55,7 @@
                     </div>
 
                     <Transition name='fade'>
-                        <div class="col-12 col-md-6 py-3" v-show='mode === "details" ' ref='observeResize'>
+                        <div class="col-12 col-md-6 py-3" v-show='showDetails' ref='observeResize'>
                             <div class="org-wrapper" :ref='"fixposition"'>
                                 <div class="row ">
                                     <div class="col-10">

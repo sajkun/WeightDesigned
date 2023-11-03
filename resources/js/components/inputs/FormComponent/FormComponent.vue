@@ -76,7 +76,7 @@ export default {
         },
     },
 
-    emits: ["fileChanged", "execSubmit", "cancelForm"],
+    emits: ["fileChanged", "execSubmit", "cancelForm", "formDataChanged"],
 
     methods: {
         /**
@@ -101,6 +101,8 @@ export default {
             const vm = this;
             if (data?.file) {
                 vm.$emit("fileChanged", data);
+            } else {
+                this.$emit("formDataChanged", data);
             }
 
             return;
@@ -130,7 +132,7 @@ export default {
          * @returns {Void}
          */
         inputHandler(data) {
-            return;
+            // this.$emit("formDataChanged", data);
         },
 
         /**

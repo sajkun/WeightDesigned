@@ -9,7 +9,7 @@ export default {
          *
          * @return {Promise}
          */
-        getBvsData() {
+        async getBvsData() {
             const vm = this;
 
             const postData = {
@@ -40,7 +40,7 @@ export default {
          *
          * @returns {Promise}
          */
-        getBvsDataFiltered(id, type) {
+        async getBvsDataFiltered(id, type) {
             const vm = this;
 
             const postData = {
@@ -78,7 +78,7 @@ export default {
          *
          * @return {Promise}
          */
-        getEmployees() {
+        async getEmployees() {
             const vm = this;
 
             if (vm.$refs.organisationId < 0) {
@@ -105,7 +105,7 @@ export default {
          *
          * @return {Promise}
          */
-        getGrasslands() {
+        async getGrasslands() {
             const vm = this;
             if (vm.$refs.organisationId < 0) {
                 return;
@@ -134,7 +134,7 @@ export default {
          *
          * @return {Promise}
          */
-        getVehicles() {
+        async getVehicles() {
             const vm = this;
             if (vm.$refs.organisationId < 0) {
                 return;
@@ -148,6 +148,31 @@ export default {
                 .catch((e) => {
                     clog("%c getVehicles error", "color: red", e.response);
                     vm.messages.error = `${e.response.status} ${e.response.statusText} : ${e.response.data.message}`;
+                    return e.response;
+                });
+        },
+
+        /**
+         * запрос списка пользователей системы
+         *
+         * @return {Promise}
+         */
+        async getUsers() {
+            clog("%c getUser", "color:#f7f");
+            const vm = this;
+
+            if (vm.$refs.organisationId < 0) {
+                return;
+            }
+
+            return axios
+                .get("/users/list")
+                .then((response) => {
+                    clog("%c getUsers успех", "color:green", response);
+                    return response;
+                })
+                .catch((e) => {
+                    clog("%c getUsers ошибка", "color:red", e.response);
                     return e.response;
                 });
         },

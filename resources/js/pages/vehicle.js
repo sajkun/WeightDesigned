@@ -5,32 +5,43 @@
  */
 
 //хэлперы
-import { strip, clog, getFormData } from "@/misc/helpers";
+import { strip, clog, getFormData, getPropFromUrl } from "@/misc/helpers";
 
 //миксины
 import axiosRequests from "@/mixins/axiosRequests";
+import changeDisplayMode from "@/mixins/changeDisplayMode";
 import crud from "@/mixins/crud";
 import fixedRightCol from "@/mixins/fixedRightCol";
 import icons from "@/mixins/icons";
 import messages from "@/mixins/messages";
 import publicAuthData from "@/mixins/publicAuthData";
+import vehicleFormStructures from "@/formFields/vehicles";
+import vehicleTypesList from "@/mixins/vehicleTypesList";
 
 //компоненты
-import MessagesComponent from "@/components/common/MessagesComponent/";
 import BvsOperationComponent from "@/components/Bvs/OperationComponent";
+import FieldComponent from "@/components/inputs/FieldComponent";
+import MessagesComponent from "@/components/common/MessagesComponent/";
 
 const axios = require("axios");
 const appPublicVehicles = {
     mixins: [
         axiosRequests,
+        changeDisplayMode,
         crud,
         fixedRightCol,
         icons,
-        publicAuthData,
         messages,
+        publicAuthData,
+        vehicleFormStructures,
+        vehicleTypesList,
     ],
 
-    components: { MessagesComponent, BvsOperation: BvsOperationComponent },
+    components: {
+        BvsOperation: BvsOperationComponent,
+        FieldComponent,
+        MessagesComponent,
+    },
 
     data() {
         return {
@@ -78,7 +89,7 @@ const appPublicVehicles = {
 
             /**
              * Режим отображения форм добавления/редактирования техники и списка техники
-             * @param {Enum} // list | edit | create | details
+             * @param {Enum} // list | create | details
              */
             mode: "list",
 
@@ -143,7 +154,7 @@ const appPublicVehicles = {
         columnClass() {
             const vm = this;
             const tableClass =
-                vm.mode === "details"
+                vm.mode === "details" && vm.editedVehicle?.id
                     ? "col-12 col-md-6 d-none d-md-block"
                     : "col-12";
             return {
@@ -204,51 +215,8 @@ const appPublicVehicles = {
             return vm.bvsData.get(key);
         },
 
-        /**
-         * Список моделей БП Лилиани
-         *
-         * @returns {Array<string>}
-         */
-        bunkerModels() {
-            return [
-                "БП-16/20",
-                "БП-22/28",
-                "БП-22/28 габаритный",
-                "БП-22/28 (8 колес)",
-                "БП-22/31",
-                "БП-22/31 хоппер",
-                "БП-22/31 габаритный",
-                "БП-22/31 8 колес",
-                "БП-33/42 хоппер",
-                "БП-33/42 8 колес",
-                "БП-40/50",
-            ];
-        },
-
         messagesData() {
             return this.messages;
-        },
-
-        /**
-         * Человеко понятные имена типов техники
-         *
-         * @returns {Object}
-         */
-        vehicleTypesList() {
-            return {
-                bunker: {
-                    name: "Бункер перегрузчик",
-                },
-                transporter: {
-                    name: "Грузовик",
-                },
-                tractor: {
-                    name: "Трактор",
-                },
-                harvester: {
-                    name: "Комбайн",
-                },
-            };
         },
 
         /**
@@ -308,6 +276,13 @@ const appPublicVehicles = {
         rfidsComputed() {
             return this.rfids;
         },
+
+        /**
+         * Условия отображения деталей техники
+         */
+        showDetails() {
+            return this.mode === "details" && this.editedVehicle?.id;
+        },
     },
 
     watch: {
@@ -325,6 +300,8 @@ const appPublicVehicles = {
             if (activeTab === "activity") {
                 vm.getActivityData();
             }
+
+            vm.updateUrlParams();
         },
 
         /**
@@ -340,18 +317,21 @@ const appPublicVehicles = {
         },
 
         /**
-         * @param {Enum} mode  // list | edit | create | details
+         * @param {Enum} mode  // list | create | details
          */
         mode(mode) {
             const vm = this;
+
             if (mode !== "details") {
                 // обнуление фиксированного положение правой колонки
                 vm.stopFixElement();
+                // обнуление переменной, содержащей данные о выбранной технике
+                vm.editedVehicle = {};
             }
 
+            // применение sticky поведения для правой колонки
             vm.$nextTick(() => {
                 if (mode === "details") {
-                    // применение sticky поведения для правой колонки
                     vm.startFixElement("fixposition", "observeResize", false, [
                         vm.$refs.beforeStickyPosition,
                     ]);
@@ -364,6 +344,7 @@ const appPublicVehicles = {
                     vm.enableInputs();
                 });
             }
+            vm.updateUrlParams();
         },
 
         /**
@@ -418,6 +399,14 @@ const appPublicVehicles = {
          */
         vm.getVehicles().then((vehicles) => {
             vm.vehicles = vehicles;
+            const id = parseInt(getPropFromUrl("id"));
+
+            if (!id) return;
+
+            const mayBeItem = strip(vm.vehiclesCurrent)
+                .filter((i) => i.id === id)
+                .pop();
+            vm.editedVehicle = mayBeItem ? mayBeItem : vm.editedVehicle;
         });
 
         /**
@@ -778,6 +767,8 @@ const appPublicVehicles = {
             vm.rfids = strip(item).rfids;
             vm.mayBeGroupedVehicles = strip(item).group;
             vm.group = strip(item).group;
+
+            vm.updateUrlParams(item);
         },
     },
 };

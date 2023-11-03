@@ -1,11 +1,11 @@
-<div class="flex-column flex-grow-1" v-show='mode==="edit"' :class="{ 'd-flex': mode==='edit' }">
+<div class="flex-column flex-grow-1" v-show='mode==="details"' :class="{ 'd-flex': mode==='details' }">
     @can('update', [App\Models\Grassland::class, $organisation_id])
         <h3 class="h6">Редактирование поля @{{ grasslandToEdit.name }}</h3>
     @elsecan('viewAny', [App\Models\Grassland::class, $organisation_id])
         <h3 class="h6"> @{{ grasslandToEdit.name }}</h3>
     @endcan
 
-    <div class="row flex-grow-1 position-relative" v-if='mode==="edit"'>
+    <div class="row flex-grow-1 position-relative" v-if='mode==="details"'>
         <div class="col-12 col-md-6">
             <div class="org-wrapper p-3">
                 <p class="h6">
