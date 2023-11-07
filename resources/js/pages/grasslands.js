@@ -360,8 +360,10 @@ const appPublicGrasslands = {
             };
 
             vm.createEntity(postData, "/grasslands/store").then(() => {
-                vm.grasslandToEdit = {};
-                vm.$refs.createGrasslandForm.clear();
+                vm.$nextTick(() => {
+                    vm.grasslandToEdit = {};
+                    vm.$refs.createGrasslandForm.clear();
+                });
             });
         },
 

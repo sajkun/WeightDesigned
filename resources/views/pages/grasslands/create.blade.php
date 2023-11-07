@@ -11,8 +11,8 @@
                 </p>
                 <div class="mt-2">
                     {{-- форма добавления поля --}}
-                    <the-form ref='createGrasslandForm' :_structure='addFormStructure' v-if='geoJsonSource === "file"'
-                        @file-changed='parseShapeFile' @cancel-form='mode="list"'>
+                    <the-form ref='createGrasslandForm' :_structure='addFormStructure' v-show='geoJsonSource === "file"'
+                        @exec-submit = 'createGrassland' @file-changed='parseShapeFile' @cancel-form='mode="list"'>
                         <input type="hidden" name='geo_json' ref='geo_json'>
                         <div class="div mb-2">
                             <button class="btn btn-borders-grey-light p-1 d-block w-100" type='button'

@@ -15,7 +15,7 @@
                 <div class="mt-2">
                     @can('update', [App\Models\Grassland::class, $organisation_id])
                         {{-- форма добавления поля --}}
-                        <the-form v-if='geoJsonSource === "file"' ref='editGrasslandForm' :_structure='editFormStructure'
+                        <the-form v-show='geoJsonSource === "file"' ref='editGrasslandForm' :_structure='editFormStructure'
                             @exec-submit='editGrassland' :key='"editFormKey" + grasslandToEdit.id'
                             @file-changed='parseShapeFile'
                             @cancel-form='mode="list"'>

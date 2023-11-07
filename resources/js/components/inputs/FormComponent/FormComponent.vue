@@ -1,6 +1,6 @@
 <!-- Элемент форма -->
 <template>
-    <form @submit.prevent="submit" ref="form">
+    <form @submit.prevent="submit" ref="form" v-if="renderComponent">
         <div class="row">
             <Field
                 v-for="(info, key) in fields"
@@ -114,13 +114,14 @@ export default {
          * @returns {Void}
          */
         clear() {
+            clog("clear form");
             this.structure = this.structure.map((el) => {
                 el.value = "";
                 return el;
             });
 
             this.$refs.form.reset();
-
+            this.resertForm();
             return;
         },
 
@@ -133,6 +134,12 @@ export default {
          */
         inputHandler(data) {
             // this.$emit("formDataChanged", data);
+        },
+
+        async resertForm() {
+            this.renderComponent = false;
+            await this.$nextTick();
+            this.renderComponent = true;
         },
 
         /**
