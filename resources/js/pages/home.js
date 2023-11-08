@@ -122,7 +122,14 @@ const homePage = {
                 vm.display = "list";
             }
 
-            clog("mode changed");
+            if (mode === "period") {
+                const today = new Date();
+                vm.period.start = moment(today).format("YYYY-MM-DDT00:00:00");
+                vm.period.end = moment(today).format("YYYY-MM-DDT23:59:59");
+            }
+
+            clog("mode changed", mode);
+            clog("mode changed", vm.period);
 
             return null;
         },

@@ -175,12 +175,17 @@ export default {
     mounted() {
         const vm = this;
 
+        clog("mounted");
+        clog("selectPeriod");
+
         // если режим работы дата, задается начальная дата
-        if (vm.selectPeriod) return;
 
         const helper = moment(vm._initialDate);
         vm.initialDate = helper.format("YYYY-MM-DD");
         vm.startDate = vm.initialDate;
+        vm.endDate = vm.selectPeriod
+            ? helper.format("YYYY-MM-DDT23:59:59")
+            : false;
     },
 
     watch: {
@@ -195,10 +200,12 @@ export default {
             const helper = moment(date);
             vm.initialDate = helper.format("YYYY-MM-DD");
             vm.startDate = vm.initialDate;
+            clog(date);
         },
 
         // отслеживание дат
         _period(period) {
+            clog(period);
             if (!vm.startDate) {
                 const date = new Date(period.start);
                 vm.startDate = moment(date).format("YYYY-MM-DD");
