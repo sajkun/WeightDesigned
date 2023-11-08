@@ -175,9 +175,6 @@ export default {
     mounted() {
         const vm = this;
 
-        clog("mounted");
-        clog("selectPeriod");
-
         // если режим работы дата, задается начальная дата
 
         const helper = moment(vm._initialDate);

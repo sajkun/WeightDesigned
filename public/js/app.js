@@ -15749,8 +15749,6 @@ __webpack_require__.r(__webpack_exports__);
   },
   mounted: function mounted() {
     var vm = this;
-    (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.clog)("mounted");
-    (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.clog)("selectPeriod");
 
     // если режим работы дата, задается начальная дата
 
@@ -23665,13 +23663,13 @@ var homePage = {
         vm.period.end = null;
         vm.display = "list";
       }
-      if (_mode === "period") {
-        var today = new Date();
-        vm.period.start = moment__WEBPACK_IMPORTED_MODULE_1___default()(today).format("YYYY-MM-DDT00:00:00");
-        vm.period.end = moment__WEBPACK_IMPORTED_MODULE_1___default()(today).format("YYYY-MM-DDT23:59:59");
-      }
-      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("mode changed", _mode);
-      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("mode changed", vm.period);
+
+      // if (mode === "period") {
+      //     const today = new Date();
+      //     vm.period.start = moment(today).format("YYYY-MM-DDT00:00:00");
+      //     vm.period.end = moment(today).format("YYYY-MM-DDT23:59:59");
+      // }
+
       return null;
     },
     /**
