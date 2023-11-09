@@ -102,10 +102,7 @@ const appPublicUsers = {
          * @returns {Boolean}
          */
         editMode() {
-            return (
-                ["create", "details"].indexOf(this.mode) >= 0 &&
-                this.editedUser?.id
-            );
+            return ["create", "details"].indexOf(this.mode) >= 0;
         },
 
         listClass() {
@@ -124,7 +121,7 @@ const appPublicUsers = {
          * @returns {Boolean}
          */
         showForm() {
-            return this.mode === "create" && this.editedUser?.id;
+            return this.mode === "create" && !this.editedUser?.id;
         },
     },
 

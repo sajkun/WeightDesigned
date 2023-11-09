@@ -24474,8 +24474,7 @@ var appPublicUsers = {
      * @returns {Boolean}
      */
     editMode: function editMode() {
-      var _this$editedUser;
-      return ["create", "details"].indexOf(this.mode) >= 0 && ((_this$editedUser = this.editedUser) === null || _this$editedUser === void 0 ? void 0 : _this$editedUser.id);
+      return ["create", "details"].indexOf(this.mode) >= 0;
     },
     listClass: function listClass() {
       var editClass = "col-12 col-lg-6 d-none d-lg-block";
@@ -24491,8 +24490,8 @@ var appPublicUsers = {
      * @returns {Boolean}
      */
     showForm: function showForm() {
-      var _this$editedUser2;
-      return this.mode === "create" && ((_this$editedUser2 = this.editedUser) === null || _this$editedUser2 === void 0 ? void 0 : _this$editedUser2.id);
+      var _this$editedUser;
+      return this.mode === "create" && !((_this$editedUser = this.editedUser) !== null && _this$editedUser !== void 0 && _this$editedUser.id);
     }
   },
   watch: {
