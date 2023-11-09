@@ -6,26 +6,6 @@
         <input type="hidden" ref='userId' value='{{ $user_id }}'>
         <div class="row flex-grow-1 ">
             <div class="col-12 col-md-6">
-                {{-- НАЧАЛО БЛОКА выбора периода отображения  --}}
-                <div class="px-1 py-2">
-                    {{-- компонент отображения кнопок выбора периода --}}
-                    <switcher-component :_buttons="modes" :_active-mode='mode' @clicked='changeMode'>
-                    </switcher-component>
-                </div>
-                <div class="px-1 py-2" v-if='display==="calendar"'>
-                    {{-- компонент Календарь --}}
-                    <calendar :_initial-date='today' :_disabled='calendarState' :_period="period"
-                        :_select-period='selectPeriod' :_marked-days="markedDays" @selected-date='selectDateCb'
-                        @selected-period='selectPeriodCb'>
-                    </calendar>
-
-                    {{-- кпопка перехода к режиму просмотра в разрезе БВС --}}
-                    <div class="div" v-if='bvsDataFiltered.length'>
-                        <button class="btn btn-primary-alt w-100 text-center mt-2" type='button'
-                            @click='changeDisplay("list")'>Продолжить</button>
-                    </div>
-                </div>
-                {{--  КОНЕЦ БЛОКА выбора периода отображения  --}}
 
                 {{-- НАЧАЛО БЛОКА  отображения списка БВС  --}}
                 <div class="py-2  px-1" v-if='display==="list"'>
