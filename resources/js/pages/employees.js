@@ -145,10 +145,8 @@ const appPublicEmployees = {
          * @returns {Boolean}
          */
         editMode() {
-            return (
-                ["create", "details"].indexOf(this.mode) >= 0 &&
-                this.editedEmployee?.id
-            );
+            clog(this.mode);
+            return ["create", "details"].indexOf(this.mode) >= 0;
         },
 
         /**
@@ -177,7 +175,7 @@ const appPublicEmployees = {
          * @returns {Boolean}
          */
         showForm() {
-            return this.mode === "create" && this.editedEmployee?.id;
+            return this.mode === "create" && !this.editedEmployee?.id;
         },
 
         /**
@@ -227,6 +225,8 @@ const appPublicEmployees = {
         addEmployee() {
             const vm = this;
             vm.mode = "create";
+            clog(vm.mode);
+            clog(vm.editMode);
             vm.clearEmployee();
         },
 

@@ -22714,8 +22714,8 @@ var appPublicEmployees = {
      * @returns {Boolean}
      */
     editMode: function editMode() {
-      var _this$editedEmployee;
-      return ["create", "details"].indexOf(this.mode) >= 0 && ((_this$editedEmployee = this.editedEmployee) === null || _this$editedEmployee === void 0 ? void 0 : _this$editedEmployee.id);
+      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)(this.mode);
+      return ["create", "details"].indexOf(this.mode) >= 0;
     },
     /**
      * HTML класс конткейнера списка сотрудников
@@ -22741,8 +22741,8 @@ var appPublicEmployees = {
      * @returns {Boolean}
      */
     showForm: function showForm() {
-      var _this$editedEmployee2;
-      return this.mode === "create" && ((_this$editedEmployee2 = this.editedEmployee) === null || _this$editedEmployee2 === void 0 ? void 0 : _this$editedEmployee2.id);
+      var _this$editedEmployee;
+      return this.mode === "create" && !((_this$editedEmployee = this.editedEmployee) !== null && _this$editedEmployee !== void 0 && _this$editedEmployee.id);
     },
     /**
      * перечень техники без назначенного ответственного лица
@@ -22780,6 +22780,8 @@ var appPublicEmployees = {
     addEmployee: function addEmployee() {
       var vm = this;
       vm.mode = "create";
+      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)(vm.mode);
+      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)(vm.editMode);
       vm.clearEmployee();
     },
     /**
