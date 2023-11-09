@@ -33,7 +33,7 @@
                         @click='changeDisplay("list")'>Выбрать другие БВС</button>
                     {{-- операции БВС --}}
                     <bvs-operation :_info='info' :key='"operation" + key' v-for='info,key in bvsOperations'
-                        :class='"mt-2"' @selected='selectOperationCb'>
+                        @selected='selectOperationCb'>
                     </bvs-operation>
 
                     <div class="div">

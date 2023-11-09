@@ -2,7 +2,7 @@
  * работа с пользователями публичной зоны
  */
 
-//хэлперы
+//вспомогательные функции
 import { strip, clog, getFormData, getPropFromUrl } from "@/misc/helpers";
 
 //миксины

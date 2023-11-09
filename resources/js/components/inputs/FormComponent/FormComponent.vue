@@ -32,7 +32,7 @@
 </template>
 
 <script>
-//хэлперы
+//вспомогательные функции
 import { clog } from "@/misc/helpers";
 
 //миксины

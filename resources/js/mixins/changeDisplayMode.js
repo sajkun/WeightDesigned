@@ -3,7 +3,7 @@
  * Передает в урл параметры mode, activeTab, id без перезагрузки страницы
  */
 
-//хэлперы
+//вспомогательные функции
 import { getPropFromUrl, replaceUrlState } from "@/misc/helpers";
 const changeDisplayMode = {
     mounted() {
