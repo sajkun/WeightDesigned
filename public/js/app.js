@@ -21311,7 +21311,8 @@ __webpack_require__.r(__webpack_exports__);
       },
       shiftY: 0,
       controllHeight: false,
-      applyFixData: false
+      applyFixData: false,
+      stickyTrigger: false
     };
   },
   computed: {
@@ -21406,6 +21407,7 @@ __webpack_require__.r(__webpack_exports__);
       var fixBottomEdgeShift = elPartSizeBelowBottomEdge > 0 && leftToBottomEdge < elPartSizeBelowBottomEdge && vm.getScrollDirection() === "down" ? leftToBottomEdge - elPartSizeBelowBottomEdge : 0;
       vm.fixData.top = totalShiftTop + fixBottomEdgeShift;
       vm.fixData.left = parentRect.left + paddingsParent.left;
+      vm.stickyTrigger = window.scrollY >= this.getHeightBefore() ? 0 : vm.stickyTrigger === 1 ? -1 : 1;
       vm.shiftY = shiftY;
       return;
     },
@@ -22633,11 +22635,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _mixins_crud__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @/mixins/crud */ "./resources/js/mixins/crud.js");
 /* harmony import */ var _formFields_grassland__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @/formFields/grassland */ "./resources/js/formFields/grassland.js");
 /* harmony import */ var _mixins_drawGrassland__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @/mixins/drawGrassland */ "./resources/js/mixins/drawGrassland.js");
-/* harmony import */ var _mixins_messages__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @/mixins/messages */ "./resources/js/mixins/messages.js");
-/* harmony import */ var _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @/mixins/publicAuthData */ "./resources/js/mixins/publicAuthData.js");
-/* harmony import */ var _components_inputs_FileInputComponent__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @/components/inputs/FileInputComponent */ "./resources/js/components/inputs/FileInputComponent/index.js");
-/* harmony import */ var _components_inputs_FormComponent___WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! @/components/inputs/FormComponent/ */ "./resources/js/components/inputs/FormComponent/index.js");
-/* harmony import */ var _components_common_MessagesComponent___WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! @/components/common/MessagesComponent/ */ "./resources/js/components/common/MessagesComponent/index.js");
+/* harmony import */ var _mixins_fixedRightCol__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @/mixins/fixedRightCol */ "./resources/js/mixins/fixedRightCol.js");
+/* harmony import */ var _mixins_messages__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @/mixins/messages */ "./resources/js/mixins/messages.js");
+/* harmony import */ var _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @/mixins/publicAuthData */ "./resources/js/mixins/publicAuthData.js");
+/* harmony import */ var _components_inputs_FileInputComponent__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! @/components/inputs/FileInputComponent */ "./resources/js/components/inputs/FileInputComponent/index.js");
+/* harmony import */ var _components_inputs_FormComponent___WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! @/components/inputs/FormComponent/ */ "./resources/js/components/inputs/FormComponent/index.js");
+/* harmony import */ var _components_common_MessagesComponent___WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! @/components/common/MessagesComponent/ */ "./resources/js/components/common/MessagesComponent/index.js");
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function _regeneratorRuntime() { "use strict"; /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/facebook/regenerator/blob/main/LICENSE */ _regeneratorRuntime = function _regeneratorRuntime() { return e; }; var t, e = {}, r = Object.prototype, n = r.hasOwnProperty, o = Object.defineProperty || function (t, e, r) { t[e] = r.value; }, i = "function" == typeof Symbol ? Symbol : {}, a = i.iterator || "@@iterator", c = i.asyncIterator || "@@asyncIterator", u = i.toStringTag || "@@toStringTag"; function define(t, e, r) { return Object.defineProperty(t, e, { value: r, enumerable: !0, configurable: !0, writable: !0 }), t[e]; } try { define({}, ""); } catch (t) { define = function define(t, e, r) { return t[e] = r; }; } function wrap(t, e, r, n) { var i = e && e.prototype instanceof Generator ? e : Generator, a = Object.create(i.prototype), c = new Context(n || []); return o(a, "_invoke", { value: makeInvokeMethod(t, r, c) }), a; } function tryCatch(t, e, r) { try { return { type: "normal", arg: t.call(e, r) }; } catch (t) { return { type: "throw", arg: t }; } } e.wrap = wrap; var h = "suspendedStart", l = "suspendedYield", f = "executing", s = "completed", y = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} var p = {}; define(p, a, function () { return this; }); var d = Object.getPrototypeOf, v = d && d(d(values([]))); v && v !== r && n.call(v, a) && (p = v); var g = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(p); function defineIteratorMethods(t) { ["next", "throw", "return"].forEach(function (e) { define(t, e, function (t) { return this._invoke(e, t); }); }); } function AsyncIterator(t, e) { function invoke(r, o, i, a) { var c = tryCatch(t[r], t, o); if ("throw" !== c.type) { var u = c.arg, h = u.value; return h && "object" == _typeof(h) && n.call(h, "__await") ? e.resolve(h.__await).then(function (t) { invoke("next", t, i, a); }, function (t) { invoke("throw", t, i, a); }) : e.resolve(h).then(function (t) { u.value = t, i(u); }, function (t) { return invoke("throw", t, i, a); }); } a(c.arg); } var r; o(this, "_invoke", { value: function value(t, n) { function callInvokeWithMethodAndArg() { return new e(function (e, r) { invoke(t, n, e, r); }); } return r = r ? r.then(callInvokeWithMethodAndArg, callInvokeWithMethodAndArg) : callInvokeWithMethodAndArg(); } }); } function makeInvokeMethod(e, r, n) { var o = h; return function (i, a) { if (o === f) throw new Error("Generator is already running"); if (o === s) { if ("throw" === i) throw a; return { value: t, done: !0 }; } for (n.method = i, n.arg = a;;) { var c = n.delegate; if (c) { var u = maybeInvokeDelegate(c, n); if (u) { if (u === y) continue; return u; } } if ("next" === n.method) n.sent = n._sent = n.arg;else if ("throw" === n.method) { if (o === h) throw o = s, n.arg; n.dispatchException(n.arg); } else "return" === n.method && n.abrupt("return", n.arg); o = f; var p = tryCatch(e, r, n); if ("normal" === p.type) { if (o = n.done ? s : l, p.arg === y) continue; return { value: p.arg, done: n.done }; } "throw" === p.type && (o = s, n.method = "throw", n.arg = p.arg); } }; } function maybeInvokeDelegate(e, r) { var n = r.method, o = e.iterator[n]; if (o === t) return r.delegate = null, "throw" === n && e.iterator["return"] && (r.method = "return", r.arg = t, maybeInvokeDelegate(e, r), "throw" === r.method) || "return" !== n && (r.method = "throw", r.arg = new TypeError("The iterator does not provide a '" + n + "' method")), y; var i = tryCatch(o, e.iterator, r.arg); if ("throw" === i.type) return r.method = "throw", r.arg = i.arg, r.delegate = null, y; var a = i.arg; return a ? a.done ? (r[e.resultName] = a.value, r.next = e.nextLoc, "return" !== r.method && (r.method = "next", r.arg = t), r.delegate = null, y) : a : (r.method = "throw", r.arg = new TypeError("iterator result is not an object"), r.delegate = null, y); } function pushTryEntry(t) { var e = { tryLoc: t[0] }; 1 in t && (e.catchLoc = t[1]), 2 in t && (e.finallyLoc = t[2], e.afterLoc = t[3]), this.tryEntries.push(e); } function resetTryEntry(t) { var e = t.completion || {}; e.type = "normal", delete e.arg, t.completion = e; } function Context(t) { this.tryEntries = [{ tryLoc: "root" }], t.forEach(pushTryEntry, this), this.reset(!0); } function values(e) { if (e || "" === e) { var r = e[a]; if (r) return r.call(e); if ("function" == typeof e.next) return e; if (!isNaN(e.length)) { var o = -1, i = function next() { for (; ++o < e.length;) if (n.call(e, o)) return next.value = e[o], next.done = !1, next; return next.value = t, next.done = !0, next; }; return i.next = i; } } throw new TypeError(_typeof(e) + " is not iterable"); } return GeneratorFunction.prototype = GeneratorFunctionPrototype, o(g, "constructor", { value: GeneratorFunctionPrototype, configurable: !0 }), o(GeneratorFunctionPrototype, "constructor", { value: GeneratorFunction, configurable: !0 }), GeneratorFunction.displayName = define(GeneratorFunctionPrototype, u, "GeneratorFunction"), e.isGeneratorFunction = function (t) { var e = "function" == typeof t && t.constructor; return !!e && (e === GeneratorFunction || "GeneratorFunction" === (e.displayName || e.name)); }, e.mark = function (t) { return Object.setPrototypeOf ? Object.setPrototypeOf(t, GeneratorFunctionPrototype) : (t.__proto__ = GeneratorFunctionPrototype, define(t, u, "GeneratorFunction")), t.prototype = Object.create(g), t; }, e.awrap = function (t) { return { __await: t }; }, defineIteratorMethods(AsyncIterator.prototype), define(AsyncIterator.prototype, c, function () { return this; }), e.AsyncIterator = AsyncIterator, e.async = function (t, r, n, o, i) { void 0 === i && (i = Promise); var a = new AsyncIterator(wrap(t, r, n, o), i); return e.isGeneratorFunction(r) ? a : a.next().then(function (t) { return t.done ? t.value : a.next(); }); }, defineIteratorMethods(g), define(g, u, "Generator"), define(g, a, function () { return this; }), define(g, "toString", function () { return "[object Generator]"; }), e.keys = function (t) { var e = Object(t), r = []; for (var n in e) r.push(n); return r.reverse(), function next() { for (; r.length;) { var t = r.pop(); if (t in e) return next.value = t, next.done = !1, next; } return next.done = !0, next; }; }, e.values = values, Context.prototype = { constructor: Context, reset: function reset(e) { if (this.prev = 0, this.next = 0, this.sent = this._sent = t, this.done = !1, this.delegate = null, this.method = "next", this.arg = t, this.tryEntries.forEach(resetTryEntry), !e) for (var r in this) "t" === r.charAt(0) && n.call(this, r) && !isNaN(+r.slice(1)) && (this[r] = t); }, stop: function stop() { this.done = !0; var t = this.tryEntries[0].completion; if ("throw" === t.type) throw t.arg; return this.rval; }, dispatchException: function dispatchException(e) { if (this.done) throw e; var r = this; function handle(n, o) { return a.type = "throw", a.arg = e, r.next = n, o && (r.method = "next", r.arg = t), !!o; } for (var o = this.tryEntries.length - 1; o >= 0; --o) { var i = this.tryEntries[o], a = i.completion; if ("root" === i.tryLoc) return handle("end"); if (i.tryLoc <= this.prev) { var c = n.call(i, "catchLoc"), u = n.call(i, "finallyLoc"); if (c && u) { if (this.prev < i.catchLoc) return handle(i.catchLoc, !0); if (this.prev < i.finallyLoc) return handle(i.finallyLoc); } else if (c) { if (this.prev < i.catchLoc) return handle(i.catchLoc, !0); } else { if (!u) throw new Error("try statement without catch or finally"); if (this.prev < i.finallyLoc) return handle(i.finallyLoc); } } } }, abrupt: function abrupt(t, e) { for (var r = this.tryEntries.length - 1; r >= 0; --r) { var o = this.tryEntries[r]; if (o.tryLoc <= this.prev && n.call(o, "finallyLoc") && this.prev < o.finallyLoc) { var i = o; break; } } i && ("break" === t || "continue" === t) && i.tryLoc <= e && e <= i.finallyLoc && (i = null); var a = i ? i.completion : {}; return a.type = t, a.arg = e, i ? (this.method = "next", this.next = i.finallyLoc, y) : this.complete(a); }, complete: function complete(t, e) { if ("throw" === t.type) throw t.arg; return "break" === t.type || "continue" === t.type ? this.next = t.arg : "return" === t.type ? (this.rval = this.arg = t.arg, this.method = "return", this.next = "end") : "normal" === t.type && e && (this.next = e), y; }, finish: function finish(t) { for (var e = this.tryEntries.length - 1; e >= 0; --e) { var r = this.tryEntries[e]; if (r.finallyLoc === t) return this.complete(r.completion, r.afterLoc), resetTryEntry(r), y; } }, "catch": function _catch(t) { for (var e = this.tryEntries.length - 1; e >= 0; --e) { var r = this.tryEntries[e]; if (r.tryLoc === t) { var n = r.completion; if ("throw" === n.type) { var o = n.arg; resetTryEntry(r); } return o; } } throw new Error("illegal catch attempt"); }, delegateYield: function delegateYield(e, r, n) { return this.delegate = { iterator: values(e), resultName: r, nextLoc: n }, "next" === this.method && (this.arg = t), y; } }, e; }
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
@@ -22660,6 +22663,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 
 
+
 //компоненты
 
 
@@ -22671,16 +22675,17 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
  * @param {ymaps}
  */
 var grasslandMap;
+var timeout;
 
 /**
  * объект для экспорта по умолчанию. Компонент VUE
  */
 var appPublicGrasslands = {
-  mixins: [_mixins_axiosRequests__WEBPACK_IMPORTED_MODULE_3__["default"], _mixins_changeDisplayMode__WEBPACK_IMPORTED_MODULE_4__["default"], _mixins_crud__WEBPACK_IMPORTED_MODULE_5__["default"], _mixins_drawGrassland__WEBPACK_IMPORTED_MODULE_7__["default"], _formFields_grassland__WEBPACK_IMPORTED_MODULE_6__["default"], _mixins_messages__WEBPACK_IMPORTED_MODULE_8__["default"], _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_9__["default"]],
+  mixins: [_mixins_axiosRequests__WEBPACK_IMPORTED_MODULE_3__["default"], _mixins_changeDisplayMode__WEBPACK_IMPORTED_MODULE_4__["default"], _mixins_crud__WEBPACK_IMPORTED_MODULE_5__["default"], _mixins_drawGrassland__WEBPACK_IMPORTED_MODULE_7__["default"], _mixins_fixedRightCol__WEBPACK_IMPORTED_MODULE_8__["default"], _formFields_grassland__WEBPACK_IMPORTED_MODULE_6__["default"], _mixins_messages__WEBPACK_IMPORTED_MODULE_9__["default"], _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_10__["default"]],
   components: {
-    file: _components_inputs_FileInputComponent__WEBPACK_IMPORTED_MODULE_10__["default"],
-    MessagesComponent: _components_common_MessagesComponent___WEBPACK_IMPORTED_MODULE_12__["default"],
-    TheForm: _components_inputs_FormComponent___WEBPACK_IMPORTED_MODULE_11__["default"]
+    file: _components_inputs_FileInputComponent__WEBPACK_IMPORTED_MODULE_11__["default"],
+    MessagesComponent: _components_common_MessagesComponent___WEBPACK_IMPORTED_MODULE_13__["default"],
+    TheForm: _components_inputs_FormComponent___WEBPACK_IMPORTED_MODULE_12__["default"]
   },
   data: function data() {
     return {
@@ -22721,25 +22726,34 @@ var appPublicGrasslands = {
       /**
        * Координаты точек, заданных вручную
        */
-      tempCoordinates: []
+      tempCoordinates: [],
+      mounted: false
     };
   },
   mounted: function mounted() {
     var vm = this;
+    vm.doFixRightCol();
 
     /**
      * Запрос полей организации
      */
-    vm.updateData(true);
+    vm.updateData(true).then(function () {
+      ymaps.ready(["util.calculateArea"], function () {
+        if (timeout) {
+          clearTimeout(timeout);
+        }
+        timeout = setTimeout(function () {
+          vm.renderMap();
+          vm.mounted = true;
+        }, 100);
+      });
+    });
 
     /**
      * обновление полей организации
      */
     document.addEventListener("updateList", function () {
       vm.updateData();
-    });
-    ymaps.ready(["util.calculateArea"], function () {
-      vm.forceRerenderMap();
     });
   },
   watch: {
@@ -22770,6 +22784,18 @@ var appPublicGrasslands = {
         }
       }
     },
+    stickyTrigger: function stickyTrigger(_stickyTrigger) {
+      var vm = this;
+      if (!vm.mounted) return;
+      if (["list"].indexOf(vm.mode) >= 0) {
+        if (timeout) {
+          clearTimeout(timeout);
+        }
+        timeout = setTimeout(function () {
+          vm.renderMap();
+        }, 100);
+      }
+    },
     /**
      * режим работы страницы
      *
@@ -22777,6 +22803,22 @@ var appPublicGrasslands = {
      */
     mode: function mode(_mode) {
       var vm = this;
+      vm.doFixRightCol();
+      /**
+       * отслеживание изменений размера окна и перезапуск карты
+       */
+
+      if (timeout) {
+        clearTimeout(timeout);
+      }
+      timeout = setTimeout(function () {
+        vm.renderMap();
+      }, 100);
+      vm.updateUrlParams();
+
+      /**
+       * Очистка форм
+       */
       if (["list", "create"].indexOf(_mode) >= 0) {
         vm.$nextTick(function () {
           var _vm$$refs$createGrass, _vm$$refs$editGrassla;
@@ -22785,17 +22827,6 @@ var appPublicGrasslands = {
           (_vm$$refs$editGrassla = vm.$refs.editGrasslandForm) === null || _vm$$refs$editGrassla === void 0 || _vm$$refs$editGrassla.clear();
         });
       }
-
-      /**
-       * отслеживание изменений размера окна и перезапуск карты
-       */
-      if (["details", "create"].indexOf(_mode) >= 0) {
-        vm.$nextTick(function () {
-          var observeEl = vm.$refs["map-container"];
-          vm.forceRerenderMap();
-        });
-      }
-      vm.updateUrlParams();
     },
     /**
      * отслеживания состояния отображения или скрытия карты
@@ -22893,7 +22924,7 @@ var appPublicGrasslands = {
       var vm = this;
       vm.mode = "create";
       vm.$nextTick(function () {
-        vm.forceRerenderMap();
+        vm.renderMap();
       });
     },
     /**
@@ -22980,27 +23011,19 @@ var appPublicGrasslands = {
       vm.deleteEntity(postData, "/grasslands/delete");
     },
     /**
-     * принудительное обновление карты
+     * Фиксирует правую колонку
+     *
+     * @returns {Void}
      */
-    forceRerenderMap: function forceRerenderMap() {
-      var _this2 = this;
-      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
-        var vm;
-        return _regeneratorRuntime().wrap(function _callee2$(_context2) {
-          while (1) switch (_context2.prev = _context2.next) {
-            case 0:
-              vm = _this2;
-              vm.showMap = false;
-              _context2.next = 4;
-              return vm.$nextTick();
-            case 4:
-              vm.showMap = true;
-            case 5:
-            case "end":
-              return _context2.stop();
-          }
-        }, _callee2);
-      }))();
+    doFixRightCol: function doFixRightCol() {
+      var vm = this;
+      vm.$nextTick(function () {
+        if (["list"].indexOf(vm.mode) >= 0) {
+          vm.startFixElement("fixposition", "observeResize", true, [vm.$refs.beforeStickyPosition]);
+        } else {
+          vm.stopFixElement();
+        }
+      });
     },
     /**
      *
@@ -23053,6 +23076,29 @@ var appPublicGrasslands = {
       } catch (error) {
         return false;
       }
+    },
+    /**
+     * принудительное обновление карты
+     */
+    renderMap: function renderMap() {
+      var _this2 = this;
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
+        var vm;
+        return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+          while (1) switch (_context2.prev = _context2.next) {
+            case 0:
+              vm = _this2;
+              vm.showMap = false;
+              _context2.next = 4;
+              return vm.$nextTick();
+            case 4:
+              vm.showMap = true;
+            case 5:
+            case "end":
+              return _context2.stop();
+          }
+        }, _callee2);
+      }))();
     },
     /**
      * Распознавание файлов карты и вычисления,
@@ -23129,9 +23175,7 @@ var appPublicGrasslands = {
       vm.mode = "details";
       vm.grasslandToEdit = grassland;
       vm.$nextTick(function () {
-        grasslandMap = vm.initMap("map-container");
-        grasslandMap.geoObjects.removeAll();
-        vm.drawGrassland(points, grasslandMap);
+        vm.renderMap();
         vm.updateUrlParams(grassland);
       });
     },
@@ -23159,29 +23203,41 @@ var appPublicGrasslands = {
      * @returns {Void}
      */
     updateData: function updateData() {
-      var updateUrl = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
-      var vm = this;
-
-      // обновление данных о полях
-      /**
-       * Запрос полей организации
-       */
-      vm.getGrasslands().then(function (r) {
-        vm.grasslands = r.grasslands;
-        if (!updateUrl) return;
-        var id = parseInt((0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.getPropFromUrl)("id"));
-        if (!id) return;
-        var mayBeItem = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.grasslands).filter(function (i) {
-          return i.id === id;
-        }).pop();
-        vm.grasslandToEdit = mayBeItem ? mayBeItem : vm.grasslandToEdit;
-        if (vm.grasslandToEdit.hasOwnProperty("id")) {
-          return;
-        }
-        vm.$nextTick(function () {
-          vm.mode = "list";
-        });
-      });
+      var _arguments = arguments,
+        _this3 = this;
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
+        var updateUrl, vm;
+        return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+          while (1) switch (_context3.prev = _context3.next) {
+            case 0:
+              updateUrl = _arguments.length > 0 && _arguments[0] !== undefined ? _arguments[0] : false;
+              vm = _this3; // обновление данных о полях
+              /**
+               * Запрос полей организации
+               */
+              return _context3.abrupt("return", vm.getGrasslands().then(function (r) {
+                vm.grasslands = r.grasslands;
+                if (!updateUrl) return;
+                var id = parseInt((0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.getPropFromUrl)("id"));
+                if (!id) return;
+                var mayBeItem = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.grasslands).filter(function (i) {
+                  return i.id === id;
+                }).pop();
+                vm.grasslandToEdit = mayBeItem ? mayBeItem : vm.grasslandToEdit;
+                if (vm.grasslandToEdit.hasOwnProperty("id")) {
+                  return;
+                }
+                vm.$nextTick(function () {
+                  vm.mode = "list";
+                });
+                return;
+              }));
+            case 3:
+            case "end":
+              return _context3.stop();
+          }
+        }, _callee3);
+      }))();
     }
   }
 };
