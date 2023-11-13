@@ -63,7 +63,7 @@ export default {
         /**
          * Рисует все переданные поля и устанавливает границы поля
          *
-         * @param {Arrya<float, float>} coordinates массив точек lat, long
+         * @param {Arrya<Objects>} grasslands массив полей
          * @param {Object} map объект ymap карта
          * @param {Boolean} fitBounds нужно ли подстраивать размер карты так, чтобы было видно все поля
          *
@@ -77,8 +77,10 @@ export default {
             const vm = this;
 
             grasslands.forEach((g) => {
-                const points = g?.geo_json ? JSON.parse(g.geo_json) : g;
-                vm.execDrawGrassland(points, map);
+                const points = JSON.parse(g.geo_json);
+                const { name, size, culture } = g;
+
+                vm.execDrawGrassland(points, map, { name, size, culture });
             });
 
             if (!fitBounds || !map?.geoObjects) return;
@@ -96,35 +98,37 @@ export default {
          *
          * @returns {Number} площадь поля в гектарах
          */
-        execDrawGrassland(coordinates, map) {
+        execDrawGrassland(coordinates = [], map = false, data = false) {
+            if (!coordinates.length || !map) {
+                return;
+            }
+
+            const hint = data
+                ? `Поле ${data.name}, ${data.size}га, ${data.culture}`
+                : false;
+
+            const baloon = data
+                ? `<b>Поле ${data.name}</b> <br> Площадь поля: ${data.size}га <br> Культура:  ${data.culture}`
+                : false;
+
             let grasslandGeoObject = new ymaps.GeoObject(
                 {
-                    // Описываем геометрию геообъекта.
                     geometry: {
-                        // Тип геометрии - "Многоугольник".
                         type: "Polygon",
-                        // Указываем координаты вершин многоугольника.
                         coordinates: [coordinates],
-                        // Задаем правило заливки внутренних контуров по алгоритму "nonZero".
                         fillRule: "nonZero",
                     },
-                    // Описываем свойства геообъекта.
                     properties: {
                         // Содержимое балуна.
-                        // balloonContent: item.name,
+                        balloonContent: baloon,
+                        hintContent: hint,
                     },
                 },
                 {
-                    // Описываем опции геообъекта.
-                    // Цвет заливки.
                     fillColor: "rgba(143, 113, 43,0.1)",
-                    // Цвет обводки.
                     strokeColor: "#c48e1a",
-                    // Общая прозрачность (как для заливки, так и для обводки).
                     // opacity: 0.5,
-                    // Ширина обводки.
                     strokeWidth: 3,
-                    // Стиль обводки.
                     strokeStyle: "solid",
                 }
             );
