@@ -5,6 +5,10 @@ import { getCenterByPoints } from "@/misc/dbf";
 import { strip, clog } from "@/misc/helpers";
 
 export default {
+    mounted() {
+        ymaps.ready(["util.calculateArea"]);
+    },
+
     methods: {
         /**
          *
