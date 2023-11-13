@@ -4,6 +4,14 @@
     <div class="container-fluid d-flex flex-grow-1 flex-column" id='home-page'>
         <input type="hidden" ref='organisationId' value='{{ $organisation_id }}'>
         <input type="hidden" ref='userId' value='{{ $user_id }}'>
+
+
+        {{-- Компонент сообщений --}}
+        {{-- ********************** --}}
+        <messages-component :_messages='messages' v-on:cancel-msg='cancelConfirmActionHandler'
+            v-on:confirm-msg='confirmActionHandler' v-on:clear-msg='clearMessages'></messages-component>
+        {{-- ********************** --}}
+
         <div class="pt-4" ref='beforeStickyPosition'></div>
         <div class="row flex-grow-1 ">
             <Transition name="fade">

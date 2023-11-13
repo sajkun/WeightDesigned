@@ -10,26 +10,28 @@ import moment from "moment";
 import axiosRequests from "@/mixins/axiosRequests";
 import crud from "@/mixins/crud";
 import fixedRightCol from "@/mixins/fixedRightCol";
+import messages from "@/mixins/messages";
 import publicAuthData from "@/mixins/publicAuthData";
 
 //компоненты
 import BvsMapComponent from "@/components/Bvs/MapComponent/";
-import CalendarComponent from "@/components/common/CalendarComponent";
 import BvsShortComponent from "@/components/Bvs/ShortComponent";
 import BvsOperationComponent from "@/components/Bvs/OperationComponent";
+import CalendarComponent from "@/components/common/CalendarComponent";
+import MessagesComponent from "@/components/common/MessagesComponent/";
+
 import SwitcherComponent from "@/components/pageHome/SwitcherComponent";
 
-let timeout;
-
 const homePage = {
-    mixins: [axiosRequests, crud, fixedRightCol, publicAuthData],
+    mixins: [axiosRequests, crud, fixedRightCol, messages, publicAuthData],
 
     components: {
         BvsShortComponent,
-        SwitcherComponent,
-        Calendar: CalendarComponent,
         BvsMap: BvsMapComponent,
         BvsOperation: BvsOperationComponent,
+        Calendar: CalendarComponent,
+        MessagesComponent,
+        SwitcherComponent,
     },
 
     data() {
