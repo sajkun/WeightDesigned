@@ -174,7 +174,7 @@ const appPublicGrasslands = {
             }
         },
 
-        stickyTrigger(stickyTrigger) {
+        stickyTrigger() {
             const vm = this;
             if (!vm.mounted) return;
 
@@ -239,6 +239,8 @@ const appPublicGrasslands = {
                         const points = JSON.parse(grassland.geo_json);
                         grasslandMap.geoObjects.removeAll();
                         vm.drawGrassland(points, grasslandMap);
+                    } else {
+                        vm.drawAllGrasslands(vm.grasslands, grasslandMap);
                     }
                 });
             }

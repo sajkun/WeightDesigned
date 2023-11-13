@@ -14046,6 +14046,12 @@ body.auth #app {
   overflow: hidden;
 }
 
+#map,
+#map-container {
+  overflow: hidden;
+  border-radius: var(--brs);
+}
+
 .statistics-details,
 .statistics-list {
   background-color: var(--lightest);

@@ -21165,14 +21165,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _misc_dbf__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/misc/dbf */ "./resources/js/misc/dbf.js");
+/* harmony import */ var _misc_helpers__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @/misc/helpers */ "./resources/js/misc/helpers.js");
 /**
  * Рисование конуров на яндекс картах
  */
 
+
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  mounted: function mounted() {
-    ymaps.ready(["util.calculateArea"]);
-  },
   methods: {
     /**
      *
@@ -21213,6 +21212,32 @@ __webpack_require__.r(__webpack_exports__);
       }
       var points = type === "Polygon" ? geometry === null || geometry === void 0 ? void 0 : geometry.coordinates.shift() : geometry === null || geometry === void 0 ? void 0 : geometry.coordinates;
       return vm.drawGrassland(points, grasslandMap);
+    },
+    /**
+     * Рисует все переданные поля и устанавливает границы поля
+     *
+     * @param {Arrya<float, float>} coordinates массив точек lat, long
+     * @param {Object} map объект ymap карта
+     * @param {Boolean} fitBounds нужно ли подстраивать размер карты так, чтобы было видно все поля
+     *
+     * @returns {Void}
+     */
+    drawAllGrasslands: function drawAllGrasslands() {
+      var grasslands = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+      var map = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+      var fitBounds = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
+      if (!grasslands.length || !map) {
+        return;
+      }
+      var vm = this;
+      grasslands.forEach(function (g) {
+        var points = g !== null && g !== void 0 && g.geo_json ? JSON.parse(g.geo_json) : g;
+        vm.execDrawGrassland(points, map);
+      });
+      if (!fitBounds || !(map !== null && map !== void 0 && map.geoObjects)) return;
+      map.setBounds(map.geoObjects.getBounds(), {
+        checkZoomRange: true
+      });
     },
     /**
      * добавление объекта полигона по заданным точкам на карту
@@ -22784,7 +22809,7 @@ var appPublicGrasslands = {
         }
       }
     },
-    stickyTrigger: function stickyTrigger(_stickyTrigger) {
+    stickyTrigger: function stickyTrigger() {
       var vm = this;
       if (!vm.mounted) return;
       if (["list"].indexOf(vm.mode) >= 0) {
@@ -22843,6 +22868,8 @@ var appPublicGrasslands = {
             var points = JSON.parse(grassland.geo_json);
             grasslandMap.geoObjects.removeAll();
             vm.drawGrassland(points, grasslandMap);
+          } else {
+            vm.drawAllGrasslands(vm.grasslands, grasslandMap);
           }
         });
       }
