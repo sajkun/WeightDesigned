@@ -2,8 +2,9 @@
  *
  */
 
-//вспомогательные функции
-import { strip, clog, replaceUrlState, getPropFromUrl } from "@/misc/helpers";
+//хэлперы
+import { strip, clog, getPropFromUrl } from "@/misc/helpers";
+
 import { kml } from "@/../../node_modules/@tmcw/togeojson";
 import { readBinaryShapeFile, getPointsForGrassland } from "@/misc/dbf";
 
@@ -13,6 +14,7 @@ import changeDisplayMode from "@/mixins/changeDisplayMode";
 import crud from "@/mixins/crud";
 import grasslandFormStructure from "@/formFields/grassland";
 import drawGrassland from "@/mixins/drawGrassland";
+import fixedRightCol from "@/mixins/fixedRightCol";
 import messages from "@/mixins/messages";
 import publicAuthData from "@/mixins/publicAuthData";
 
@@ -27,6 +29,7 @@ import MessagesComponent from "@/components/common/MessagesComponent/";
  * @param {ymaps}
  */
 let grasslandMap;
+let timeout;
 
 /**
  * объект для экспорта по умолчанию. Компонент VUE
@@ -37,6 +40,7 @@ const appPublicGrasslands = {
         changeDisplayMode,
         crud,
         drawGrassland,
+        fixedRightCol,
         grasslandFormStructure,
         messages,
         publicAuthData,
@@ -93,16 +97,31 @@ const appPublicGrasslands = {
              * Координаты точек, заданных вручную
              */
             tempCoordinates: [],
+
+            mounted: false,
         };
     },
 
     mounted() {
         const vm = this;
 
+        vm.doFixRightCol();
+
         /**
          * Запрос полей организации
          */
-        vm.updateData(true);
+        vm.updateData(true).then(() => {
+            ymaps.ready(["util.calculateArea"], () => {
+                if (timeout) {
+                    clearTimeout(timeout);
+                }
+
+                timeout = setTimeout(() => {
+                    vm.renderMap();
+                    vm.mounted = true;
+                }, 100);
+            });
+        });
 
         /**
          * обновление полей организации
@@ -156,14 +175,47 @@ const appPublicGrasslands = {
             }
         },
 
+        stickyTrigger() {
+            const vm = this;
+            if (!vm.mounted) return;
+
+            if (["list"].indexOf(vm.mode) >= 0) {
+                if (timeout) {
+                    clearTimeout(timeout);
+                }
+
+                timeout = setTimeout(() => {
+                    vm.renderMap();
+                }, 100);
+            }
+        },
+
         /**
          * режим работы страницы
          *
          * @param {Enum} mode  list|create|details
          */
         mode(mode) {
-            clog(mode);
             const vm = this;
+
+            vm.doFixRightCol();
+            /**
+             * отслеживание изменений размера окна и перезапуск карты
+             */
+
+            if (timeout) {
+                clearTimeout(timeout);
+            }
+
+            timeout = setTimeout(() => {
+                vm.renderMap();
+            }, 100);
+
+            vm.updateUrlParams();
+
+            /**
+             * Очистка форм
+             */
             if (["list", "create"].indexOf(mode) >= 0) {
                 vm.$nextTick(() => {
                     vm.grasslandToEdit = {};
@@ -171,18 +223,6 @@ const appPublicGrasslands = {
                     vm.$refs.editGrasslandForm?.clear();
                 });
             }
-
-            /**
-             * отслеживание изменений размера окна и перезапуск карты
-             */
-            if (["details", "create"].indexOf(mode) >= 0) {
-                vm.$nextTick(() => {
-                    const observeEl = vm.$refs["map-container"];
-                    vm.forceRerenderMap();
-                });
-            }
-
-            vm.updateUrlParams();
         },
 
         /**
@@ -200,6 +240,8 @@ const appPublicGrasslands = {
                         const points = JSON.parse(grassland.geo_json);
                         grasslandMap.geoObjects.removeAll();
                         vm.drawGrassland(points, grasslandMap);
+                    } else {
+                        vm.drawAllGrasslands(vm.grasslands, grasslandMap);
                     }
                 });
             }
@@ -269,10 +311,7 @@ const appPublicGrasslands = {
          */
         columnClass() {
             const vm = this;
-            const tableClass =
-                vm.mode === "details"
-                    ? "col-12 col-md-6 d-none d-md-block"
-                    : "col-12";
+            const tableClass = vm.mode === "details" ? "d-none d-md-block" : "";
             return {
                 tableClass,
             };
@@ -307,7 +346,7 @@ const appPublicGrasslands = {
             vm.mode = "create";
 
             vm.$nextTick(() => {
-                vm.forceRerenderMap();
+                vm.renderMap();
             });
         },
 
@@ -384,13 +423,22 @@ const appPublicGrasslands = {
         },
 
         /**
-         * принудительное обновление карты
+         * Фиксирует правую колонку
+         *
+         * @returns {Void}
          */
-        async forceRerenderMap() {
+        doFixRightCol() {
             const vm = this;
-            vm.showMap = false;
-            await vm.$nextTick();
-            vm.showMap = true;
+
+            vm.$nextTick(() => {
+                if (["list"].indexOf(vm.mode) >= 0) {
+                    vm.startFixElement("fixposition", "observeResize", true, [
+                        vm.$refs.beforeStickyPosition,
+                    ]);
+                } else {
+                    vm.stopFixElement();
+                }
+            });
         },
 
         /**
@@ -422,33 +470,49 @@ const appPublicGrasslands = {
          */
         initMap(selector) {
             const vm = this;
-            let map = new ymaps.Map(
-                selector,
-                {
-                    center: [45, 45],
-                    zoom: 13,
-                    type: "yandex#hybrid",
-                },
-                {
-                    searchControlProvider: "yandex#search",
-                }
-            );
 
-            map.events.add("click", (e) => {
-                if (vm.geoJsonSource === "file") {
-                    return;
-                }
+            try {
+                let map = new ymaps.Map(
+                    selector,
+                    {
+                        center: [45, 45],
+                        zoom: 13,
+                        type: "yandex#hybrid",
+                    },
+                    {
+                        searchControlProvider: "yandex#search",
+                    }
+                );
 
-                let coordsClicked = e.get("coords");
+                map.events.add("click", (e) => {
+                    if (vm.geoJsonSource === "file") {
+                        return;
+                    }
 
-                const clickedPoint = new ymaps.Placemark(coordsClicked, {
-                    hintContent: "точка контура поля",
+                    let coordsClicked = e.get("coords");
+
+                    const clickedPoint = new ymaps.Placemark(coordsClicked, {
+                        hintContent: "точка контура поля",
+                    });
+
+                    vm.tempCoordinates.push(coordsClicked);
+                    map.geoObjects.add(clickedPoint);
                 });
+                return map;
+            } catch (error) {
+                return false;
+            }
+        },
 
-                vm.tempCoordinates.push(coordsClicked);
-                map.geoObjects.add(clickedPoint);
-            });
-            return map;
+        /**
+         * принудительное обновление карты
+         */
+        async renderMap() {
+            const vm = this;
+
+            vm.showMap = false;
+            await vm.$nextTick();
+            vm.showMap = true;
         },
 
         /**
@@ -551,9 +615,7 @@ const appPublicGrasslands = {
             vm.grasslandToEdit = grassland;
 
             vm.$nextTick(() => {
-                grasslandMap = vm.initMap("map-container");
-                grasslandMap.geoObjects.removeAll();
-                vm.drawGrassland(points, grasslandMap);
+                vm.renderMap();
                 vm.updateUrlParams(grassland);
             });
         },
@@ -587,14 +649,14 @@ const appPublicGrasslands = {
          *
          * @returns {Void}
          */
-        updateData(updateUrl = false) {
+        async updateData(updateUrl = false) {
             const vm = this;
 
             // обновление данных о полях
             /**
              * Запрос полей организации
              */
-            vm.getGrasslands().then((r) => {
+            return vm.getGrasslands().then((r) => {
                 vm.grasslands = r.grasslands;
 
                 if (!updateUrl) return;
@@ -614,6 +676,8 @@ const appPublicGrasslands = {
                 vm.$nextTick(() => {
                     vm.mode = "list";
                 });
+
+                return;
             });
         },
     },

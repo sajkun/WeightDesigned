@@ -2,6 +2,7 @@
  * Рисование конуров на яндекс картах
  */
 import { getCenterByPoints } from "@/misc/dbf";
+import { strip, clog } from "@/misc/helpers";
 
 export default {
     mounted() {
@@ -57,6 +58,34 @@ export default {
                     : geometry?.coordinates;
 
             return vm.drawGrassland(points, grasslandMap);
+        },
+
+        /**
+         * Рисует все переданные поля и устанавливает границы поля
+         *
+         * @param {Arrya<float, float>} coordinates массив точек lat, long
+         * @param {Object} map объект ymap карта
+         * @param {Boolean} fitBounds нужно ли подстраивать размер карты так, чтобы было видно все поля
+         *
+         * @returns {Void}
+         */
+        drawAllGrasslands(grasslands = [], map = false, fitBounds = true) {
+            if (!grasslands.length || !map) {
+                return;
+            }
+
+            const vm = this;
+
+            grasslands.forEach((g) => {
+                const points = g?.geo_json ? JSON.parse(g.geo_json) : g;
+                vm.execDrawGrassland(points, map);
+            });
+
+            if (!fitBounds || !map?.geoObjects) return;
+
+            map.setBounds(map.geoObjects.getBounds(), {
+                checkZoomRange: true,
+            });
         },
 
         /**

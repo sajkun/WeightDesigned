@@ -41,6 +41,7 @@ export default {
             shiftY: 0,
             controllHeight: false,
             applyFixData: false,
+            stickyTrigger: false,
         };
     },
 
@@ -152,6 +153,13 @@ export default {
 
             vm.fixData.top = totalShiftTop + fixBottomEdgeShift;
             vm.fixData.left = parentRect.left + paddingsParent.left;
+
+            vm.stickyTrigger =
+                window.scrollY >= this.getHeightBefore()
+                    ? 0
+                    : vm.stickyTrigger === 1
+                    ? -1
+                    : 1;
 
             vm.shiftY = shiftY;
             return;
