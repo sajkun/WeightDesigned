@@ -18,7 +18,7 @@
 </template>
 
 <script>
-// хэлперы
+// вспомогательные функции
 import { strip, clog, polyline, getRoundedValue } from "@/misc/helpers";
 
 let drawTimeout;

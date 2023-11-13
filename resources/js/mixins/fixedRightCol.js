@@ -2,8 +2,8 @@
  *
  */
 
-//хэлперы
-import { clog, getStyle, getDocHeight } from "@/misc/helpers";
+//вспомогательные функции
+import { clog, strip, getStyle, getDocHeight } from "@/misc/helpers";
 export default {
     data() {
         return {
@@ -302,6 +302,8 @@ export default {
             controllHeight = false,
             extraElements = []
         ) {
+            clog("startFixElement");
+            clog(controllHeight);
             const vm = this;
             const observeEl = vm.$refs[observeRef];
             const targetElement = vm.$refs[targetRef];
@@ -313,11 +315,14 @@ export default {
             vm.extraElements = extraElements;
 
             if (controllHeight) {
-                vm.fixData.height = targetElement.offsetHeight;
-                vm.fixData.maxHeight = targetElement.offsetHeight;
+                vm.fixData.height = getDocHeight() - vm.getHeightBefore();
+                vm.fixData.maxHeight = getDocHeight() - vm.getHeightBefore();
+
+                clog(strip(vm.fixData));
             }
 
             vm.updateFixElement(targetElement, vm.fixData);
+
             vm.$nextTick(() => {
                 vm.observer.observe(observeEl);
                 vm.observer.observe(targetElement);

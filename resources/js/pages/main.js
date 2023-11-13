@@ -33,10 +33,10 @@ const homePage = {
     data() {
         return {
             // режим выбора даты
-            mode: "all", // day | period | all
+            mode: "day", // day | period | all
 
             // тип детализации отображенния данных
-            display: "items", // calendar | list | items
+            display: "calendar", // calendar | list | items
 
             // исходные данные от БВС
             bvsData: [],
@@ -87,16 +87,48 @@ const homePage = {
         /**
          * Обработка зависимостей переменных оттипа детализации отображения данных БВС
          *
-         * @return {Void}
+         * @param {Enum} display calendar | list | items
+         *
+         * @return null
          */
-        display() {
+        display(display) {
             const vm = this;
+
+            if (display === "calendar") {
+                vm.selectedBvs = [];
+                vm.selectedOperationsIds = [];
+            }
 
             vm.$nextTick(() => {
                 vm.startFixElement("fixposition", "observeResize", true);
             });
 
-            return;
+            return null;
+        },
+
+        /**
+         * Обработка зависимостей переменных от режима отображения календаря
+         *
+         * @param {Enum} mode all|period|day
+         *
+         * @return null
+         */
+        mode(mode) {
+            const vm = this;
+            // сброс дат
+            if (mode === "all") {
+                vm.period.start = null;
+                vm.period.end = null;
+                vm.display = "list";
+            }
+
+            // if (mode === "period") {
+            //     const today = new Date();
+            //     vm.period.start = moment(today).format("YYYY-MM-DDT00:00:00");
+            //     vm.period.end = moment(today).format("YYYY-MM-DDT23:59:59");
+            // }
+
+            return null;
         },
 
         /**
@@ -212,10 +244,14 @@ const homePage = {
         },
 
         /**
-         * Обновление данных о полях
+         * Ключ, определюящий надо ли отображать календарь в зависимости от типа выбранного периода
          *
-         * @returns {Array<Object>}
+         * @returns {Boolean}
          */
+        calendarState() {
+            return this.mode === "all";
+        },
+
         grasslandsData() {
             const vm = this;
             const grasslands = strip(vm.grasslands);
@@ -238,9 +274,8 @@ const homePage = {
         },
 
         /**
-         * возвращает массив строк. Строки то даты в формате YYYY-MM-DD (1900-10-23).  Нумерация месмыцев начитнается с 1, т.е.  январь <-> 1 и т.д.
          *
-         * @returns {Array<String>}
+         * @returns {Array<String>} возвращает массив строк. Строки то даты в формате YYYY-MM-DD (1900-10-23).  Нумерация месмыцев начитнается с 1, т.е.  январь <-> 1 и т.д.
          */
         markedDays() {
             const vm = this;
@@ -252,6 +287,21 @@ const homePage = {
             });
 
             return dates;
+        },
+
+        /**
+         * режимы выбора даты
+         *
+         * @returns {Object}
+         */
+
+        modes() {
+            const modes = {
+                all: "За все время",
+                day: "За день",
+                period: "За период",
+            };
+            return modes;
         },
 
         /** признак режима работы календаря. Включен ли выбор периода или нет

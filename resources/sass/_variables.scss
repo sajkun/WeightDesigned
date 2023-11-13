@@ -1,11 +1,3 @@
-// Body
-$body-bg: #f8fafc;
-
-// Typography
-$font-family-sans-serif: "Nunito", sans-serif;
-$font-size-base: 1rem;
-$line-height-base: 1.6;
-
 body {
     // цветовая схема
     --red-ultralight: #ffeaeb;
@@ -20,7 +12,7 @@ body {
     --green-light: #b3d8c5;
     --green-medium: #66b28a;
     --green: #007e3c;
-    --grey-ultralight: #eef2fd;
+    --grey-ultralight: #e7e7e7;
     --grey-light: #dfe6fa;
     --grey-medium: #aab3cb;
     --grey: #7e89a5;
@@ -31,6 +23,8 @@ body {
 
     --cooper: #b18a4b;
     --violet: #b275e2;
+
+    --orange: #ffa011;
 
     --lightest: #fff;
     --dark: #292e3a;

@@ -3,7 +3,7 @@
  *
  */
 
-//хэлперы
+//вспомогательные функции
 import { strip, clog } from "@/misc/helpers";
 import moment from "moment";
 
