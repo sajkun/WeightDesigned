@@ -21303,11 +21303,13 @@ __webpack_require__.r(__webpack_exports__);
         var points = JSON.parse(g.geo_json);
         var name = g.name,
           size = g.size,
-          culture = g.culture;
+          culture = g.culture,
+          id = g.id;
         vm.execDrawGrassland(points, map, {
           name: name,
           size: size,
-          culture: culture
+          culture: culture,
+          id: id
         });
       });
       if (!fitBounds || !(map !== null && map !== void 0 && map.geoObjects)) return;
@@ -21331,7 +21333,7 @@ __webpack_require__.r(__webpack_exports__);
         return;
       }
       var hint = data ? "\u041F\u043E\u043B\u0435 ".concat(data.name, ", ").concat(data.size, "\u0433\u0430, ").concat(data.culture) : false;
-      var baloon = data ? "<b>\u041F\u043E\u043B\u0435 ".concat(data.name, "</b> <br> \u041F\u043B\u043E\u0449\u0430\u0434\u044C \u043F\u043E\u043B\u044F: ").concat(data.size, "\u0433\u0430 <br> \u041A\u0443\u043B\u044C\u0442\u0443\u0440\u0430:  ").concat(data.culture) : false;
+      var baloon = data ? "<b>\u041F\u043E\u043B\u0435 ".concat(data.name, "</b> <br> \u041F\u043B\u043E\u0449\u0430\u0434\u044C \u043F\u043E\u043B\u044F: ").concat(data.size, "\u0433\u0430 <br> \u041A\u0443\u043B\u044C\u0442\u0443\u0440\u0430:  ").concat(data.culture, " <br>\n                <button type='button' id='dataButton' class='btn btn-sm mt-2 py-0 btn-primary-alt'>\u0420\u0435\u0434\u0430\u043A\u0442\u0438\u0440\u043E\u0432\u0430\u0442\u044C</button>\n                ") : false;
       var grasslandGeoObject = new ymaps.GeoObject({
         geometry: {
           type: "Polygon",
@@ -21350,6 +21352,20 @@ __webpack_require__.r(__webpack_exports__);
         strokeWidth: 3,
         strokeStyle: "solid"
       });
+
+      //добавляем событие по нажатию на кнопке в окне
+      if (data !== null && data !== void 0 && data.id) {
+        grasslandGeoObject.events.add("balloonopen", function (e) {
+          var button = document.getElementById("dataButton");
+          button.addEventListener("click", function () {
+            document.dispatchEvent(new CustomEvent("showGrassland", {
+              detail: {
+                grasslandId: data.id
+              }
+            }));
+          });
+        });
+      }
 
       // Добавляем многоугольник на карту.
       map.geoObjects.add(grasslandGeoObject);
@@ -21626,8 +21642,6 @@ __webpack_require__.r(__webpack_exports__);
     startFixElement: function startFixElement(targetRef, observeRef) {
       var controllHeight = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
       var extraElements = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : [];
-      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("startFixElement");
-      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)(controllHeight);
       var vm = this;
       var observeEl = vm.$refs[observeRef];
       var targetElement = vm.$refs[targetRef];
@@ -22865,6 +22879,14 @@ var appPublicGrasslands = {
      */
     document.addEventListener("updateList", function () {
       vm.updateData();
+    });
+    document.addEventListener("showGrassland", function (e) {
+      var grassland = Array.from((0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.grasslands)).filter(function (g) {
+        return g.id === e.detail.grasslandId;
+      }).pop();
+      if (grassland) {
+        vm.viewGrassland(grassland);
+      }
     });
   },
   watch: {

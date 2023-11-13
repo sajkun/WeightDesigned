@@ -129,6 +129,16 @@ const appPublicGrasslands = {
         document.addEventListener("updateList", () => {
             vm.updateData();
         });
+
+        document.addEventListener("showGrassland", (e) => {
+            const grassland = Array.from(strip(vm.grasslands))
+                .filter((g) => g.id === e.detail.grasslandId)
+                .pop();
+
+            if (grassland) {
+                vm.viewGrassland(grassland);
+            }
+        });
     },
 
     watch: {

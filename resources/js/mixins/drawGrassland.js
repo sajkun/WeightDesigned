@@ -78,9 +78,9 @@ export default {
 
             grasslands.forEach((g) => {
                 const points = JSON.parse(g.geo_json);
-                const { name, size, culture } = g;
+                const { name, size, culture, id } = g;
 
-                vm.execDrawGrassland(points, map, { name, size, culture });
+                vm.execDrawGrassland(points, map, { name, size, culture, id });
             });
 
             if (!fitBounds || !map?.geoObjects) return;
@@ -108,7 +108,9 @@ export default {
                 : false;
 
             const baloon = data
-                ? `<b>Поле ${data.name}</b> <br> Площадь поля: ${data.size}га <br> Культура:  ${data.culture}`
+                ? `<b>Поле ${data.name}</b> <br> Площадь поля: ${data.size}га <br> Культура:  ${data.culture} <br>
+                <button type='button' id='dataButton' class='btn btn-sm mt-2 py-0 btn-primary-alt'>Редактировать</button>
+                `
                 : false;
 
             let grasslandGeoObject = new ymaps.GeoObject(
@@ -132,6 +134,20 @@ export default {
                     strokeStyle: "solid",
                 }
             );
+
+            //добавляем событие по нажатию на кнопке в окне
+            if (data?.id) {
+                grasslandGeoObject.events.add("balloonopen", function (e) {
+                    const button = document.getElementById("dataButton");
+                    button.addEventListener("click", () => {
+                        document.dispatchEvent(
+                            new CustomEvent("showGrassland", {
+                                detail: { grasslandId: data.id },
+                            })
+                        );
+                    });
+                });
+            }
 
             // Добавляем многоугольник на карту.
             map.geoObjects.add(grasslandGeoObject);
