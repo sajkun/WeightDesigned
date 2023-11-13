@@ -15257,7 +15257,6 @@ var grasslandMap;
     }
   },
   mounted: function mounted() {
-    (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("mounted");
     var vm = this;
     vm.id = vm._id;
     vm.$nextTick(function () {
@@ -15291,10 +15290,11 @@ var grasslandMap;
      * @param {Array} data массив объектов данных от БВС
      */
     drawBvsData: function drawBvsData(data) {
-      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("drawBvsData", data);
       if (!data || !data.length || !grasslandMap) {
         return;
       }
+      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("drawBvsData", data);
+      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)(grasslandMap);
       var vm = this;
       var placemarksHTML = document.getElementById("placemarks");
       var clusterIconContentLayout = ymaps.templateLayoutFactory.createClass('<div class="cluster-icon">{{ properties.geoObjects.length }}</div>');
@@ -15419,31 +15419,24 @@ var grasslandMap;
      * @param {Object} bvsData данные от БВС
      */
     drawMapObjects: function drawMapObjects(grasslandMap, bvsData) {
-      var _grasslandMap$geoObje;
       if (!grasslandMap || !bvsData.length) return;
       var vm = this;
-      (_grasslandMap$geoObje = grasslandMap.geoObjects) === null || _grasslandMap$geoObje === void 0 || _grasslandMap$geoObje.removeAll();
+      // clog(grasslandMap.geoObjects);
+      grasslandMap.geoObjects.removeAll();
+      // return;
       vm.drawBvsData(bvsData);
       if (grasslandMap.geoObjects.getLength() > 0) {
         grasslandMap.setBounds(grasslandMap.geoObjects.getBounds());
       } else {
         grasslandMap.setZoom(9);
       }
-      vm.$nextTick(function () {
-        var _iterator2 = _createForOfIteratorHelper(vm.grasslandsData),
-          _step2;
-        try {
-          for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
-            var _grassland = _step2.value;
-            var points = JSON.parse(_grassland.geo_json);
-            vm.drawGrassland(points, grasslandMap);
-          }
-        } catch (err) {
-          _iterator2.e(err);
-        } finally {
-          _iterator2.f();
-        }
-      });
+
+      // vm.$nextTick(() => {
+      //     for (const _grassland of vm.grasslandsData) {
+      //         const points = JSON.parse(_grassland.geo_json);
+      //         vm.drawGrassland(points, grasslandMap);
+      //     }
+      // });
     }
   }
 });
@@ -21455,7 +21448,6 @@ __webpack_require__.r(__webpack_exports__);
           vm.resertFixedElement();
           return;
         }
-        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)((0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(fixData));
         vm.updateFixElement(el, fixData);
       },
       deep: true
@@ -21677,7 +21669,6 @@ __webpack_require__.r(__webpack_exports__);
      * @returns {Void}
      */
     stopFixElement: function stopFixElement() {
-      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("stopFixElement");
       var vm = this;
       vm.applyFixData = false;
       vm.$nextTick(function () {
@@ -23490,6 +23481,7 @@ var homePage = {
     vm.$nextTick(function () {
       vm.startFixElement("fixposition", "observeResize", true, [vm.$refs.beforeStickyPosition]);
       vm.mounted = true;
+      vm.renderMap();
     });
   },
   watch: {
@@ -23517,16 +23509,6 @@ var homePage = {
       var breakpoint = 768;
       var show = newWidth > breakpoint;
       vm.showMap = show;
-    },
-    stickyTrigger: function stickyTrigger() {
-      var vm = this;
-      if (!vm.mounted) return;
-      if (timeout) {
-        clearTimeout(timeout);
-      }
-      timeout = setTimeout(function () {
-        vm.renderMap();
-      }, 100);
     }
   },
   computed: {
@@ -23742,12 +23724,10 @@ var homePage = {
     selectOperationCb: function selectOperationCb(data) {
       (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)(data);
       var vm = this;
-      var idx = vm.selectedOperationsIds.indexOf(data.id);
-      if (idx >= 0) {
-        vm.selectedOperationsIds.splice(idx, 1);
-      } else {
-        vm.selectedOperationsIds.push(data.id);
-      }
+      vm.selectedOperationsIds = [data.id];
+
+      // await vm.$nextTick();
+      // vm.renderMap();
     },
     /**
      * обработчик события выбора диапазона дат на  календаре.

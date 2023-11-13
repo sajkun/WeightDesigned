@@ -88,6 +88,7 @@ const homePage = {
                 vm.$refs.beforeStickyPosition,
             ]);
             vm.mounted = true;
+            vm.renderMap();
         });
     },
 
@@ -119,19 +120,6 @@ const homePage = {
             const breakpoint = 768;
             let show = newWidth > breakpoint;
             vm.showMap = show;
-        },
-
-        stickyTrigger() {
-            const vm = this;
-            if (!vm.mounted) return;
-
-            if (timeout) {
-                clearTimeout(timeout);
-            }
-
-            timeout = setTimeout(() => {
-                vm.renderMap();
-            }, 100);
         },
     },
 
@@ -366,12 +354,10 @@ const homePage = {
         selectOperationCb(data) {
             clog(data);
             const vm = this;
-            const idx = vm.selectedOperationsIds.indexOf(data.id);
-            if (idx >= 0) {
-                vm.selectedOperationsIds.splice(idx, 1);
-            } else {
-                vm.selectedOperationsIds.push(data.id);
-            }
+            vm.selectedOperationsIds = [data.id];
+
+            // await vm.$nextTick();
+            // vm.renderMap();
         },
 
         /**

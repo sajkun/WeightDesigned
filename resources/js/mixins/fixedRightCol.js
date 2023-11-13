@@ -68,8 +68,6 @@ export default {
                     return;
                 }
 
-                clog(strip(fixData));
-
                 vm.updateFixElement(el, fixData);
             },
             deep: true,
@@ -340,7 +338,6 @@ export default {
          * @returns {Void}
          */
         stopFixElement() {
-            clog("stopFixElement");
             const vm = this;
             vm.applyFixData = false;
             vm.$nextTick(() => {

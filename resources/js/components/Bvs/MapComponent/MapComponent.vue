@@ -72,7 +72,6 @@ export default {
     },
 
     mounted() {
-        clog("mounted");
         const vm = this;
         vm.id = vm._id;
 
@@ -113,10 +112,11 @@ export default {
          * @param {Array} data массив объектов данных от БВС
          */
         drawBvsData(data) {
-            clog("drawBvsData", data);
             if (!data || !data.length || !grasslandMap) {
                 return;
             }
+            clog("drawBvsData", data);
+            clog(grasslandMap);
             const vm = this;
 
             const placemarksHTML = document.getElementById("placemarks");
@@ -290,7 +290,9 @@ export default {
         drawMapObjects(grasslandMap, bvsData) {
             if (!grasslandMap || !bvsData.length) return;
             const vm = this;
-            grasslandMap.geoObjects?.removeAll();
+            // clog(grasslandMap.geoObjects);
+            grasslandMap.geoObjects.removeAll();
+            // return;
             vm.drawBvsData(bvsData);
 
             if (grasslandMap.geoObjects.getLength() > 0) {
@@ -299,12 +301,12 @@ export default {
                 grasslandMap.setZoom(9);
             }
 
-            vm.$nextTick(() => {
-                for (const _grassland of vm.grasslandsData) {
-                    const points = JSON.parse(_grassland.geo_json);
-                    vm.drawGrassland(points, grasslandMap);
-                }
-            });
+            // vm.$nextTick(() => {
+            //     for (const _grassland of vm.grasslandsData) {
+            //         const points = JSON.parse(_grassland.geo_json);
+            //         vm.drawGrassland(points, grasslandMap);
+            //     }
+            // });
         },
     },
 };
