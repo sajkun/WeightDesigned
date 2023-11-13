@@ -19,6 +19,8 @@ import BvsShortComponent from "@/components/Bvs/ShortComponent";
 import BvsOperationComponent from "@/components/Bvs/OperationComponent";
 import SwitcherComponent from "@/components/pageHome/SwitcherComponent";
 
+let timeout;
+
 const homePage = {
     mixins: [axiosRequests, crud, fixedRightCol, publicAuthData],
 
@@ -60,12 +62,15 @@ const homePage = {
             windowWidth: window.innerWidth,
 
             //Признак отображения/скрытия компонента карты
-            showMap: true,
+            showMap: false,
+
+            mounted: false,
         };
     },
 
     mounted() {
         const vm = this;
+
         vm.$nextTick(() => {
             window.addEventListener("resize", vm.onResize);
         });
@@ -79,7 +84,10 @@ const homePage = {
         });
 
         vm.$nextTick(() => {
-            vm.startFixElement("fixposition", "observeResize", true);
+            vm.startFixElement("fixposition", "observeResize", true, [
+                vm.$refs.beforeStickyPosition,
+            ]);
+            vm.mounted = true;
         });
     },
 
@@ -111,6 +119,19 @@ const homePage = {
             const breakpoint = 768;
             let show = newWidth > breakpoint;
             vm.showMap = show;
+        },
+
+        stickyTrigger() {
+            const vm = this;
+            if (!vm.mounted) return;
+
+            if (timeout) {
+                clearTimeout(timeout);
+            }
+
+            timeout = setTimeout(() => {
+                vm.renderMap();
+            }, 100);
         },
     },
 
@@ -218,6 +239,9 @@ const homePage = {
          */
         grasslandsData() {
             const vm = this;
+            if (!vm.mounted) {
+                return [];
+            }
             const grasslands = strip(vm.grasslands);
             return grasslands;
         },
@@ -295,6 +319,17 @@ const homePage = {
         },
 
         /**
+         * принудительное обновление карты
+         */
+        async renderMap() {
+            const vm = this;
+
+            vm.showMap = false;
+            await vm.$nextTick();
+            vm.showMap = true;
+        },
+
+        /**
          * обработчик события клика на элемент из списка БВС
          *
          * @param {Object} data
@@ -329,6 +364,7 @@ const homePage = {
          *
          */
         selectOperationCb(data) {
+            clog(data);
             const vm = this;
             const idx = vm.selectedOperationsIds.indexOf(data.id);
             if (idx >= 0) {

@@ -104,23 +104,24 @@ const appPublicGrasslands = {
 
     mounted() {
         const vm = this;
-
-        vm.doFixRightCol();
-
         /**
          * Запрос полей организации
          */
         vm.updateData(true).then(() => {
-            ymaps.ready(["util.calculateArea"], () => {
-                if (timeout) {
-                    clearTimeout(timeout);
-                }
+            ymaps
+                .ready(["util.calculateArea"], () => {
+                    if (timeout) {
+                        clearTimeout(timeout);
+                    }
 
-                timeout = setTimeout(() => {
-                    vm.renderMap();
-                    vm.mounted = true;
-                }, 100);
-            });
+                    timeout = setTimeout(() => {
+                        vm.renderMap();
+                        vm.mounted = true;
+                    }, 100);
+                })
+                .then(() => {
+                    vm.doFixRightCol();
+                });
         });
 
         /**

@@ -62,10 +62,13 @@ export default {
                 }
 
                 const el = vm?.$refs[vm?.targetRef];
+
                 if (!el || !vm.applyFixData) {
                     vm.resertFixedElement();
                     return;
                 }
+
+                clog(strip(fixData));
 
                 vm.updateFixElement(el, fixData);
             },
@@ -241,7 +244,10 @@ export default {
             }
             const compareHeight =
                 targetElement.offsetHeight + vm.getHeightBefore();
-            return compareHeight < getDocHeight();
+
+            const ifEnoughHeight = compareHeight <= getDocHeight();
+
+            return ifEnoughHeight;
         },
 
         /**
@@ -315,8 +321,6 @@ export default {
             if (controllHeight) {
                 vm.fixData.height = getDocHeight() - vm.getHeightBefore();
                 vm.fixData.maxHeight = getDocHeight() - vm.getHeightBefore();
-
-                clog(strip(vm.fixData));
             }
 
             vm.updateFixElement(targetElement, vm.fixData);
@@ -336,6 +340,7 @@ export default {
          * @returns {Void}
          */
         stopFixElement() {
+            clog("stopFixElement");
             const vm = this;
             vm.applyFixData = false;
             vm.$nextTick(() => {
@@ -355,10 +360,12 @@ export default {
          */
         updateFixElement(element, data) {
             for (const styleProp in data) {
-                element.style[styleProp] =
+                const prop =
                     typeof data[styleProp] === "number"
-                        ? `${data[styleProp]}px`
+                        ? `${parseInt(data[styleProp])}px`
                         : data[styleProp];
+
+                element.style[styleProp] = prop;
             }
 
             return;

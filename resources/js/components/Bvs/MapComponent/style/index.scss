@@ -45,3 +45,9 @@
     bottom: 0;
     overflow: hidden;
 }
+
+.fix-map {
+    & > :not(:first-child) {
+        display: none;
+    }
+}

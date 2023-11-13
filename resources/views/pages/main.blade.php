@@ -1,3 +1,4 @@
+{{-- @deprecated --}}
 @extends('layouts.public')
 
 @section('content')

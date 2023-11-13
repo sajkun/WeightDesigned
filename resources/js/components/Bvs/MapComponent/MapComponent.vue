@@ -1,7 +1,9 @@
 <!-- МИодуль отобраения данных от бвс на яндекс карте -->
 <template>
-    <div id="placemarks"></div>
-    <div class="h-100 w-100" :id="id"></div>
+    <div class="d-flex flex-column">
+        <div id="placemarks"></div>
+        <div class="w-100 flex-grow-1 fix-map" :id="id"></div>
+    </div>
 </template>
 
 <script>
@@ -70,6 +72,7 @@ export default {
     },
 
     mounted() {
+        clog("mounted");
         const vm = this;
         vm.id = vm._id;
 
@@ -110,7 +113,8 @@ export default {
          * @param {Array} data массив объектов данных от БВС
          */
         drawBvsData(data) {
-            if (!data || !data.length) {
+            clog("drawBvsData", data);
+            if (!data || !data.length || !grasslandMap) {
                 return;
             }
             const vm = this;
@@ -284,9 +288,9 @@ export default {
          * @param {Object} bvsData данные от БВС
          */
         drawMapObjects(grasslandMap, bvsData) {
+            if (!grasslandMap || !bvsData.length) return;
             const vm = this;
-            if (!grasslandMap) return;
-            grasslandMap.geoObjects.removeAll();
+            grasslandMap.geoObjects?.removeAll();
             vm.drawBvsData(bvsData);
 
             if (grasslandMap.geoObjects.getLength() > 0) {
