@@ -110,6 +110,10 @@ const appPublicGrasslands = {
         document.addEventListener("updateList", () => {
             vm.updateData();
         });
+
+        ymaps.ready(["util.calculateArea"], () => {
+            vm.forceRerenderMap();
+        });
     },
 
     watch: {
@@ -162,7 +166,6 @@ const appPublicGrasslands = {
          * @param {Enum} mode  list|create|details
          */
         mode(mode) {
-            clog(mode);
             const vm = this;
             if (["list", "create"].indexOf(mode) >= 0) {
                 vm.$nextTick(() => {
@@ -269,10 +272,7 @@ const appPublicGrasslands = {
          */
         columnClass() {
             const vm = this;
-            const tableClass =
-                vm.mode === "details"
-                    ? "col-12 col-md-6 d-none d-md-block"
-                    : "col-12";
+            const tableClass = vm.mode === "details" ? "d-none d-md-block" : "";
             return {
                 tableClass,
             };
@@ -422,33 +422,38 @@ const appPublicGrasslands = {
          */
         initMap(selector) {
             const vm = this;
-            let map = new ymaps.Map(
-                selector,
-                {
-                    center: [45, 45],
-                    zoom: 13,
-                    type: "yandex#hybrid",
-                },
-                {
-                    searchControlProvider: "yandex#search",
-                }
-            );
 
-            map.events.add("click", (e) => {
-                if (vm.geoJsonSource === "file") {
-                    return;
-                }
+            try {
+                let map = new ymaps.Map(
+                    selector,
+                    {
+                        center: [45, 45],
+                        zoom: 13,
+                        type: "yandex#hybrid",
+                    },
+                    {
+                        searchControlProvider: "yandex#search",
+                    }
+                );
 
-                let coordsClicked = e.get("coords");
+                map.events.add("click", (e) => {
+                    if (vm.geoJsonSource === "file") {
+                        return;
+                    }
 
-                const clickedPoint = new ymaps.Placemark(coordsClicked, {
-                    hintContent: "точка контура поля",
+                    let coordsClicked = e.get("coords");
+
+                    const clickedPoint = new ymaps.Placemark(coordsClicked, {
+                        hintContent: "точка контура поля",
+                    });
+
+                    vm.tempCoordinates.push(coordsClicked);
+                    map.geoObjects.add(clickedPoint);
                 });
-
-                vm.tempCoordinates.push(coordsClicked);
-                map.geoObjects.add(clickedPoint);
-            });
-            return map;
+                return map;
+            } catch (error) {
+                return false;
+            }
         },
 
         /**

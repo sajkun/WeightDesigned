@@ -21,7 +21,7 @@
                     <Transition name="fade">
                         <div class="align-self-start" v-if='mode === "list"'>
                             <div class="row h-100">
-                                <div class='' :class="columnClass.tableClass">
+                                <div class='col-12 col-md-6' :class="columnClass.tableClass">
                                     <div class="d-flex org-wrapper flex-column">
                                         @can('create', [App\Models\Grassland::class, $organisation_id])
                                             <button class="btn m-2 d-block btn-borders" type="button"

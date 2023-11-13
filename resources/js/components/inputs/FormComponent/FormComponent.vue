@@ -114,7 +114,6 @@ export default {
          * @returns {Void}
          */
         clear() {
-            clog("clear form");
             this.structure = this.structure.map((el) => {
                 el.value = "";
                 return el;
