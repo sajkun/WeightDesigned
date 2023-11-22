@@ -30,12 +30,22 @@ class ListEmployeesController extends Controller
 
             $employees = $organisation->employees()->get()->toArray();
 
-            return $employees;
+            return response()->json(
+                $employees,
+                200,
+                ['Content-Type' => 'application/json;charset=UTF-8', 'Charset' => 'utf-8'],
+                JSON_UNESCAPED_UNICODE
+            );
         } catch (\Exception $e) {
-            return response()->json([
-                'message' => $e->getMessage(),
-                'status' => $e->getCode(),
-            ], $e->getCode());
+            return response()->json(
+                [
+                    'message' => $e->getMessage(),
+                    'status' => $e->getCode(),
+                ],
+                $e->getCode(),
+                ['Content-Type' => 'application/json;charset=UTF-8', 'Charset' => 'utf-8'],
+                JSON_UNESCAPED_UNICODE
+            );
         }
     }
 }
