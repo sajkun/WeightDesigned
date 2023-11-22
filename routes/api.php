@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Http\Request;
+use Api\StoreBvsDataController;
+use Api\ListEmployeesController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -21,5 +23,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::group([
     // 'middleware' => 'jwt.auth',
 ], function ($router) {
-    Route::post('store', \Api\StoreBvsDataController::class);
+    // запись данных от бвс
+    Route::post('store', StoreBvsDataController::class);
+    //получение списка сотрудников
+    Route::post('employees/list', ListEmployeesController::class);
 });
