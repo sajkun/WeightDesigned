@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\PublicArea\Vehicle;
 
 use App\Models\Group;
@@ -21,22 +22,12 @@ class ListController extends Controller
             $user = Auth::user();
             $organisation = Organisation::find($user->organisation_id);
 
-            $vehicles = $organisation->vehicles()->get()->map(function ($item) {
-                $group = Group::find($item['group_id']);
-                $employee = $item->employee()->first();
-                $item['employee_name'] = $employee ? "$employee->last_name $employee->first_name $employee->middle_name " : '-';
-                $item['employee'] = $employee ;
-                $item['pin'] = $item->pincode()->first() ;
-                $item['rfids'] = $item->rfids()->get() ;
-                $item['group'] = $group ? $group->vehicles()->get()->filter(function ($el) use ($item) {
-                    return $el['id'] !== $item['id'];
-                }) : [];
-                return $item;
-            });
+            $vehicles = $organisation->getVehicleData();
 
             $bunkers = $vehicles->filter(function ($item) {
                 return $item['type'] === 'bunker';
             });
+
             $tractors = $vehicles->filter(function ($item) {
                 return $item['type'] === 'tractor';
             });
