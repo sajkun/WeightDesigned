@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * Возвращает список сотрудников организации
+ */
+
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
