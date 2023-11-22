@@ -166,6 +166,38 @@ class Organisation extends Model
     }
 
     /**
+     * список c данными о рфид, отвественном и тд.
+     *
+     * @return Object
+     */
+    public function getVehicleData($showEmployee = true, $showPin = true, $showRfids = true, $showGroup = true)
+    {
+        $vehicles = $this->vehicles()->get()->map(function ($item)  use ($showEmployee, $showPin, $showRfids, $showGroup) {
+            $group = Group::find($item['group_id']);
+
+            if ($showEmployee) {
+                $employee = $item->employee()->first();
+                $item['employee_name'] = $employee ? "$employee->last_name $employee->first_name $employee->middle_name " : '-';
+                $item['employee'] = $employee;
+            }
+            if ($showPin) {
+                $item['pin'] = $item->pincode()->first();
+            }
+            if ($showRfids) {
+                $item['rfids'] = $item->rfids()->get();
+            }
+            if ($showGroup) {
+                $item['group'] = $group ? $group->vehicles()->get()->filter(function ($el) use ($item) {
+                    return $el['id'] !== $item['id'];
+                }) : [];
+            }
+            return $item;
+        });
+
+        return $vehicles;
+    }
+
+    /**
      * список полей
      *
      * @return Object
