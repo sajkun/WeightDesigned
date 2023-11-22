@@ -1,5 +1,5 @@
 const axios = require("axios");
-// хэлперы
+// вспомогательные функции
 import { strip, clog } from "@/misc/helpers";
 
 export default {

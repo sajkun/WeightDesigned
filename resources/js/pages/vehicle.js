@@ -4,7 +4,7 @@
  * добавлять, удалять и редактировать технику
  */
 
-//хэлперы
+//вспомогательные функции
 import { strip, clog, getFormData, getPropFromUrl } from "@/misc/helpers";
 
 //миксины

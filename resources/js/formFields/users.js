@@ -4,7 +4,7 @@
  * @see User в app/Models/User.php
  */
 
-//хэлперы
+//вспомогательные функции
 import { strip } from "@/misc/helpers";
 import patternData from "@/formFields/patterns";
 

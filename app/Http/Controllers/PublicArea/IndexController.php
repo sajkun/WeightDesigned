@@ -14,7 +14,7 @@ class IndexController extends PublicController
     public function __invoke()
     {
         $this->prepareData();
-        return view('pages.main');
+        return view('pages.home');
     }
 
     /**
