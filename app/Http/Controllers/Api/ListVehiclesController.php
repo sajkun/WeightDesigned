@@ -1,16 +1,17 @@
 <?php
 
 /**
- * Возвращает список сотрудников организации
+ * Отображает данные о технике
  */
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
+
 use App\Models\Organisation;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
-class ListEmployeesController extends Controller
+class ListVehiclesController extends Controller
 {
     /**
      * Handle the incoming request.
@@ -20,8 +21,6 @@ class ListEmployeesController extends Controller
      */
     public function __invoke(Request $request)
     {
-        //
-
         try {
             if (!$request->organisation_id) {
                 throw new \Exception("Некорректный запрос", 400);
@@ -32,10 +31,10 @@ class ListEmployeesController extends Controller
                 throw new \Exception("Организация не существует в системе", 404);
             }
 
-            $employees = $organisation->employees()->get()->toArray();
+            $vehicles = $organisation->getVehicleData(true, false, false, false)->toArray();
 
             return response()->json(
-                $employees,
+                $vehicles,
                 200,
                 ['Content-Type' => 'application/json;charset=UTF-8', 'Charset' => 'utf-8'],
                 JSON_UNESCAPED_UNICODE

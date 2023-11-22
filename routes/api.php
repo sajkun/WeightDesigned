@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Api\StoreBvsDataController;
 use Api\ListEmployeesController;
 use Illuminate\Support\Facades\Route;
+use Api\ListVehiclesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,4 +28,5 @@ Route::group([
     Route::post('store', StoreBvsDataController::class);
     //получение списка сотрудников
     Route::post('employees/list', ListEmployeesController::class);
+    Route::post('vehicles/list', ListVehiclesController::class);
 });
