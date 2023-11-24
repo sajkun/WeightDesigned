@@ -31,9 +31,11 @@ class ListController extends Controller
             $tractors = $vehicles->filter(function ($item) {
                 return $item['type'] === 'tractor';
             });
+
             $transporters = $vehicles->filter(function ($item) {
                 return $item['type'] === 'transporter';
             });
+
             $harvesters = $vehicles->filter(function ($item) {
                 return $item['type'] === 'harvester';
             });

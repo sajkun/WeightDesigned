@@ -180,17 +180,21 @@ class Organisation extends Model
                 $item['employee_name'] = $employee ? "$employee->last_name $employee->first_name $employee->middle_name " : '-';
                 $item['employee'] = $employee;
             }
+
             if ($showPin) {
                 $item['pin'] = $item->pincode()->first();
             }
+
             if ($showRfids) {
                 $item['rfids'] = $item->rfids()->get();
             }
+
             if ($showGroup) {
                 $item['group'] = $group ? $group->vehicles()->get()->filter(function ($el) use ($item) {
                     return $el['id'] !== $item['id'];
                 }) : [];
             }
+
             return $item;
         });
 
