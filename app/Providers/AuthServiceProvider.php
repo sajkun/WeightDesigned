@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Providers;
 
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
@@ -18,6 +19,7 @@ class AuthServiceProvider extends ServiceProvider
         'App\Models\Vehicle' => 'App\Policies\PublicArea\VehiclePolicy',
         'App\Models\Grassland' => 'App\Policies\PublicArea\GrasslandsPolicy',
         'App\Models\BvsData' => 'App\Policies\PublicArea\BvsDataPolicy',
+        'App\Models\SessionTask' => 'App\Policies\PublicArea\SessionTaskPolicy',
 
     ];
 

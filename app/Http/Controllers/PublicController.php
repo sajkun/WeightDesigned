@@ -119,6 +119,13 @@ class PublicController extends Controller
                 'submenu' => false,
                 'model' => 'App\Models\BvsData'
             ],
+            [
+                'url' => route('public.tasks.index'),
+                'title' => 'Сменные задания',
+                'icon' => false,
+                'submenu' => false,
+                'model' => 'App\Models\SessionTask'
+            ],
         ];
 
 

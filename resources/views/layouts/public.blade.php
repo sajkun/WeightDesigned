@@ -57,17 +57,17 @@
                 </div>
                 <div class="flex-grow-1 col align-self-center">
                     <div class="row align-content-center ">
-                        <div class="col flex-grow-0 align-self-center">
+                        <div class="col-md-9 align-self-center">
                             <ul class="main-menu" id='main-menu'>
                                 @foreach ($menu as $link)
                                     @can('viewAny', [$link['model'], $organisation_id])
                                         <li
                                             @if ($link['icon']) class='ms-md-2 d-flex align-items-center' @endif>
                                             @if ($link['icon'])
-                                                <span class="icon-holder me-2 d-none d-md-flex">
+                                                <span class="icon-holder none d-md-flex">
                                                     <i class="fa {{ $link['icon'] }}"></i></span>
                                             @endif
-                                            <a title='{{ $link['title'] }}'
+                                            <a class='menu-link' title='{{ $link['title'] }}'
                                                 href="{{ $link['url'] }}">{{ $link['title'] }}</a>
                                             @if ($link['submenu'])
                                                 <nav class="submenu">
@@ -85,7 +85,7 @@
                                 @endforeach
                             </ul>
                         </div>
-                        <div class="col flex-grow-1 align-self-center">
+                        <div class="col-md-3 flex-grow-1 align-self-center">
                             <div class="d-flex w-100">
                                 <div class="flex-grow-1"></div>
 

@@ -68,6 +68,14 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('/update', 'PatchController')->name('public.grassland.edit');
         Route::post('/delete', 'DestroyController')->name('public.grassland.delete');
     });
+
+    Route::group(['namespace' => 'PublicArea\SessionTask', 'prefix' => 'tasks'], function () {
+        Route::get('/list', 'ListController')->name('public.tasks.list');
+        Route::get('/', 'IndexController')->name('public.tasks.index');
+        Route::post('/store', 'StoreController')->name('public.tasks.store');
+        Route::post('/update', 'PatchController')->name('public.tasks.edit');
+        Route::post('/delete', 'DestroyController')->name('public.tasks.delete');
+    });
 });
 
 Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {

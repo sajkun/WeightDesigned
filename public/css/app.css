@@ -13952,6 +13952,10 @@ body.auth #app {
   color: var(--link-color-active);
 }
 
+.menu-link {
+  white-space: nowrap;
+}
+
 .organisation-name {
   padding: 0;
   margin: 0;
