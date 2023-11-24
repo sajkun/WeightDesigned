@@ -73,6 +73,17 @@ class PublicController extends Controller
             ]
         ];
 
+        $employeesSubmenu = [
+            [
+                'url' => route('public.employee.index'),
+                'title' => 'Список сотрудников'
+            ],
+            [
+                'url' => route('public.tasks.index'),
+                'title' => 'Сменные задания'
+            ]
+        ];
+
         /**
          * Главное меню
          */
@@ -95,7 +106,7 @@ class PublicController extends Controller
                 'url' => route('public.employee.index'),
                 'title' => 'Сотрудники',
                 'icon' => false,
-                'submenu' => false,
+                'submenu' => $employeesSubmenu,
                 'model' => 'App\Models\Employee',
             ],
             [
@@ -118,14 +129,7 @@ class PublicController extends Controller
                 'icon' => false,
                 'submenu' => false,
                 'model' => 'App\Models\BvsData'
-            ],
-            [
-                'url' => route('public.tasks.index'),
-                'title' => 'Сменные задания',
-                'icon' => false,
-                'submenu' => false,
-                'model' => 'App\Models\SessionTask'
-            ],
+            ]
         ];
 
 

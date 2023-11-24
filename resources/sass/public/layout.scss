@@ -163,6 +163,7 @@
     vertical-align: middle;
     text-decoration: none;
     color: var(--link-color) !important;
+    white-space: nowrap;
 
     &:hover {
         text-decoration: underline;

@@ -13965,6 +13965,7 @@ body.auth #app {
   vertical-align: middle;
   text-decoration: none;
   color: var(--link-color) !important;
+  white-space: nowrap;
 }
 .organisation-name:hover {
   text-decoration: underline;
