@@ -24850,8 +24850,8 @@ var task = {
     });
   },
   methods: {
-    execSearh: function execSearh(data) {
-      console.log("execSearh", data);
+    execSearch: function execSearch(data) {
+      console.log("execSearch", data);
     },
     /**
      * Обработчик события изменения дата компонента datepicker

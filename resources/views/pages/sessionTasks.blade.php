@@ -17,13 +17,13 @@
         <div class="container mt-4">
             <div class="org-wrapper">
                 <div class="d-flex align-content-stretch">
-                    <h4 class='h6 m-0 me-2 align-self-center'>График сменности</h4>
-                    <div class="search-block">
+                    <h4 class='h6 m-0  align-self-center'>График сменности</h4>
+                    <div class="search-block ms-4">
                         <search @search='execSearch'></search>
                     </div>
                     {{-- Выбор даты начала периода отображения --}}
                     {{-- ********************************* --}}
-                    <div class="ms-2 col-auto d-flex align-content-stretch">
+                    <div class="ms-4 col-auto d-flex align-content-stretch">
                         <div class="datepicker-holder datepicker-holder__shrink">
                             <span class="label">с </span>
                             <datepicker class='ms-2' :_date='dateRange.start' @date-changed='setDate("start", $event)' />
@@ -33,7 +33,7 @@
 
                     {{-- Выбор даты завершения периода отображения --}}
                     {{-- ********************************* --}}
-                    <div class="ms-3 col-auto d-flex align-content-stretch">
+                    <div class="ms-2 col-auto d-flex align-content-stretch">
                         <div class="datepicker-holder datepicker-holder__shrink">
                             <span class="label">
                                 по </span>

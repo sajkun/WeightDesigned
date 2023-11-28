@@ -63,8 +63,8 @@ const task = {
     },
 
     methods: {
-        execSearh(data) {
-            console.log("execSearh", data);
+        execSearch(data) {
+            console.log("execSearch", data);
         },
 
         /**
