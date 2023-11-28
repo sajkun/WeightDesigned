@@ -13254,6 +13254,7 @@ body {
   flex-direction: column;
   flex-grow: 1;
   font-family: sans-serif;
+  --bs-body-bg: var(--grey-ultralight);
 }
 
 .form-control-custom {
@@ -13555,6 +13556,14 @@ body {
   display: grid;
   grid-template-columns: 1rem auto;
   align-items: center;
+}
+.datepicker-holder__shrink .wrapper-input,
+.datepicker-holder__shrink .component-holder {
+  height: 100%;
+}
+
+button svg {
+  display: block;
 }
 
 .btn-primary-alt {
@@ -14203,4 +14212,12 @@ body.auth #app {
   #public-rating .rating-nolist {
     display: none !important;
   }
+}
+
+.tasks-container {
+  border-radius: var(--brs);
+  border: 1px solid var(--grey-light);
+}
+.tasks-container__header {
+  border-bottom: 1px solid var(--grey-light);
 }

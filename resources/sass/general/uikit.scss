@@ -326,4 +326,17 @@
     display: grid;
     grid-template-columns: 1rem auto;
     align-items: center;
+
+    &__shrink {
+        .wrapper-input,
+        .component-holder {
+            height: 100%;
+        }
+    }
+}
+
+button {
+    svg {
+        display: block;
+    }
 }

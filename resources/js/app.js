@@ -9,6 +9,7 @@ import publicVehicles from "./pages/vehicle.js";
 import publicGrasslands from "./pages/grasslands.js";
 import publicRating from "./pages/rating.js";
 import publicStatistics from "./pages/statistics.js";
+import publicTasks from "./pages/tasks.js";
 require("./misc/ready.js");
 
 // инициализация домашней страницы для публичной зоны
@@ -44,4 +45,9 @@ if (document.getElementById("public-rating")) {
 // инициализация приложения статистики для публичной зоны
 if (document.getElementById("public-statistics")) {
     createApp(publicStatistics).mount("#public-statistics");
+}
+
+// инициализация приложения сменных заданий для публичной зоны
+if (document.getElementById("public-tasks")) {
+    createApp(publicTasks).mount("#public-tasks");
 }
