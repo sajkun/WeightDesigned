@@ -17705,13 +17705,61 @@ __webpack_require__.r(__webpack_exports__);
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  created: function created() {
-    // const today = new Date();
-    // const helper = moment(today);
-    // clog(helper);
+  watch: {
+    /**
+     * Обновления значения диапазона дат от родительского элемента
+     *
+     * @param {Object} dateRange
+     */
+    _dateRange: {
+      handler: function handler(dateRange) {
+        this.dateRange = dateRange;
+      },
+      deep: true
+    },
+    /**
+     * Отслеживания состояния компонента
+     *
+     * @param {Boolean} mounted
+     */
+    mounted: function mounted(_mounted) {
+      var vm = this;
+      if (_mounted) {
+        vm.shift = vm.getCellsCount();
+      }
+    }
   },
-  watch: {},
+  computed: {
+    /**
+     * отображаемые дни
+     */
+    selectedDates: function selectedDates() {
+      var vm = this;
+      if (!vm.mounted) {
+        return [];
+      }
+      vm.shift = vm.getCellsCount();
+      return vm.getDiplayDates();
+    },
+    /**
+     * Признак отображать или нет навигационные стрелки
+     *
+     * @return {Boolean}
+     */
+    showNavigation: function showNavigation() {
+      var vm = this;
+      if (!vm.mounted) {
+        return false;
+      }
+      var start = moment__WEBPACK_IMPORTED_MODULE_0___default()(vm.dateRange.start);
+      var end = moment__WEBPACK_IMPORTED_MODULE_0___default()(vm.dateRange.end);
+      return end.diff(start, "days") > vm.getCellsCount();
+    }
+  },
   props: {
+    /**
+     * Диапазон предельных значений дат компонента
+     */
     _dateRange: {
       type: Object,
       "default": {
@@ -17722,9 +17770,118 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   data: function data() {
-    return {};
+    return {
+      // @see _dateRange
+      dateRange: this._dateRange,
+      /**
+       * признак показывающий, что компонент смонтироваy
+       *
+       *  @var{Boolean}
+       */
+      mounted: false,
+      /**
+       * На сколько дней сдвигать отображаемую дату
+       *
+       * @var{Integer}
+       */
+      shift: 0,
+      /**
+       * На сколько дней сдвинута дата
+       *
+       * @var{Integer}
+       */
+      step: 0
+    };
   },
-  methods: {}
+  mounted: function mounted() {
+    var vm = this;
+    vm.$nextTick(function () {
+      vm.mounted = true;
+    });
+  },
+  methods: {
+    /**
+     * Вычисляет максимальное количество ячеек
+     *
+     * @returns {Integer} >=1
+     */
+    getCellsCount: function getCellsCount() {
+      var vm = this;
+      var cellWidth = vm.getSingleCellWidth();
+      var wrapperWidth = vm.getTotalWidth();
+      var count = Math.floor(wrapperWidth / cellWidth);
+      var start = moment__WEBPACK_IMPORTED_MODULE_0___default()(vm.dateRange.start);
+      var end = moment__WEBPACK_IMPORTED_MODULE_0___default()(vm.dateRange.end);
+      var diff = end.diff(start, "days");
+      count = Math.max(count, 1);
+      return Math.min(count, diff);
+    },
+    /**
+     * Генерирует ряд видимых дат
+     */
+    getDiplayDates: function getDiplayDates() {
+      var vm = this;
+      var days = [];
+      // вычислить количество ячеек
+      var cellsCount = vm.getCellsCount();
+
+      // получить дату начала отображения
+      var start = moment__WEBPACK_IMPORTED_MODULE_0___default()(vm.dateRange.start);
+      start.add(vm.step, "days");
+      days.push({
+        formatted: start.format("DD.MM"),
+        isoString: start.toISOString()
+      });
+
+      // сформировать массив отображаемых дат
+      for (var shift = 0; shift < cellsCount; shift++) {
+        var day = start.add(1, "days");
+        days.push({
+          formatted: day.format("DD.MM"),
+          isoString: day.toISOString()
+        });
+      }
+      return days;
+    },
+    /**
+     * Вычисляет ширину ячейким с датой в зависимости от размера шрифта
+     *
+     * @returns {AbsInt}
+     */
+    getSingleCellWidth: function getSingleCellWidth() {
+      var vm = this;
+      if (!vm.mounted) return;
+      var fontSize = window.getComputedStyle(vm.$refs.wrapper, null).getPropertyValue("font-size");
+      return parseInt(fontSize) * 6;
+    },
+    /**
+     * Вычисляется доступная ширина для компонента
+     */
+    getTotalWidth: function getTotalWidth() {
+      var _vm$$refs;
+      var vm = this;
+      if (!vm.mounted) return;
+      var wrapperWidth = parseInt((_vm$$refs = vm.$refs) === null || _vm$$refs === void 0 ? void 0 : _vm$$refs.wrapper.offsetWidth);
+      var fontSize = window.getComputedStyle(vm.$refs.wrapper, null).getPropertyValue("font-size");
+      return wrapperWidth - 3 * parseInt(fontSize);
+    },
+    /**
+     *
+     * @param {Enum} modificator  1 |-1
+     */
+    shiftPeriod: function shiftPeriod(modificator) {
+      var vm = this;
+      var mayBeStep = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.strip)(vm.step);
+      mayBeStep += vm.shift * modificator;
+      mayBeStep = Math.max(0, mayBeStep);
+      var start = moment__WEBPACK_IMPORTED_MODULE_0___default()(vm.dateRange.start);
+      var end = moment__WEBPACK_IMPORTED_MODULE_0___default()(vm.dateRange.end);
+      var diff = end.diff(start, "days");
+      var maxValue = diff - vm.shift;
+      mayBeStep = Math.min(maxValue, mayBeStep);
+      vm.step = mayBeStep;
+    }
+  }
 });
 
 /***/ }),
@@ -18855,8 +19012,35 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
 
+var _withScopeId = function _withScopeId(n) {
+  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.pushScopeId)("data-v-845590f8"), n = n(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.popScopeId)(), n;
+};
+var _hoisted_1 = {
+  "class": "component-wrapper",
+  ref: "wrapper"
+};
+var _hoisted_2 = {
+  "class": "row"
+};
 function render(_ctx, _cache, $props, $setup, $data, $options) {
-  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", null, "123");
+  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, [$options.showNavigation ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("button", {
+    key: 0,
+    "class": "btn",
+    onClick: _cache[0] || (_cache[0] = function ($event) {
+      return $options.shiftPeriod('-1');
+    })
+  }, " - ")) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($options.selectedDates, function (date, key) {
+    return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", {
+      "class": "col text-center",
+      key: 'day' + key
+    }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(date.formatted), 1 /* TEXT */);
+  }), 128 /* KEYED_FRAGMENT */))]), $options.showNavigation ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("button", {
+    key: 1,
+    "class": "btn",
+    onClick: _cache[1] || (_cache[1] = function ($event) {
+      return $options.shiftPeriod('1');
+    })
+  }, " + ")) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)], 512 /* NEED_PATCH */);
 }
 
 /***/ }),
