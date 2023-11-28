@@ -26,7 +26,8 @@
                     <div class="ms-4 col-auto d-flex align-content-stretch">
                         <div class="datepicker-holder datepicker-holder__shrink">
                             <span class="label">с </span>
-                            <datepicker class='ms-2' :_date='dateRange.start' @date-changed='setDate("start", $event)' />
+                            <datepicker class='ms-2' :_date='dateRange.selected.start'
+                                @date-changed='setDate("start", $event)' />
                         </div>
                     </div>
                     {{-- ********************************* --}}
@@ -37,7 +38,8 @@
                         <div class="datepicker-holder datepicker-holder__shrink">
                             <span class="label">
                                 по </span>
-                            <datepicker :_date='dateRange.end' class='ms-2' @date-changed='setDate("end", $event)' />
+                            <datepicker :_date='dateRange.selected.end' class='ms-2'
+                                @date-changed='setDate("end", $event)' />
                         </div>
                     </div>
                     {{-- ********************************* --}}

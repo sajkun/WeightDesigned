@@ -24834,14 +24834,18 @@ var task = {
   },
   created: function created() {
     var vm = this;
-    var today = new Date();
-    var helper = moment__WEBPACK_IMPORTED_MODULE_1___default()(today);
-    vm.dateRange.selected = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)(helper);
+
+    //определение начального диапазона дат по умолчанию
+    var start = moment__WEBPACK_IMPORTED_MODULE_1___default()().startOf("day");
+    var end = moment__WEBPACK_IMPORTED_MODULE_1___default()().endOf("day");
+    vm.dateRange.selected = {
+      start: (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(start.toISOString()),
+      end: (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(end.add(10, "days").toISOString())
+    };
   },
   mounted: function mounted() {
     (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c Сменные задания", "font-size: 48px");
     var vm = this;
-
     /**
      * Получение списка техники
      */
@@ -24850,6 +24854,11 @@ var task = {
     });
   },
   methods: {
+    /**
+     * Обработка события поиска
+     *
+     * @param {String} data
+     */
     execSearch: function execSearch(data) {
       console.log("execSearch", data);
     },
@@ -24860,7 +24869,8 @@ var task = {
      * @param {Object} passedData переданные данные от дочернего элемента
      */
     setDate: function setDate(type, passedData) {
-      this.dateRange[type] = passedData.date;
+      var vm = this;
+      vm.dateRange.selected[type] = passedData.date;
     }
   }
 };

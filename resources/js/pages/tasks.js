@@ -44,16 +44,20 @@ const task = {
 
     created() {
         const vm = this;
-        const today = new Date();
-        const helper = moment(today);
 
-        vm.dateRange.selected = clog(helper);
+        //определение начального диапазона дат по умолчанию
+        let start = moment().startOf("day");
+        let end = moment().endOf("day");
+
+        vm.dateRange.selected = {
+            start: strip(start.toISOString()),
+            end: strip(end.add(10, "days").toISOString()),
+        };
     },
 
     mounted() {
         clog("%c Сменные задания", "font-size: 48px");
         const vm = this;
-
         /**
          * Получение списка техники
          */
@@ -63,6 +67,11 @@ const task = {
     },
 
     methods: {
+        /**
+         * Обработка события поиска
+         *
+         * @param {String} data
+         */
         execSearch(data) {
             console.log("execSearch", data);
         },
@@ -74,7 +83,8 @@ const task = {
          * @param {Object} passedData переданные данные от дочернего элемента
          */
         setDate(type, passedData) {
-            this.dateRange[type] = passedData.date;
+            const vm = this;
+            vm.dateRange.selected[type] = passedData.date;
         },
     },
 };
