@@ -1,4 +1,5 @@
 //вспомогательные функции
+import { Vue } from "vue";
 import { strip, clog } from "@/misc/helpers";
 import moment from "moment";
 
@@ -7,6 +8,7 @@ import axiosRequests from "@/mixins/axiosRequests";
 import crud from "@/mixins/crud";
 import messagesMixin from "@/mixins/messages";
 import publicAuthData from "@/mixins/publicAuthData";
+import vehicleTypes from "@/mixins/vehicleTypes";
 
 // компоненты
 import DatepickerComponent from "@/components/inputs/DatepickerComponent";
@@ -15,7 +17,7 @@ import MessagesComponent from "@/components/common/MessagesComponent";
 import SearchComponent from "@/components/common/SearchComponent";
 
 const task = {
-    mixins: [axiosRequests, crud, publicAuthData, messagesMixin],
+    mixins: [axiosRequests, crud, publicAuthData, messagesMixin, vehicleTypes],
 
     components: {
         messages: MessagesComponent,
@@ -23,6 +25,8 @@ const task = {
         days: DaySelectComponent,
         search: SearchComponent,
     },
+
+    watch: {},
 
     data() {
         return {
@@ -39,10 +43,20 @@ const task = {
                     end: null,
                 },
             },
+
+            /**
+             * признак смонтированности приложения
+             * @var {Boolean}
+             */
+            mounted: false,
+
+            // список техники организации
+            vehicles: {},
         };
     },
 
     created() {
+        clog("%c Сменные задания", "font-size: 36px");
         const vm = this;
 
         //определение начального диапазона дат по умолчанию
@@ -56,13 +70,21 @@ const task = {
     },
 
     mounted() {
-        clog("%c Сменные задания", "font-size: 48px");
         const vm = this;
         /**
          * Получение списка техники
          */
+
         vm.getVehicles().then((vehicles) => {
-            clog(vehicles);
+            for (const vehicleType of Object.keys(vm.vehicleTypes)) {
+                vm.vehicles[vehicleType] = [
+                    ...Object.values(vehicles[`${vehicleType}s`]),
+                ];
+            }
+        });
+
+        vm.$nextTick(() => {
+            vm.mounted = true;
         });
     },
 
@@ -73,18 +95,68 @@ const task = {
          * @param {String} data
          */
         execSearch(data) {
-            console.log("execSearch", data);
+            clog("execSearch", data);
         },
 
         /**
-         * Обработчик события изменения дата компонента datepicker
+         * Задает одну из предельных дат (начала или конца)
+         * периода отображения данных
+         *
+         * @see this.data.dateRange.selected
          *
          * @param {Enum} type  start | end
-         * @param {Object} passedData переданные данные от дочернего элемента
+         * @param {Object} passedData переданные данные от дочернего элемента {date: isoString}
+         *
+         * @returns {Void}
          */
         setDate(type, passedData) {
             const vm = this;
+            if (!vm.mounted) return;
+
+            let start = strip(vm.dateRange.selected.start);
+            let end = strip(vm.dateRange.selected.end);
+
+            // ранний выход если не задана одна из дат
+            if (!end || !start) {
+                vm.dateRange.selected[type] = passedData.date;
+                return;
+            }
+
+            const compareDate = type === "start" ? end : start;
+
+            // если задается начальная дата, сравнить не превышает ли конечную дату и если да, то поменять
+            if (
+                type === "start" &&
+                new Date(compareDate) < new Date(passedData.date)
+            ) {
+                vm.dateRange.selected.end = passedData.date;
+                vm.dateRange.selected.start = end;
+                return;
+            }
+            // если задается конечная дата, сравнить не меньше ли чем начальная дату и если да, то поменять
+            else if (
+                type === "end" &&
+                new Date(compareDate) > new Date(passedData.date)
+            ) {
+                vm.dateRange.selected.start = passedData.date;
+                vm.dateRange.selected.end = start;
+                return;
+            }
+
             vm.dateRange.selected[type] = passedData.date;
+
+            return;
+        },
+
+        /**
+         * Изменяет выбранный период
+         *
+         * @see this.data.dateRange.display
+         *
+         * @param {Object} dates {start: isoString, end: isoString}
+         */
+        updateDisplayPeriod(dates) {
+            this.dateRange.display = dates;
         },
     },
 };

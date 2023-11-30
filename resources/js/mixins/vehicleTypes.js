@@ -12,6 +12,7 @@ export default {
                 bunker: "Бункер Перегрузчик",
                 harvester: "Комбайн",
                 transporter: "Зерновоз",
+                tractor: "Трактор",
             };
 
             return types;

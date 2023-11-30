@@ -17,7 +17,7 @@
         <div class="container mt-4">
             <div class="org-wrapper">
                 <div class="d-flex align-content-stretch">
-                    <h4 class='h6 m-0  align-self-center'>График сменности</h4>
+                    <h4 class='h6 m-0  align-self-center'><b>График сменности</b></h4>
                     <div class="search-block ms-4">
                         <search @search='execSearch'></search>
                     </div>
@@ -49,7 +49,7 @@
                         <div class="row">
                             <div class="col-3"></div>
                             <div class="col-9">
-                                <days :_date-range=dateRange.selected></days>
+                                <days :_date-range=dateRange.selected v-on:show-dates='updateDisplayPeriod'></days>
                             </div>
                         </div>
                     </div>

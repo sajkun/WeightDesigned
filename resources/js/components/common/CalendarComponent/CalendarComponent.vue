@@ -197,12 +197,10 @@ export default {
             const helper = moment(date);
             vm.initialDate = helper.format("YYYY-MM-DD");
             vm.startDate = vm.initialDate;
-            clog(date);
         },
 
         // отслеживание дат
         _period(period) {
-            clog(period);
             if (!vm.startDate) {
                 const date = new Date(period.start);
                 vm.startDate = moment(date).format("YYYY-MM-DD");

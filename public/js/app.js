@@ -15841,11 +15841,9 @@ __webpack_require__.r(__webpack_exports__);
       var helper = moment__WEBPACK_IMPORTED_MODULE_0___default()(date);
       vm.initialDate = helper.format("YYYY-MM-DD");
       vm.startDate = vm.initialDate;
-      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.clog)(date);
     },
     // отслеживание дат
     _period: function _period(period) {
-      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.clog)(period);
       if (!vm.startDate) {
         var date = new Date(period.start);
         vm.startDate = moment__WEBPACK_IMPORTED_MODULE_0___default()(date).format("YYYY-MM-DD");
@@ -17702,9 +17700,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _misc_helpers__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @/misc/helpers */ "./resources/js/misc/helpers.js");
+/* harmony import */ var _mixins_icons__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @/mixins/icons */ "./resources/js/mixins/icons.js");
+//вспомогательные функции
 
+
+
+//миксины
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  mixins: [_mixins_icons__WEBPACK_IMPORTED_MODULE_2__["default"]],
   watch: {
     /**
      * Обновления значения диапазона дат от родительского элемента
@@ -17739,7 +17743,12 @@ __webpack_require__.r(__webpack_exports__);
         return [];
       }
       vm.shift = vm.getCellsCount();
-      return vm.getDiplayDates();
+      var visibleDates = vm.getVisibleDates();
+      vm.$emit("showDates", {
+        start: visibleDates.shift().isoString,
+        end: visibleDates.pop().isoString
+      });
+      return visibleDates;
     },
     /**
      * Признак отображать или нет навигационные стрелки
@@ -17771,10 +17780,12 @@ __webpack_require__.r(__webpack_exports__);
   },
   data: function data() {
     return {
-      // @see _dateRange
+      /**
+       *  @see _dateRange
+       */
       dateRange: this._dateRange,
       /**
-       * признак показывающий, что компонент смонтироваy
+       * признак показывающий, что компонент смонтирован
        *
        *  @var{Boolean}
        */
@@ -17819,7 +17830,7 @@ __webpack_require__.r(__webpack_exports__);
     /**
      * Генерирует ряд видимых дат
      */
-    getDiplayDates: function getDiplayDates() {
+    getVisibleDates: function getVisibleDates() {
       var vm = this;
       var days = [];
       // вычислить количество ячеек
@@ -19020,27 +19031,47 @@ var _hoisted_1 = {
   ref: "wrapper"
 };
 var _hoisted_2 = {
-  "class": "row"
+  "class": "d-flex align-items-center"
 };
+var _hoisted_3 = ["innerHTML"];
+var _hoisted_4 = {
+  "class": "row flex-grow-1"
+};
+var _hoisted_5 = ["innerHTML"];
 function render(_ctx, _cache, $props, $setup, $data, $options) {
-  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, [$options.showNavigation ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("button", {
+  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [$options.showNavigation ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("button", {
     key: 0,
     "class": "btn",
+    ref: "btnPrev",
     onClick: _cache[0] || (_cache[0] = function ($event) {
       return $options.shiftPeriod('-1');
     })
-  }, " - ")) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($options.selectedDates, function (date, key) {
-    return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", {
-      "class": "col text-center",
-      key: 'day' + key
-    }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(date.formatted), 1 /* TEXT */);
-  }), 128 /* KEYED_FRAGMENT */))]), $options.showNavigation ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("button", {
+  }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("i", {
+    innerHTML: _ctx.arrowLeftIcon
+  }, null, 8 /* PROPS */, _hoisted_3)], 512 /* NEED_PATCH */)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_4, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(vue__WEBPACK_IMPORTED_MODULE_0__.TransitionGroup, {
+    css: false,
+    name: "sort"
+  }, {
+    "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
+      return [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($options.selectedDates, function (date, key) {
+        return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", {
+          "class": "col text-center",
+          key: 'day' + date + key
+        }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(date.formatted), 1 /* TEXT */);
+      }), 128 /* KEYED_FRAGMENT */))];
+    }),
+
+    _: 1 /* STABLE */
+  })]), $options.showNavigation ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("button", {
     key: 1,
     "class": "btn",
+    ref: "btnNext",
     onClick: _cache[1] || (_cache[1] = function ($event) {
       return $options.shiftPeriod('1');
     })
-  }, " + ")) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)], 512 /* NEED_PATCH */);
+  }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("i", {
+    innerHTML: _ctx.arrowRightIcon
+  }, null, 8 /* PROPS */, _hoisted_5)], 512 /* NEED_PATCH */)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])], 512 /* NEED_PATCH */);
 }
 
 /***/ }),
@@ -22499,6 +22530,12 @@ __webpack_require__.r(__webpack_exports__);
 //SVG изображения
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   computed: {
+    arrowLeftIcon: function arrowLeftIcon() {
+      return "\n            <svg width=\"1em\" height=\"1em\" viewBox=\"0 0 20 20\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n                <path d=\"M6.52363 9.16658L10.9936 4.69657L9.81513 3.51807L3.33329 9.99992L9.81513 16.4817L10.9936 15.3032L6.52363 10.8332H16.6666V9.16658H6.52363Z\" fill=\"currentColor\"/>\n                </svg>\n                ";
+    },
+    arrowRightIcon: function arrowRightIcon() {
+      return "<svg width=\"1em\" height=\"1em\" viewBox=\"0 0 20 20\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n            <path d=\"M13.4763 9.16658L9.00631 4.69657L10.1848 3.51807L16.6666 9.99992L10.1848 16.4817L9.00631 15.3032L13.4763 10.8332H3.33331V9.16658H13.4763Z\" fill=\"currentColor\"/>\n            </svg>\n            ";
+    },
     bvsIcon: function bvsIcon() {
       return "<svg width=\"24\" height=\"16\" viewBox=\"0 0 24 16\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n                <path d=\"M0 6.60098V5.22461C0 4.67232 0.447716 4.22461 1 4.22461H17.0208C17.5731 4.22461 18.0208 4.67232 18.0208 5.22461V6.60098H0Z\" fill=\"#007E3C\"/>\n                <path d=\"M0.514881 8.97744L0 6.86511H18.0208L17.5059 8.97744H0.514881Z\" fill=\"#007E3C\"/>\n                <path d=\"M19.9572 0.454871L17.506 9.50549L18.7932 10.2976L20.8283 3.01447C20.8947 2.77681 21.1584 2.65538 21.3822 2.75938L22.0699 3.07904C22.2559 3.16548 22.4772 3.09724 22.5822 2.92104L22.8557 2.46187C22.9233 2.34846 22.9306 2.20902 22.8752 2.0892L22.4596 1.19072C22.4194 1.1039 22.3495 1.03435 22.2625 0.994674L20.5092 0.195468C20.2846 0.0930748 20.0217 0.216593 19.9572 0.454871Z\" fill=\"#007E3C\"/>\n                <ellipse cx=\"9.52535\" cy=\"13.4661\" rx=\"1.80208\" ry=\"1.84829\" fill=\"#007E3C\"/>\n                <path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M0.562378 9.24133L0.903839 11.5558C0.976219 12.0464 1.39722 12.4098 1.89313 12.4098H2.30051C2.67969 11.6275 3.46689 11.0899 4.37652 11.0899C5.28615 11.0899 6.07335 11.6275 6.45253 12.4098H7.44927C7.82845 11.6275 8.61565 11.0899 9.52528 11.0899C10.4349 11.0899 11.2221 11.6275 11.6013 12.4098H17.506L23.4271 13.466L23.1697 12.4098L17.506 9.24133H0.562378ZM17.506 10.0335V11.8817H17.7635V10.0335H17.506Z\" fill=\"#007E3C\"/>\n                <ellipse cx=\"4.37655\" cy=\"13.4661\" rx=\"1.80208\" ry=\"1.84829\" fill=\"#007E3C\"/>\n                </svg>\n\n                ";
     },
@@ -23039,7 +23076,8 @@ __webpack_require__.r(__webpack_exports__);
       var types = {
         bunker: "Бункер Перегрузчик",
         harvester: "Комбайн",
-        transporter: "Зерновоз"
+        transporter: "Зерновоз",
+        tractor: "Трактор"
       };
       return types;
     }
@@ -24965,22 +25003,32 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _misc_helpers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/misc/helpers */ "./resources/js/misc/helpers.js");
-/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
-/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _mixins_axiosRequests__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @/mixins/axiosRequests */ "./resources/js/mixins/axiosRequests.js");
-/* harmony import */ var _mixins_crud__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @/mixins/crud */ "./resources/js/mixins/crud.js");
-/* harmony import */ var _mixins_messages__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @/mixins/messages */ "./resources/js/mixins/messages.js");
-/* harmony import */ var _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @/mixins/publicAuthData */ "./resources/js/mixins/publicAuthData.js");
-/* harmony import */ var _components_inputs_DatepickerComponent__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @/components/inputs/DatepickerComponent */ "./resources/js/components/inputs/DatepickerComponent/index.js");
-/* harmony import */ var _components_pageTasks_DaySelectComponent__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @/components/pageTasks/DaySelectComponent */ "./resources/js/components/pageTasks/DaySelectComponent/index.js");
-/* harmony import */ var _components_common_MessagesComponent__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @/components/common/MessagesComponent */ "./resources/js/components/common/MessagesComponent/index.js");
-/* harmony import */ var _components_common_SearchComponent__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @/components/common/SearchComponent */ "./resources/js/components/common/SearchComponent/index.js");
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
+/* harmony import */ var _misc_helpers__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @/misc/helpers */ "./resources/js/misc/helpers.js");
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _mixins_axiosRequests__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @/mixins/axiosRequests */ "./resources/js/mixins/axiosRequests.js");
+/* harmony import */ var _mixins_crud__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @/mixins/crud */ "./resources/js/mixins/crud.js");
+/* harmony import */ var _mixins_messages__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @/mixins/messages */ "./resources/js/mixins/messages.js");
+/* harmony import */ var _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @/mixins/publicAuthData */ "./resources/js/mixins/publicAuthData.js");
+/* harmony import */ var _mixins_vehicleTypes__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @/mixins/vehicleTypes */ "./resources/js/mixins/vehicleTypes.js");
+/* harmony import */ var _components_inputs_DatepickerComponent__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @/components/inputs/DatepickerComponent */ "./resources/js/components/inputs/DatepickerComponent/index.js");
+/* harmony import */ var _components_pageTasks_DaySelectComponent__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @/components/pageTasks/DaySelectComponent */ "./resources/js/components/pageTasks/DaySelectComponent/index.js");
+/* harmony import */ var _components_common_MessagesComponent__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @/components/common/MessagesComponent */ "./resources/js/components/common/MessagesComponent/index.js");
+/* harmony import */ var _components_common_SearchComponent__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! @/components/common/SearchComponent */ "./resources/js/components/common/SearchComponent/index.js");
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
 //вспомогательные функции
 
 
 
+
 //миксины
+
 
 
 
@@ -24992,13 +25040,14 @@ __webpack_require__.r(__webpack_exports__);
 
 
 var task = {
-  mixins: [_mixins_axiosRequests__WEBPACK_IMPORTED_MODULE_2__["default"], _mixins_crud__WEBPACK_IMPORTED_MODULE_3__["default"], _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_5__["default"], _mixins_messages__WEBPACK_IMPORTED_MODULE_4__["default"]],
+  mixins: [_mixins_axiosRequests__WEBPACK_IMPORTED_MODULE_3__["default"], _mixins_crud__WEBPACK_IMPORTED_MODULE_4__["default"], _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_6__["default"], _mixins_messages__WEBPACK_IMPORTED_MODULE_5__["default"], _mixins_vehicleTypes__WEBPACK_IMPORTED_MODULE_7__["default"]],
   components: {
-    messages: _components_common_MessagesComponent__WEBPACK_IMPORTED_MODULE_8__["default"],
-    datepicker: _components_inputs_DatepickerComponent__WEBPACK_IMPORTED_MODULE_6__["default"],
-    days: _components_pageTasks_DaySelectComponent__WEBPACK_IMPORTED_MODULE_7__["default"],
-    search: _components_common_SearchComponent__WEBPACK_IMPORTED_MODULE_9__["default"]
+    messages: _components_common_MessagesComponent__WEBPACK_IMPORTED_MODULE_10__["default"],
+    datepicker: _components_inputs_DatepickerComponent__WEBPACK_IMPORTED_MODULE_8__["default"],
+    days: _components_pageTasks_DaySelectComponent__WEBPACK_IMPORTED_MODULE_9__["default"],
+    search: _components_common_SearchComponent__WEBPACK_IMPORTED_MODULE_11__["default"]
   },
+  watch: {},
   data: function data() {
     return {
       // диапазон дат для фильтрации данных
@@ -25013,28 +25062,42 @@ var task = {
           start: null,
           end: null
         }
-      }
+      },
+      /**
+       * признак смонтированности приложения
+       * @var {Boolean}
+       */
+      mounted: false,
+      // список техники организации
+      vehicles: {}
     };
   },
   created: function created() {
+    (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.clog)("%c Сменные задания", "font-size: 36px");
     var vm = this;
 
     //определение начального диапазона дат по умолчанию
-    var start = moment__WEBPACK_IMPORTED_MODULE_1___default()().startOf("day");
-    var end = moment__WEBPACK_IMPORTED_MODULE_1___default()().endOf("day");
+    var start = moment__WEBPACK_IMPORTED_MODULE_2___default()().startOf("day");
+    var end = moment__WEBPACK_IMPORTED_MODULE_2___default()().endOf("day");
     vm.dateRange.selected = {
-      start: (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(start.toISOString()),
-      end: (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(end.add(10, "days").toISOString())
+      start: (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.strip)(start.toISOString()),
+      end: (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.strip)(end.add(10, "days").toISOString())
     };
   },
   mounted: function mounted() {
-    (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c Сменные задания", "font-size: 48px");
     var vm = this;
     /**
      * Получение списка техники
      */
+
     vm.getVehicles().then(function (vehicles) {
-      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)(vehicles);
+      for (var _i = 0, _Object$keys = Object.keys(vm.vehicleTypes); _i < _Object$keys.length; _i++) {
+        var vehicleType = _Object$keys[_i];
+        vm.vehicles[vehicleType] = _toConsumableArray(Object.values(vehicles["".concat(vehicleType, "s")]));
+      }
+    });
+    vm.$nextTick(function () {
+      vm.mounted = true;
     });
   },
   methods: {
@@ -25044,17 +25107,56 @@ var task = {
      * @param {String} data
      */
     execSearch: function execSearch(data) {
-      console.log("execSearch", data);
+      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.clog)("execSearch", data);
     },
     /**
-     * Обработчик события изменения дата компонента datepicker
+     * Задает одну из предельных дат (начала или конца)
+     * периода отображения данных
+     *
+     * @see this.data.dateRange.selected
      *
      * @param {Enum} type  start | end
-     * @param {Object} passedData переданные данные от дочернего элемента
+     * @param {Object} passedData переданные данные от дочернего элемента {date: isoString}
+     *
+     * @returns {Void}
      */
     setDate: function setDate(type, passedData) {
       var vm = this;
+      if (!vm.mounted) return;
+      var start = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.strip)(vm.dateRange.selected.start);
+      var end = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.strip)(vm.dateRange.selected.end);
+
+      // ранний выход если не задана одна из дат
+      if (!end || !start) {
+        vm.dateRange.selected[type] = passedData.date;
+        return;
+      }
+      var compareDate = type === "start" ? end : start;
+
+      // если задается начальная дата, сравнить не превышает ли конечную дату и если да, то поменять
+      if (type === "start" && new Date(compareDate) < new Date(passedData.date)) {
+        vm.dateRange.selected.end = passedData.date;
+        vm.dateRange.selected.start = end;
+        return;
+      }
+      // если задается конечная дата, сравнить не меньше ли чем начальная дату и если да, то поменять
+      else if (type === "end" && new Date(compareDate) > new Date(passedData.date)) {
+        vm.dateRange.selected.start = passedData.date;
+        vm.dateRange.selected.end = start;
+        return;
+      }
       vm.dateRange.selected[type] = passedData.date;
+      return;
+    },
+    /**
+     * Изменяет выбранный период
+     *
+     * @see this.data.dateRange.display
+     *
+     * @param {Object} dates {start: isoString, end: isoString}
+     */
+    updateDisplayPeriod: function updateDisplayPeriod(dates) {
+      this.dateRange.display = dates;
     }
   }
 };

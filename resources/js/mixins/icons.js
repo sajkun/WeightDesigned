@@ -1,6 +1,21 @@
 //SVG изображения
 export default {
     computed: {
+        arrowLeftIcon() {
+            return `
+            <svg width="1em" height="1em" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M6.52363 9.16658L10.9936 4.69657L9.81513 3.51807L3.33329 9.99992L9.81513 16.4817L10.9936 15.3032L6.52363 10.8332H16.6666V9.16658H6.52363Z" fill="currentColor"/>
+                </svg>
+                `;
+        },
+
+        arrowRightIcon() {
+            return `<svg width="1em" height="1em" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M13.4763 9.16658L9.00631 4.69657L10.1848 3.51807L16.6666 9.99992L10.1848 16.4817L9.00631 15.3032L13.4763 10.8332H3.33331V9.16658H13.4763Z" fill="currentColor"/>
+            </svg>
+            `;
+        },
+
         bvsIcon() {
             return `<svg width="24" height="16" viewBox="0 0 24 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M0 6.60098V5.22461C0 4.67232 0.447716 4.22461 1 4.22461H17.0208C17.5731 4.22461 18.0208 4.67232 18.0208 5.22461V6.60098H0Z" fill="#007E3C"/>

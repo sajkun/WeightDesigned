@@ -1,28 +1,48 @@
 <template>
     <div class="component-wrapper" ref="wrapper">
-        <button class="btn" @click="shiftPeriod('-1')" v-if="showNavigation">
-            -
-        </button>
-        <div class="row">
-            <div
-                class="col text-center"
-                v-for="(date, key) in selectedDates"
-                :key="'day' + key"
+        <div class="d-flex align-items-center">
+            <button
+                class="btn"
+                ref="btnPrev"
+                @click="shiftPeriod('-1')"
+                v-if="showNavigation"
             >
-                {{ date.formatted }}
+                <i v-html="arrowLeftIcon"></i>
+            </button>
+            <div class="row flex-grow-1">
+                <TransitionGroup :css="false" name="sort">
+                    <div
+                        class="col text-center"
+                        v-for="(date, key) in selectedDates"
+                        :key="'day' + date + key"
+                    >
+                        {{ date.formatted }}
+                    </div>
+                </TransitionGroup>
             </div>
+            <button
+                class="btn"
+                ref="btnNext"
+                @click="shiftPeriod('1')"
+                v-if="showNavigation"
+            >
+                <i v-html="arrowRightIcon"></i>
+            </button>
         </div>
-        <button class="btn" @click="shiftPeriod('1')" v-if="showNavigation">
-            +
-        </button>
     </div>
 </template>
 
 <script>
+//вспомогательные функции
 import moment from "moment";
 import { strip, clog } from "@/misc/helpers";
 
+//миксины
+import icons from "@/mixins/icons";
+
 export default {
+    mixins: [icons],
+
     watch: {
         /**
          * Обновления значения диапазона дат от родительского элемента
@@ -61,7 +81,13 @@ export default {
             }
 
             vm.shift = vm.getCellsCount();
-            return vm.getDiplayDates();
+            const visibleDates = vm.getVisibleDates();
+
+            vm.$emit("showDates", {
+                start: visibleDates.shift().isoString,
+                end: visibleDates.pop().isoString,
+            });
+            return visibleDates;
         },
 
         /**
@@ -95,10 +121,13 @@ export default {
     },
     data() {
         return {
-            // @see _dateRange
-            dateRange: this._dateRange,
             /**
-             * признак показывающий, что компонент смонтироваy
+             *  @see _dateRange
+             */
+            dateRange: this._dateRange,
+
+            /**
+             * признак показывающий, что компонент смонтирован
              *
              *  @var{Boolean}
              */
@@ -150,7 +179,7 @@ export default {
         /**
          * Генерирует ряд видимых дат
          */
-        getDiplayDates() {
+        getVisibleDates() {
             const vm = this;
             let days = [];
             // вычислить количество ячеек
