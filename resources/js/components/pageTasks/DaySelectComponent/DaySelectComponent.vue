@@ -1,5 +1,5 @@
 <template>
-    <div class="component-wrapper" ref="wrapper">
+    <div class="component-wrapper">
         <div class="d-flex align-items-center">
             <button
                 class="btn"
@@ -9,7 +9,7 @@
             >
                 <i v-html="arrowLeftIcon"></i>
             </button>
-            <div class="row flex-grow-1">
+            <div class="row flex-grow-1" ref="wrapper">
                 <TransitionGroup :css="false" name="sort">
                     <div
                         class="col text-center"
@@ -83,11 +83,17 @@ export default {
             vm.shift = vm.getCellsCount();
             const visibleDates = vm.getVisibleDates();
 
+            const start = visibleDates.shift().isoString;
+            const end = visibleDates.length
+                ? visibleDates.pop().isoString
+                : start;
+
             vm.$emit("showDates", {
-                start: visibleDates.shift().isoString,
-                end: visibleDates.pop().isoString,
+                start: start,
+                end: end,
             });
-            return visibleDates;
+
+            return vm.getVisibleDates();
         },
 
         /**
@@ -257,4 +263,10 @@ export default {
 };
 </script>
 
-<style scoped src="./style/index.scss" lang="scss"></style>
+<style scoped lang="scss">
+.btn {
+    &:hover {
+        background-color: var(--grey-ultralight);
+    }
+}
+</style>

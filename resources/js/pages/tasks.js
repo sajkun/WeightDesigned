@@ -74,7 +74,6 @@ const task = {
         /**
          * Получение списка техники
          */
-
         vm.getVehicles().then((vehicles) => {
             for (const vehicleType of Object.keys(vm.vehicleTypes)) {
                 vm.vehicles[vehicleType] = [
