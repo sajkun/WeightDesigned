@@ -17753,7 +17753,7 @@ __webpack_require__.r(__webpack_exports__);
       return vm.getVisibleDates();
     },
     /**
-     * Признак отображать или нет навигационные стрелки
+     * Признак отображать или не отображать навигационные стрелки
      *
      * @return {Boolean}
      */
@@ -17869,6 +17869,8 @@ __webpack_require__.r(__webpack_exports__);
     },
     /**
      * Вычисляется доступная ширина для компонента
+     *
+     * @returns {Integer} > 0
      */
     getTotalWidth: function getTotalWidth() {
       var _vm$$refs;
@@ -21678,11 +21680,11 @@ var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
       }))();
     },
     /**
-     * запрос списка техники
+     * запрос списка полей
      *
      * @return {Promise}
      */
-    getVehicles: function getVehicles() {
+    getGroups: function getGroups() {
       var _this5 = this;
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
         var vm;
@@ -21696,11 +21698,13 @@ var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
               }
               return _context5.abrupt("return");
             case 3:
-              return _context5.abrupt("return", axios.get("/vehicles/list").then(function (response) {
-                (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c getVehicles", "color: green", response);
-                return response.data;
+              return _context5.abrupt("return", axios.post("/vehicles/groups", {
+                user_id: vm.userId
+              }).then(function (response) {
+                (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c getGroups", "color: green", response);
+                return (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(response.data);
               })["catch"](function (e) {
-                (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c getVehicles error", "color: red", e.response);
+                (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c getGroups error", "color: red", e.response);
                 vm.messages.error = "".concat(e.response.status, " ").concat(e.response.statusText, " : ").concat(e.response.data.message);
                 return e.response;
               }));
@@ -21712,26 +21716,60 @@ var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
       }))();
     },
     /**
-     * запрос списка пользователей системы
+     * запрос списка техники
      *
      * @return {Promise}
      */
-    getUsers: function getUsers() {
+    getVehicles: function getVehicles() {
       var _this6 = this;
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6() {
         var vm;
         return _regeneratorRuntime().wrap(function _callee6$(_context6) {
           while (1) switch (_context6.prev = _context6.next) {
             case 0:
-              (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c getUser", "color:#f7f");
               vm = _this6;
               if (!(vm.$refs.organisationId < 0)) {
-                _context6.next = 4;
+                _context6.next = 3;
                 break;
               }
               return _context6.abrupt("return");
+            case 3:
+              return _context6.abrupt("return", axios.get("/vehicles/list").then(function (response) {
+                (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c getVehicles", "color: green", response);
+                return response.data;
+              })["catch"](function (e) {
+                (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c getVehicles error", "color: red", e.response);
+                vm.messages.error = "".concat(e.response.status, " ").concat(e.response.statusText, " : ").concat(e.response.data.message);
+                return e.response;
+              }));
             case 4:
-              return _context6.abrupt("return", axios.get("/users/list").then(function (response) {
+            case "end":
+              return _context6.stop();
+          }
+        }, _callee6);
+      }))();
+    },
+    /**
+     * запрос списка пользователей системы
+     *
+     * @return {Promise}
+     */
+    getUsers: function getUsers() {
+      var _this7 = this;
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee7() {
+        var vm;
+        return _regeneratorRuntime().wrap(function _callee7$(_context7) {
+          while (1) switch (_context7.prev = _context7.next) {
+            case 0:
+              (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c getUser", "color:#f7f");
+              vm = _this7;
+              if (!(vm.$refs.organisationId < 0)) {
+                _context7.next = 4;
+                break;
+              }
+              return _context7.abrupt("return");
+            case 4:
+              return _context7.abrupt("return", axios.get("/users/list").then(function (response) {
                 (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c getUsers успех", "color:green", response);
                 return response;
               })["catch"](function (e) {
@@ -21740,9 +21778,9 @@ var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
               }));
             case 5:
             case "end":
-              return _context6.stop();
+              return _context7.stop();
           }
-        }, _callee6);
+        }, _callee7);
       }))();
     }
   }
@@ -25070,7 +25108,9 @@ var task = {
        * @var {Boolean}
        */
       mounted: false,
-      // список техники организации
+      /**
+       * список техники организации
+       */
       vehicles: {}
     };
   },
@@ -25097,6 +25137,7 @@ var task = {
         vm.vehicles[vehicleType] = _toConsumableArray(Object.values(vehicles["".concat(vehicleType, "s")]));
       }
     });
+    vm.getGroups();
     vm.$nextTick(function () {
       vm.mounted = true;
     });

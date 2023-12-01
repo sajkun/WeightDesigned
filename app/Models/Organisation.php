@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\User;
+use App\Models\Group;
 use App\Models\Vehicle;
 use App\Models\Grassland;
 use Illuminate\Database\Eloquent\Model;
@@ -209,5 +210,15 @@ class Organisation extends Model
     public function grasslands()
     {
         return $this->hasMany(Grassland::class, 'organisation_id', 'id');
+    }
+
+    /**
+     * список полей
+     *
+     * @return Object
+     */
+    public function groups()
+    {
+        return $this->hasMany(Group::class, 'organisation_id', 'id');
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\PublicArea\Vehicle;
 
 use App\Models\Rfid;
@@ -95,10 +96,10 @@ class PatchController extends Controller
                 $vehicles = Vehicle::whereIn('id', $request->group)->get();
 
                 if (!$group) {
-                    $group = Group::create();
+                    $group = Group::create(['organisation_id' => (int)$request->organisation_id]);
                     $vehicle_to_edit->group()->associate($group)->save();
                 } else {
-                    $vehicles_to_remove = $group->vehicles()->get()->filter(function ($el) use ($request, $vehicle_to_edit) {
+                    $group->vehicles()->get()->filter(function ($el) use ($request, $vehicle_to_edit) {
                         return !in_array($el['id'], $request->group) && $el['id'] != $vehicle_to_edit['id'];
                     })->map(function ($el) {
                         $el->update(['group_id' => null]);

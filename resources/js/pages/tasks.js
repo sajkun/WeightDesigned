@@ -50,7 +50,9 @@ const task = {
              */
             mounted: false,
 
-            // список техники организации
+            /**
+             * список техники организации
+             */
             vehicles: {},
         };
     },
@@ -82,6 +84,7 @@ const task = {
             }
         });
 
+        vm.getGroups();
         vm.$nextTick(() => {
             vm.mounted = true;
         });

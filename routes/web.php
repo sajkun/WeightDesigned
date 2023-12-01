@@ -60,6 +60,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('/update', 'PatchController')->name('public.vehicle.edit');
         Route::post('/delete', 'DestroyController')->name('public.vehicle.delete');
         Route::post('/pincode', 'CheckPinController')->name('public.vehicle.pincode');
+        Route::post('/groups', 'ListGroupsController')->name('public.vehicle.groups');
     });
     Route::group(['namespace' => 'PublicArea\Grassland', 'prefix' => 'grasslands'], function () {
         Route::get('/list', 'ListController')->name('public.grassland.list');
