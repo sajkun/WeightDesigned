@@ -76,6 +76,8 @@ export default {
                 setTimeout(() => {
                     vm.$refs.wrapper.focus();
                 }, 500);
+            } else {
+                vm.$emit("closed");
             }
         },
     },

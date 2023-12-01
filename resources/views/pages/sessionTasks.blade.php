@@ -65,8 +65,8 @@
             </div>
         </div>
 
-        <popup>
+        <modal @closed='closeModal'>
 
-        </popup>
+        </modal>
     </div>
 @endsection

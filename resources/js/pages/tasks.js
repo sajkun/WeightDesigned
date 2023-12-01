@@ -18,7 +18,7 @@ import vehicleTypes from "@/mixins/vehicleTypes";
 import DatepickerComponent from "@/components/inputs/DatepickerComponent";
 import DaySelectComponent from "@/components/pageTasks/DaySelectComponent";
 import MessagesComponent from "@/components/common/MessagesComponent";
-import PopupComponent from "@/components/common/PopupComponent";
+import ModalComponent from "@/components/common/ModalComponent";
 import SearchComponent from "@/components/common/SearchComponent";
 import TaskItemComponent from "@/components/pageTasks/TaskItemComponent";
 
@@ -30,7 +30,7 @@ const task = {
         days: DaySelectComponent,
         items: TaskItemComponent,
         messages: MessagesComponent,
-        popup: PopupComponent,
+        modal: ModalComponent,
         search: SearchComponent,
     },
 
