@@ -29,7 +29,11 @@
                 v-show="expanded"
             >
                 <div class="col-3 text-left border-right ps-3">
-                    <button type="button" class="button-add my-2">
+                    <button
+                        type="button"
+                        class="button-add my-2"
+                        @click="addEmployee"
+                    >
                         + Добавить механизатора
                     </button>
                 </div>
@@ -82,6 +86,16 @@ export default {
         };
     },
     methods: {
+        /**
+         * Инициализирует всплывающее окно с сотрудниками
+         *
+         * @returns {Void}
+         */
+        addEmployee() {
+            const vm = this;
+            vm.$emit("addEmployee", vm.info);
+        },
+
         /**
          * сворачивает и разорачивает содержимое блока
          *

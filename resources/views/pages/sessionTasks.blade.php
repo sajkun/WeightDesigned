@@ -56,13 +56,15 @@
 
                     <div class="task-container__body">
                         <items v-for='item, key in harvesters' :key='"harv" + key' :_info='item'
-                            :class='"m-0"'></items>
+                            v-on:add-employee='addEmployeeHandler' :class='"m-0"'></items>
 
                         <items v-for='item, key in transporters' :key='"transporters" + key' :_info='item'
-                            :class='"m-0"'></items>
+                            v-on:add-employee='addEmployeeHandler' :class='"m-0"'></items>
                     </div>
                 </div>
             </div>
         </div>
+
+        <popup></popup>
     </div>
 @endsection

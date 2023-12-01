@@ -1,3 +1,7 @@
+/**
+ * Страница работ со сменными заданиями
+ */
+
 //вспомогательные функции
 import { Vue } from "vue";
 import { strip, clog } from "@/misc/helpers";
@@ -12,9 +16,9 @@ import vehicleTypes from "@/mixins/vehicleTypes";
 
 // компоненты
 import DatepickerComponent from "@/components/inputs/DatepickerComponent";
-
 import DaySelectComponent from "@/components/pageTasks/DaySelectComponent";
 import MessagesComponent from "@/components/common/MessagesComponent";
+import PopupComponent from "@/components/common/PopupComponent";
 import SearchComponent from "@/components/common/SearchComponent";
 import TaskItemComponent from "@/components/pageTasks/TaskItemComponent";
 
@@ -22,34 +26,53 @@ const task = {
     mixins: [axiosRequests, crud, publicAuthData, messagesMixin, vehicleTypes],
 
     components: {
-        messages: MessagesComponent,
         datepicker: DatepickerComponent,
         days: DaySelectComponent,
-        search: SearchComponent,
         items: TaskItemComponent,
+        messages: MessagesComponent,
+        popup: PopupComponent,
+        search: SearchComponent,
     },
 
     computed: {
         /**
-         * Список комбайнов техники
+         * Список комбайнов  вместе с сотрудниками, назначенными для них
          *
          * @returns {Array}
          */
         harvesters() {
-            return this.vehicles?.harvesters
-                ? strip(this.vehicles.harvesters)
-                : [];
+            let items = this.vehicles?.harvesters;
+
+            if (!items) {
+                return [];
+            }
+
+            items = items.map((h) => {
+                h["employees"] = [];
+                return h;
+            });
+
+            return items;
         },
 
         /**
-         * Список грузовозов техники
+         * Список грузовозов вместе с сотрудниками, назначенными для них
          *
          * @returns {Array}
          */
         transporters() {
-            return this.vehicles?.transporters
-                ? strip(this.vehicles.transporters)
-                : [];
+            let items = this.vehicles?.transporters;
+
+            if (!items) {
+                return [];
+            }
+
+            items = items.map((h) => {
+                h["employees"] = [];
+                return h;
+            });
+
+            return items;
         },
     },
 
@@ -72,6 +95,16 @@ const task = {
             },
 
             /**
+             * список техники организации
+             */
+            employees: {},
+
+            /**
+             * список групп техники организации
+             */
+            groups: {},
+
+            /**
              * признак смонтированности приложения
              * @var {Boolean}
              */
@@ -81,11 +114,6 @@ const task = {
              * список техники организации
              */
             vehicles: {},
-
-            /**
-             * список групп техники организации
-             */
-            groups: {},
         };
     },
 
@@ -116,8 +144,18 @@ const task = {
             }
         });
 
+        /**
+         * Получение списка групп
+         */
         vm.getGroups().then((e) => {
             vm.groups = e.groups;
+        });
+
+        /**
+         * Получение списка сотрудников
+         */
+        vm.getEmployees().then((e) => {
+            vm.employees = e.employees;
         });
 
         vm.$nextTick(() => {
@@ -126,6 +164,15 @@ const task = {
     },
 
     methods: {
+        /**
+         *
+         *
+         * @param {Object} data
+         */
+        addEmployeeHandler(data) {
+            clog(data);
+        },
+
         /**
          * Обработка события поиска
          *
