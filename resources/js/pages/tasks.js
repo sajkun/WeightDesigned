@@ -12,9 +12,11 @@ import vehicleTypes from "@/mixins/vehicleTypes";
 
 // компоненты
 import DatepickerComponent from "@/components/inputs/DatepickerComponent";
+
 import DaySelectComponent from "@/components/pageTasks/DaySelectComponent";
 import MessagesComponent from "@/components/common/MessagesComponent";
 import SearchComponent from "@/components/common/SearchComponent";
+import TaskItemComponent from "@/components/pageTasks/TaskItemComponent";
 
 const task = {
     mixins: [axiosRequests, crud, publicAuthData, messagesMixin, vehicleTypes],
@@ -24,6 +26,31 @@ const task = {
         datepicker: DatepickerComponent,
         days: DaySelectComponent,
         search: SearchComponent,
+        items: TaskItemComponent,
+    },
+
+    computed: {
+        /**
+         * Список комбайнов техники
+         *
+         * @returns {Array}
+         */
+        harvesters() {
+            return this.vehicles?.harvesters
+                ? strip(this.vehicles.harvesters)
+                : [];
+        },
+
+        /**
+         * Список грузовозов техники
+         *
+         * @returns {Array}
+         */
+        transporters() {
+            return this.vehicles?.transporters
+                ? strip(this.vehicles.transporters)
+                : [];
+        },
     },
 
     watch: {},
@@ -54,6 +81,11 @@ const task = {
              * список техники организации
              */
             vehicles: {},
+
+            /**
+             * список групп техники организации
+             */
+            groups: {},
         };
     },
 
@@ -78,13 +110,16 @@ const task = {
          */
         vm.getVehicles().then((vehicles) => {
             for (const vehicleType of Object.keys(vm.vehicleTypes)) {
-                vm.vehicles[vehicleType] = [
+                vm.vehicles[`${vehicleType}s`] = [
                     ...Object.values(vehicles[`${vehicleType}s`]),
                 ];
             }
         });
 
-        vm.getGroups();
+        vm.getGroups().then((e) => {
+            vm.groups = e.groups;
+        });
+
         vm.$nextTick(() => {
             vm.mounted = true;
         });

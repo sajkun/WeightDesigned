@@ -44,14 +44,22 @@
                     </div>
                     {{-- ********************************* --}}
                 </div>
-                <div class="tasks-container py-3 mt-4">
-                    <div class="tasks-container__header pb-3">
-                        <div class="row">
-                            <div class="col-3"></div>
-                            <div class="col-9">
+                <div class="tasks-container  mt-4">
+                    <div class="tasks-container__header">
+                        <div class="row m-0">
+                            <div class="col-3 border-right py-3"></div>
+                            <div class="col-9 px-0 py-3">
                                 <days :_date-range=dateRange.selected v-on:show-dates='updateDisplayPeriod'></days>
                             </div>
                         </div>
+                    </div>
+
+                    <div class="task-container__body">
+                        <items v-for='item, key in harvesters' :key='"harv" + key' :_info='item'
+                            :class='"m-0"'></items>
+
+                        <items v-for='item, key in transporters' :key='"transporters" + key' :_info='item'
+                            :class='"m-0"'></items>
                     </div>
                 </div>
             </div>

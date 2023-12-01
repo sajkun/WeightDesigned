@@ -14221,3 +14221,11 @@ body.auth #app {
 .tasks-container__header {
   border-bottom: 1px solid var(--grey-light);
 }
+
+.border-right {
+  border-right: 1px solid var(--grey-ultralight);
+}
+
+.expandable-content {
+  transition: height var(--fast), display var(--fast);
+}

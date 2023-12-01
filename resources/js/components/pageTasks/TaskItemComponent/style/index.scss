@@ -1,0 +1,46 @@
+.btn-switcher {
+    border: 0;
+    padding: 0;
+    outline: 0;
+    width: 100%;
+    text-align: left;
+    background-color: transparent;
+    color: var(--darkest);
+    font-size: 0.875em;
+    font-weight: 600;
+
+    &:hover {
+        background-color: var(--grey-ultralight);
+    }
+
+    i {
+        font-weight: 100;
+        transition: transform var(--fast);
+        color: var(--grey);
+    }
+
+    .expanded & {
+        i {
+            transform: rotateZ(180deg);
+        }
+    }
+}
+
+.button-add {
+    border: 1px solid transparent;
+    padding: 0;
+    outline: 0;
+    background-color: transparent;
+    color: var(--green);
+    font-size: 0.75rem;
+    text-align: left;
+    transition: border-bottom var(--fast);
+
+    &:hover {
+        border-bottom: 1px solid var(--green);
+    }
+
+    &:active {
+        transform: translateY(1px);
+    }
+}

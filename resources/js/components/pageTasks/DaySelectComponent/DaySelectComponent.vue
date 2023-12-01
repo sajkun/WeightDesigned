@@ -1,34 +1,30 @@
 <template>
-    <div class="component-wrapper">
-        <div class="d-flex align-items-center">
-            <button
-                class="btn"
-                ref="btnPrev"
-                @click="shiftPeriod('-1')"
-                v-if="showNavigation"
+    <div class="component-wrapper row align-items-center" ref="wrapper">
+        <TransitionGroup :css="false" name="sort">
+            <div
+                class="col text-center"
+                v-for="(date, key) in selectedDates"
+                :key="'day' + date + key"
             >
-                <i v-html="arrowLeftIcon"></i>
-            </button>
-            <div class="row flex-grow-1" ref="wrapper">
-                <TransitionGroup :css="false" name="sort">
-                    <div
-                        class="col text-center"
-                        v-for="(date, key) in selectedDates"
-                        :key="'day' + date + key"
-                    >
-                        {{ date.formatted }}
-                    </div>
-                </TransitionGroup>
+                <button
+                    class="btn px-1"
+                    ref="btnPrev"
+                    @click="shiftPeriod('-1')"
+                    v-if="showNavigation(key, 'start')"
+                >
+                    <i v-html="arrowLeftIcon"></i>
+                </button>
+                {{ date.formatted }}
+                <button
+                    class="btn px-1"
+                    ref="btnNext"
+                    @click="shiftPeriod('1')"
+                    v-if="showNavigation(key, 'end')"
+                >
+                    <i v-html="arrowRightIcon"></i>
+                </button>
             </div>
-            <button
-                class="btn"
-                ref="btnNext"
-                @click="shiftPeriod('1')"
-                v-if="showNavigation"
-            >
-                <i v-html="arrowRightIcon"></i>
-            </button>
-        </div>
+        </TransitionGroup>
     </div>
 </template>
 
@@ -94,21 +90,6 @@ export default {
             });
 
             return vm.getVisibleDates();
-        },
-
-        /**
-         * Признак отображать или не отображать навигационные стрелки
-         *
-         * @return {Boolean}
-         */
-        showNavigation() {
-            const vm = this;
-            if (!vm.mounted) {
-                return false;
-            }
-            const start = moment(vm.dateRange.start);
-            const end = moment(vm.dateRange.end);
-            return end.diff(start, "days") > vm.getCellsCount();
         },
     },
 
@@ -260,6 +241,30 @@ export default {
             mayBeStep = Math.min(maxValue, mayBeStep);
 
             vm.step = mayBeStep;
+        },
+
+        /**
+         * Признак отображать или не отображать навигационные стрелки
+         *
+         * @param {key} integer
+         * @param {Enum} type start|end
+         *
+         * @return {Boolean}
+         */
+        showNavigation(key, type) {
+            const vm = this;
+            if (!vm.mounted) {
+                return false;
+            }
+            const start = moment(vm.dateRange.start);
+            const end = moment(vm.dateRange.end);
+
+            const datesParam = end.diff(start, "days") > vm.getCellsCount();
+            const typeParam =
+                (key === 0 && type === "start") ||
+                (key === vm.selectedDates.length - 1 && type === "end");
+
+            return typeParam && datesParam;
         },
     },
 };
