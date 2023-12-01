@@ -16537,10 +16537,61 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  data: function data() {
-    return {};
+  props: {
+    /**
+     * Ключ отвечающий за отображение окна
+     */
+    _show: {
+      type: Boolean,
+      "default": false,
+      required: false
+    }
   },
-  methods: {}
+  data: function data() {
+    return {
+      show: this._show
+    };
+  },
+  methods: {
+    /**
+     * Закрытие по клику на фон окна-контейнера
+     *
+     * @param {ClickEvent} event
+     */
+    clickWrapperClose: function clickWrapperClose(event) {
+      var vm = this;
+      if (!event.target.closest(".modal-window__content")) {
+        vm.toggleDisplay(false);
+      }
+    },
+    /**
+     * Метод скрытия или отображения окна
+     *
+     * @param {Boolean | null} mode
+     */
+    toggleDisplay: function toggleDisplay() {
+      var mode = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+      this.show = mode !== null ? mode : !this.show;
+    }
+  },
+  watch: {
+    _show: function _show(show) {
+      this.show = show;
+    },
+    /**
+     * Фокусировка на окне, чтобы сработала клавиша esc
+     *
+     * @param {Boolean} show
+     */
+    show: function show(_show2) {
+      var vm = this;
+      if (_show2) {
+        setTimeout(function () {
+          vm.$refs.wrapper.focus();
+        }, 500);
+      }
+    }
+  }
 });
 
 /***/ }),
@@ -18418,8 +18469,38 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
 
+var _withScopeId = function _withScopeId(n) {
+  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.pushScopeId)("data-v-eec50414"), n = n(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.popScopeId)(), n;
+};
+var _hoisted_1 = {
+  "class": "modal-window__content"
+};
 function render(_ctx, _cache, $props, $setup, $data, $options) {
-  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div");
+  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Transition, {
+    name: "fade"
+  }, {
+    "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
+      return [$data.show ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", {
+        key: 0,
+        "class": "modal-window",
+        onKeyup: _cache[1] || (_cache[1] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.withKeys)(function ($event) {
+          return $options.toggleDisplay(false);
+        }, ["esc"])),
+        tabindex: "1",
+        ref: "wrapper",
+        onClick: _cache[2] || (_cache[2] = function ($event) {
+          return $options.clickWrapperClose($event);
+        })
+      }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+        "class": "btn btn-close",
+        type: "button",
+        onClick: _cache[0] || (_cache[0] = function ($event) {
+          return $options.toggleDisplay(false);
+        })
+      }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderSlot)(_ctx.$slots, "default", {}, undefined, true)])], 544 /* HYDRATE_EVENTS, NEED_PATCH */)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)];
+    }),
+    _: 3 /* FORWARDED */
+  });
 }
 
 /***/ }),
@@ -26830,7 +26911,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, ".modal-window[data-v-eec50414] {\n  position: fixed;\n  z-index: 10000;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  top: 0;\n  background: rgba(102, 102, 102, 0.4);\n  -webkit-backdrop-filter: blur(4.5px);\n          backdrop-filter: blur(4.5px);\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n.modal-window__content[data-v-eec50414] {\n  position: relative;\n  background-color: var(--lightest);\n  border-radius: var(--brs);\n  position: relative;\n  padding: 1em;\n  width: 100%;\n  max-width: 16rem;\n}\n.modal-window__content .btn-close[data-v-eec50414] {\n  position: absolute;\n  top: 0;\n  right: 0;\n  z-index: 1;\n}", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 

@@ -65,6 +65,8 @@
             </div>
         </div>
 
-        <popup></popup>
+        <popup>
+
+        </popup>
     </div>
 @endsection
