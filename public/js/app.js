@@ -16576,6 +16576,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   watch: {
     _show: function _show(show) {
+      if (show === this.show) return;
       this.show = show;
     },
     /**
@@ -25515,7 +25516,8 @@ var task = {
       /**
        * список техники организации
        */
-      vehicles: {}
+      vehicles: {},
+      activeModal: false
     };
   },
   created: function created() {
@@ -25567,6 +25569,11 @@ var task = {
      */
     addEmployeeHandler: function addEmployeeHandler(data) {
       (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.clog)(data);
+      var vm = this;
+      vm.activeModal = "employees";
+    },
+    closeModal: function closeModal() {
+      this.activeModal = false;
     },
     /**
      * Обработка события поиска
@@ -26913,7 +26920,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, ".modal-window[data-v-176f27d4] {\n  position: fixed;\n  z-index: 10000;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  top: 0;\n  background: rgba(102, 102, 102, 0.4);\n  -webkit-backdrop-filter: blur(4.5px);\n          backdrop-filter: blur(4.5px);\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n.modal-window__content[data-v-176f27d4] {\n  position: relative;\n  background-color: var(--lightest);\n  border-radius: var(--brs);\n  position: relative;\n  padding: 1em;\n  width: 100%;\n  max-width: 16rem;\n}\n.modal-window__content .btn-close[data-v-176f27d4] {\n  position: absolute;\n  top: 0;\n  right: 0;\n  z-index: 1;\n}", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, ".modal-window[data-v-176f27d4] {\n  position: fixed;\n  z-index: 10000;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  top: 0;\n  background: rgba(102, 102, 102, 0.4);\n  -webkit-backdrop-filter: blur(4.5px);\n          backdrop-filter: blur(4.5px);\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n.modal-window__content[data-v-176f27d4] {\n  position: relative;\n  background-color: var(--lightest);\n  border-radius: var(--brs);\n  position: relative;\n  padding: 1em;\n  width: 100%;\n  max-width: 32rem;\n}\n.modal-window__content .btn-close[data-v-176f27d4] {\n  position: absolute;\n  top: 0;\n  right: 0;\n  z-index: 1;\n}", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 

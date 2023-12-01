@@ -114,6 +114,8 @@ const task = {
              * список техники организации
              */
             vehicles: {},
+
+            activeModal: false,
         };
     },
 
@@ -171,6 +173,12 @@ const task = {
          */
         addEmployeeHandler(data) {
             clog(data);
+            const vm = this;
+            vm.activeModal = "employees";
+        },
+
+        closeModal() {
+            this.activeModal = false;
         },
 
         /**

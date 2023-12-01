@@ -62,6 +62,7 @@ export default {
 
     watch: {
         _show(show) {
+            if (show === this.show) return;
             this.show = show;
         },
 
@@ -72,6 +73,7 @@ export default {
          */
         show(show) {
             const vm = this;
+
             if (show) {
                 setTimeout(() => {
                     vm.$refs.wrapper.focus();

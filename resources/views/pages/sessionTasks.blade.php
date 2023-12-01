@@ -65,7 +65,7 @@
             </div>
         </div>
 
-        <modal @closed='closeModal'>
+        <modal @closed='closeModal' :_show='activeModal === "employees"'>
 
         </modal>
     </div>
