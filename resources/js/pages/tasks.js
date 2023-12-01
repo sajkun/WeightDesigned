@@ -177,6 +177,9 @@ const task = {
             vm.activeModal = "employees";
         },
 
+        /**
+         * Скрытие модальных окон
+         */
         closeModal() {
             this.activeModal = false;
         },

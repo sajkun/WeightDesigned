@@ -205,7 +205,7 @@ export default {
                 .getComputedStyle(vm.$refs.wrapper, null)
                 .getPropertyValue("font-size");
 
-            return parseInt(fontSize) * 6;
+            return parseInt(fontSize) * 8;
         },
 
         /**

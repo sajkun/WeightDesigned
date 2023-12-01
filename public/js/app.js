@@ -17925,7 +17925,7 @@ __webpack_require__.r(__webpack_exports__);
       var vm = this;
       if (!vm.mounted) return;
       var fontSize = window.getComputedStyle(vm.$refs.wrapper, null).getPropertyValue("font-size");
-      return parseInt(fontSize) * 6;
+      return parseInt(fontSize) * 8;
     },
     /**
      * Вычисляется доступная ширина для компонента
@@ -25572,6 +25572,9 @@ var task = {
       var vm = this;
       vm.activeModal = "employees";
     },
+    /**
+     * Скрытие модальных окон
+     */
     closeModal: function closeModal() {
       this.activeModal = false;
     },
