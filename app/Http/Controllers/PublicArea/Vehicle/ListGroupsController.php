@@ -25,7 +25,13 @@ class ListGroupsController extends Controller
 
             $user = Auth::user();
             $organisation = Organisation::find($user->organisation_id);
-            $groups = $organisation->groups()->get()->toArray();
+            $groups = $organisation->groups()->get();
+
+            $groups = $groups->map(function ($g) {
+                $g['vehicles'] = $g->vehicles()->get()->toArray();
+                return $g;
+            });
+
             return response()->json([
                 'groups' => $groups
             ]);
