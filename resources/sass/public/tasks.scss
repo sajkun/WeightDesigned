@@ -14,3 +14,44 @@
 .expandable-content {
     transition: height var(--fast), display var(--fast);
 }
+
+.employees-list {
+    td {
+        padding: 0.125em;
+    }
+}
+
+.table-grid-employee {
+    gap: 0.25em;
+    text-align-last: left;
+    display: grid;
+    padding: 0.25em;
+    font-size: 0.8em;
+    grid-template-columns: 3em calc(60% - 1.625em) calc(40% - 1.625em);
+    transition: color var(--fast), background-color var(--fast);
+
+    .modal-window & {
+        margin: 0 -1em;
+        padding: 0.25em 1.25em;
+    }
+
+    &:nth-child(even) {
+        background-color: var(--grey-ultralight);
+    }
+
+    &_header {
+        font-size: 1em;
+    }
+
+    &:hover {
+        background-color: var(--blue-medium);
+        color: var(--lightest);
+    }
+
+    &_header {
+        &:hover {
+            background-color: inherit;
+            color: inherit;
+        }
+    }
+}

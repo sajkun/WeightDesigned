@@ -10,6 +10,7 @@ import moment from "moment";
 //миксины
 import axiosRequests from "@/mixins/axiosRequests";
 import crud from "@/mixins/crud";
+import formatName from "@/mixins/formatName";
 import messagesMixin from "@/mixins/messages";
 import publicAuthData from "@/mixins/publicAuthData";
 import vehicleTypes from "@/mixins/vehicleTypes";
@@ -23,7 +24,14 @@ import SearchComponent from "@/components/common/SearchComponent";
 import TaskItemComponent from "@/components/pageTasks/TaskItemComponent";
 
 const task = {
-    mixins: [axiosRequests, crud, publicAuthData, messagesMixin, vehicleTypes],
+    mixins: [
+        axiosRequests,
+        crud,
+        formatName,
+        messagesMixin,
+        publicAuthData,
+        vehicleTypes,
+    ],
 
     components: {
         datepicker: DatepickerComponent,
@@ -36,11 +44,30 @@ const task = {
 
     computed: {
         /**
+         * Возвращает отфильтрованный в зависимости от типа выбранной техники массив сотрудников
+         *
+         * @returns {Array<Object>}
+         * @see App\Models\Employee
+         */
+        employeesByPoffesion() {
+            const vm = this;
+            let employees = vm.employees;
+            employees = employees.filter((e) => {
+                return (
+                    e.specialisation ===
+                    vm.vehiclesProfessions[vm.vehicleSelected.type]
+                );
+            });
+            return employees;
+        },
+
+        /**
          * Список комбайнов  вместе с сотрудниками, назначенными для них
          *
          * @returns {Array}
          */
         harvesters() {
+            const vm = this;
             let items = this.vehicles?.harvesters;
 
             if (!items) {
@@ -48,7 +75,9 @@ const task = {
             }
 
             items = items.map((h) => {
-                h["employees"] = [];
+                h["employees"] = vm.vehiclesEmployeesDeps[h.id]
+                    ? Array.from(vm.vehiclesEmployeesDeps[h.id])
+                    : [];
                 return h;
             });
 
@@ -61,6 +90,7 @@ const task = {
          * @returns {Array}
          */
         transporters() {
+            const vm = this;
             let items = this.vehicles?.transporters;
 
             if (!items) {
@@ -68,18 +98,41 @@ const task = {
             }
 
             items = items.map((h) => {
-                h["employees"] = [];
+                h["employees"] = vm.vehiclesEmployeesDeps[h.id]
+                    ? Array.from(vm.vehiclesEmployeesDeps[h.id])
+                    : [];
                 return h;
             });
 
             return items;
         },
-    },
 
-    watch: {},
+        /**
+         * Соответствие типа техники и профессии механизатора, который может на ней работать
+         *
+         * @returns {Object}
+         */
+        vehiclesProfessions() {
+            const data = {
+                bunker: "Водитель Трактора",
+                tractor: "Водитель Трактора",
+                transporter: "Водитель Зерновоза",
+                harvester: "Водитель Комбайна",
+                group: "Водитель Трактора",
+            };
+
+            return data;
+        },
+    },
 
     data() {
         return {
+            /**
+             * Имя модального окна для отображения или false если окно не нужно отображать
+             * @var {String | false}
+             */
+            activeModal: false,
+
             // диапазон дат для фильтрации данных
             dateRange: {
                 //отображаемый
@@ -96,11 +149,13 @@ const task = {
 
             /**
              * список техники организации
+             * @var {Object}
              */
             employees: {},
 
             /**
              * список групп техники организации
+             * @var {Object}
              */
             groups: {},
 
@@ -112,10 +167,22 @@ const task = {
 
             /**
              * список техники организации
+             * @var {Object}
              */
             vehicles: {},
 
-            activeModal: false,
+            /**
+             * Зависимости между сотрудником и техникой для формирования расписания
+             * Ключ объекта это id единицы техники, значение это массив сотрудников
+             */
+            vehiclesEmployeesDeps: {},
+
+            /**
+             * Экзепляр техники для которого происходит добавления работника из модального окна
+             *
+             * @var {Object}
+             */
+            vehicleSelected: {},
         };
     },
 
@@ -167,14 +234,35 @@ const task = {
 
     methods: {
         /**
+         * Показывает всплывающее окно со списком сотрудников
+         * задает единицу техники для которой будет осуществляться выбор сотрудника
          *
-         *
-         * @param {Object} data
+         * @param {Object} vehicle
+         * @see App\Models\Vehicle
          */
-        addEmployeeHandler(data) {
-            clog(data);
+        addEmployeeHandler(vehicle) {
+            clog("addEmployeeHandler", strip(vehicle));
             const vm = this;
             vm.activeModal = "employees";
+            vm.vehicleSelected = vehicle;
+        },
+
+        /**
+         * Добавляет сотрудника к технике, для формирования сменного задания
+         *
+         * @param {Object} employee
+         * @see App\Models\Employee
+         */
+        applyEmployee(employee) {
+            const vm = this;
+            clog("applyEmployee", strip(employee));
+            clog("vehicleSelected", strip(vm.vehicleSelected));
+
+            if (!vm.vehiclesEmployeesDeps[vm.vehicleSelected.id]) {
+                vm.vehiclesEmployeesDeps[vm.vehicleSelected.id] = new Set();
+            }
+
+            vm.vehiclesEmployeesDeps[vm.vehicleSelected.id].add(employee);
         },
 
         /**

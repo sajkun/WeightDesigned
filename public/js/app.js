@@ -17995,7 +17995,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _misc_helpers__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @/misc/helpers */ "./resources/js/misc/helpers.js");
 /* harmony import */ var _mixins_animateExpand__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @/mixins/animateExpand */ "./resources/js/mixins/animateExpand.js");
-/* harmony import */ var _mixins_icons__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @/mixins/icons */ "./resources/js/mixins/icons.js");
+/* harmony import */ var _mixins_formatName__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @/mixins/formatName */ "./resources/js/mixins/formatName.js");
+/* harmony import */ var _mixins_icons__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @/mixins/icons */ "./resources/js/mixins/icons.js");
 //вспомогательные функции
 
 
@@ -18003,17 +18004,32 @@ __webpack_require__.r(__webpack_exports__);
 //миксины
 
 
+
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  mixins: [_mixins_animateExpand__WEBPACK_IMPORTED_MODULE_2__["default"], _mixins_icons__WEBPACK_IMPORTED_MODULE_3__["default"]],
+  mixins: [_mixins_animateExpand__WEBPACK_IMPORTED_MODULE_2__["default"], _mixins_formatName__WEBPACK_IMPORTED_MODULE_3__["default"], _mixins_icons__WEBPACK_IMPORTED_MODULE_4__["default"]],
   watch: {
     _info: {
       handler: function handler(info) {
         this.info = info;
       },
       deep: true
+    },
+    _displayedPeriod: {
+      handler: function handler(period) {
+        this.displayedPeriod = period;
+      },
+      deep: true
     }
   },
   props: {
+    _displayedPeriod: {
+      type: Object,
+      "default": {
+        start: null,
+        end: null
+      },
+      required: true
+    },
     _info: {
       type: Object,
       "default": {},
@@ -18022,6 +18038,11 @@ __webpack_require__.r(__webpack_exports__);
   },
   data: function data() {
     return {
+      /**
+       * период отображения
+       * @var {Object}
+       */
+      displayedPeriod: this._displayedPeriod,
       /**
        * Данные о компоненте
        *
@@ -19322,12 +19343,20 @@ var _hoisted_5 = /*#__PURE__*/_withScopeId(function () {
   }, null, -1 /* HOISTED */);
 });
 var _hoisted_6 = {
-  "class": "row m-0 overflow-hidden expandable-content"
-};
-var _hoisted_7 = {
   "class": "col-3 text-left border-right ps-3"
 };
-var _hoisted_8 = /*#__PURE__*/_withScopeId(function () {
+var _hoisted_7 = /*#__PURE__*/_withScopeId(function () {
+  return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
+    "class": "col-9 px-0"
+  }, null, -1 /* HOISTED */);
+});
+var _hoisted_8 = {
+  "class": "row m-0 overflow-hidden expandable-content"
+};
+var _hoisted_9 = {
+  "class": "col-3 text-left border-right ps-3"
+};
+var _hoisted_10 = /*#__PURE__*/_withScopeId(function () {
   return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
     "class": "col-9 px-0"
   }, null, -1 /* HOISTED */);
@@ -19339,12 +19368,28 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       expanded: $data.expanded
     }])
   }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
-    "class": "btn-switcher px-2",
+    "class": "btn-switcher p-2",
     type: "button",
     onClick: _cache[0] || (_cache[0] = function ($event) {
       return $options.toggleExpand();
     })
-  }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.info.name), 1 /* TEXT */), _hoisted_4])])]), _hoisted_5]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(vue__WEBPACK_IMPORTED_MODULE_0__.Transition, {
+  }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.info.name), 1 /* TEXT */), _hoisted_4])])]), _hoisted_5]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(vue__WEBPACK_IMPORTED_MODULE_0__.TransitionGroup, {
+    css: false,
+    onBeforeEnter: _ctx.beforeEnter,
+    onEnter: _ctx.enter,
+    onLeave: _ctx.leave
+  }, {
+    "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
+      return [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.info.employees, function (employee, key) {
+        return (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)(((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", {
+          "class": "row m-0 overflow-hidden expandable-content employee-name",
+          key: 'empl' + key
+        }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_6, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(_ctx.formatName(employee.last_name, employee.first_name, employee.middle_name)), 1 /* TEXT */), _hoisted_7])), [[vue__WEBPACK_IMPORTED_MODULE_0__.vShow, $data.expanded]]);
+      }), 128 /* KEYED_FRAGMENT */))];
+    }),
+
+    _: 1 /* STABLE */
+  }, 8 /* PROPS */, ["onBeforeEnter", "onEnter", "onLeave"]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(vue__WEBPACK_IMPORTED_MODULE_0__.Transition, {
     css: false,
     onBeforeEnter: _ctx.beforeEnter,
     onEnter: _ctx.enter,
@@ -19352,13 +19397,13 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     persisted: ""
   }, {
     "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
-      return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_6, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_7, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+      return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_8, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_9, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
         type: "button",
         "class": "button-add my-2",
         onClick: _cache[1] || (_cache[1] = function () {
           return $options.addEmployee && $options.addEmployee.apply($options, arguments);
         })
-      }, " + Добавить механизатора ")]), _hoisted_8], 512 /* NEED_PATCH */), [[vue__WEBPACK_IMPORTED_MODULE_0__.vShow, $data.expanded]])];
+      }, " + Добавить механизатора ")]), _hoisted_10], 512 /* NEED_PATCH */), [[vue__WEBPACK_IMPORTED_MODULE_0__.vShow, $data.expanded]])];
     }),
     _: 1 /* STABLE */
   }, 8 /* PROPS */, ["onBeforeEnter", "onEnter", "onLeave"])], 2 /* CLASS */);
@@ -25400,15 +25445,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _mixins_axiosRequests__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @/mixins/axiosRequests */ "./resources/js/mixins/axiosRequests.js");
 /* harmony import */ var _mixins_crud__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @/mixins/crud */ "./resources/js/mixins/crud.js");
-/* harmony import */ var _mixins_messages__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @/mixins/messages */ "./resources/js/mixins/messages.js");
-/* harmony import */ var _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @/mixins/publicAuthData */ "./resources/js/mixins/publicAuthData.js");
-/* harmony import */ var _mixins_vehicleTypes__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @/mixins/vehicleTypes */ "./resources/js/mixins/vehicleTypes.js");
-/* harmony import */ var _components_inputs_DatepickerComponent__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @/components/inputs/DatepickerComponent */ "./resources/js/components/inputs/DatepickerComponent/index.js");
-/* harmony import */ var _components_pageTasks_DaySelectComponent__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @/components/pageTasks/DaySelectComponent */ "./resources/js/components/pageTasks/DaySelectComponent/index.js");
-/* harmony import */ var _components_common_MessagesComponent__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @/components/common/MessagesComponent */ "./resources/js/components/common/MessagesComponent/index.js");
-/* harmony import */ var _components_common_ModalComponent__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! @/components/common/ModalComponent */ "./resources/js/components/common/ModalComponent/index.js");
-/* harmony import */ var _components_common_SearchComponent__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! @/components/common/SearchComponent */ "./resources/js/components/common/SearchComponent/index.js");
-/* harmony import */ var _components_pageTasks_TaskItemComponent__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! @/components/pageTasks/TaskItemComponent */ "./resources/js/components/pageTasks/TaskItemComponent/index.js");
+/* harmony import */ var _mixins_formatName__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @/mixins/formatName */ "./resources/js/mixins/formatName.js");
+/* harmony import */ var _mixins_messages__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @/mixins/messages */ "./resources/js/mixins/messages.js");
+/* harmony import */ var _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @/mixins/publicAuthData */ "./resources/js/mixins/publicAuthData.js");
+/* harmony import */ var _mixins_vehicleTypes__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @/mixins/vehicleTypes */ "./resources/js/mixins/vehicleTypes.js");
+/* harmony import */ var _components_inputs_DatepickerComponent__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @/components/inputs/DatepickerComponent */ "./resources/js/components/inputs/DatepickerComponent/index.js");
+/* harmony import */ var _components_pageTasks_DaySelectComponent__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @/components/pageTasks/DaySelectComponent */ "./resources/js/components/pageTasks/DaySelectComponent/index.js");
+/* harmony import */ var _components_common_MessagesComponent__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! @/components/common/MessagesComponent */ "./resources/js/components/common/MessagesComponent/index.js");
+/* harmony import */ var _components_common_ModalComponent__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! @/components/common/ModalComponent */ "./resources/js/components/common/ModalComponent/index.js");
+/* harmony import */ var _components_common_SearchComponent__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! @/components/common/SearchComponent */ "./resources/js/components/common/SearchComponent/index.js");
+/* harmony import */ var _components_pageTasks_TaskItemComponent__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! @/components/pageTasks/TaskItemComponent */ "./resources/js/components/pageTasks/TaskItemComponent/index.js");
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
@@ -25431,6 +25477,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
 
 
+
 // компоненты
 
 
@@ -25439,16 +25486,30 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
 
 var task = {
-  mixins: [_mixins_axiosRequests__WEBPACK_IMPORTED_MODULE_3__["default"], _mixins_crud__WEBPACK_IMPORTED_MODULE_4__["default"], _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_6__["default"], _mixins_messages__WEBPACK_IMPORTED_MODULE_5__["default"], _mixins_vehicleTypes__WEBPACK_IMPORTED_MODULE_7__["default"]],
+  mixins: [_mixins_axiosRequests__WEBPACK_IMPORTED_MODULE_3__["default"], _mixins_crud__WEBPACK_IMPORTED_MODULE_4__["default"], _mixins_formatName__WEBPACK_IMPORTED_MODULE_5__["default"], _mixins_messages__WEBPACK_IMPORTED_MODULE_6__["default"], _mixins_publicAuthData__WEBPACK_IMPORTED_MODULE_7__["default"], _mixins_vehicleTypes__WEBPACK_IMPORTED_MODULE_8__["default"]],
   components: {
-    datepicker: _components_inputs_DatepickerComponent__WEBPACK_IMPORTED_MODULE_8__["default"],
-    days: _components_pageTasks_DaySelectComponent__WEBPACK_IMPORTED_MODULE_9__["default"],
-    items: _components_pageTasks_TaskItemComponent__WEBPACK_IMPORTED_MODULE_13__["default"],
-    messages: _components_common_MessagesComponent__WEBPACK_IMPORTED_MODULE_10__["default"],
-    modal: _components_common_ModalComponent__WEBPACK_IMPORTED_MODULE_11__["default"],
-    search: _components_common_SearchComponent__WEBPACK_IMPORTED_MODULE_12__["default"]
+    datepicker: _components_inputs_DatepickerComponent__WEBPACK_IMPORTED_MODULE_9__["default"],
+    days: _components_pageTasks_DaySelectComponent__WEBPACK_IMPORTED_MODULE_10__["default"],
+    items: _components_pageTasks_TaskItemComponent__WEBPACK_IMPORTED_MODULE_14__["default"],
+    messages: _components_common_MessagesComponent__WEBPACK_IMPORTED_MODULE_11__["default"],
+    modal: _components_common_ModalComponent__WEBPACK_IMPORTED_MODULE_12__["default"],
+    search: _components_common_SearchComponent__WEBPACK_IMPORTED_MODULE_13__["default"]
   },
   computed: {
+    /**
+     * Возвращает отфильтрованный в зависимости от типа выбранной техники массив сотрудников
+     *
+     * @returns {Array<Object>}
+     * @see App\Models\Employee
+     */
+    employeesByPoffesion: function employeesByPoffesion() {
+      var vm = this;
+      var employees = vm.employees;
+      employees = employees.filter(function (e) {
+        return e.specialisation === vm.vehiclesProfessions[vm.vehicleSelected.type];
+      });
+      return employees;
+    },
     /**
      * Список комбайнов  вместе с сотрудниками, назначенными для них
      *
@@ -25456,12 +25517,13 @@ var task = {
      */
     harvesters: function harvesters() {
       var _this$vehicles;
+      var vm = this;
       var items = (_this$vehicles = this.vehicles) === null || _this$vehicles === void 0 ? void 0 : _this$vehicles.harvesters;
       if (!items) {
         return [];
       }
       items = items.map(function (h) {
-        h["employees"] = [];
+        h["employees"] = vm.vehiclesEmployeesDeps[h.id] ? Array.from(vm.vehiclesEmployeesDeps[h.id]) : [];
         return h;
       });
       return items;
@@ -25473,20 +25535,40 @@ var task = {
      */
     transporters: function transporters() {
       var _this$vehicles2;
+      var vm = this;
       var items = (_this$vehicles2 = this.vehicles) === null || _this$vehicles2 === void 0 ? void 0 : _this$vehicles2.transporters;
       if (!items) {
         return [];
       }
       items = items.map(function (h) {
-        h["employees"] = [];
+        h["employees"] = vm.vehiclesEmployeesDeps[h.id] ? Array.from(vm.vehiclesEmployeesDeps[h.id]) : [];
         return h;
       });
       return items;
+    },
+    /**
+     * Соответствие типа техники и профессии механизатора, который может на ней работать
+     *
+     * @returns {Object}
+     */
+    vehiclesProfessions: function vehiclesProfessions() {
+      var data = {
+        bunker: "Водитель Трактора",
+        tractor: "Водитель Трактора",
+        transporter: "Водитель Зерновоза",
+        harvester: "Водитель Комбайна",
+        group: "Водитель Трактора"
+      };
+      return data;
     }
   },
-  watch: {},
   data: function data() {
     return {
+      /**
+       * Имя модального окна для отображения или false если окно не нужно отображать
+       * @var {String | false}
+       */
+      activeModal: false,
       // диапазон дат для фильтрации данных
       dateRange: {
         //отображаемый
@@ -25502,10 +25584,12 @@ var task = {
       },
       /**
        * список техники организации
+       * @var {Object}
        */
       employees: {},
       /**
        * список групп техники организации
+       * @var {Object}
        */
       groups: {},
       /**
@@ -25515,9 +25599,20 @@ var task = {
       mounted: false,
       /**
        * список техники организации
+       * @var {Object}
        */
       vehicles: {},
-      activeModal: false
+      /**
+       * Зависимости между сотрудником и техникой для формирования расписания
+       * Ключ объекта это id единицы техники, значение это массив сотрудников
+       */
+      vehiclesEmployeesDeps: {},
+      /**
+       * Экзепляр техники для которого происходит добавления работника из модального окна
+       *
+       * @var {Object}
+       */
+      vehicleSelected: {}
     };
   },
   created: function created() {
@@ -25563,14 +25658,32 @@ var task = {
   },
   methods: {
     /**
+     * Показывает всплывающее окно со списком сотрудников
+     * задает единицу техники для которой будет осуществляться выбор сотрудника
      *
-     *
-     * @param {Object} data
+     * @param {Object} vehicle
+     * @see App\Models\Vehicle
      */
-    addEmployeeHandler: function addEmployeeHandler(data) {
-      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.clog)(data);
+    addEmployeeHandler: function addEmployeeHandler(vehicle) {
+      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.clog)("addEmployeeHandler", (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.strip)(vehicle));
       var vm = this;
       vm.activeModal = "employees";
+      vm.vehicleSelected = vehicle;
+    },
+    /**
+     * Добавляет сотрудника к технике, для формирования сменного задания
+     *
+     * @param {Object} employee
+     * @see App\Models\Employee
+     */
+    applyEmployee: function applyEmployee(employee) {
+      var vm = this;
+      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.clog)("applyEmployee", (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.strip)(employee));
+      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.clog)("vehicleSelected", (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_1__.strip)(vm.vehicleSelected));
+      if (!vm.vehiclesEmployeesDeps[vm.vehicleSelected.id]) {
+        vm.vehiclesEmployeesDeps[vm.vehicleSelected.id] = new Set();
+      }
+      vm.vehiclesEmployeesDeps[vm.vehicleSelected.id].add(employee);
     },
     /**
      * Скрытие модальных окон
@@ -26923,7 +27036,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, ".modal-window[data-v-176f27d4] {\n  position: fixed;\n  z-index: 10000;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  top: 0;\n  background: rgba(102, 102, 102, 0.4);\n  -webkit-backdrop-filter: blur(4.5px);\n          backdrop-filter: blur(4.5px);\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n.modal-window__content[data-v-176f27d4] {\n  position: relative;\n  background-color: var(--lightest);\n  border-radius: var(--brs);\n  position: relative;\n  padding: 1em;\n  width: 100%;\n  max-width: 32rem;\n}\n.modal-window__content .btn-close[data-v-176f27d4] {\n  position: absolute;\n  top: 0;\n  right: 0;\n  z-index: 1;\n}", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, ".modal-window[data-v-176f27d4] {\n  position: fixed;\n  z-index: 10000;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  top: 0;\n  background: rgba(102, 102, 102, 0.4);\n  -webkit-backdrop-filter: blur(4.5px);\n          backdrop-filter: blur(4.5px);\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n.modal-window__content[data-v-176f27d4] {\n  position: relative;\n  background-color: var(--lightest);\n  border-radius: var(--brs);\n  position: relative;\n  padding: 1em;\n  width: 100%;\n  max-width: 32rem;\n}\n.md .modal-window__content[data-v-176f27d4] {\n  max-width: 48rem;\n}\n.lg .modal-window__content[data-v-176f27d4] {\n  max-width: 64rem;\n}\n.modal-window__content .btn-close[data-v-176f27d4] {\n  position: absolute;\n  top: 0;\n  right: 0;\n  z-index: 1;\n}", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -27067,7 +27180,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, ".btn-switcher[data-v-1d298c20] {\n  border: 0;\n  padding: 0;\n  outline: 0;\n  width: 100%;\n  text-align: left;\n  background-color: transparent;\n  color: var(--darkest);\n  font-size: 0.875em;\n  font-weight: 600;\n}\n.btn-switcher[data-v-1d298c20]:hover {\n  background-color: var(--grey-ultralight);\n}\n.btn-switcher i[data-v-1d298c20] {\n  font-weight: 100;\n  transition: transform var(--fast);\n  color: var(--grey);\n}\n.expanded .btn-switcher i[data-v-1d298c20] {\n  transform: rotateZ(180deg);\n}\n.button-add[data-v-1d298c20] {\n  border: 1px solid transparent;\n  padding: 0;\n  outline: 0;\n  background-color: transparent;\n  color: var(--green);\n  font-size: 0.75rem;\n  text-align: left;\n  transition: border-bottom var(--fast);\n}\n.button-add[data-v-1d298c20]:hover {\n  border-bottom: 1px solid var(--green);\n}\n.button-add[data-v-1d298c20]:active {\n  transform: translateY(1px);\n}", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, ".btn-switcher[data-v-1d298c20] {\n  border: 0;\n  padding: 0;\n  outline: 0;\n  width: 100%;\n  text-align: left;\n  background-color: transparent;\n  color: var(--darkest);\n  font-size: 0.875em;\n  font-weight: 500;\n}\n.btn-switcher[data-v-1d298c20]:hover {\n  background-color: var(--grey-ultralight);\n}\n.btn-switcher i[data-v-1d298c20] {\n  font-weight: 100;\n  transition: transform var(--fast);\n  font-size: 0.75em;\n}\n.expanded .btn-switcher i[data-v-1d298c20] {\n  transform: rotateZ(180deg);\n}\n.button-add[data-v-1d298c20] {\n  border: 1px solid transparent;\n  padding: 0;\n  outline: 0;\n  background-color: transparent;\n  color: var(--green);\n  font-size: 0.75rem;\n  text-align: left;\n  transition: border-bottom var(--fast);\n}\n.button-add[data-v-1d298c20]:hover {\n  border-bottom: 1px solid var(--green);\n}\n.button-add[data-v-1d298c20]:active {\n  transform: translateY(1px);\n}\n.employee-name[data-v-1d298c20] {\n  font-size: 0.75em;\n  padding: 0.25em 0;\n}\n.employee-name[data-v-1d298c20]:nth-child(even) {\n  background-color: rgba(238, 242, 253, 0.4);\n}", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 

@@ -39,6 +39,7 @@
         "font-awesome": "^4.7.0",
         "gsap": "^3.12.2",
         "moment": "^2.29.4",
+        "volar-service-vetur": "^0.0.17",
         "webpack": "^5.88.2",
         "webpack-cli": "^5.1.4"
     }
