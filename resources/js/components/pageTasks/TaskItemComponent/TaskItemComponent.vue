@@ -15,7 +15,11 @@
                     </p>
                 </button>
             </div>
-            <div class="col-9 px-0"></div>
+            <div class="col-9 px-0">
+                <div class="time-component">
+                    <div class="row" ref="wrapper"></div>
+                </div>
+            </div>
         </div>
 
         <TransitionGroup
@@ -23,10 +27,11 @@
             v-on:before-enter="beforeEnter"
             v-on:enter="enter"
             v-on:leave="leave"
+            v-if="expanded"
+            tag="div"
         >
             <div
-                class="row m-0 overflow-hidden expandable-content employee-name"
-                v-show="expanded"
+                class="row m-0 overflow-hidden expandable-content employee-name align-items-center"
                 v-for="(employee, key) in info.employees"
                 :key="'empl' + key"
             >
@@ -39,7 +44,29 @@
                         )
                     }}
                 </div>
-                <div class="col-9 px-0"></div>
+                <div class="col-9 px-0">
+                    <div class="time-component">
+                        <div class="row">
+                            <div
+                                class="col"
+                                v-for="(date, key) in selectedDates"
+                                :key="'date' + key"
+                            >
+                                <button
+                                    class="btn btn-borders w-100 p-1 btn-sm"
+                                    type="button"
+                                    @click="chooseTime(date, employee)"
+                                    :title="
+                                        'добавить расписание на ' +
+                                        date.formatted
+                                    "
+                                >
+                                    +
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </TransitionGroup>
 
@@ -70,15 +97,15 @@
 
 <script>
 //вспомогательные функции
-import moment from "moment";
 import { strip, clog } from "@/misc/helpers";
 
 //миксины
 import animateExpand from "@/mixins/animateExpand";
+import calcWidth from "@/components/pageTasks/mixins/calcWidth";
 import formatName from "@/mixins/formatName";
 import icons from "@/mixins/icons";
 export default {
-    mixins: [animateExpand, formatName, icons],
+    mixins: [animateExpand, calcWidth, formatName, icons],
     watch: {
         _info: {
             handler(info) {
@@ -87,15 +114,15 @@ export default {
             deep: true,
         },
 
-        _displayedPeriod: {
+        _dateRange: {
             handler(period) {
-                this.displayedPeriod = period;
+                this.dateRange = period;
             },
             deep: true,
         },
     },
     props: {
-        _displayedPeriod: {
+        _dateRange: {
             type: Object,
             default: {
                 start: null,
@@ -103,6 +130,7 @@ export default {
             },
             required: true,
         },
+
         _info: {
             type: Object,
             default: {},
@@ -115,7 +143,7 @@ export default {
              * период отображения
              * @var {Object}
              */
-            displayedPeriod: this._displayedPeriod,
+            dateRange: this._dateRange,
 
             /**
              * Данные о компоненте
@@ -130,17 +158,51 @@ export default {
              * @var {Boolean}
              */
             expanded: false,
+
+            /**
+             * признак показывающий, что компонент смонтирован
+             *
+             *  @var{Boolean}
+             */
+            mounted: false,
         };
     },
+
+    mounted() {
+        const vm = this;
+
+        vm.$nextTick(() => {
+            vm.mounted = true;
+        });
+    },
+
     methods: {
         /**
-         * Инициализирует всплывающее окно с сотрудниками
+         * Эмитит родителю событие addEmployeeRequest
          *
          * @returns {Void}
          */
         addEmployee() {
             const vm = this;
-            vm.$emit("addEmployee", vm.info);
+            vm.$emit("addEmployeeRequest", vm.info);
+        },
+
+        /**
+         * Эмитит родителю событие chooseTimeRequest
+         *
+         * @param {Object} date - данные о дате {formatted: xx.xx, iso: isoString}
+         * @param {Object} employee
+         * @see App\Models\Employee
+         *
+         * @returns {Void}
+         */
+        chooseTime(date, employee) {
+            const vm = this;
+            vm.$emit("chooseTimeRequest", {
+                date,
+                employee: strip(employee),
+                vehicle: strip(vm.info),
+            });
         },
 
         /**

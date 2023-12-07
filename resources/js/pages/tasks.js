@@ -3,7 +3,6 @@
  */
 
 //вспомогательные функции
-import { Vue } from "vue";
 import { strip, clog } from "@/misc/helpers";
 import moment from "moment";
 
@@ -21,6 +20,7 @@ import DaySelectComponent from "@/components/pageTasks/DaySelectComponent";
 import MessagesComponent from "@/components/common/MessagesComponent";
 import ModalComponent from "@/components/common/ModalComponent";
 import SearchComponent from "@/components/common/SearchComponent";
+import ChooseTimeModalComponent from "@/components/pageTasks/ChooseTimeModalComponent";
 import TaskItemComponent from "@/components/pageTasks/TaskItemComponent";
 
 const task = {
@@ -36,9 +36,10 @@ const task = {
     components: {
         datepicker: DatepickerComponent,
         days: DaySelectComponent,
-        items: TaskItemComponent,
+        item: TaskItemComponent,
         messages: MessagesComponent,
         modal: ModalComponent,
+        modalTime: ChooseTimeModalComponent,
         search: SearchComponent,
     },
 
@@ -129,7 +130,7 @@ const task = {
         return {
             /**
              * Имя модального окна для отображения или false если окно не нужно отображать
-             * @var {String | false}
+             * @var {Enum | False} :  chooseTime | employee
              */
             activeModal: false,
 
@@ -164,6 +165,8 @@ const task = {
              * @var {Boolean}
              */
             mounted: false,
+
+            tasks: {},
 
             /**
              * список техники организации
@@ -234,20 +237,6 @@ const task = {
 
     methods: {
         /**
-         * Показывает всплывающее окно со списком сотрудников
-         * задает единицу техники для которой будет осуществляться выбор сотрудника
-         *
-         * @param {Object} vehicle
-         * @see App\Models\Vehicle
-         */
-        addEmployeeHandler(vehicle) {
-            clog("addEmployeeHandler", strip(vehicle));
-            const vm = this;
-            vm.activeModal = "employees";
-            vm.vehicleSelected = vehicle;
-        },
-
-        /**
          * Добавляет сотрудника к технике, для формирования сменного задания
          *
          * @param {Object} employee
@@ -255,14 +244,16 @@ const task = {
          */
         applyEmployee(employee) {
             const vm = this;
-            clog("applyEmployee", strip(employee));
-            clog("vehicleSelected", strip(vm.vehicleSelected));
 
             if (!vm.vehiclesEmployeesDeps[vm.vehicleSelected.id]) {
                 vm.vehiclesEmployeesDeps[vm.vehicleSelected.id] = new Set();
             }
 
             vm.vehiclesEmployeesDeps[vm.vehicleSelected.id].add(employee);
+
+            vm.$nextTick(() => {
+                vm.activeModal = false;
+            });
         },
 
         /**
@@ -329,6 +320,37 @@ const task = {
             vm.dateRange.selected[type] = passedData.date;
 
             return;
+        },
+
+        /**
+         * Показывает всплывающее окно с возможностью задавать время смены для сотрудгника
+         *
+         * @param {Object} data\
+         *
+         * @returns {Void}
+         */
+        showChooseTimeModal(data) {
+            clog(
+                "%c showChooseTimeModal",
+                "color: yellow; font-style:italic",
+                data
+            );
+            const vm = this;
+            vm.activeModal = "chooseTime";
+        },
+
+        /**
+         * Показывает всплывающее окно со списком сотрудников
+         * задает единицу техники для которой будет осуществляться выбор сотрудника
+         *
+         * @param {Object} vehicle
+         * @see App\Models\Vehicle
+         */
+        showEmployeesModal(vehicle) {
+            clog("addEmployeeHandler", strip(vehicle));
+            const vm = this;
+            vm.activeModal = "employees";
+            vm.vehicleSelected = vehicle;
         },
 
         /**

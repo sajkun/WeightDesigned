@@ -35,9 +35,10 @@ import { strip, clog } from "@/misc/helpers";
 
 //миксины
 import icons from "@/mixins/icons";
+import calcWidth from "@/components/pageTasks/mixins/calcWidth";
 
 export default {
-    mixins: [icons],
+    mixins: [icons, calcWidth],
 
     watch: {
         /**
@@ -63,33 +64,6 @@ export default {
             if (mounted) {
                 vm.shift = vm.getCellsCount();
             }
-        },
-    },
-
-    computed: {
-        /**
-         * отображаемые дни
-         */
-        selectedDates() {
-            const vm = this;
-            if (!vm.mounted) {
-                return [];
-            }
-
-            vm.shift = vm.getCellsCount();
-            const visibleDates = vm.getVisibleDates();
-
-            const start = visibleDates.shift().isoString;
-            const end = visibleDates.length
-                ? visibleDates.pop().isoString
-                : start;
-
-            vm.$emit("showDates", {
-                start: start,
-                end: end,
-            });
-
-            return vm.getVisibleDates();
         },
     },
 
@@ -126,103 +100,17 @@ export default {
              * @var{Integer}
              */
             shift: 0,
-
-            /**
-             * На сколько дней сдвинута дата
-             *
-             * @var{Integer}
-             */
-            step: 0,
         };
     },
 
     mounted() {
         const vm = this;
-
         vm.$nextTick(() => {
             vm.mounted = true;
         });
     },
 
     methods: {
-        /**
-         * Вычисляет максимальное количество ячеек
-         *
-         * @returns {Integer} >=1
-         */
-        getCellsCount() {
-            const vm = this;
-            const cellWidth = vm.getSingleCellWidth();
-            const wrapperWidth = vm.getTotalWidth();
-            let count = Math.floor(wrapperWidth / cellWidth);
-
-            const start = moment(vm.dateRange.start);
-            const end = moment(vm.dateRange.end);
-            const diff = end.diff(start, "days");
-            count = Math.max(count, 1);
-            return Math.min(count, diff);
-        },
-
-        /**
-         * Генерирует ряд видимых дат
-         */
-        getVisibleDates() {
-            const vm = this;
-            let days = [];
-            // вычислить количество ячеек
-            const cellsCount = vm.getCellsCount();
-
-            // получить дату начала отображения
-            let start = moment(vm.dateRange.start);
-            start.add(vm.step, "days");
-
-            days.push({
-                formatted: start.format("DD.MM"),
-                isoString: start.toISOString(),
-            });
-
-            // сформировать массив отображаемых дат
-            for (let shift = 0; shift < cellsCount; shift++) {
-                const day = start.add(1, "days");
-                days.push({
-                    formatted: day.format("DD.MM"),
-                    isoString: day.toISOString(),
-                });
-            }
-
-            return days;
-        },
-
-        /**
-         * Вычисляет ширину ячейким с датой в зависимости от размера шрифта
-         *
-         * @returns {AbsInt}
-         */
-        getSingleCellWidth() {
-            const vm = this;
-            if (!vm.mounted) return;
-            const fontSize = window
-                .getComputedStyle(vm.$refs.wrapper, null)
-                .getPropertyValue("font-size");
-
-            return parseInt(fontSize) * 8;
-        },
-
-        /**
-         * Вычисляется доступная ширина для компонента
-         *
-         * @returns {Integer} > 0
-         */
-        getTotalWidth() {
-            const vm = this;
-            if (!vm.mounted) return;
-            const wrapperWidth = parseInt(vm.$refs?.wrapper.offsetWidth);
-            const fontSize = window
-                .getComputedStyle(vm.$refs.wrapper, null)
-                .getPropertyValue("font-size");
-            return wrapperWidth - 3 * parseInt(fontSize);
-        },
-
         /**
          *
          * @param {Enum} modificator  1 |-1
@@ -275,5 +163,9 @@ export default {
     &:hover {
         background-color: var(--grey-ultralight);
     }
+}
+
+.row {
+    --bs-gutter-x: 0.5em;
 }
 </style>

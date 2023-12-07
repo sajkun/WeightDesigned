@@ -53,3 +53,9 @@
         background-color: #eef2fd66;
     }
 }
+
+.time-component {
+    .row {
+        --bs-gutter-x: 0.5em;
+    }
+}

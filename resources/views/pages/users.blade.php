@@ -70,7 +70,6 @@
                     </div>
                 </div>
             </Transition>
-
         </div>
     </div>
 @endsection
