@@ -14,7 +14,17 @@
                 >
                     <i v-html="arrowLeftIcon"></i>
                 </button>
-                {{ date.formatted }}
+                <span v-if="!canSelectDate">
+                    {{ date.formatted }}
+                </span>
+                <button
+                    v-else
+                    class="btn"
+                    v-on:click="selectDate(date)"
+                    :class="{ selected: date.isoString === currentDate }"
+                >
+                    {{ date.formatted }}
+                </button>
                 <button
                     class="btn px-1"
                     ref="btnNext"
@@ -42,6 +52,16 @@ export default {
 
     watch: {
         /**
+         * Обновления значения текущей даты от родительского элемента
+         *
+         * @param {String} currentDate
+         */
+        _currentDate(currentDate) {
+            const vm = this;
+            vm.currentDate = currentDate;
+        },
+
+        /**
          * Обновления значения диапазона дат от родительского элемента
          *
          * @param {Object} dateRange
@@ -63,11 +83,27 @@ export default {
 
             if (mounted) {
                 vm.shift = vm.getCellsCount();
+                vm.updateStepByDate();
             }
         },
     },
 
     props: {
+        _currentDate: {
+            type: String,
+            default: "",
+            required: false,
+        },
+
+        /**
+         * Признак можно ли выбирать дату по клику
+         */
+        _canSelectDate: {
+            type: Boolean,
+            default: false,
+            required: false,
+        },
+
         /**
          * Диапазон предельных значений дат компонента
          */
@@ -81,11 +117,23 @@ export default {
         },
     },
     data() {
+        const vm = this;
+
         return {
+            /**
+             * @var{Boolean}
+             */
+            canSelectDate: vm._canSelectDate,
+
+            /**
+             * @var {ISOString}
+             */
+            currentDate: vm._currentDate,
+
             /**
              *  @see _dateRange
              */
-            dateRange: this._dateRange,
+            dateRange: vm._dateRange,
 
             /**
              * признак показывающий, что компонент смонтирован
@@ -111,6 +159,17 @@ export default {
     },
 
     methods: {
+        /**
+         * Эмитит переданную дату
+         *
+         * @param {Object} date
+         */
+        selectDate(date) {
+            const vm = this;
+            vm.currentDate = date.isoString;
+            vm.$emit("selectDate", { date });
+        },
+
         /**
          *
          * @param {Enum} modificator  1 |-1
@@ -154,6 +213,17 @@ export default {
 
             return typeParam && datesParam;
         },
+
+        updateStepByDate() {
+            const vm = this;
+            if (!vm.currentDate) return;
+            const start = moment(vm.dateRange.start);
+            const end = moment(vm.currentDate);
+            const delta = Math.floor(vm.getCellsCount() / 2);
+            const step = end.diff(start, "days") - delta;
+
+            vm.step = Math.max(0, step);
+        },
     },
 };
 </script>
@@ -167,5 +237,9 @@ export default {
 
 .row {
     --bs-gutter-x: 0.5em;
+}
+
+.btn.selected {
+    --bs-btn-border-color: var(--green);
 }
 </style>

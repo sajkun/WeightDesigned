@@ -16610,11 +16610,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _misc_helpers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/misc/helpers */ "./resources/js/misc/helpers.js");
-/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
-/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_0__);
 //вспомогательные функции
-
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   watch: {
@@ -16626,11 +16624,11 @@ __webpack_require__.r(__webpack_exports__);
     /**
      * Определяет имя месяца по заданной дате
      *
-     * @returns {ENUM} . имя месяца
+     * @returns {ENUM} имя месяца
      */
     month: function month() {
       var vm = this;
-      var month = moment__WEBPACK_IMPORTED_MODULE_1___default()(vm.baseDate).format("MMMM");
+      var month = moment__WEBPACK_IMPORTED_MODULE_0___default()(vm.baseDate).format("MMMM");
       return month;
     },
     /** Определяет год по заданной дате
@@ -16639,19 +16637,30 @@ __webpack_require__.r(__webpack_exports__);
      */
     year: function year() {
       var vm = this;
-      var year = moment__WEBPACK_IMPORTED_MODULE_1___default()(vm.baseDate).format("YYYY");
+      var year = moment__WEBPACK_IMPORTED_MODULE_0___default()(vm.baseDate).format("YYYY");
       return year;
     }
   },
   props: {
+    /**
+     * Опорная дата, в зависимости от которой отображается месяц и год
+     * Унаследована от родителя
+     *
+     * @var {ISOString}
+     */
     _baseDate: {
       type: String,
-      "default": new (moment__WEBPACK_IMPORTED_MODULE_1___default())().startOf("day").toISOString(),
+      "default": new (moment__WEBPACK_IMPORTED_MODULE_0___default())().startOf("day").toISOString(),
       required: false
     }
   },
   data: function data() {
     return {
+      /**
+       * Опорная дата, в зависимости от которой отображается месяц и год
+       *
+       * @var {ISOString}
+       */
       baseDate: this._baseDate
     };
   },
@@ -16665,7 +16674,7 @@ __webpack_require__.r(__webpack_exports__);
      */
     changeMonth: function changeMonth(delta) {
       var vm = this;
-      var date = moment__WEBPACK_IMPORTED_MODULE_1___default()(vm.baseDate);
+      var date = moment__WEBPACK_IMPORTED_MODULE_0___default()(vm.baseDate);
       date.add(delta, "M");
       vm.baseDate = date.toISOString();
       vm.$nextTick(function () {
@@ -17854,8 +17863,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _misc_helpers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/misc/helpers */ "./resources/js/misc/helpers.js");
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _components_common_ModalComponent__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @/components/common/ModalComponent */ "./resources/js/components/common/ModalComponent/index.js");
-/* harmony import */ var _components_common_MonthPickerComponent__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @/components/common/MonthPickerComponent */ "./resources/js/components/common/MonthPickerComponent/index.js");
+/* harmony import */ var _components_pageTasks_DaySelectComponent__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @/components/pageTasks/DaySelectComponent */ "./resources/js/components/pageTasks/DaySelectComponent/index.js");
+/* harmony import */ var _components_common_ModalComponent__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @/components/common/ModalComponent */ "./resources/js/components/common/ModalComponent/index.js");
+/* harmony import */ var _components_common_MonthPickerComponent__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @/components/common/MonthPickerComponent */ "./resources/js/components/common/MonthPickerComponent/index.js");
 //вспомогательные функции
 
 
@@ -17863,13 +17873,43 @@ __webpack_require__.r(__webpack_exports__);
 // компоненты
 
 
+
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   watch: {
+    _baseDate: function _baseDate(baseDate) {
+      this.baseDate = baseDate;
+    },
+    /**
+     * реактивность отображения/скрытия окна в зависимости от изменения статуса в родительском компоненте
+     */
     _show: function _show(show) {
       this.show = show;
     }
   },
+  computed: {
+    dateRange: function dateRange() {
+      var vm = this;
+      var start = moment__WEBPACK_IMPORTED_MODULE_1___default()(vm.baseDate).startOf("month").toISOString();
+      var end = moment__WEBPACK_IMPORTED_MODULE_1___default()(vm.baseDate).endOf("month").toISOString();
+      return {
+        start: start,
+        end: end
+      };
+    }
+  },
   props: {
+    /**
+     * дата, полученная от родителя в качестве текущей даты
+     * @var{ISOString}
+     */
+    _baseDate: {
+      type: String,
+      "default": new (moment__WEBPACK_IMPORTED_MODULE_1___default())().startOf("day").toISOString(),
+      required: false
+    },
+    /**
+     * Признак отображения или скрытия окна, унаследованный от родителя
+     */
     _show: {
       type: Boolean,
       "default": false,
@@ -17877,12 +17917,22 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   components: {
-    modal: _components_common_ModalComponent__WEBPACK_IMPORTED_MODULE_2__["default"],
-    monthPicker: _components_common_MonthPickerComponent__WEBPACK_IMPORTED_MODULE_3__["default"]
+    days: _components_pageTasks_DaySelectComponent__WEBPACK_IMPORTED_MODULE_2__["default"],
+    modal: _components_common_ModalComponent__WEBPACK_IMPORTED_MODULE_3__["default"],
+    monthPicker: _components_common_MonthPickerComponent__WEBPACK_IMPORTED_MODULE_4__["default"]
   },
   data: function data() {
     return {
-      show: this._show
+      /**
+       * @var {Boolean}
+       * Показывать или не показывать окно
+       */
+      show: this._show,
+      /**
+       * @var{ISOString}
+       * текущая дата
+       */
+      baseDate: this._baseDate
     };
   },
   methods: {
@@ -17891,6 +17941,13 @@ __webpack_require__.r(__webpack_exports__);
      */
     closeModal: function closeModal() {
       this.$emit("closeRequest");
+    },
+    /**
+     *
+     * @param {Object} data
+     */
+    updateDaysRow: function updateDaysRow(data) {
+      this.baseDate = data.date;
     }
   }
 });
@@ -17924,6 +17981,15 @@ __webpack_require__.r(__webpack_exports__);
   mixins: [_mixins_icons__WEBPACK_IMPORTED_MODULE_2__["default"], _components_pageTasks_mixins_calcWidth__WEBPACK_IMPORTED_MODULE_3__["default"]],
   watch: {
     /**
+     * Обновления значения текущей даты от родительского элемента
+     *
+     * @param {String} currentDate
+     */
+    _currentDate: function _currentDate(currentDate) {
+      var vm = this;
+      vm.currentDate = currentDate;
+    },
+    /**
      * Обновления значения диапазона дат от родительского элемента
      *
      * @param {Object} dateRange
@@ -17943,10 +18009,24 @@ __webpack_require__.r(__webpack_exports__);
       var vm = this;
       if (_mounted) {
         vm.shift = vm.getCellsCount();
+        vm.updateStepByDate();
       }
     }
   },
   props: {
+    _currentDate: {
+      type: String,
+      "default": "",
+      required: false
+    },
+    /**
+     * Признак можно ли выбирать дату по клику
+     */
+    _canSelectDate: {
+      type: Boolean,
+      "default": false,
+      required: false
+    },
     /**
      * Диапазон предельных значений дат компонента
      */
@@ -17960,11 +18040,20 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   data: function data() {
+    var vm = this;
     return {
+      /**
+       * @var{Boolean}
+       */
+      canSelectDate: vm._canSelectDate,
+      /**
+       * @var {ISOString}
+       */
+      currentDate: vm._currentDate,
       /**
        *  @see _dateRange
        */
-      dateRange: this._dateRange,
+      dateRange: vm._dateRange,
       /**
        * признак показывающий, что компонент смонтирован
        *
@@ -17986,6 +18075,18 @@ __webpack_require__.r(__webpack_exports__);
     });
   },
   methods: {
+    /**
+     * Эмитит переданную дату
+     *
+     * @param {Object} date
+     */
+    selectDate: function selectDate(date) {
+      var vm = this;
+      vm.currentDate = date.isoString;
+      vm.$emit("selectDate", {
+        date: date
+      });
+    },
     /**
      *
      * @param {Enum} modificator  1 |-1
@@ -18020,6 +18121,15 @@ __webpack_require__.r(__webpack_exports__);
       var datesParam = end.diff(start, "days") > vm.getCellsCount();
       var typeParam = key === 0 && type === "start" || key === vm.selectedDates.length - 1 && type === "end";
       return typeParam && datesParam;
+    },
+    updateStepByDate: function updateStepByDate() {
+      var vm = this;
+      if (!vm.currentDate) return;
+      var start = moment__WEBPACK_IMPORTED_MODULE_0___default()(vm.dateRange.start);
+      var end = moment__WEBPACK_IMPORTED_MODULE_0___default()(vm.currentDate);
+      var delta = Math.floor(vm.getCellsCount() / 2);
+      var step = end.diff(start, "days") - delta;
+      vm.step = Math.max(0, step);
     }
   }
 });
@@ -19388,9 +19498,26 @@ var _hoisted_1 = /*#__PURE__*/_withScopeId(function () {
     "class": "h6"
   }, "Создать сменное задание", -1 /* HOISTED */);
 });
+var _hoisted_2 = /*#__PURE__*/_withScopeId(function () {
+  return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
+    "class": "text-center"
+  }, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("svg", {
+    width: "548",
+    height: "16",
+    viewBox: "0 0 548 16",
+    fill: "none",
+    xmlns: "http://www.w3.org/2000/svg"
+  }, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("path", {
+    d: "M262 6L274 10L286 6",
+    stroke: "#DFE6FA",
+    "stroke-width": "2",
+    "stroke-linecap": "round"
+  })])], -1 /* HOISTED */);
+});
 
 function render(_ctx, _cache, $props, $setup, $data, $options) {
   var _component_monthPicker = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("monthPicker");
+  var _component_days = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("days");
   var _component_modal = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("modal");
   return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_modal, {
     onClosed: $options.closeModal,
@@ -19398,7 +19525,14 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)('md')
   }, {
     "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
-      return [_hoisted_1, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_monthPicker)];
+      return [_hoisted_1, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_monthPicker, {
+        onChangeDate: $options.updateDaysRow
+      }, null, 8 /* PROPS */, ["onChangeDate"]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_days, {
+        "_date-range": $options.dateRange,
+        _format: 'DD dd',
+        "_can-select-date": true,
+        "_current-date": $data.baseDate
+      }, null, 8 /* PROPS */, ["_date-range", "_current-date"]), _hoisted_2];
     }),
     _: 1 /* STABLE */
   }, 8 /* PROPS */, ["onClosed", "_show"]);
@@ -19427,7 +19561,11 @@ var _hoisted_1 = {
   ref: "wrapper"
 };
 var _hoisted_2 = ["innerHTML"];
-var _hoisted_3 = ["innerHTML"];
+var _hoisted_3 = {
+  key: 1
+};
+var _hoisted_4 = ["onClick"];
+var _hoisted_5 = ["innerHTML"];
 function render(_ctx, _cache, $props, $setup, $data, $options) {
   return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(vue__WEBPACK_IMPORTED_MODULE_0__.TransitionGroup, {
     css: false,
@@ -19448,8 +19586,16 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
           })
         }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("i", {
           innerHTML: _ctx.arrowLeftIcon
-        }, null, 8 /* PROPS */, _hoisted_2)], 512 /* NEED_PATCH */)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(date.formatted) + " ", 1 /* TEXT */), $options.showNavigation(key, 'end') ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("button", {
-          key: 1,
+        }, null, 8 /* PROPS */, _hoisted_2)], 512 /* NEED_PATCH */)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), !$data.canSelectDate ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("span", _hoisted_3, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(date.formatted), 1 /* TEXT */)) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("button", {
+          key: 2,
+          "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)(["btn", {
+            selected: date.isoString === $data.currentDate
+          }]),
+          onClick: function onClick($event) {
+            return $options.selectDate(date);
+          }
+        }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(date.formatted), 11 /* TEXT, CLASS, PROPS */, _hoisted_4)), $options.showNavigation(key, 'end') ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("button", {
+          key: 3,
           "class": "btn px-1",
           ref_for: true,
           ref: "btnNext",
@@ -19458,7 +19604,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
           })
         }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("i", {
           innerHTML: _ctx.arrowRightIcon
-        }, null, 8 /* PROPS */, _hoisted_3)], 512 /* NEED_PATCH */)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)]);
+        }, null, 8 /* PROPS */, _hoisted_5)], 512 /* NEED_PATCH */)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)]);
       }), 128 /* KEYED_FRAGMENT */))];
     }),
 
@@ -20076,6 +20222,18 @@ __webpack_require__.r(__webpack_exports__);
 //вспомогательные функции
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  props: {
+    _format: {
+      type: String,
+      "default": "DD.MM",
+      required: false
+    }
+  },
+  watch: {
+    _format: function _format(format) {
+      this.format = format;
+    }
+  },
   data: function data() {
     return {
       /**
@@ -20083,27 +20241,19 @@ __webpack_require__.r(__webpack_exports__);
        *
        * @var{Integer}
        */
-      step: 0
+      step: 0,
+      format: this._format
     };
   },
   computed: {
     /**
      * отображаемые дни
+     *
+     * @param {String} format формат даты в синтаксисе moment.js
      */
     selectedDates: function selectedDates() {
       var vm = this;
-      if (!vm.mounted) {
-        return [];
-      }
-      vm.shift = vm.getCellsCount();
-      var visibleDates = vm.getVisibleDates();
-      var start = visibleDates.shift().isoString;
-      var end = visibleDates.length ? visibleDates.pop().isoString : start;
-      vm.$emit("showDates", {
-        start: start,
-        end: end
-      });
-      return vm.getVisibleDates();
+      return vm.getSelectedDates(this.format);
     }
   },
   methods: {
@@ -20135,6 +20285,28 @@ __webpack_require__.r(__webpack_exports__);
       return parseInt(fontSize) * 8;
     },
     /**
+     *
+     * @param {String} format формат даты в синтаксисе moment.js
+     *
+     * @returns {Array<Object}
+     */
+    getSelectedDates: function getSelectedDates() {
+      var format = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "DD.MM";
+      var vm = this;
+      if (!vm.mounted) {
+        return [];
+      }
+      vm.shift = vm.getCellsCount();
+      var visibleDates = vm.getVisibleDates(format);
+      var start = visibleDates.shift().isoString;
+      var end = visibleDates.length ? visibleDates.pop().isoString : start;
+      vm.$emit("showDates", {
+        start: start,
+        end: end
+      });
+      return vm.getVisibleDates(format);
+    },
+    /**
      * Вычисляется доступная ширина для компонента
      *
      * @returns {Integer} > 0
@@ -20149,8 +20321,13 @@ __webpack_require__.r(__webpack_exports__);
     },
     /**
      * Генерирует ряд видимых дат
+     *
+     * @param {String} format формат даты в синтаксисе moment.js
+     *
+     * @returns {Array<Object>}
      */
     getVisibleDates: function getVisibleDates() {
+      var format = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "DD.MM";
       var vm = this;
       var days = [];
       // вычислить количество ячеек
@@ -20160,7 +20337,7 @@ __webpack_require__.r(__webpack_exports__);
       var start = moment__WEBPACK_IMPORTED_MODULE_0___default()(vm.dateRange.start);
       start.add(vm.step, "days");
       days.push({
-        formatted: start.format("DD.MM"),
+        formatted: start.format(format),
         isoString: start.toISOString()
       });
 
@@ -20168,7 +20345,7 @@ __webpack_require__.r(__webpack_exports__);
       for (var shift = 0; shift < cellsCount; shift++) {
         var day = start.add(1, "days");
         days.push({
-          formatted: day.format("DD.MM"),
+          formatted: day.format(format),
           isoString: day.toISOString()
         });
       }
@@ -25937,6 +26114,7 @@ var task = {
        */
       mounted: false,
       tasks: {},
+      taskDate: null,
       /**
        * список техники организации
        * @var {Object}
@@ -26077,6 +26255,7 @@ var task = {
       (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c showChooseTimeModal", "color: yellow; font-style:italic", data);
       var vm = this;
       vm.activeModal = "chooseTime";
+      vm.taskDate = data.date.isoString;
     },
     /**
      * Показывает всплывающее окно со списком сотрудников
@@ -27245,7 +27424,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, ".btn[data-v-845590f8]:hover {\n  background-color: var(--grey-ultralight);\n}\n.row[data-v-845590f8] {\n  --bs-gutter-x: 0.5em;\n}", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, ".btn[data-v-845590f8]:hover {\n  background-color: var(--grey-ultralight);\n}\n.row[data-v-845590f8] {\n  --bs-gutter-x: 0.5em;\n}\n.btn.selected[data-v-845590f8] {\n  --bs-btn-border-color: var(--green);\n}", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 

@@ -168,6 +168,8 @@ const task = {
 
             tasks: {},
 
+            taskDate: null,
+
             /**
              * список техники организации
              * @var {Object}
@@ -337,6 +339,7 @@ const task = {
             );
             const vm = this;
             vm.activeModal = "chooseTime";
+            vm.taskDate = data.date.isoString;
         },
 
         /**

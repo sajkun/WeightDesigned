@@ -13,7 +13,6 @@
 
 <script>
 //вспомогательные функции
-import { strip, clog } from "@/misc/helpers";
 import moment from "moment";
 
 export default {
@@ -26,7 +25,7 @@ export default {
         /**
          * Определяет имя месяца по заданной дате
          *
-         * @returns {ENUM} . имя месяца
+         * @returns {ENUM} имя месяца
          */
         month() {
             const vm = this;
@@ -45,6 +44,12 @@ export default {
         },
     },
     props: {
+        /**
+         * Опорная дата, в зависимости от которой отображается месяц и год
+         * Унаследована от родителя
+         *
+         * @var {ISOString}
+         */
         _baseDate: {
             type: String,
             default: new moment().startOf("day").toISOString(),
@@ -53,6 +58,11 @@ export default {
     },
     data() {
         return {
+            /**
+             * Опорная дата, в зависимости от которой отображается месяц и год
+             *
+             * @var {ISOString}
+             */
             baseDate: this._baseDate,
         };
     },

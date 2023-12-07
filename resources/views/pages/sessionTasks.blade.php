@@ -68,6 +68,7 @@
             </div>
         </div>
         @include('pages.session-tasks.modal-employees')
-        <modal-time :_show='activeModal === "chooseTime"' v-on:close-request = 'closeModal'></modal-time>
+        <modal-time :_show='activeModal === "chooseTime"' v-on:close-request = 'closeModal'
+            :_base-date='taskDate'></modal-time>
     </div>
 @endsection

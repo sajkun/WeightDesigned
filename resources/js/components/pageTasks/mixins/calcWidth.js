@@ -2,6 +2,20 @@
 import moment from "moment";
 
 export default {
+    props: {
+        _format: {
+            type: String,
+            default: "DD.MM",
+            required: false,
+        },
+    },
+
+    watch: {
+        _format(format) {
+            this.format = format;
+        },
+    },
+
     data() {
         return {
             /**
@@ -10,33 +24,20 @@ export default {
              * @var{Integer}
              */
             step: 0,
+
+            format: this._format,
         };
     },
 
     computed: {
         /**
          * отображаемые дни
+         *
+         * @param {String} format формат даты в синтаксисе moment.js
          */
         selectedDates() {
             const vm = this;
-            if (!vm.mounted) {
-                return [];
-            }
-
-            vm.shift = vm.getCellsCount();
-            const visibleDates = vm.getVisibleDates();
-
-            const start = visibleDates.shift().isoString;
-            const end = visibleDates.length
-                ? visibleDates.pop().isoString
-                : start;
-
-            vm.$emit("showDates", {
-                start: start,
-                end: end,
-            });
-
-            return vm.getVisibleDates();
+            return vm.getSelectedDates(this.format);
         },
     },
 
@@ -75,6 +76,34 @@ export default {
         },
 
         /**
+         *
+         * @param {String} format формат даты в синтаксисе moment.js
+         *
+         * @returns {Array<Object}
+         */
+        getSelectedDates(format = "DD.MM") {
+            const vm = this;
+            if (!vm.mounted) {
+                return [];
+            }
+
+            vm.shift = vm.getCellsCount();
+            const visibleDates = vm.getVisibleDates(format);
+
+            const start = visibleDates.shift().isoString;
+            const end = visibleDates.length
+                ? visibleDates.pop().isoString
+                : start;
+
+            vm.$emit("showDates", {
+                start: start,
+                end: end,
+            });
+
+            return vm.getVisibleDates(format);
+        },
+
+        /**
          * Вычисляется доступная ширина для компонента
          *
          * @returns {Integer} > 0
@@ -93,8 +122,12 @@ export default {
 
         /**
          * Генерирует ряд видимых дат
+         *
+         * @param {String} format формат даты в синтаксисе moment.js
+         *
+         * @returns {Array<Object>}
          */
-        getVisibleDates() {
+        getVisibleDates(format = "DD.MM") {
             const vm = this;
             let days = [];
             // вычислить количество ячеек
@@ -105,7 +138,7 @@ export default {
             start.add(vm.step, "days");
 
             days.push({
-                formatted: start.format("DD.MM"),
+                formatted: start.format(format),
                 isoString: start.toISOString(),
             });
 
@@ -113,7 +146,7 @@ export default {
             for (let shift = 0; shift < cellsCount; shift++) {
                 const day = start.add(1, "days");
                 days.push({
-                    formatted: day.format("DD.MM"),
+                    formatted: day.format(format),
                     isoString: day.toISOString(),
                 });
             }
