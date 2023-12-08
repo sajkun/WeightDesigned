@@ -6,7 +6,7 @@
     text-align: left;
     background-color: transparent;
     color: var(--darkest);
-    font-size: 0.875em;
+    font-size: var(--text-smaller);
     font-weight: 500;
 
     &:hover {
@@ -16,7 +16,7 @@
     i {
         font-weight: 100;
         transition: transform var(--fast);
-        font-size: 0.75em;
+        font-size: var(--text-small);
     }
 
     .expanded & {
@@ -32,7 +32,7 @@
     outline: 0;
     background-color: transparent;
     color: var(--green);
-    font-size: 0.75rem;
+    font-size: var(--text-small);
     text-align: left;
     transition: border-bottom var(--fast);
 
@@ -46,7 +46,7 @@
 }
 
 .employee-name {
-    font-size: 0.75em;
+    font-size: var(--text-small);
     padding: 0.25em 0;
 
     &:nth-child(even) {

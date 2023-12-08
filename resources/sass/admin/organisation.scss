@@ -2,7 +2,7 @@
 
 table.organisation {
     width: 100%;
-    font-size: 0.75rem;
+    font-size: var(--text-small);
 
     th {
         color: #aab3cb;
@@ -50,7 +50,7 @@ table.organisation {
             &:before {
                 content: attr(title);
                 display: block;
-                font-size: 0.75rem;
+                font-size: var(--text-small);
                 color: var(--grey);
                 margin-bottom: 0rem;
             }

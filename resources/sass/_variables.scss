@@ -13,6 +13,7 @@ body {
     --green-medium: #66b28a;
     --green: #007e3c;
     --grey-ultralight: #e7e7e7;
+    --grey-light-medium: #eef2fd;
     --grey-light: #dfe6fa;
     --grey-medium: #aab3cb;
     --grey: #7e89a5;
@@ -48,7 +49,8 @@ body {
     --gap-y: 0.5rem;
 
     // размер текста
-    --text-small: 0.75rem;
-    --text-regular: 1rem;
-    --text-large: 1.25rem;
+    --text-small: 0.75em;
+    --text-smaller: 0.85em;
+    --text-regular: 1em;
+    --text-large: 1.25em;
 }

@@ -2328,6 +2328,7 @@ body {
   --green-medium: #66b28a;
   --green: #007e3c;
   --grey-ultralight: #e7e7e7;
+  --grey-light-medium: #eef2fd;
   --grey-light: #dfe6fa;
   --grey-medium: #aab3cb;
   --grey: #7e89a5;
@@ -2352,9 +2353,10 @@ body {
   --brs-max: 9999rem;
   --gap-x: 1rem;
   --gap-y: 0.5rem;
-  --text-small: 0.75rem;
-  --text-regular: 1rem;
-  --text-large: 1.25rem;
+  --text-small: 0.75em;
+  --text-smaller: 0.85em;
+  --text-regular: 1em;
+  --text-large: 1.25em;
 }
 
 /*!
@@ -13130,7 +13132,7 @@ textarea.form-control-lg {
 
 table.organisation {
   width: 100%;
-  font-size: 0.75rem;
+  font-size: var(--text-small);
 }
 table.organisation th {
   color: #aab3cb;
@@ -13170,7 +13172,7 @@ table.organisation tr:hover:not(:first-child):not(.no-hover) {
   table.organisation td:before {
     content: attr(title);
     display: block;
-    font-size: 0.75rem;
+    font-size: var(--text-small);
     color: var(--grey);
     margin-bottom: 0rem;
   }
@@ -13313,7 +13315,7 @@ body {
   position: absolute;
   top: 50%;
   left: 1rem;
-  font-size: 1rem;
+  font-size: var(--text-regular);
   color: var(--grey);
   transform: translateY(-50%);
   transition: left var(--fast), transform var(--fast), font-size var(--fast), color var(--fast);
@@ -13327,7 +13329,7 @@ body {
 .form-control-custom label.active {
   left: 0.5rem;
   transform: translateY(var(--shift-top));
-  font-size: 0.75rem;
+  font-size: var(--text-small);
 }
 .form-control-custom textarea.active + label,
 .form-control-custom textarea:focus + label,
@@ -13336,7 +13338,7 @@ body {
 .form-control-custom input:focus + label {
   left: 0.5rem;
   transform: translateY(var(--shift-top));
-  font-size: 0.75rem;
+  font-size: var(--text-small);
   color: #000;
 }
 .form-control-custom.disabled, .form-control-custom.disabled * {
@@ -13351,7 +13353,7 @@ body {
   top: -10px;
   bottom: -10px;
   margin: auto;
-  font-size: 1.25rem;
+  font-size: var(--text-large);
   color: var(--grey-medium);
   border: 0;
 }
@@ -13362,7 +13364,7 @@ body {
 
 .form-control-comment {
   display: block;
-  font-size: 0.75rem;
+  font-size: var(--text-small);
   color: var(--blue);
   height: 0;
   overflow: hidden;
@@ -13405,7 +13407,7 @@ body {
   width: 100%;
   text-align: left;
   padding: 0.25rem 1rem;
-  font-size: 0.75rem;
+  font-size: var(--text-small);
   color: var(--grey-medium);
   transition: background-color var(--fast);
 }
@@ -13421,11 +13423,11 @@ body {
 }
 .tabs .btn {
   margin-bottom: -1px;
-  font-size: 0.75rem;
+  font-size: var(--text-small);
 }
 @media (min-width: 768px) {
   .tabs .btn {
-    font-size: 1rem;
+    font-size: var(--text-regular);
   }
 }
 .tabs ul {
@@ -13446,7 +13448,7 @@ body {
 }
 
 .label {
-  font-size: 1rem;
+  font-size: var(--text-regular);
   font-weight: 400;
   color: var(--grey-medium);
 }
@@ -13483,7 +13485,7 @@ body {
 .responsible__title {
   margin: 0;
   font-weight: 400;
-  font-size: 1rem;
+  font-size: var(--text-regular);
 }
 .responsible__label {
   margin: 0;
@@ -13504,7 +13506,7 @@ body {
 
 .password-strength {
   display: none;
-  font-size: 0.75rem;
+  font-size: var(--text-small);
 }
 .password-strength.weak, .password-strength.neutral, .password-strength.strong {
   display: inline;
@@ -13529,7 +13531,7 @@ body {
   list-style-type: none;
   margin: 0;
   padding: 0;
-  font-size: 1rem;
+  font-size: var(--text-regular);
 }
 
 .inline-select {
@@ -13621,6 +13623,29 @@ button svg {
   --bs-btn-border-width: 2px;
 }
 .btn-borders .btn-close, .btn-borders .btn-close:hover {
+  background-color: none;
+  filter: contrast(0);
+}
+
+.btn-borders-danger {
+  text-decoration: none !important;
+  --bs-btn-color: var(--red);
+  --bs-btn-bg: transparent;
+  --bs-btn-border-color: var(--red);
+  --bs-btn-hover-color: var(--lightest);
+  --bs-btn-hover-bg: var(--red);
+  --bs-btn-hover-border-color: var(--red);
+  --bs-btn-focus-shadow-rgb: 0, 126, 60;
+  --bs-btn-active-color: var(--red);
+  --bs-btn-active-bg: transparent;
+  --bs-btn-active-border-color: var(--red);
+  --bs-btn-active-shadow: none;
+  --bs-btn-disabled-color: var(--grey-ultralight);
+  --bs-btn-disabled-bg: transparent;
+  --bs-btn-disabled-border-color: transparent;
+  --bs-btn-border-width: 2px;
+}
+.btn-borders-danger .btn-close, .btn-borders-danger .btn-close:hover {
   background-color: none;
   filter: contrast(0);
 }
@@ -13729,7 +13754,7 @@ body.auth #app {
   margin: 0 auto;
 }
 .form-auth__header {
-  font-size: 1.25rem;
+  font-size: var(--text-large);
 }
 .form-auth__comment {
   font-style: normal;
@@ -13945,7 +13970,7 @@ body.auth #app {
 }
 @media (max-width: 991px) {
   .main-menu a {
-    font-size: 1.25rem;
+    font-size: var(--text-large);
   }
 }
 @media (min-width: 992px) {
@@ -14078,7 +14103,7 @@ body.auth #app {
 }
 
 .statistics-header {
-  font-size: 1rem;
+  font-size: var(--text-regular);
 }
 
 .statistics-row {
@@ -14103,7 +14128,7 @@ body.auth #app {
   height: 100%;
 }
 .statistics-data__label {
-  font-size: 0.75rem;
+  font-size: var(--text-small);
   font-weight: 400;
   color: var(--grey-medium);
   margin: 0;
@@ -14111,22 +14136,22 @@ body.auth #app {
 }
 @media (min-width: 768px) {
   .statistics-data__label {
-    font-size: 1rem;
+    font-size: var(--text-regular);
   }
 }
 .statistics-data__value {
   font-weight: 700;
   margin: 0.25em 0 0;
   color: var(--dark);
-  font-size: 1rem;
+  font-size: var(--text-regular);
 }
 @media (min-width: 768px) {
   .statistics-data__value {
-    font-size: 1.25rem;
+    font-size: var(--text-large);
   }
 }
 .statistics-data__value_secondary {
-  font-size: 1rem;
+  font-size: var(--text-regular);
   font-weight: 400;
   color: var(--grey-medium);
 }
@@ -14163,11 +14188,11 @@ body.auth #app {
 }
 .statistics-best-item__name {
   margin: 0;
-  font-size: 0.75rem;
+  font-size: var(--text-small);
 }
 .statistics-best-item__persantage {
   margin: 0;
-  font-size: 0.75rem;
+  font-size: var(--text-small);
 }
 
 .rating2,
@@ -14240,7 +14265,7 @@ body.auth #app {
        text-align-last: left;
   display: grid;
   padding: 0.25em;
-  font-size: 0.8em;
+  font-size: var(--text-smaller);
   grid-template-columns: 3em calc(60% - 1.625em) calc(40% - 1.625em);
   transition: color var(--fast), background-color var(--fast);
 }
@@ -14252,7 +14277,7 @@ body.auth #app {
   background-color: var(--grey-ultralight);
 }
 .table-grid-employee_header {
-  font-size: 1em;
+  font-size: var(--text-regular);
 }
 .table-grid-employee:hover {
   background-color: var(--blue-medium);

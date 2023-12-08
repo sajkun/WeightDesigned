@@ -1,7 +1,6 @@
 .form-wrapper {
-    border-radius: 0.25em;
+    border-radius: var(--brs-small);
     border: 1px solid var(--grey-light, #dfe6fa);
-    // background: var(--grey-ultralight, #eef2fd);
     padding: 0.25em;
     transition: border-color var(--fast), box-shadow var(--fast);
 

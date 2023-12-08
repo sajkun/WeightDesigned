@@ -1,6 +1,6 @@
 <!-- Всплывающее окно с календарем сменных заданий -->
 <template>
-    <modal @closed="closeModal" :_show="show" :class="'md'">
+    <modal @closed="closeModal" :_show="show">
         <h3 class="h6">Создать сменное задание</h3>
         <monthPicker v-on:change-date="updateDaysRow" />
         <days
@@ -8,6 +8,7 @@
             :_format="'DD dd'"
             :_can-select-date="true"
             :_current-date="baseDate"
+            :_size-modificator="7"
         />
 
         <div class="text-center">
@@ -26,12 +27,47 @@
                 />
             </svg>
         </div>
+
+        <h4 class="label">Начало и конец смены</h4>
+        <div class="row mt-2">
+            <div class="col-6">
+                <div class="d-flex align-items-center">
+                    <label for="startTaskTime" class="me-2">c</label>
+                    <input type="time" id="startTaskTime" class="flex-grow-1" />
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="d-flex align-items-center">
+                    <label for="endTaskTime" class="me-2">по</label>
+                    <input type="time" id="endTaskTime" class="flex-grow-1" />
+                </div>
+            </div>
+        </div>
+
+        <h4 class="label mt-2">комментарий</h4>
+        <textarea name="" id="" class="w-100 mt-2"></textarea>
+
+        <div class="row mt-2">
+            <div class="col-6">
+                <button
+                    class="btn btn-borders-danger w-100"
+                    type="button"
+                    @click="closeModal"
+                >
+                    Удалить
+                </button>
+            </div>
+            <div class="col-6">
+                <button class="btn btn-primary-alt w-100" type="button">
+                    Сохранить
+                </button>
+            </div>
+        </div>
     </modal>
 </template>
 
 <script>
 //вспомогательные функции
-import { strip, clog } from "@/misc/helpers";
 import moment from "moment";
 
 // компоненты
@@ -121,4 +157,56 @@ export default {
 };
 </script>
 
-<style scoped src="./style/index.scss" lang="scss"></style>
+<style scoped lang="scss">
+.label,
+label {
+    color: var(--grey-medium);
+    font-size: var(--text-smaller);
+    margin: 0;
+}
+
+input {
+    border: 1px solid var(--grey-light-medium);
+    border-radius: var(--brs-small);
+    padding: 0.25em 0.25em;
+    background-color: var(--grey-light-medium);
+    transition: border var(--fast), outline var(--fast);
+
+    &::-webkit-calendar-picker-indicator {
+        width: 1.25em;
+        height: 1.25em;
+        background-image: url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBzdGFuZGFsb25lPSJubyI/Pgo8IURPQ1RZUEUgc3ZnIFBVQkxJQyAiLS8vVzNDLy9EVEQgU1ZHIDIwMDEwOTA0Ly9FTiIKICJodHRwOi8vd3d3LnczLm9yZy9UUi8yMDAxL1JFQy1TVkctMjAwMTA5MDQvRFREL3N2ZzEwLmR0ZCI+CjxzdmcgdmVyc2lvbj0iMS4wIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciCiB3aWR0aD0iNDAwLjAwMDAwMHB0IiBoZWlnaHQ9IjQwMC4wMDAwMDBwdCIgdmlld0JveD0iMCAwIDQwMC4wMDAwMDAgNDAwLjAwMDAwMCIKIHByZXNlcnZlQXNwZWN0UmF0aW89InhNaWRZTWlkIG1lZXQiPgoKPGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMC4wMDAwMDAsNDAwLjAwMDAwMCkgc2NhbGUoMC4xMDAwMDAsLTAuMTAwMDAwKSIKZmlsbD0iIzA4NzBlMiIgc3Ryb2tlPSIjMDg3MGUyIj4KPHBhdGggZD0iTTE3OTAgMzU2NSBjLTU5NiAtODIgLTEwOTcgLTQ5NSAtMTI4NSAtMTA1OSAtNjQgLTE5MCAtNzkgLTI4OCAtNzkKLTUwNiAwIC0xNjQgNCAtMjEyIDIzIC0zMDAgMTA2IC00OTcgNDA3IC04OTIgODQ2IC0xMTEyIDUwNSAtMjUzIDExMTEgLTIxNQoxNTgwIDk4IDM1MSAyMzQgNTg1IDU4NSA2NzYgMTAxNCAzMyAxNTIgMzMgNDQ4IDAgNjAwIC0xMDYgNDk3IC00MDcgODkyIC04NDYKMTExMiAtMjgwIDE0MSAtNjA3IDE5NSAtOTE1IDE1M3ogbTQ1NyAtMTgxIGMyNzIgLTQ3IDUyNCAtMTc3IDczMCAtMzc3IDI4MQotMjcyIDQyNiAtNjE3IDQyNiAtMTAwNyAwIC0zNzggLTEzMyAtNzA2IC0zOTYgLTk3NyAtMjcyIC0yODEgLTYxNyAtNDI2Ci0xMDA3IC00MjYgLTM5MCAwIC03MzUgMTQ1IC0xMDA3IDQyNiAtMjYzIDI3MSAtMzk2IDU5OSAtMzk2IDk3NyAwIDM3OCAxMzMKNzA2IDM5NiA5NzcgMjM0IDI0MSA1MjcgMzg0IDg2MyA0MjMgOTggMTEgMjgwIDQgMzkxIC0xNnoiLz4KPHBhdGggZD0iTTE5ODIgMjkyMCBjLTQ5IC0yMCAtNTIgLTQ2IC01MiAtNTAyIDAgLTM4MyAyIC00MjYgMTggLTQ1NyAxNCAtMjgKNzIgLTY2IDM1MiAtMjMyIDIzOSAtMTQyIDM0NCAtMTk4IDM2NiAtMTk5IDM4IDAgODQgNDIgODQgNzYgMCA1NSAtMTkgNjkKLTMzMSAyNTQgbC0zMDggMTgzIC0zIDQxOSAtMyA0MjAgLTI4IDI0IGMtMjkgMjUgLTU2IDI5IC05NSAxNHoiLz4KPC9nPgo8L3N2Zz4K");
+    }
+
+    &:hover {
+        outline: 0;
+        border-color: var(--blue);
+    }
+
+    &:focus {
+        outline: 1px solid var(--blue);
+    }
+}
+
+textarea {
+    resize: none;
+    border: 1px solid var(--grey-light-medium);
+    border-radius: var(--brs-small);
+    padding: 0.25em 0.25em;
+    background-color: var(--grey-light-medium);
+    transition: border var(--fast), outline var(--fast);
+
+    &:hover {
+        outline: 0;
+        border-color: var(--blue);
+    }
+
+    &:focus {
+        outline: 1px solid var(--blue);
+    }
+}
+
+.row {
+    --bs-gutter-x: 0.5em;
+}
+</style>

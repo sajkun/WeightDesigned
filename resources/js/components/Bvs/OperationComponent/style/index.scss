@@ -17,7 +17,7 @@
 .bvs-operation {
     padding: 0;
     margin: 0;
-    font-size: 1rem;
+    font-size: var(--text-regular);
     color: var(--darkest);
     background-color: var(--lightest);
     --gap-x: 1em;
@@ -39,7 +39,7 @@
     }
 
     &__name {
-        font-size: 0.875em;
+        font-size: var(--text-smaller);
         font-weight: 400;
         margin: 0;
         padding: 0;
@@ -47,7 +47,7 @@
 
     &__object {
         display: grid;
-        font-size: 0.875em;
+        font-size: var(--text-smaller);
         grid-template-columns: 1em auto 1.25em;
         gap: 0.25em;
         align-items: center;
@@ -68,12 +68,12 @@
     }
 
     &__date {
-        font-size: 0.875em;
+        font-size: var(--text-smaller);
         color: var(--grey-medium);
     }
 
     &__label {
-        font-size: 0.875em;
+        font-size: var(--text-smaller);
         line-height: 1em;
         color: var(--grey-medium);
         margin: 0;
@@ -81,7 +81,7 @@
     }
 
     &__data {
-        font-size: 1em;
+        font-size: var(--text-regular);
         color: var(--darkest);
         margin: calc(var(--gap-y)) 0 0;
         padding: 0;
@@ -115,7 +115,7 @@
                 content: "●";
                 left: 0;
                 color: var(--grey);
-                font-size: 1.25rem;
+                font-size: var(--text-large);
                 margin-right: 0.125em;
                 position: relative;
                 z-index: 10;

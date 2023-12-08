@@ -2,11 +2,11 @@
 <template>
     <div class="component-wrapper d-flex justify-content-between" ref="wrapper">
         <button class="btn" v-on:click="changeMonth(-1)">
-            <i class="fa fa-solid fa-chevron-left"></i>
+            <i v-html="arrowLeftIcon"></i>
         </button>
         <span>{{ month }} {{ year }}</span>
         <button class="btn" v-on:click="changeMonth(1)">
-            <i class="fa fa-solid fa-chevron-right"></i>
+            <i v-html="arrowRightIcon"></i>
         </button>
     </div>
 </template>
@@ -15,7 +15,11 @@
 //вспомогательные функции
 import moment from "moment";
 
+//миксины
+import icons from "@/mixins/icons";
 export default {
+    mixins: [icons],
+    created() {},
     watch: {
         _baseDate(baseDate) {
             this.baseDate = baseDate;

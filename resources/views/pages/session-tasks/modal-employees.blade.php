@@ -1,4 +1,4 @@
-<modal @closed='closeModal' :_show='activeModal === "employees"' :class='"md"'>
+<modal @closed='closeModal' :_show='activeModal === "employees"'>
     <h3 class="h6">Список сотрудников</h3>
     <div class="table-grid-employee table-grid-employee_header">
         <b>#</b>

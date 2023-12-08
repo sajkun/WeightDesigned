@@ -3,16 +3,42 @@ import moment from "moment";
 
 export default {
     props: {
+        /**
+         * @var {String}
+         * Строка из формата библиотеки moment.js для формирования человекопонятного отображения даты
+         */
         _format: {
             type: String,
             default: "DD.MM",
             required: false,
         },
+
+        /**
+         * @var {Number}
+         * положительное целое число для исчисления ширины ячейки каждого элемента. По формуле sizeModificator*font-size
+         */
+        _sizeModificator: {
+            type: Number,
+            default: 8,
+            required: false,
+        },
     },
 
     watch: {
+        /**
+         * Реактивность параметра в зависимости от состояния родителя
+         * @param {String} format
+         */
         _format(format) {
             this.format = format;
+        },
+
+        /**
+         * Реактивность параметра в зависимости от состояния родителя
+         * @param {Number} sizeModificator
+         */
+        _sizeModificator(sizeModificator) {
+            this.sizeModificator = sizeModificator;
         },
     },
 
@@ -21,10 +47,20 @@ export default {
             /**
              * На сколько дней сдвинута дата
              *
-             * @var{Integer}
+             * @var {Integer}
              */
             step: 0,
 
+            /**
+             * @see this.props._sizeModificator
+             * @var {Number}
+             */
+            sizeModificator: this._sizeModificator,
+
+            /**
+             * @see this.props._format
+             * @var {Number}
+             */
             format: this._format,
         };
     },
@@ -72,7 +108,7 @@ export default {
             const fontSize = window
                 .getComputedStyle(vm.$refs.wrapper, null)
                 .getPropertyValue("font-size");
-            return parseInt(fontSize) * 8;
+            return parseInt(fontSize) * vm.sizeModificator;
         },
 
         /**

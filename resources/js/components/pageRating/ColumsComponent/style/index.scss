@@ -45,12 +45,12 @@
     );
 
     --gap-x: 0.25rem;
-    --font-size: 0.75rem;
+    --font-size: var(--text-small);
     --font-size-lg: 1.25rem;
 
     @media (min-width: map.get($grid-breakpoints, "md")) {
         --gap-x: 0.5rem;
-        --font-size: 1rem;
+        --font-size: var(--text-regular);
     }
 
     &__footer {

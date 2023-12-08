@@ -26,7 +26,7 @@
     text-align-last: left;
     display: grid;
     padding: 0.25em;
-    font-size: 0.8em;
+    font-size: var(--text-smaller);
     grid-template-columns: 3em calc(60% - 1.625em) calc(40% - 1.625em);
     transition: color var(--fast), background-color var(--fast);
 
@@ -40,7 +40,7 @@
     }
 
     &_header {
-        font-size: 1em;
+        font-size: var(--text-regular);
     }
 
     &:hover {
