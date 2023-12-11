@@ -22918,11 +22918,11 @@ var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
       }))();
     },
     /**
-     * запрос списка техники
+     * запрос списка заданий
      *
      * @return {Promise}
      */
-    getVehicles: function getVehicles() {
+    getTasks: function getTasks() {
       var _this6 = this;
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6() {
         var vm;
@@ -22936,11 +22936,11 @@ var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
               }
               return _context6.abrupt("return");
             case 3:
-              return _context6.abrupt("return", axios.get("/vehicles/list").then(function (response) {
-                (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c getVehicles", "color: green", response);
+              return _context6.abrupt("return", axios.get("/tasks/list").then(function (response) {
+                (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c getTasks", "color: green", response);
                 return response.data;
               })["catch"](function (e) {
-                (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c getVehicles error", "color: red", e.response);
+                (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c getTasks error", "color: red", e.response);
                 vm.messages.error = "".concat(e.response.status, " ").concat(e.response.statusText, " : ").concat(e.response.data.message);
                 return e.response;
               }));
@@ -22952,26 +22952,60 @@ var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
       }))();
     },
     /**
-     * запрос списка пользователей системы
+     * запрос списка техники
      *
      * @return {Promise}
      */
-    getUsers: function getUsers() {
+    getVehicles: function getVehicles() {
       var _this7 = this;
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee7() {
         var vm;
         return _regeneratorRuntime().wrap(function _callee7$(_context7) {
           while (1) switch (_context7.prev = _context7.next) {
             case 0:
-              (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c getUser", "color:#f7f");
               vm = _this7;
               if (!(vm.$refs.organisationId < 0)) {
-                _context7.next = 4;
+                _context7.next = 3;
                 break;
               }
               return _context7.abrupt("return");
+            case 3:
+              return _context7.abrupt("return", axios.get("/vehicles/list").then(function (response) {
+                (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c getVehicles", "color: green", response);
+                return response.data;
+              })["catch"](function (e) {
+                (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c getVehicles error", "color: red", e.response);
+                vm.messages.error = "".concat(e.response.status, " ").concat(e.response.statusText, " : ").concat(e.response.data.message);
+                return e.response;
+              }));
             case 4:
-              return _context7.abrupt("return", axios.get("/users/list").then(function (response) {
+            case "end":
+              return _context7.stop();
+          }
+        }, _callee7);
+      }))();
+    },
+    /**
+     * запрос списка пользователей системы
+     *
+     * @return {Promise}
+     */
+    getUsers: function getUsers() {
+      var _this8 = this;
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee8() {
+        var vm;
+        return _regeneratorRuntime().wrap(function _callee8$(_context8) {
+          while (1) switch (_context8.prev = _context8.next) {
+            case 0:
+              (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c getUser", "color:#f7f");
+              vm = _this8;
+              if (!(vm.$refs.organisationId < 0)) {
+                _context8.next = 4;
+                break;
+              }
+              return _context8.abrupt("return");
+            case 4:
+              return _context8.abrupt("return", axios.get("/users/list").then(function (response) {
                 (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("%c getUsers успех", "color:green", response);
                 return response;
               })["catch"](function (e) {
@@ -22980,9 +23014,9 @@ var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
               }));
             case 5:
             case "end":
-              return _context7.stop();
+              return _context8.stop();
           }
-        }, _callee7);
+        }, _callee8);
       }))();
     }
   }
@@ -26482,6 +26516,13 @@ var task = {
      */
     vm.getEmployees().then(function (e) {
       vm.employees = e.employees;
+    });
+
+    /**
+     * Получение списка заданий
+     */
+    vm.getTasks().then(function (e) {
+      vm.tasks = e.tasks;
     });
     vm.$nextTick(function () {
       vm.mounted = true;

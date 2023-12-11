@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\PublicArea\SessionTask;
 
-use App\Http\Controllers\PublicController;
+use App\Models\Organisation;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
-class ListController extends PublicController
+class ListController extends Controller
 {
     /**
      * Handle the incoming request.
@@ -15,6 +17,16 @@ class ListController extends PublicController
      */
     public function __invoke(Request $request)
     {
-        //
+        try {
+            $user = Auth::user();
+            $organisation = Organisation::find($user->organisation_id);
+            return  response()->json([
+                'tasks' => $organisation->tasks()->get(),
+            ]);
+        } catch (\Exception  $e) {
+            return response()->json([
+                'message' => $e->getMessage(),
+            ], $e->getCode());
+        }
     }
 }

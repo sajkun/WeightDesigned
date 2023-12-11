@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Group;
 use App\Models\Vehicle;
 use App\Models\Grassland;
+use App\Models\SessionTask;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -220,5 +221,15 @@ class Organisation extends Model
     public function groups()
     {
         return $this->hasMany(Group::class, 'organisation_id', 'id');
+    }
+
+    /**
+     * список заданий
+     *
+     * @return Object
+     */
+    public function tasks()
+    {
+        return $this->hasMany(SessionTask::class, 'organisation_id', 'id');
     }
 }

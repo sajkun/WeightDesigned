@@ -251,6 +251,13 @@ const task = {
             vm.employees = e.employees;
         });
 
+        /**
+         * Получение списка заданий
+         */
+        vm.getTasks().then((e) => {
+            vm.tasks = e.tasks;
+        });
+
         vm.$nextTick(() => {
             vm.mounted = true;
         });

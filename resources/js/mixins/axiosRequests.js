@@ -158,6 +158,29 @@ export default {
         },
 
         /**
+         * запрос списка заданий
+         *
+         * @return {Promise}
+         */
+        async getTasks() {
+            const vm = this;
+            if (vm.$refs.organisationId < 0) {
+                return;
+            }
+            return axios
+                .get("/tasks/list")
+                .then((response) => {
+                    clog("%c getTasks", "color: green", response);
+                    return response.data;
+                })
+                .catch((e) => {
+                    clog("%c getTasks error", "color: red", e.response);
+                    vm.messages.error = `${e.response.status} ${e.response.statusText} : ${e.response.data.message}`;
+                    return e.response;
+                });
+        },
+
+        /**
          * запрос списка техники
          *
          * @return {Promise}
