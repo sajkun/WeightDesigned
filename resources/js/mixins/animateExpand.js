@@ -4,16 +4,9 @@
 import { strip, clog } from "@/misc/helpers";
 export default {
     methods: {
-        beforeEnter(el) {
-            el.style.height = 0;
-        },
-
-        enter(el, done) {
-            el.style.height = `${el.scrollHeight}px`;
-            done();
-        },
-
         afterEnter(el) {
+            // вычисляем есть ли в css заданное время анимации высоты, и если есть по таймауту удаляем фиксированное значение высоты
+
             const transition = window
                 .getComputedStyle(el)
                 .transition.split(",");
@@ -31,10 +24,21 @@ export default {
             const timeout = parseFloat(heightTransition.split(" ")[1]) * 1000;
 
             setTimeout(() => {
-                clog(el);
-                clog(timeout);
                 el.style.removeProperty("height");
             }, timeout);
+        },
+
+        beforeEnter(el) {
+            el.style.height = 0;
+        },
+
+        beforeLeave(el) {
+            el.style.height = `${el.scrollHeight}px`;
+        },
+
+        enter(el, done) {
+            el.style.height = `${el.scrollHeight}px`;
+            done();
         },
 
         leave: function (el, done) {

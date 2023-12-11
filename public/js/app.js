@@ -17951,6 +17951,12 @@ __webpack_require__.r(__webpack_exports__);
     closeModal: function closeModal() {
       this.$emit("closeRequest");
     },
+    /**
+     * Хэндлер действия пожтверждения формы
+     * эмитит родителю событие submited с данными периода времени и комментарием
+     *
+     * @returns {Void}
+     */
     submit: function submit() {
       var vm = this;
       var data = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.getFormData)(vm.$refs.form);
@@ -17963,6 +17969,18 @@ __webpack_require__.r(__webpack_exports__);
         start: start,
         end: end,
         comment: data.comment
+      });
+    },
+    /**
+     * передает родителю сообщение
+     *
+     * @param {Enum} type  error|info|success
+     * @param {String} text
+     */
+    emitMessage: function emitMessage(type, text) {
+      this.$emit("messageRequest", {
+        type: type,
+        text: text
       });
     },
     /**
@@ -18333,6 +18351,7 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     /**
+     * Определяем наличие задания у рабочего в этот день
      *
      * @param {Object} date - данные о дате {formatted: this.format, isoString: isoString}
      * @param {Object} employee
@@ -19900,6 +19919,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     onBeforeEnter: _ctx.beforeEnter,
     onEnter: _ctx.enter,
     onAfterEnter: _ctx.afterEnter,
+    onBeforeLeave: _ctx.beforeLeave,
     onLeave: _ctx.leave,
     tag: "div"
   }, {
@@ -19921,25 +19941,27 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
               },
               key: key + 'task' + key2
             }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(task.start) + " - " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(task.end), 9 /* TEXT, PROPS */, _hoisted_15);
-          }), 128 /* KEYED_FRAGMENT */))])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+          }), 128 /* KEYED_FRAGMENT */))])) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("button", {
+            key: 1,
             "class": "btn btn-borders w-100 p-1 btn-sm my-1",
             type: "button",
             onClick: function onClick($event) {
               return $options.chooseTime(date, employee);
             },
             title: 'добавить расписание на ' + date.formatted
-          }, " + ", 8 /* PROPS */, _hoisted_16)]);
+          }, " + ", 8 /* PROPS */, _hoisted_16))]);
         }), 128 /* KEYED_FRAGMENT */))])])])]);
       }), 128 /* KEYED_FRAGMENT */))];
     }),
 
     _: 1 /* STABLE */
-  }, 8 /* PROPS */, ["onBeforeEnter", "onEnter", "onAfterEnter", "onLeave"])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(vue__WEBPACK_IMPORTED_MODULE_0__.Transition, {
+  }, 8 /* PROPS */, ["onBeforeEnter", "onEnter", "onAfterEnter", "onBeforeLeave", "onLeave"])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(vue__WEBPACK_IMPORTED_MODULE_0__.Transition, {
     css: false,
     onBeforeEnter: _ctx.beforeEnter,
     onEnter: _ctx.enter,
-    onLeave: _ctx.leave,
     onAfterEnter: _ctx.afterEnter,
+    onBeforeLeave: _ctx.beforeLeave,
+    onLeave: _ctx.leave,
     persisted: ""
   }, {
     "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
@@ -19952,7 +19974,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       }, " + Добавить механизатора ")]), _hoisted_19], 512 /* NEED_PATCH */), [[vue__WEBPACK_IMPORTED_MODULE_0__.vShow, $data.expanded]])];
     }),
     _: 1 /* STABLE */
-  }, 8 /* PROPS */, ["onBeforeEnter", "onEnter", "onLeave", "onAfterEnter"])], 2 /* CLASS */);
+  }, 8 /* PROPS */, ["onBeforeEnter", "onEnter", "onAfterEnter", "onBeforeLeave", "onLeave"])], 2 /* CLASS */);
 }
 
 /***/ }),
@@ -22661,14 +22683,9 @@ __webpack_require__.r(__webpack_exports__);
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   methods: {
-    beforeEnter: function beforeEnter(el) {
-      el.style.height = 0;
-    },
-    enter: function enter(el, done) {
-      el.style.height = "".concat(el.scrollHeight, "px");
-      done();
-    },
     afterEnter: function afterEnter(el) {
+      // вычисляем есть ли в css заданное время анимации высоты, и если есть по таймауту удаляем фиксированное значение высоты
+
       var transition = window.getComputedStyle(el).transition.split(",");
       var heightTransition = transition.filter(function (el) {
         return el.indexOf("height") >= 0;
@@ -22678,10 +22695,18 @@ __webpack_require__.r(__webpack_exports__);
       }
       var timeout = parseFloat(heightTransition.split(" ")[1]) * 1000;
       setTimeout(function () {
-        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)(el);
-        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)(timeout);
         el.style.removeProperty("height");
       }, timeout);
+    },
+    beforeEnter: function beforeEnter(el) {
+      el.style.height = 0;
+    },
+    beforeLeave: function beforeLeave(el) {
+      el.style.height = "".concat(el.scrollHeight, "px");
+    },
+    enter: function enter(el, done) {
+      el.style.height = "".concat(el.scrollHeight, "px");
+      done();
     },
     leave: function leave(el, done) {
       el.style.height = 0;
@@ -26565,6 +26590,9 @@ var task = {
           end: data.end,
           comment: data.comment
         };
+        vm.storeTask(task).then(function (r) {
+          // clog(r);
+        });
         vm.tasks.push(task);
       });
     },
@@ -26597,6 +26625,41 @@ var task = {
       var vm = this;
       vm.activeModal = "employees";
       vm.vehicleSelected = vehicle;
+    },
+    /**
+     * показывает сообщение
+     *
+     * @param {Object} message
+     */
+    showMessage: function showMessage(message) {
+      this.messages[message.type] = message.text;
+    },
+    storeTask: function storeTask(task) {
+      var _this = this;
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
+        var vm, data;
+        return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+          while (1) switch (_context2.prev = _context2.next) {
+            case 0:
+              vm = _this;
+              data = {
+                user_id: vm.userId,
+                organisation_id: vm.organisationId,
+                task: task
+              };
+              (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)(data);
+              return _context2.abrupt("return", vm.createEntity(data, "/tasks/store").then(function (response) {
+                (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)(response);
+                return response;
+              })["catch"](function (e) {
+                return e.response;
+              }));
+            case 4:
+            case "end":
+              return _context2.stop();
+          }
+        }, _callee2);
+      }))();
     },
     /**
      * Изменяет выбранный период

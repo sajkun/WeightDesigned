@@ -16,7 +16,7 @@
 
         <div class="container mt-4">
             <div class="org-wrapper">
-                <div class="d-flex align-content-stretch">
+                <div class="d-flex align-content-stretch flex-wraps">
                     <h4 class='h6 m-0  align-self-center'><b>График сменности</b></h4>
                     <div class="search-block ms-4">
                         <search @search='execSearch'></search>
@@ -72,6 +72,6 @@
         @include('pages.session-tasks.modal-employees')
 
         <modal-time :_show='activeModal === "chooseTime"' v-on:close-request = 'closeModal' v-on:submited ='setTask'
-            :_base-date='taskDate'></modal-time>
+            :_base-date='taskDate' v-on:message-request='showMessage'></modal-time>
     </div>
 @endsection

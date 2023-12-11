@@ -34,6 +34,7 @@
             v-on:before-enter="beforeEnter"
             v-on:enter="enter"
             v-on:after-enter="afterEnter"
+            v-on:before-leave="beforeLeave"
             v-on:leave="leave"
             v-if="expanded"
             tag="div"
@@ -81,6 +82,7 @@
                                     </button>
                                 </div>
                                 <button
+                                    v-else
                                     class="btn btn-borders w-100 p-1 btn-sm my-1"
                                     type="button"
                                     @click="chooseTime(date, employee)"
@@ -102,8 +104,9 @@
             :css="false"
             v-on:before-enter="beforeEnter"
             v-on:enter="enter"
-            v-on:leave="leave"
             v-on:after-enter="afterEnter"
+            v-on:before-leave="beforeLeave"
+            v-on:leave="leave"
         >
             <div
                 class="row m-0 overflow-hidden expandable-content"
@@ -296,6 +299,7 @@ export default {
         },
 
         /**
+         * Определяем наличие задания у рабочего в этот день
          *
          * @param {Object} date - данные о дате {formatted: this.format, isoString: isoString}
          * @param {Object} employee

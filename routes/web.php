@@ -76,6 +76,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('/store', 'StoreController')->name('public.tasks.store');
         Route::post('/update', 'PatchController')->name('public.tasks.edit');
         Route::post('/delete', 'DestroyController')->name('public.tasks.delete');
+        Route::post('/search', 'SearchController')->name('public.tasks.search');
     });
 });
 

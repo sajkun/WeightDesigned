@@ -166,6 +166,12 @@ export default {
             this.$emit("closeRequest");
         },
 
+        /**
+         * Хэндлер действия пожтверждения формы
+         * эмитит родителю событие submited с данными периода времени и комментарием
+         *
+         * @returns {Void}
+         */
         submit() {
             const vm = this;
             const data = getFormData(vm.$refs.form);
@@ -176,6 +182,17 @@ export default {
             const end = `${dateString}T${data.end}:00${timeZone}`;
             vm.$emit("submited", { start, end, comment: data.comment });
         },
+
+        /**
+         * передает родителю сообщение
+         *
+         * @param {Enum} type  error|info|success
+         * @param {String} text
+         */
+        emitMessage(type, text) {
+            this.$emit("messageRequest", { type, text });
+        },
+
         /**
          *
          * @param {Object} data

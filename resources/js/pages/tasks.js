@@ -371,6 +371,10 @@ const task = {
                     comment: data.comment,
                 };
 
+                vm.storeTask(task).then((r) => {
+                    // clog(r);
+                });
+
                 vm.tasks.push(task);
             });
         },
@@ -410,6 +414,36 @@ const task = {
             const vm = this;
             vm.activeModal = "employees";
             vm.vehicleSelected = vehicle;
+        },
+
+        /**
+         * показывает сообщение
+         *
+         * @param {Object} message
+         */
+        showMessage(message) {
+            this.messages[message.type] = message.text;
+        },
+
+        async storeTask(task) {
+            const vm = this;
+            const data = {
+                user_id: vm.userId,
+                organisation_id: vm.organisationId,
+                task: task,
+            };
+
+            clog(data);
+
+            return vm
+                .createEntity(data, "/tasks/store")
+                .then((response) => {
+                    clog(response);
+                    return response;
+                })
+                .catch((e) => {
+                    return e.response;
+                });
         },
 
         /**
