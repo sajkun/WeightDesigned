@@ -30,7 +30,6 @@ class StoreController extends PublicController
             $new_task_data['organisation_id'] = (int)$request->organisation_id;
 
             $new_task = SessionTask::create($new_task_data);
-
             return response()->json([
                 'new_task' => $new_task,
                 'message' => 'Запись о задании успешно добавлена',

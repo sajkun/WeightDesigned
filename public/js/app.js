@@ -26590,10 +26590,9 @@ var task = {
           end: data.end,
           comment: data.comment
         };
-        vm.storeTask(task).then(function (r) {
-          // clog(r);
+        vm.storeTask(task).then(function (response) {
+          vm.tasks.push(response.new_task);
         });
-        vm.tasks.push(task);
       });
     },
     /**

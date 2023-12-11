@@ -371,11 +371,9 @@ const task = {
                     comment: data.comment,
                 };
 
-                vm.storeTask(task).then((r) => {
-                    // clog(r);
+                vm.storeTask(task).then((response) => {
+                    vm.tasks.push(response.new_task);
                 });
-
-                vm.tasks.push(task);
             });
         },
 
