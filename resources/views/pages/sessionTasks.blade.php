@@ -72,6 +72,7 @@
         @include('pages.session-tasks.modal-employees')
 
         <modal-time :_show='activeModal === "chooseTime"' v-on:close-request = 'closeModal' v-on:submited ='setTask'
-            :_base-date='taskDate' v-on:message-request='showMessage'></modal-time>
+            :_task-selected='taskSelected' :_base-date='taskDate' v-on:delete-request='deleteTask'
+            v-on:message-request='showMessage'></modal-time>
     </div>
 @endsection

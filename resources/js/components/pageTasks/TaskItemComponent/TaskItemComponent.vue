@@ -146,6 +146,10 @@ export default {
         _info: {
             handler(info) {
                 this.info = info;
+
+                if (info.employees.length) {
+                    this.expanded = true;
+                }
             },
             deep: true,
         },
@@ -188,17 +192,6 @@ export default {
 
     props: {
         /**
-         * Массив сменных заданий
-         * @var{Array<SessionTask>}
-         * @see app/Models/SessionTask
-         */
-        _tasks: {
-            type: Object,
-            default: [],
-            required: false,
-        },
-
-        /**
          * Выбранный диапазон значений для отображения
          * @var {Object<key:ISOString>}
          */
@@ -219,6 +212,17 @@ export default {
             type: Object,
             default: {},
             required: true,
+        },
+
+        /**
+         * Массив сменных заданий
+         * @var{Array<SessionTask>}
+         * @see app/Models/SessionTask
+         */
+        _tasks: {
+            type: Array,
+            default: [],
+            required: false,
         },
     },
 
@@ -263,6 +267,9 @@ export default {
 
         vm.$nextTick(() => {
             vm.mounted = true;
+            if (vm.info.employees.length) {
+                vm.expanded = true;
+            }
         });
     },
 

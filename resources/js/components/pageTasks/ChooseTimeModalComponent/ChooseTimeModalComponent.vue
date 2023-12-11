@@ -27,7 +27,7 @@
                 />
             </svg>
         </div>
-        <form ref="form" @submit.prevent="submit">
+        <form ref="form" @submit.prevent="submit" v-if="show">
             <h4 class="label">Начало и конец смены</h4>
             <div class="row mt-2">
                 <div class="col-6">
@@ -59,16 +59,30 @@
             </div>
 
             <h4 class="label mt-2">комментарий</h4>
-            <textarea name="comment" id="" class="w-100 mt-2"></textarea>
+            <textarea
+                name="comment"
+                id=""
+                class="w-100 mt-2"
+                v-model="comment"
+            ></textarea>
 
             <div class="row mt-2">
                 <div class="col-6">
                     <button
                         class="btn btn-borders-danger w-100"
                         type="button"
-                        @click="closeModal"
+                        v-if="taskSelected.id"
+                        @click="deleteTask(taskSelected.id)"
                     >
                         Удалить
+                    </button>
+                    <button
+                        class="btn btn-borders-danger w-100"
+                        type="button"
+                        @click="closeModal"
+                        v-else
+                    >
+                        Отмена
                     </button>
                 </div>
                 <div class="col-6">
@@ -103,12 +117,42 @@ export default {
             this.show = show;
         },
 
-        show() {
+        /**
+         *
+         */
+        _taskSelected: {
+            handler(task) {
+                this.taskSelected = task;
+            },
+            deep: true,
+        },
+
+        show(show) {
             const vm = this;
 
+            if (show) return;
+
             vm.$nextTick(() => {
-                vm.$refs.form?.reset();
+                vm.end = null;
+                vm.start = null;
+                vm.comment = null;
             });
+        },
+
+        /**
+         *
+         */
+        taskSelected: {
+            handler(task) {
+                const vm = this;
+
+                if (task.id) {
+                    vm.start = moment(task.start).format("HH:mm");
+                    vm.end = moment(task.end).format("HH:mm");
+                    vm.comment = task.comment;
+                }
+            },
+            deep: true,
         },
     },
 
@@ -140,6 +184,17 @@ export default {
             default: false,
             required: false,
         },
+
+        /**
+         * сменное задание для редактирования
+         * @var{Object}
+         * @see app/Models/SessionTask
+         */
+        _taskSelected: {
+            type: Object,
+            default: {},
+            required: false,
+        },
     },
 
     components: {
@@ -150,19 +205,28 @@ export default {
     data() {
         return {
             /**
-             * @var {Boolean}
-             * Показывать или не показывать окно
-             */
-            show: this._show,
-
-            /**
              * @var{ISOString}
              * текущая дата
              */
             baseDate: this._baseDate,
 
-            start: null,
+            comment: null,
+
             end: null,
+
+            /**
+             * @var {Boolean}
+             * Показывать или не показывать окно
+             */
+            show: this._show,
+
+            start: null,
+
+            /**
+             * @var {Object}
+             * @see app/Models/sessionTask
+             */
+            taskSelected: this._taskSelected,
         };
     },
     methods: {
@@ -171,6 +235,15 @@ export default {
          */
         closeModal() {
             this.$emit("closeRequest");
+        },
+
+        /**
+         * Эмитит запрос на удаление задания
+         *
+         * @param {Number} taskId
+         */
+        deleteTask(taskId) {
+            this.$emit("deleteRequest", { taskId });
         },
 
         /**

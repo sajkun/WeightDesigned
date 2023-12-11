@@ -33,10 +33,12 @@ class StoreController extends PublicController
             return response()->json([
                 'new_task' => $new_task,
                 'message' => 'Запись о задании успешно добавлена',
+                'type' => 'success'
             ]);
         } catch (\Exception  $e) {
             return response()->json([
                 'message' => $e->getMessage(),
+                'type' => 'error',
             ], $e->getCode());
         }
     }

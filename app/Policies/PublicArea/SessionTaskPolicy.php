@@ -19,7 +19,7 @@ class SessionTaskPolicy
      */
     public function viewAny(User $user, $organisation_id)
     {
-        return in_array($user->role, ['user_director', 'user_control', 'user_control_employees']) && $user->organisation_id === $organisation_id;
+        return in_array($user->role, ['user_director', 'user_control', 'user_control_employees', 'superadmin']) && $user->organisation_id === $organisation_id;
     }
 
     /**
@@ -31,7 +31,7 @@ class SessionTaskPolicy
      */
     public function view(User $user, $organisation_id)
     {
-        return in_array($user->role, ['user_director', 'user_control', 'user_control_employees']) && $user->organisation_id === $organisation_id;
+        return in_array($user->role, ['user_director', 'user_control', 'user_control_employees', 'superadmin']) && $user->organisation_id === $organisation_id;
     }
 
     /**
@@ -43,7 +43,7 @@ class SessionTaskPolicy
      */
     public function create(User $user, $organisation_id)
     {
-        return in_array($user->role, ['user_control']) && $user->organisation_id === $organisation_id;
+        return in_array($user->role, ['user_control', 'superadmin']) && $user->organisation_id === $organisation_id;
     }
 
     /**
@@ -55,7 +55,7 @@ class SessionTaskPolicy
      */
     public function update(User $user, $organisation_id)
     {
-        return in_array($user->role, ['user_control']) && $user->organisation_id === $organisation_id;
+        return in_array($user->role, ['user_control', 'superadmin']) && $user->organisation_id === $organisation_id;
     }
 
     /**
@@ -67,7 +67,7 @@ class SessionTaskPolicy
      */
     public function delete(User $user, $organisation_id)
     {
-        return in_array($user->role, ['user_control']) && $user->organisation_id === $organisation_id;
+        return in_array($user->role, ['user_control', 'superadmin']) && $user->organisation_id === $organisation_id;
     }
 
     /**
@@ -79,7 +79,7 @@ class SessionTaskPolicy
      */
     public function restore(User $user, $organisation_id)
     {
-        return in_array($user->role, ['user_control']) && $user->organisation_id === $organisation_id;
+        return in_array($user->role, ['user_control', 'superadmin']) && $user->organisation_id === $organisation_id;
     }
 
     /**
@@ -91,6 +91,6 @@ class SessionTaskPolicy
      */
     public function forceDelete(User $user, $organisation_id)
     {
-        return in_array($user->role, ['user_control']) && $user->organisation_id === $organisation_id;
+        return in_array($user->role, ['user_control', 'superadmin']) && $user->organisation_id === $organisation_id;
     }
 }

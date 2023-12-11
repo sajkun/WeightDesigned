@@ -45,8 +45,17 @@ const task = {
 
     watch: {
         tasks: {
-            handler(tasks) {
-                clog("tasks", strip(tasks));
+            handler() {
+                const vm = this;
+                vm.createDeps();
+            },
+            deep: true,
+        },
+
+        dateRange: {
+            handler() {
+                const vm = this;
+                vm.createDeps();
             },
             deep: true,
         },
@@ -158,15 +167,15 @@ const task = {
 
             /**
              * список техники организации
-             * @var {Object}
+             * @var {Array}
              */
-            employees: {},
+            employees: [],
 
             /**
              * список групп техники организации
-             * @var {Object}
+             * @var {Array}
              */
-            groups: {},
+            groups: [],
 
             /**
              * признак смонтированности приложения
@@ -183,6 +192,11 @@ const task = {
              *
              */
             taskDate: null,
+
+            /**
+             *
+             */
+            taskSelected: {},
 
             /**
              * список техники организации
@@ -272,12 +286,7 @@ const task = {
          */
         applyEmployee(employee) {
             const vm = this;
-
-            if (!vm.vehiclesEmployeesDeps[vm.vehicleSelected.id]) {
-                vm.vehiclesEmployeesDeps[vm.vehicleSelected.id] = new Set();
-            }
-
-            vm.vehiclesEmployeesDeps[vm.vehicleSelected.id].add(employee);
+            vm.setEmployeeVehicleTask(employee, vm.vehicleSelected.id);
 
             vm.$nextTick(() => {
                 vm.closeModal();
@@ -293,6 +302,62 @@ const task = {
          */
         closeModal() {
             this.activeModal = false;
+        },
+
+        /**
+         * формирует зависимости между рабочим и
+         */
+        createDeps() {
+            const vm = this;
+            const tasks = this.tasks;
+
+            if (!vm.employees.length) {
+                return;
+            }
+
+            if (!Object.values(vm.vehicles).length) {
+                return;
+            }
+
+            vm.vehiclesEmployeesDeps = {};
+
+            for (const task of strip(tasks)) {
+                const employee = vm.employees
+                    .filter((e) => e.id === task.employee_id)
+                    .pop();
+
+                vm.setEmployeeVehicleTask(employee, task.vehicle_id);
+            }
+        },
+
+        /**
+         *
+         *
+         * @param {Object} data
+         */
+        deleteTask(data) {
+            const vm = this;
+
+            const sendData = {
+                user_id: vm.userId,
+                organisation_id: vm.organisationId,
+                delete_item_id: data.taskId,
+                name: "Сменное задание",
+            };
+
+            const doClose = () => {
+                vm.closeModal();
+
+                vm.getTasks().then((e) => {
+                    vm.tasks = e.tasks;
+                });
+
+                document.removeEventListener("updateList", doClose, false);
+            };
+
+            document.addEventListener("updateList", doClose);
+
+            vm.deleteEntity(sendData, `/tasks/delete`);
         },
 
         /**
@@ -385,6 +450,29 @@ const task = {
         },
 
         /**
+         * Устанавливает взаимосвязь между техникой и рабочим для сменного задания
+         *
+         * @param {Object} employee
+         * @param {Number} vehicle_id
+         */
+        setEmployeeVehicleTask(employee, vehicle_id) {
+            if (!employee) {
+                return;
+            }
+
+            if (!vehicle_id && vehicle_id !== 0) {
+                return;
+            }
+
+            const vm = this;
+            if (!vm.vehiclesEmployeesDeps[vehicle_id]) {
+                vm.vehiclesEmployeesDeps[vehicle_id] = new Set();
+            }
+
+            vm.vehiclesEmployeesDeps[vehicle_id].add(employee);
+        },
+
+        /**
          * Показывает всплывающее окно с возможностью задавать время смены для сотрудника
          *
          * @param {Object} data\
@@ -397,9 +485,18 @@ const task = {
                 "color: yellow; font-style:italic",
                 data
             );
+
             const vm = this;
             vm.activeModal = "chooseTime";
             vm.taskDate = data.date.isoString;
+
+            if (data.taskId) {
+                vm.taskSelected = vm.tasks
+                    .filter((t) => data.taskId === t.id)
+                    .pop();
+            } else {
+                vm.taskSelected = {};
+            }
 
             vm.mayBeTask = {
                 employee: data.employee,
