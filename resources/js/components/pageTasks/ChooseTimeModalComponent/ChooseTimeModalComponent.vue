@@ -27,53 +27,70 @@
                 />
             </svg>
         </div>
-
-        <h4 class="label">Начало и конец смены</h4>
-        <div class="row mt-2">
-            <div class="col-6">
-                <div class="d-flex align-items-center">
-                    <label for="startTaskTime" class="me-2">c</label>
-                    <input type="time" id="startTaskTime" class="flex-grow-1" />
+        <form ref="form" @submit.prevent="submit">
+            <h4 class="label">Начало и конец смены</h4>
+            <div class="row mt-2">
+                <div class="col-6">
+                    <div class="d-flex align-items-center">
+                        <label for="startTaskTime" class="me-2">c</label>
+                        <input
+                            type="time"
+                            id="startTaskTime"
+                            required
+                            class="flex-grow-1"
+                            name="start"
+                            v-model="start"
+                        />
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="d-flex align-items-center">
+                        <label for="endTaskTime" class="me-2">по</label>
+                        <input
+                            type="time"
+                            id="endTaskTime"
+                            required
+                            class="flex-grow-1"
+                            name="end"
+                            v-model="end"
+                        />
+                    </div>
                 </div>
             </div>
-            <div class="col-6">
-                <div class="d-flex align-items-center">
-                    <label for="endTaskTime" class="me-2">по</label>
-                    <input type="time" id="endTaskTime" class="flex-grow-1" />
+
+            <h4 class="label mt-2">комментарий</h4>
+            <textarea name="comment" id="" class="w-100 mt-2"></textarea>
+
+            <div class="row mt-2">
+                <div class="col-6">
+                    <button
+                        class="btn btn-borders-danger w-100"
+                        type="button"
+                        @click="closeModal"
+                    >
+                        Удалить
+                    </button>
+                </div>
+                <div class="col-6">
+                    <button class="btn btn-primary-alt w-100" type="submit">
+                        Сохранить
+                    </button>
                 </div>
             </div>
-        </div>
-
-        <h4 class="label mt-2">комментарий</h4>
-        <textarea name="" id="" class="w-100 mt-2"></textarea>
-
-        <div class="row mt-2">
-            <div class="col-6">
-                <button
-                    class="btn btn-borders-danger w-100"
-                    type="button"
-                    @click="closeModal"
-                >
-                    Удалить
-                </button>
-            </div>
-            <div class="col-6">
-                <button class="btn btn-primary-alt w-100" type="button">
-                    Сохранить
-                </button>
-            </div>
-        </div>
+        </form>
     </modal>
 </template>
 
 <script>
 //вспомогательные функции
+import { clog, getFormData } from "@/misc/helpers";
 import moment from "moment";
 
 // компоненты
 import DaySelectComponent from "@/components/pageTasks/DaySelectComponent";
 import ModalComponent from "@/components/common/ModalComponent";
 import MonthPickerComponent from "@/components/common/MonthPickerComponent";
+import { _colorStringFilter } from "gsap/gsap-core";
 export default {
     watch: {
         _baseDate(baseDate) {
@@ -136,6 +153,9 @@ export default {
              * текущая дата
              */
             baseDate: this._baseDate,
+
+            start: null,
+            end: null,
         };
     },
     methods: {
@@ -146,6 +166,16 @@ export default {
             this.$emit("closeRequest");
         },
 
+        submit() {
+            const vm = this;
+            const data = getFormData(vm.$refs.form);
+            const date = moment(vm.baseDate);
+            const dateString = date.format("YYYY-MM-DD");
+            const timeZone = date.format("ZZ");
+            const start = `${dateString}T${data.start}:00${timeZone}`;
+            const end = `${dateString}T${data.end}:00${timeZone}`;
+            vm.$emit("submited", { start, end, comment: data.comment });
+        },
         /**
          *
          * @param {Object} data

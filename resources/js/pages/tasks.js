@@ -43,6 +43,15 @@ const task = {
         search: SearchComponent,
     },
 
+    watch: {
+        tasks: {
+            handler(tasks) {
+                clog(strip(tasks));
+            },
+            deep: true,
+        },
+    },
+
     computed: {
         /**
          * Возвращает отфильтрованный в зависимости от типа выбранной техники массив сотрудников
@@ -81,7 +90,6 @@ const task = {
                     : [];
                 return h;
             });
-
             return items;
         },
 
@@ -166,8 +174,14 @@ const task = {
              */
             mounted: false,
 
-            tasks: {},
+            /**
+             *
+             */
+            tasks: [],
 
+            /**
+             *
+             */
             taskDate: null,
 
             /**
@@ -188,6 +202,11 @@ const task = {
              * @var {Object}
              */
             vehicleSelected: {},
+
+            /**
+             * @var {Object}
+             */
+            mayBeTask: {},
         };
     },
 
@@ -254,8 +273,12 @@ const task = {
             vm.vehiclesEmployeesDeps[vm.vehicleSelected.id].add(employee);
 
             vm.$nextTick(() => {
-                vm.activeModal = false;
+                vm.closeModal();
             });
+        },
+
+        async checkTask() {
+            return true;
         },
 
         /**
@@ -325,7 +348,35 @@ const task = {
         },
 
         /**
-         * Показывает всплывающее окно с возможностью задавать время смены для сотрудгника
+         * формирование задания и добавление его в массив заданий
+         *
+         * @param {Object} data
+         */
+        setTask(data) {
+            const vm = this;
+
+            vm.checkTask().then((checkSucceed) => {
+                if (!checkSucceed) {
+                    vm.messages.error = "Такое задание создать невозможно";
+                    return;
+                }
+
+                vm.closeModal();
+
+                const task = {
+                    vehicle_id: vm.mayBeTask.vehicle.id,
+                    employee_id: vm.mayBeTask.employee.id,
+                    start: data.start,
+                    end: data.end,
+                    comment: data.comment,
+                };
+
+                vm.tasks.push(task);
+            });
+        },
+
+        /**
+         * Показывает всплывающее окно с возможностью задавать время смены для сотрудника
          *
          * @param {Object} data\
          *
@@ -340,6 +391,11 @@ const task = {
             const vm = this;
             vm.activeModal = "chooseTime";
             vm.taskDate = data.date.isoString;
+
+            vm.mayBeTask = {
+                employee: data.employee,
+                vehicle: data.vehicle,
+            };
         },
 
         /**

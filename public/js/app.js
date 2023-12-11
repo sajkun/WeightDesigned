@@ -17866,15 +17866,18 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
-/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _components_pageTasks_DaySelectComponent__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @/components/pageTasks/DaySelectComponent */ "./resources/js/components/pageTasks/DaySelectComponent/index.js");
-/* harmony import */ var _components_common_ModalComponent__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @/components/common/ModalComponent */ "./resources/js/components/common/ModalComponent/index.js");
-/* harmony import */ var _components_common_MonthPickerComponent__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @/components/common/MonthPickerComponent */ "./resources/js/components/common/MonthPickerComponent/index.js");
+/* harmony import */ var _misc_helpers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/misc/helpers */ "./resources/js/misc/helpers.js");
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _components_pageTasks_DaySelectComponent__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @/components/pageTasks/DaySelectComponent */ "./resources/js/components/pageTasks/DaySelectComponent/index.js");
+/* harmony import */ var _components_common_ModalComponent__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @/components/common/ModalComponent */ "./resources/js/components/common/ModalComponent/index.js");
+/* harmony import */ var _components_common_MonthPickerComponent__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @/components/common/MonthPickerComponent */ "./resources/js/components/common/MonthPickerComponent/index.js");
 //вспомогательные функции
 
 
+
 // компоненты
+
 
 
 
@@ -17893,8 +17896,8 @@ __webpack_require__.r(__webpack_exports__);
   computed: {
     dateRange: function dateRange() {
       var vm = this;
-      var start = moment__WEBPACK_IMPORTED_MODULE_0___default()(vm.baseDate).startOf("month").toISOString();
-      var end = moment__WEBPACK_IMPORTED_MODULE_0___default()(vm.baseDate).endOf("month").toISOString();
+      var start = moment__WEBPACK_IMPORTED_MODULE_1___default()(vm.baseDate).startOf("month").toISOString();
+      var end = moment__WEBPACK_IMPORTED_MODULE_1___default()(vm.baseDate).endOf("month").toISOString();
       return {
         start: start,
         end: end
@@ -17908,7 +17911,7 @@ __webpack_require__.r(__webpack_exports__);
      */
     _baseDate: {
       type: String,
-      "default": new (moment__WEBPACK_IMPORTED_MODULE_0___default())().startOf("day").toISOString(),
+      "default": new (moment__WEBPACK_IMPORTED_MODULE_1___default())().startOf("day").toISOString(),
       required: false
     },
     /**
@@ -17921,9 +17924,9 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   components: {
-    days: _components_pageTasks_DaySelectComponent__WEBPACK_IMPORTED_MODULE_1__["default"],
-    modal: _components_common_ModalComponent__WEBPACK_IMPORTED_MODULE_2__["default"],
-    monthPicker: _components_common_MonthPickerComponent__WEBPACK_IMPORTED_MODULE_3__["default"]
+    days: _components_pageTasks_DaySelectComponent__WEBPACK_IMPORTED_MODULE_2__["default"],
+    modal: _components_common_ModalComponent__WEBPACK_IMPORTED_MODULE_3__["default"],
+    monthPicker: _components_common_MonthPickerComponent__WEBPACK_IMPORTED_MODULE_4__["default"]
   },
   data: function data() {
     return {
@@ -17936,7 +17939,9 @@ __webpack_require__.r(__webpack_exports__);
        * @var{ISOString}
        * текущая дата
        */
-      baseDate: this._baseDate
+      baseDate: this._baseDate,
+      start: null,
+      end: null
     };
   },
   methods: {
@@ -17945,6 +17950,20 @@ __webpack_require__.r(__webpack_exports__);
      */
     closeModal: function closeModal() {
       this.$emit("closeRequest");
+    },
+    submit: function submit() {
+      var vm = this;
+      var data = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.getFormData)(vm.$refs.form);
+      var date = moment__WEBPACK_IMPORTED_MODULE_1___default()(vm.baseDate);
+      var dateString = date.format("YYYY-MM-DD");
+      var timeZone = date.format("ZZ");
+      var start = "".concat(dateString, "T").concat(data.start, ":00").concat(timeZone);
+      var end = "".concat(dateString, "T").concat(data.end, ":00").concat(timeZone);
+      vm.$emit("submited", {
+        start: start,
+        end: end,
+        comment: data.comment
+      });
     },
     /**
      *
@@ -18152,11 +18171,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _misc_helpers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/misc/helpers */ "./resources/js/misc/helpers.js");
-/* harmony import */ var _mixins_animateExpand__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @/mixins/animateExpand */ "./resources/js/mixins/animateExpand.js");
-/* harmony import */ var _components_pageTasks_mixins_calcWidth__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @/components/pageTasks/mixins/calcWidth */ "./resources/js/components/pageTasks/mixins/calcWidth.js");
-/* harmony import */ var _mixins_formatName__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @/mixins/formatName */ "./resources/js/mixins/formatName.js");
-/* harmony import */ var _mixins_icons__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @/mixins/icons */ "./resources/js/mixins/icons.js");
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _mixins_animateExpand__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @/mixins/animateExpand */ "./resources/js/mixins/animateExpand.js");
+/* harmony import */ var _components_pageTasks_mixins_calcWidth__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @/components/pageTasks/mixins/calcWidth */ "./resources/js/components/pageTasks/mixins/calcWidth.js");
+/* harmony import */ var _mixins_formatName__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @/mixins/formatName */ "./resources/js/mixins/formatName.js");
+/* harmony import */ var _mixins_icons__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @/mixins/icons */ "./resources/js/mixins/icons.js");
 //вспомогательные функции
+
 
 
 //миксины
@@ -18165,22 +18187,65 @@ __webpack_require__.r(__webpack_exports__);
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  mixins: [_mixins_animateExpand__WEBPACK_IMPORTED_MODULE_1__["default"], _components_pageTasks_mixins_calcWidth__WEBPACK_IMPORTED_MODULE_2__["default"], _mixins_formatName__WEBPACK_IMPORTED_MODULE_3__["default"], _mixins_icons__WEBPACK_IMPORTED_MODULE_4__["default"]],
+  mixins: [_mixins_animateExpand__WEBPACK_IMPORTED_MODULE_2__["default"], _components_pageTasks_mixins_calcWidth__WEBPACK_IMPORTED_MODULE_3__["default"], _mixins_formatName__WEBPACK_IMPORTED_MODULE_4__["default"], _mixins_icons__WEBPACK_IMPORTED_MODULE_5__["default"]],
   watch: {
+    /**
+     * Наследование значений параметра от родителя
+     */
     _info: {
       handler: function handler(info) {
         this.info = info;
       },
       deep: true
     },
+    /**
+     * Наследование значений параметра от родителя
+     */
     _dateRange: {
       handler: function handler(period) {
         this.dateRange = period;
       },
       deep: true
+    },
+    /**
+     * Наследование значений параметра от родителя
+     */
+    _tasks: {
+      handler: function handler(tasks) {
+        this.tasks = tasks;
+      },
+      deep: true
+    }
+  },
+  computed: {
+    /**
+     * Задачи  назначенные на технику данного компонента
+     *
+     * @returns {Array}
+     */
+    vehicleTasks: function vehicleTasks() {
+      var vm = this;
+      var task = vm.tasks.filter(function (t) {
+        return t.vehicle_id === vm.info.id;
+      });
+      return task;
     }
   },
   props: {
+    /**
+     * Массив сменных заданий
+     * @var{Array<SessionTask>}
+     * @see app/Models/SessionTask
+     */
+    _tasks: {
+      type: Object,
+      "default": [],
+      required: false
+    },
+    /**
+     * Выбранный диапазон значений для отображения
+     * @var {Object<key:ISOString>}
+     */
     _dateRange: {
       type: Object,
       "default": {
@@ -18189,6 +18254,10 @@ __webpack_require__.r(__webpack_exports__);
       },
       required: true
     },
+    /**
+     * Данные о единице техники
+     * @var {Object}
+     */
     _info: {
       type: Object,
       "default": {},
@@ -18219,7 +18288,11 @@ __webpack_require__.r(__webpack_exports__);
        *
        *  @var{Boolean}
        */
-      mounted: false
+      mounted: false,
+      /**
+       * @var {Array}
+       */
+      tasks: this._tasks
     };
   },
   mounted: function mounted() {
@@ -18241,25 +18314,60 @@ __webpack_require__.r(__webpack_exports__);
     /**
      * Эмитит родителю событие chooseTimeRequest
      *
-     * @param {Object} date - данные о дате {formatted: xx.xx, iso: isoString}
+     * @param {Object} date - данные о дате {formatted: this.format, isoString: isoString}
      * @param {Object} employee
      * @see App\Models\Employee
+     * @param {number} taskId
+     * @see App\Models\SessionTask
      *
      * @returns {Void}
      */
     chooseTime: function chooseTime(date, employee) {
+      var taskId = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
       var vm = this;
       vm.$emit("chooseTimeRequest", {
         date: date,
         employee: (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(employee),
-        vehicle: (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.info)
+        vehicle: (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.info),
+        taskId: taskId
       });
     },
     /**
+     *
+     * @param {Object} date - данные о дате {formatted: this.format, isoString: isoString}
+     * @param {Object} employee
+     * @see App\Models\Employee
+     */
+    checkTask: function checkTask(date, employee) {
+      var vm = this;
+      var tasks = vm.vehicleTasks.filter(function (t) {
+        // проверяем, есть ли среди массива заданий задания по рабочему
+        var assignedToEmployee = t.employee_id === employee.id;
+
+        // проверяем разницу во времени между заданной датой и датами задания
+        var _date = moment__WEBPACK_IMPORTED_MODULE_1___default()(date.isoString).startOf("day");
+        var start = moment__WEBPACK_IMPORTED_MODULE_1___default()(t.start).startOf("day");
+        var end = moment__WEBPACK_IMPORTED_MODULE_1___default()(t.end).startOf("day");
+        var withinDate = Math.abs(_date.diff(start, "days")) === 0 || Math.abs(_date.diff(end, "days")) === 0;
+        return assignedToEmployee && withinDate;
+      });
+      var tasksDates = tasks.map(function (t) {
+        var start = moment__WEBPACK_IMPORTED_MODULE_1___default()(t.start);
+        var end = moment__WEBPACK_IMPORTED_MODULE_1___default()(t.end);
+        return {
+          start: start.format("HH:mm"),
+          end: end.format("HH:mm"),
+          id: t.id
+        };
+      });
+      if (!tasksDates.length) {
+        return false;
+      }
+      return tasksDates;
+    },
+    /**
      * сворачивает и разорачивает содержимое блока
-     *
      * @param {Boolean} mode
-     *
      * @returns {Void}
      */
     toggleExpand: function toggleExpand(mode) {
@@ -19517,57 +19625,57 @@ var _hoisted_3 = /*#__PURE__*/_withScopeId(function () {
     "class": "label"
   }, "Начало и конец смены", -1 /* HOISTED */);
 });
-var _hoisted_4 = /*#__PURE__*/_withScopeId(function () {
-  return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
-    "class": "row mt-2"
-  }, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
-    "class": "col-6"
-  }, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
-    "class": "d-flex align-items-center"
-  }, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", {
+var _hoisted_4 = {
+  "class": "row mt-2"
+};
+var _hoisted_5 = {
+  "class": "col-6"
+};
+var _hoisted_6 = {
+  "class": "d-flex align-items-center"
+};
+var _hoisted_7 = /*#__PURE__*/_withScopeId(function () {
+  return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", {
     "for": "startTaskTime",
     "class": "me-2"
-  }, "c"), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
-    type: "time",
-    id: "startTaskTime",
-    "class": "flex-grow-1"
-  })])]), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
-    "class": "col-6"
-  }, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
-    "class": "d-flex align-items-center"
-  }, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", {
+  }, "c", -1 /* HOISTED */);
+});
+var _hoisted_8 = {
+  "class": "col-6"
+};
+var _hoisted_9 = {
+  "class": "d-flex align-items-center"
+};
+var _hoisted_10 = /*#__PURE__*/_withScopeId(function () {
+  return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", {
     "for": "endTaskTime",
     "class": "me-2"
-  }, "по"), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
-    type: "time",
-    id: "endTaskTime",
-    "class": "flex-grow-1"
-  })])])], -1 /* HOISTED */);
+  }, "по", -1 /* HOISTED */);
 });
-var _hoisted_5 = /*#__PURE__*/_withScopeId(function () {
+var _hoisted_11 = /*#__PURE__*/_withScopeId(function () {
   return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h4", {
     "class": "label mt-2"
   }, "комментарий", -1 /* HOISTED */);
 });
-var _hoisted_6 = /*#__PURE__*/_withScopeId(function () {
+var _hoisted_12 = /*#__PURE__*/_withScopeId(function () {
   return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("textarea", {
-    name: "",
+    name: "comment",
     id: "",
     "class": "w-100 mt-2"
   }, null, -1 /* HOISTED */);
 });
-var _hoisted_7 = {
+var _hoisted_13 = {
   "class": "row mt-2"
 };
-var _hoisted_8 = {
+var _hoisted_14 = {
   "class": "col-6"
 };
-var _hoisted_9 = /*#__PURE__*/_withScopeId(function () {
+var _hoisted_15 = /*#__PURE__*/_withScopeId(function () {
   return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
     "class": "col-6"
   }, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
     "class": "btn btn-primary-alt w-100",
-    type: "button"
+    type: "submit"
   }, " Сохранить ")], -1 /* HOISTED */);
 });
 
@@ -19588,14 +19696,38 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
         "_can-select-date": true,
         "_current-date": $data.baseDate,
         "_size-modificator": 7
-      }, null, 8 /* PROPS */, ["_date-range", "_current-date"]), _hoisted_2, _hoisted_3, _hoisted_4, _hoisted_5, _hoisted_6, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_7, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_8, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+      }, null, 8 /* PROPS */, ["_date-range", "_current-date"]), _hoisted_2, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("form", {
+        ref: "form",
+        onSubmit: _cache[3] || (_cache[3] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.withModifiers)(function () {
+          return $options.submit && $options.submit.apply($options, arguments);
+        }, ["prevent"]))
+      }, [_hoisted_3, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_4, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_5, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_6, [_hoisted_7, (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
+        type: "time",
+        id: "startTaskTime",
+        required: "",
+        "class": "flex-grow-1",
+        name: "start",
+        "onUpdate:modelValue": _cache[0] || (_cache[0] = function ($event) {
+          return $data.start = $event;
+        })
+      }, null, 512 /* NEED_PATCH */), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $data.start]])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_8, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_9, [_hoisted_10, (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
+        type: "time",
+        id: "endTaskTime",
+        required: "",
+        "class": "flex-grow-1",
+        name: "end",
+        "onUpdate:modelValue": _cache[1] || (_cache[1] = function ($event) {
+          return $data.end = $event;
+        })
+      }, null, 512 /* NEED_PATCH */), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $data.end]])])])]), _hoisted_11, _hoisted_12, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_13, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_14, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
         "class": "btn btn-borders-danger w-100",
         type: "button",
-        onClick: _cache[0] || (_cache[0] = function () {
+        onClick: _cache[2] || (_cache[2] = function () {
           return $options.closeModal && $options.closeModal.apply($options, arguments);
         })
-      }, " Удалить ")]), _hoisted_9])];
+      }, " Удалить ")]), _hoisted_15])], 544 /* HYDRATE_EVENTS, NEED_PATCH */)];
     }),
+
     _: 1 /* STABLE */
   }, 8 /* PROPS */, ["onClosed", "_show"]);
 }
@@ -19720,22 +19852,32 @@ var _hoisted_8 = {
   "class": "col-3 text-left border-right ps-3"
 };
 var _hoisted_9 = {
-  "class": "col-9 px-0"
+  "class": "d-flex h-100 align-items-top"
 };
 var _hoisted_10 = {
-  "class": "time-component"
+  "class": "pt-2"
 };
 var _hoisted_11 = {
+  "class": "col-9 px-0"
+};
+var _hoisted_12 = {
+  "class": "time-component px-1"
+};
+var _hoisted_13 = {
   "class": "row"
 };
-var _hoisted_12 = ["onClick", "title"];
-var _hoisted_13 = {
+var _hoisted_14 = {
+  key: 0
+};
+var _hoisted_15 = ["onClick"];
+var _hoisted_16 = ["onClick", "title"];
+var _hoisted_17 = {
   "class": "row m-0 overflow-hidden expandable-content"
 };
-var _hoisted_14 = {
+var _hoisted_18 = {
   "class": "col-3 text-left border-right ps-3"
 };
-var _hoisted_15 = /*#__PURE__*/_withScopeId(function () {
+var _hoisted_19 = /*#__PURE__*/_withScopeId(function () {
   return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
     "class": "col-9 px-0"
   }, null, -1 /* HOISTED */);
@@ -19757,49 +19899,60 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     css: false,
     onBeforeEnter: _ctx.beforeEnter,
     onEnter: _ctx.enter,
+    onAfterEnter: _ctx.afterEnter,
     onLeave: _ctx.leave,
     tag: "div"
   }, {
     "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
       return [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.info.employees, function (employee, key) {
         return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", {
-          "class": "row m-0 overflow-hidden expandable-content employee-name align-items-center",
+          "class": "row m-0 overflow-hidden expandable-content employee-name",
           key: 'empl' + key
-        }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_8, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(_ctx.formatName(employee.last_name, employee.first_name, employee.middle_name)), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_9, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_10, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_11, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)(_ctx.selectedDates, function (date, key) {
+        }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_8, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_9, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_10, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(_ctx.formatName(employee.last_name, employee.first_name, employee.middle_name)), 1 /* TEXT */)])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_11, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_12, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_13, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)(_ctx.selectedDates, function (date, key) {
           return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", {
-            "class": "col",
+            "class": "col align-self-top",
             key: 'date' + key
-          }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
-            "class": "btn btn-borders w-100 p-1 btn-sm",
+          }, [$options.checkTask(date, employee) ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_14, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($options.checkTask(date, employee), function (task, key2) {
+            return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("button", {
+              "class": "btn btn-borders w-100 p-1 btn-sm my-1",
+              type: "button",
+              onClick: function onClick($event) {
+                return $options.chooseTime(date, employee, task.id);
+              },
+              key: key + 'task' + key2
+            }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(task.start) + " - " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(task.end), 9 /* TEXT, PROPS */, _hoisted_15);
+          }), 128 /* KEYED_FRAGMENT */))])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+            "class": "btn btn-borders w-100 p-1 btn-sm my-1",
             type: "button",
             onClick: function onClick($event) {
               return $options.chooseTime(date, employee);
             },
             title: 'добавить расписание на ' + date.formatted
-          }, " + ", 8 /* PROPS */, _hoisted_12)]);
+          }, " + ", 8 /* PROPS */, _hoisted_16)]);
         }), 128 /* KEYED_FRAGMENT */))])])])]);
       }), 128 /* KEYED_FRAGMENT */))];
     }),
 
     _: 1 /* STABLE */
-  }, 8 /* PROPS */, ["onBeforeEnter", "onEnter", "onLeave"])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(vue__WEBPACK_IMPORTED_MODULE_0__.Transition, {
+  }, 8 /* PROPS */, ["onBeforeEnter", "onEnter", "onAfterEnter", "onLeave"])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(vue__WEBPACK_IMPORTED_MODULE_0__.Transition, {
     css: false,
     onBeforeEnter: _ctx.beforeEnter,
     onEnter: _ctx.enter,
     onLeave: _ctx.leave,
+    onAfterEnter: _ctx.afterEnter,
     persisted: ""
   }, {
     "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
-      return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_13, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_14, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+      return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_17, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_18, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
         type: "button",
         "class": "button-add my-2",
         onClick: _cache[1] || (_cache[1] = function () {
           return $options.addEmployee && $options.addEmployee.apply($options, arguments);
         })
-      }, " + Добавить механизатора ")]), _hoisted_15], 512 /* NEED_PATCH */), [[vue__WEBPACK_IMPORTED_MODULE_0__.vShow, $data.expanded]])];
+      }, " + Добавить механизатора ")]), _hoisted_19], 512 /* NEED_PATCH */), [[vue__WEBPACK_IMPORTED_MODULE_0__.vShow, $data.expanded]])];
     }),
     _: 1 /* STABLE */
-  }, 8 /* PROPS */, ["onBeforeEnter", "onEnter", "onLeave"])], 2 /* CLASS */);
+  }, 8 /* PROPS */, ["onBeforeEnter", "onEnter", "onLeave", "onAfterEnter"])], 2 /* CLASS */);
 }
 
 /***/ }),
@@ -22501,7 +22654,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+/* harmony import */ var _misc_helpers__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/misc/helpers */ "./resources/js/misc/helpers.js");
 // Анимация ракрывающегося контента
+
+//вспомогательные функции
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   methods: {
@@ -22511,6 +22667,21 @@ __webpack_require__.r(__webpack_exports__);
     enter: function enter(el, done) {
       el.style.height = "".concat(el.scrollHeight, "px");
       done();
+    },
+    afterEnter: function afterEnter(el) {
+      var transition = window.getComputedStyle(el).transition.split(",");
+      var heightTransition = transition.filter(function (el) {
+        return el.indexOf("height") >= 0;
+      }).pop();
+      if (!heightTransition) {
+        return;
+      }
+      var timeout = parseFloat(heightTransition.split(" ")[1]) * 1000;
+      setTimeout(function () {
+        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)(el);
+        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)(timeout);
+        el.style.removeProperty("height");
+      }, timeout);
     },
     leave: function leave(el, done) {
       el.style.height = 0;
@@ -26065,6 +26236,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_common_SearchComponent__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! @/components/common/SearchComponent */ "./resources/js/components/common/SearchComponent/index.js");
 /* harmony import */ var _components_pageTasks_ChooseTimeModalComponent__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! @/components/pageTasks/ChooseTimeModalComponent */ "./resources/js/components/pageTasks/ChooseTimeModalComponent/index.js");
 /* harmony import */ var _components_pageTasks_TaskItemComponent__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! @/components/pageTasks/TaskItemComponent */ "./resources/js/components/pageTasks/TaskItemComponent/index.js");
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function _regeneratorRuntime() { "use strict"; /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/facebook/regenerator/blob/main/LICENSE */ _regeneratorRuntime = function _regeneratorRuntime() { return e; }; var t, e = {}, r = Object.prototype, n = r.hasOwnProperty, o = Object.defineProperty || function (t, e, r) { t[e] = r.value; }, i = "function" == typeof Symbol ? Symbol : {}, a = i.iterator || "@@iterator", c = i.asyncIterator || "@@asyncIterator", u = i.toStringTag || "@@toStringTag"; function define(t, e, r) { return Object.defineProperty(t, e, { value: r, enumerable: !0, configurable: !0, writable: !0 }), t[e]; } try { define({}, ""); } catch (t) { define = function define(t, e, r) { return t[e] = r; }; } function wrap(t, e, r, n) { var i = e && e.prototype instanceof Generator ? e : Generator, a = Object.create(i.prototype), c = new Context(n || []); return o(a, "_invoke", { value: makeInvokeMethod(t, r, c) }), a; } function tryCatch(t, e, r) { try { return { type: "normal", arg: t.call(e, r) }; } catch (t) { return { type: "throw", arg: t }; } } e.wrap = wrap; var h = "suspendedStart", l = "suspendedYield", f = "executing", s = "completed", y = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} var p = {}; define(p, a, function () { return this; }); var d = Object.getPrototypeOf, v = d && d(d(values([]))); v && v !== r && n.call(v, a) && (p = v); var g = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(p); function defineIteratorMethods(t) { ["next", "throw", "return"].forEach(function (e) { define(t, e, function (t) { return this._invoke(e, t); }); }); } function AsyncIterator(t, e) { function invoke(r, o, i, a) { var c = tryCatch(t[r], t, o); if ("throw" !== c.type) { var u = c.arg, h = u.value; return h && "object" == _typeof(h) && n.call(h, "__await") ? e.resolve(h.__await).then(function (t) { invoke("next", t, i, a); }, function (t) { invoke("throw", t, i, a); }) : e.resolve(h).then(function (t) { u.value = t, i(u); }, function (t) { return invoke("throw", t, i, a); }); } a(c.arg); } var r; o(this, "_invoke", { value: function value(t, n) { function callInvokeWithMethodAndArg() { return new e(function (e, r) { invoke(t, n, e, r); }); } return r = r ? r.then(callInvokeWithMethodAndArg, callInvokeWithMethodAndArg) : callInvokeWithMethodAndArg(); } }); } function makeInvokeMethod(e, r, n) { var o = h; return function (i, a) { if (o === f) throw new Error("Generator is already running"); if (o === s) { if ("throw" === i) throw a; return { value: t, done: !0 }; } for (n.method = i, n.arg = a;;) { var c = n.delegate; if (c) { var u = maybeInvokeDelegate(c, n); if (u) { if (u === y) continue; return u; } } if ("next" === n.method) n.sent = n._sent = n.arg;else if ("throw" === n.method) { if (o === h) throw o = s, n.arg; n.dispatchException(n.arg); } else "return" === n.method && n.abrupt("return", n.arg); o = f; var p = tryCatch(e, r, n); if ("normal" === p.type) { if (o = n.done ? s : l, p.arg === y) continue; return { value: p.arg, done: n.done }; } "throw" === p.type && (o = s, n.method = "throw", n.arg = p.arg); } }; } function maybeInvokeDelegate(e, r) { var n = r.method, o = e.iterator[n]; if (o === t) return r.delegate = null, "throw" === n && e.iterator["return"] && (r.method = "return", r.arg = t, maybeInvokeDelegate(e, r), "throw" === r.method) || "return" !== n && (r.method = "throw", r.arg = new TypeError("The iterator does not provide a '" + n + "' method")), y; var i = tryCatch(o, e.iterator, r.arg); if ("throw" === i.type) return r.method = "throw", r.arg = i.arg, r.delegate = null, y; var a = i.arg; return a ? a.done ? (r[e.resultName] = a.value, r.next = e.nextLoc, "return" !== r.method && (r.method = "next", r.arg = t), r.delegate = null, y) : a : (r.method = "throw", r.arg = new TypeError("iterator result is not an object"), r.delegate = null, y); } function pushTryEntry(t) { var e = { tryLoc: t[0] }; 1 in t && (e.catchLoc = t[1]), 2 in t && (e.finallyLoc = t[2], e.afterLoc = t[3]), this.tryEntries.push(e); } function resetTryEntry(t) { var e = t.completion || {}; e.type = "normal", delete e.arg, t.completion = e; } function Context(t) { this.tryEntries = [{ tryLoc: "root" }], t.forEach(pushTryEntry, this), this.reset(!0); } function values(e) { if (e || "" === e) { var r = e[a]; if (r) return r.call(e); if ("function" == typeof e.next) return e; if (!isNaN(e.length)) { var o = -1, i = function next() { for (; ++o < e.length;) if (n.call(e, o)) return next.value = e[o], next.done = !1, next; return next.value = t, next.done = !0, next; }; return i.next = i; } } throw new TypeError(_typeof(e) + " is not iterable"); } return GeneratorFunction.prototype = GeneratorFunctionPrototype, o(g, "constructor", { value: GeneratorFunctionPrototype, configurable: !0 }), o(GeneratorFunctionPrototype, "constructor", { value: GeneratorFunction, configurable: !0 }), GeneratorFunction.displayName = define(GeneratorFunctionPrototype, u, "GeneratorFunction"), e.isGeneratorFunction = function (t) { var e = "function" == typeof t && t.constructor; return !!e && (e === GeneratorFunction || "GeneratorFunction" === (e.displayName || e.name)); }, e.mark = function (t) { return Object.setPrototypeOf ? Object.setPrototypeOf(t, GeneratorFunctionPrototype) : (t.__proto__ = GeneratorFunctionPrototype, define(t, u, "GeneratorFunction")), t.prototype = Object.create(g), t; }, e.awrap = function (t) { return { __await: t }; }, defineIteratorMethods(AsyncIterator.prototype), define(AsyncIterator.prototype, c, function () { return this; }), e.AsyncIterator = AsyncIterator, e.async = function (t, r, n, o, i) { void 0 === i && (i = Promise); var a = new AsyncIterator(wrap(t, r, n, o), i); return e.isGeneratorFunction(r) ? a : a.next().then(function (t) { return t.done ? t.value : a.next(); }); }, defineIteratorMethods(g), define(g, u, "Generator"), define(g, a, function () { return this; }), define(g, "toString", function () { return "[object Generator]"; }), e.keys = function (t) { var e = Object(t), r = []; for (var n in e) r.push(n); return r.reverse(), function next() { for (; r.length;) { var t = r.pop(); if (t in e) return next.value = t, next.done = !1, next; } return next.done = !0, next; }; }, e.values = values, Context.prototype = { constructor: Context, reset: function reset(e) { if (this.prev = 0, this.next = 0, this.sent = this._sent = t, this.done = !1, this.delegate = null, this.method = "next", this.arg = t, this.tryEntries.forEach(resetTryEntry), !e) for (var r in this) "t" === r.charAt(0) && n.call(this, r) && !isNaN(+r.slice(1)) && (this[r] = t); }, stop: function stop() { this.done = !0; var t = this.tryEntries[0].completion; if ("throw" === t.type) throw t.arg; return this.rval; }, dispatchException: function dispatchException(e) { if (this.done) throw e; var r = this; function handle(n, o) { return a.type = "throw", a.arg = e, r.next = n, o && (r.method = "next", r.arg = t), !!o; } for (var o = this.tryEntries.length - 1; o >= 0; --o) { var i = this.tryEntries[o], a = i.completion; if ("root" === i.tryLoc) return handle("end"); if (i.tryLoc <= this.prev) { var c = n.call(i, "catchLoc"), u = n.call(i, "finallyLoc"); if (c && u) { if (this.prev < i.catchLoc) return handle(i.catchLoc, !0); if (this.prev < i.finallyLoc) return handle(i.finallyLoc); } else if (c) { if (this.prev < i.catchLoc) return handle(i.catchLoc, !0); } else { if (!u) throw new Error("try statement without catch or finally"); if (this.prev < i.finallyLoc) return handle(i.finallyLoc); } } } }, abrupt: function abrupt(t, e) { for (var r = this.tryEntries.length - 1; r >= 0; --r) { var o = this.tryEntries[r]; if (o.tryLoc <= this.prev && n.call(o, "finallyLoc") && this.prev < o.finallyLoc) { var i = o; break; } } i && ("break" === t || "continue" === t) && i.tryLoc <= e && e <= i.finallyLoc && (i = null); var a = i ? i.completion : {}; return a.type = t, a.arg = e, i ? (this.method = "next", this.next = i.finallyLoc, y) : this.complete(a); }, complete: function complete(t, e) { if ("throw" === t.type) throw t.arg; return "break" === t.type || "continue" === t.type ? this.next = t.arg : "return" === t.type ? (this.rval = this.arg = t.arg, this.method = "return", this.next = "end") : "normal" === t.type && e && (this.next = e), y; }, finish: function finish(t) { for (var e = this.tryEntries.length - 1; e >= 0; --e) { var r = this.tryEntries[e]; if (r.finallyLoc === t) return this.complete(r.completion, r.afterLoc), resetTryEntry(r), y; } }, "catch": function _catch(t) { for (var e = this.tryEntries.length - 1; e >= 0; --e) { var r = this.tryEntries[e]; if (r.tryLoc === t) { var n = r.completion; if ("throw" === n.type) { var o = n.arg; resetTryEntry(r); } return o; } } throw new Error("illegal catch attempt"); }, delegateYield: function delegateYield(e, r, n) { return this.delegate = { iterator: values(e), resultName: r, nextLoc: n }, "next" === this.method && (this.arg = t), y; } }, e; }
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
@@ -26105,6 +26280,14 @@ var task = {
     modal: _components_common_ModalComponent__WEBPACK_IMPORTED_MODULE_11__["default"],
     modalTime: _components_pageTasks_ChooseTimeModalComponent__WEBPACK_IMPORTED_MODULE_13__["default"],
     search: _components_common_SearchComponent__WEBPACK_IMPORTED_MODULE_12__["default"]
+  },
+  watch: {
+    tasks: {
+      handler: function handler(tasks) {
+        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)((0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(tasks));
+      },
+      deep: true
+    }
   },
   computed: {
     /**
@@ -26208,7 +26391,13 @@ var task = {
        * @var {Boolean}
        */
       mounted: false,
-      tasks: {},
+      /**
+       *
+       */
+      tasks: [],
+      /**
+       *
+       */
       taskDate: null,
       /**
        * список техники организации
@@ -26225,7 +26414,11 @@ var task = {
        *
        * @var {Object}
        */
-      vehicleSelected: {}
+      vehicleSelected: {},
+      /**
+       * @var {Object}
+       */
+      mayBeTask: {}
     };
   },
   created: function created() {
@@ -26283,8 +26476,21 @@ var task = {
       }
       vm.vehiclesEmployeesDeps[vm.vehicleSelected.id].add(employee);
       vm.$nextTick(function () {
-        vm.activeModal = false;
+        vm.closeModal();
       });
+    },
+    checkTask: function checkTask() {
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
+        return _regeneratorRuntime().wrap(function _callee$(_context) {
+          while (1) switch (_context.prev = _context.next) {
+            case 0:
+              return _context.abrupt("return", true);
+            case 1:
+            case "end":
+              return _context.stop();
+          }
+        }, _callee);
+      }))();
     },
     /**
      * Скрытие модальных окон
@@ -26340,7 +26546,30 @@ var task = {
       return;
     },
     /**
-     * Показывает всплывающее окно с возможностью задавать время смены для сотрудгника
+     * формирование задания и добавление его в массив заданий
+     *
+     * @param {Object} data
+     */
+    setTask: function setTask(data) {
+      var vm = this;
+      vm.checkTask().then(function (checkSucceed) {
+        if (!checkSucceed) {
+          vm.messages.error = "Такое задание создать невозможно";
+          return;
+        }
+        vm.closeModal();
+        var task = {
+          vehicle_id: vm.mayBeTask.vehicle.id,
+          employee_id: vm.mayBeTask.employee.id,
+          start: data.start,
+          end: data.end,
+          comment: data.comment
+        };
+        vm.tasks.push(task);
+      });
+    },
+    /**
+     * Показывает всплывающее окно с возможностью задавать время смены для сотрудника
      *
      * @param {Object} data\
      *
@@ -26351,6 +26580,10 @@ var task = {
       var vm = this;
       vm.activeModal = "chooseTime";
       vm.taskDate = data.date.isoString;
+      vm.mayBeTask = {
+        employee: data.employee,
+        vehicle: data.vehicle
+      };
     },
     /**
      * Показывает всплывающее окно со списком сотрудников
@@ -27687,7 +27920,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, ".modal-window[data-v-176f27d4] {\n  position: fixed;\n  z-index: 10000;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  top: 0;\n  background: rgba(102, 102, 102, 0.4);\n  -webkit-backdrop-filter: blur(4.5px);\n          backdrop-filter: blur(4.5px);\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n.modal-window__content[data-v-176f27d4] {\n  position: relative;\n  background-color: var(--lightest);\n  border-radius: var(--brs);\n  position: relative;\n  padding: 1em;\n  width: 100%;\n  max-width: 36.25rem;\n}\n.md .modal-window__content[data-v-176f27d4] {\n  max-width: 48rem;\n}\n.lg .modal-window__content[data-v-176f27d4] {\n  max-width: 64rem;\n}\n.modal-window__content .btn-close[data-v-176f27d4] {\n  position: absolute;\n  top: 0;\n  right: 0;\n  z-index: 1;\n}", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, ".modal-window[data-v-176f27d4] {\n  position: fixed;\n  z-index: 100;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  top: 0;\n  background: rgba(102, 102, 102, 0.4);\n  -webkit-backdrop-filter: blur(4.5px);\n          backdrop-filter: blur(4.5px);\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n.modal-window__content[data-v-176f27d4] {\n  position: relative;\n  background-color: var(--lightest);\n  border-radius: var(--brs);\n  position: relative;\n  padding: 1em;\n  width: 100%;\n  max-width: 36.25rem;\n}\n.md .modal-window__content[data-v-176f27d4] {\n  max-width: 48rem;\n}\n.lg .modal-window__content[data-v-176f27d4] {\n  max-width: 64rem;\n}\n.modal-window__content .btn-close[data-v-176f27d4] {\n  position: absolute;\n  top: 0;\n  right: 0;\n  z-index: 1;\n}", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -27855,7 +28088,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, ".btn-switcher[data-v-1d298c20] {\n  border: 0;\n  padding: 0;\n  outline: 0;\n  width: 100%;\n  text-align: left;\n  background-color: transparent;\n  color: var(--darkest);\n  font-size: var(--text-smaller);\n  font-weight: 500;\n}\n.btn-switcher[data-v-1d298c20]:hover {\n  background-color: var(--grey-ultralight);\n}\n.btn-switcher i[data-v-1d298c20] {\n  font-weight: 100;\n  transition: transform var(--fast);\n  font-size: var(--text-small);\n}\n.expanded .btn-switcher i[data-v-1d298c20] {\n  transform: rotateZ(180deg);\n}\n.button-add[data-v-1d298c20] {\n  border: 1px solid transparent;\n  padding: 0;\n  outline: 0;\n  background-color: transparent;\n  color: var(--green);\n  font-size: var(--text-small);\n  text-align: left;\n  transition: border-bottom var(--fast);\n}\n.button-add[data-v-1d298c20]:hover {\n  border-bottom: 1px solid var(--green);\n}\n.button-add[data-v-1d298c20]:active {\n  transform: translateY(1px);\n}\n.employee-name[data-v-1d298c20] {\n  font-size: var(--text-small);\n  padding: 0.25em 0;\n}\n.employee-name[data-v-1d298c20]:nth-child(even) {\n  background-color: rgba(238, 242, 253, 0.4);\n}\n.time-component .row[data-v-1d298c20] {\n  --bs-gutter-x: 0.5em;\n}", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, ".btn-switcher[data-v-1d298c20] {\n  border: 0;\n  padding: 0;\n  outline: 0;\n  width: 100%;\n  text-align: left;\n  background-color: transparent;\n  color: var(--darkest);\n  font-size: var(--text-smaller);\n  font-weight: 500;\n}\n.btn-switcher[data-v-1d298c20]:hover {\n  background-color: var(--grey-ultralight);\n}\n.btn-switcher i[data-v-1d298c20] {\n  font-weight: 100;\n  transition: transform var(--fast);\n  font-size: var(--text-small);\n}\n.expanded .btn-switcher i[data-v-1d298c20] {\n  transform: rotateZ(180deg);\n}\n.button-add[data-v-1d298c20] {\n  border: 1px solid transparent;\n  padding: 0;\n  outline: 0;\n  background-color: transparent;\n  color: var(--green);\n  font-size: var(--text-small);\n  text-align: left;\n  transition: border-bottom var(--fast);\n}\n.button-add[data-v-1d298c20]:hover {\n  border-bottom: 1px solid var(--green);\n}\n.button-add[data-v-1d298c20]:active {\n  transform: translateY(1px);\n}\n.employee-name[data-v-1d298c20] {\n  font-size: var(--text-small);\n}\n.employee-name[data-v-1d298c20]:nth-child(even) {\n  background-color: rgba(238, 242, 253, 0.4);\n}\n.time-component .row[data-v-1d298c20] {\n  --bs-gutter-x: 0.5em;\n}", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 

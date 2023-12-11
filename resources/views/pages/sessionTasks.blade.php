@@ -55,20 +55,23 @@
                     </div>
                     <div class="task-container__body">
                         <item v-for='item, key in harvesters' :key='"harv" + key' :_info='item'
-                            :_date-range='dateRange.display' v-on:add-employee-request='showEmployeesModal'
-                            v-on:choose-time-request='showChooseTimeModal' :class='"m-0"'>
+                            :_date-range='dateRange.display' :_tasks='tasks'
+                            v-on:add-employee-request='showEmployeesModal' v-on:choose-time-request='showChooseTimeModal'
+                            :class='"m-0"'>
                         </item>
 
                         <item v-for='item, key in transporters' :key='"transporters" + key' :_info='item'
-                            :_date-range='dateRange.display' v-on:add-employee-request='showEmployeesModal'
-                            v-on:choose-time-request='showChooseTimeModal' :class='"m-0"'>
+                            :_date-range='dateRange.display' :_tasks='tasks'
+                            v-on:add-employee-request='showEmployeesModal' v-on:choose-time-request='showChooseTimeModal'
+                            :class='"m-0"'>
                         </item>
                     </div>
                 </div>
             </div>
         </div>
         @include('pages.session-tasks.modal-employees')
-        <modal-time :_show='activeModal === "chooseTime"' v-on:close-request = 'closeModal'
+
+        <modal-time :_show='activeModal === "chooseTime"' v-on:close-request = 'closeModal' v-on:submited ='setTask'
             :_base-date='taskDate'></modal-time>
     </div>
 @endsection
