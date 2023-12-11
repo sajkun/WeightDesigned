@@ -17880,7 +17880,6 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   watch: {
     _baseDate: function _baseDate(baseDate) {
@@ -17891,6 +17890,13 @@ __webpack_require__.r(__webpack_exports__);
      */
     _show: function _show(show) {
       this.show = show;
+    },
+    show: function show() {
+      var vm = this;
+      vm.$nextTick(function () {
+        var _vm$$refs$form;
+        (_vm$$refs$form = vm.$refs.form) === null || _vm$$refs$form === void 0 || _vm$$refs$form.reset();
+      });
     }
   },
   computed: {
@@ -26343,7 +26349,7 @@ var task = {
   watch: {
     tasks: {
       handler: function handler(tasks) {
-        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)((0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(tasks));
+        (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("tasks", (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(tasks));
       },
       deep: true
     }
@@ -26632,7 +26638,7 @@ var task = {
           comment: data.comment
         };
         vm.storeTask(task).then(function (response) {
-          vm.tasks.push(response.new_task);
+          vm.tasks.push(response.data.new_task);
         });
       });
     },
@@ -26687,14 +26693,12 @@ var task = {
                 organisation_id: vm.organisationId,
                 task: task
               };
-              (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)(data);
               return _context2.abrupt("return", vm.createEntity(data, "/tasks/store").then(function (response) {
-                (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)(response);
                 return response;
               })["catch"](function (e) {
                 return e.response;
               }));
-            case 4:
+            case 3:
             case "end":
               return _context2.stop();
           }

@@ -46,7 +46,7 @@ const task = {
     watch: {
         tasks: {
             handler(tasks) {
-                clog(strip(tasks));
+                clog("tasks", strip(tasks));
             },
             deep: true,
         },
@@ -379,7 +379,7 @@ const task = {
                 };
 
                 vm.storeTask(task).then((response) => {
-                    vm.tasks.push(response.new_task);
+                    vm.tasks.push(response.data.new_task);
                 });
             });
         },
@@ -438,12 +438,9 @@ const task = {
                 task: task,
             };
 
-            clog(data);
-
             return vm
                 .createEntity(data, "/tasks/store")
                 .then((response) => {
-                    clog(response);
                     return response;
                 })
                 .catch((e) => {

@@ -90,7 +90,6 @@ import moment from "moment";
 import DaySelectComponent from "@/components/pageTasks/DaySelectComponent";
 import ModalComponent from "@/components/common/ModalComponent";
 import MonthPickerComponent from "@/components/common/MonthPickerComponent";
-import { _colorStringFilter } from "gsap/gsap-core";
 export default {
     watch: {
         _baseDate(baseDate) {
@@ -102,6 +101,14 @@ export default {
          */
         _show(show) {
             this.show = show;
+        },
+
+        show() {
+            const vm = this;
+
+            vm.$nextTick(() => {
+                vm.$refs.form?.reset();
+            });
         },
     },
 
