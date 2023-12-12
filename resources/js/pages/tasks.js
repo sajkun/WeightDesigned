@@ -331,7 +331,7 @@ const task = {
         },
 
         /**
-         *
+         * удаление сменного задания
          *
          * @param {Object} data
          */
@@ -347,11 +347,9 @@ const task = {
 
             const doClose = () => {
                 vm.closeModal();
-
                 vm.getTasks().then((e) => {
                     vm.tasks = e.tasks;
                 });
-
                 document.removeEventListener("updateList", doClose, false);
             };
 
