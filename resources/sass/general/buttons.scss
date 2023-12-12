@@ -43,9 +43,36 @@
     --bs-btn-hover-bg: var(--green);
     --bs-btn-hover-border-color: var(--green);
     --bs-btn-focus-shadow-rgb: 0, 126, 60;
-    --bs-btn-active-color: var(--lightest);
-    --bs-btn-active-bg: var(--green);
-    --bs-btn-active-border-color: transparent;
+    --bs-btn-active-color: var(--green);
+    --bs-btn-active-bg: transparent;
+    --bs-btn-active-border-color: var(--green);
+    --bs-btn-active-shadow: none;
+    --bs-btn-disabled-color: var(--grey-ultralight);
+    --bs-btn-disabled-bg: transparent;
+    --bs-btn-disabled-border-color: transparent;
+    --bs-btn-border-width: 2px;
+
+    .btn-close {
+        &,
+        &:hover {
+            background-color: none;
+            filter: contrast(0);
+        }
+    }
+}
+
+.btn-borders-danger {
+    text-decoration: none !important;
+    --bs-btn-color: var(--red);
+    --bs-btn-bg: transparent;
+    --bs-btn-border-color: var(--red);
+    --bs-btn-hover-color: var(--lightest);
+    --bs-btn-hover-bg: var(--red);
+    --bs-btn-hover-border-color: var(--red);
+    --bs-btn-focus-shadow-rgb: 0, 126, 60;
+    --bs-btn-active-color: var(--red);
+    --bs-btn-active-bg: transparent;
+    --bs-btn-active-border-color: var(--red);
     --bs-btn-active-shadow: none;
     --bs-btn-disabled-color: var(--grey-ultralight);
     --bs-btn-disabled-bg: transparent;

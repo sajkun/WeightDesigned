@@ -1,5 +1,5 @@
 const axios = require("axios");
-// хэлперы
+// вспомогательные функции
 import { strip, clog } from "@/misc/helpers";
 
 export default {
@@ -125,6 +125,57 @@ export default {
 
                     vm.messages.error = `${e.response.status} ${e.response.statusText} : ${e.response.data.message}`;
 
+                    return e.response;
+                });
+        },
+
+        /**
+         * запрос списка полей
+         *
+         * @return {Promise}
+         */
+        async getGroups() {
+            const vm = this;
+            if (vm.$refs.organisationId < 0) {
+                return;
+            }
+            return axios
+                .post("/vehicles/groups", {
+                    user_id: vm.userId,
+                })
+                .then((response) => {
+                    clog("%c getGroups", "color: green", response);
+
+                    return strip(response.data);
+                })
+                .catch((e) => {
+                    clog("%c getGroups error", "color: red", e.response);
+
+                    vm.messages.error = `${e.response.status} ${e.response.statusText} : ${e.response.data.message}`;
+
+                    return e.response;
+                });
+        },
+
+        /**
+         * запрос списка заданий
+         *
+         * @return {Promise}
+         */
+        async getTasks() {
+            const vm = this;
+            if (vm.$refs.organisationId < 0) {
+                return;
+            }
+            return axios
+                .get("/tasks/list")
+                .then((response) => {
+                    clog("%c getTasks", "color: green", response);
+                    return response.data;
+                })
+                .catch((e) => {
+                    clog("%c getTasks error", "color: red", e.response);
+                    vm.messages.error = `${e.response.status} ${e.response.statusText} : ${e.response.data.message}`;
                     return e.response;
                 });
         },

@@ -57,7 +57,7 @@
 </template>
 
 <script>
-//  хэлперы
+//  вспомогательные функции
 import moment from "moment";
 
 // директивы

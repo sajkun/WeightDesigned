@@ -2,7 +2,7 @@
  * Домашняя страница
  */
 
-//хэлперы
+//вспомогательные функции
 import { strip, clog } from "@/misc/helpers";
 import moment from "moment";
 
@@ -10,33 +10,37 @@ import moment from "moment";
 import axiosRequests from "@/mixins/axiosRequests";
 import crud from "@/mixins/crud";
 import fixedRightCol from "@/mixins/fixedRightCol";
+import messages from "@/mixins/messages";
 import publicAuthData from "@/mixins/publicAuthData";
 
 //компоненты
 import BvsMapComponent from "@/components/Bvs/MapComponent/";
-import CalendarComponent from "@/components/common/CalendarComponent";
 import BvsShortComponent from "@/components/Bvs/ShortComponent";
 import BvsOperationComponent from "@/components/Bvs/OperationComponent";
+import CalendarComponent from "@/components/common/CalendarComponent";
+import MessagesComponent from "@/components/common/MessagesComponent/";
+
 import SwitcherComponent from "@/components/pageHome/SwitcherComponent";
 
 const homePage = {
-    mixins: [axiosRequests, crud, fixedRightCol, publicAuthData],
+    mixins: [axiosRequests, crud, fixedRightCol, messages, publicAuthData],
 
     components: {
         BvsShortComponent,
-        SwitcherComponent,
-        Calendar: CalendarComponent,
         BvsMap: BvsMapComponent,
         BvsOperation: BvsOperationComponent,
+        Calendar: CalendarComponent,
+        MessagesComponent,
+        SwitcherComponent,
     },
 
     data() {
         return {
             // режим выбора даты
-            mode: "day", // day | period | all
+            mode: "all", // day | period | all
 
             // тип детализации отображенния данных
-            display: "calendar", // calendar | list | items
+            display: "items", // calendar | list | items
 
             // исходные данные от БВС
             bvsData: [],
@@ -60,12 +64,15 @@ const homePage = {
             windowWidth: window.innerWidth,
 
             //Признак отображения/скрытия компонента карты
-            showMap: true,
+            showMap: false,
+
+            mounted: false,
         };
     },
 
     mounted() {
         const vm = this;
+
         vm.$nextTick(() => {
             window.addEventListener("resize", vm.onResize);
         });
@@ -79,7 +86,11 @@ const homePage = {
         });
 
         vm.$nextTick(() => {
-            vm.startFixElement("fixposition", "observeResize", true);
+            vm.startFixElement("fixposition", "observeResize", true, [
+                vm.$refs.beforeStickyPosition,
+            ]);
+            vm.mounted = true;
+            vm.renderMap();
         });
     },
 
@@ -87,48 +98,16 @@ const homePage = {
         /**
          * Обработка зависимостей переменных оттипа детализации отображения данных БВС
          *
-         * @param {Enum} display calendar | list | items
-         *
-         * @return null
+         * @return {Void}
          */
-        display(display) {
+        display() {
             const vm = this;
-
-            if (display === "calendar") {
-                vm.selectedBvs = [];
-                vm.selectedOperationsIds = [];
-            }
 
             vm.$nextTick(() => {
                 vm.startFixElement("fixposition", "observeResize", true);
             });
 
-            return null;
-        },
-
-        /**
-         * Обработка зависимостей переменных от режима отображения календаря
-         *
-         * @param {Enum} mode all|period|day
-         *
-         * @return null
-         */
-        mode(mode) {
-            const vm = this;
-            // сброс дат
-            if (mode === "all") {
-                vm.period.start = null;
-                vm.period.end = null;
-                vm.display = "list";
-            }
-
-            // if (mode === "period") {
-            //     const today = new Date();
-            //     vm.period.start = moment(today).format("YYYY-MM-DDT00:00:00");
-            //     vm.period.end = moment(today).format("YYYY-MM-DDT23:59:59");
-            // }
-
-            return null;
+            return;
         },
 
         /**
@@ -244,16 +223,15 @@ const homePage = {
         },
 
         /**
-         * Ключ, определюящий надо ли отображать календарь в зависимости от типа выбранного периода
+         * Обновление данных о полях
          *
-         * @returns {Boolean}
+         * @returns {Array<Object>}
          */
-        calendarState() {
-            return this.mode === "all";
-        },
-
         grasslandsData() {
             const vm = this;
+            if (!vm.mounted) {
+                return [];
+            }
             const grasslands = strip(vm.grasslands);
             return grasslands;
         },
@@ -274,8 +252,9 @@ const homePage = {
         },
 
         /**
+         * возвращает массив строк. Строки то даты в формате YYYY-MM-DD (1900-10-23).  Нумерация месмыцев начитнается с 1, т.е.  январь <-> 1 и т.д.
          *
-         * @returns {Array<String>} возвращает массив строк. Строки то даты в формате YYYY-MM-DD (1900-10-23).  Нумерация месмыцев начитнается с 1, т.е.  январь <-> 1 и т.д.
+         * @returns {Array<String>}
          */
         markedDays() {
             const vm = this;
@@ -287,21 +266,6 @@ const homePage = {
             });
 
             return dates;
-        },
-
-        /**
-         * режимы выбора даты
-         *
-         * @returns {Object}
-         */
-
-        modes() {
-            const modes = {
-                all: "За все время",
-                day: "За день",
-                period: "За период",
-            };
-            return modes;
         },
 
         /** признак режима работы календаря. Включен ли выбор периода или нет
@@ -345,6 +309,17 @@ const homePage = {
         },
 
         /**
+         * принудительное обновление карты
+         */
+        async renderMap() {
+            const vm = this;
+
+            vm.showMap = false;
+            await vm.$nextTick();
+            vm.showMap = true;
+        },
+
+        /**
          * обработчик события клика на элемент из списка БВС
          *
          * @param {Object} data
@@ -379,13 +354,12 @@ const homePage = {
          *
          */
         selectOperationCb(data) {
+            clog(data);
             const vm = this;
-            const idx = vm.selectedOperationsIds.indexOf(data.id);
-            if (idx >= 0) {
-                vm.selectedOperationsIds.splice(idx, 1);
-            } else {
-                vm.selectedOperationsIds.push(data.id);
-            }
+            vm.selectedOperationsIds = [data.id];
+
+            // await vm.$nextTick();
+            // vm.renderMap();
         },
 
         /**

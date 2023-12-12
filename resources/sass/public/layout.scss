@@ -130,7 +130,7 @@
         padding: 0.5rem 1rem;
 
         @media (max-width: (map.get($grid-breakpoints, "lg")-1)) {
-            font-size: 1.25rem;
+            font-size: var(--text-large);
         }
 
         @media (min-width: map.get($grid-breakpoints, "lg")) {
@@ -150,6 +150,10 @@
     }
 }
 
+.menu-link {
+    white-space: nowrap;
+}
+
 .organisation-name {
     padding: 0;
     margin: 0;
@@ -159,6 +163,7 @@
     vertical-align: middle;
     text-decoration: none;
     color: var(--link-color) !important;
+    white-space: nowrap;
 
     &:hover {
         text-decoration: underline;

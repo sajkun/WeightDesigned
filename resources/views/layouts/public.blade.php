@@ -57,35 +57,43 @@
                 </div>
                 <div class="flex-grow-1 col align-self-center">
                     <div class="row align-content-center ">
-                        <div class="col flex-grow-0 align-self-center">
-                            <ul class="main-menu" id='main-menu'>
-                                @foreach ($menu as $link)
-                                    @can('viewAny', [$link['model'], $organisation_id])
-                                        <li
-                                            @if ($link['icon']) class='ms-md-2 d-flex align-items-center' @endif>
-                                            @if ($link['icon'])
-                                                <span class="icon-holder me-2 d-none d-md-flex">
-                                                    <i class="fa {{ $link['icon'] }}"></i></span>
-                                            @endif
-                                            <a title='{{ $link['title'] }}'
-                                                href="{{ $link['url'] }}">{{ $link['title'] }}</a>
-                                            @if ($link['submenu'])
-                                                <nav class="submenu">
-                                                    <ul class="submenu-list">
-                                                        @foreach ($link['submenu'] as $link_submenu)
-                                                            <li><a style='white-space:nowrap'
-                                                                    href="{{ $link_submenu['url'] }}">{{ $link_submenu['title'] }}</a>
-                                                            </li>
-                                                        @endforeach
-                                                    </ul>
-                                                </nav>
-                                            @endif
-                                        </li>
-                                    @endcan
-                                @endforeach
-                            </ul>
+                        <div class="col-lg-9 flex-grow-1 align-self-center">
+                            <nav class="w-100">
+                                <ul class="main-menu" id='main-menu'>
+                                    @foreach ($menu as $link)
+                                        @can('viewAny', [$link['model'], $organisation_id])
+                                            <li
+                                                class="@if ($link['icon'] || $link['submenu']) d-lg-flex align-items-center @endif
+                                                @if ($link['icon']) ps-lg-2 @endif
+                                                @if ($link['submenu']) pe-lg-2 @endif">
+                                                @if ($link['icon'])
+                                                    <span class="icon-holder d-none d-lg-flex">
+                                                        <i class="fa {{ $link['icon'] }}"></i></span>
+                                                @endif
+                                                <a class='menu-link' title='{{ $link['title'] }}'
+                                                    href="{{ $link['url'] }}">{{ $link['title'] }}</a>
+
+                                                @if ($link['submenu'])
+                                                    <span class=" d-none d-lg-flex">
+                                                        <i class="fa fa-chevron-down"
+                                                            style='color:#fff; font-size:0.5em; font-weight:100'></i></span>
+                                                    <nav class="submenu">
+                                                        <ul class="submenu-list">
+                                                            @foreach ($link['submenu'] as $link_submenu)
+                                                                <li><a style='white-space:nowrap'
+                                                                        href="{{ $link_submenu['url'] }}">{{ $link_submenu['title'] }}</a>
+                                                                </li>
+                                                            @endforeach
+                                                        </ul>
+                                                    </nav>
+                                                @endif
+                                            </li>
+                                        @endcan
+                                    @endforeach
+                                </ul>
+                            </nav>
                         </div>
-                        <div class="col flex-grow-1 align-self-center">
+                        <div class="col-5 col-lg-3 flex-grow-1 align-self-center">
                             <div class="d-flex w-100">
                                 <div class="flex-grow-1"></div>
 

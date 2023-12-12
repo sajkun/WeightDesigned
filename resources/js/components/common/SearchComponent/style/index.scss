@@ -1,0 +1,86 @@
+.form-wrapper {
+    border-radius: var(--brs-small);
+    border: 1px solid var(--grey-light, #dfe6fa);
+    padding: 0.25em;
+    transition: border-color var(--fast), box-shadow var(--fast);
+
+    button[type="submit"] {
+        font-size: 1.5em;
+        outline: 0;
+        border: 0;
+
+        &:hover {
+            color: var(--green);
+        }
+
+        &:focus {
+            transform: scale(1.1);
+        }
+
+        &:active {
+            transform: scale(0.9);
+        }
+
+        i {
+            display: block;
+        }
+    }
+
+    &:hover {
+        border-color: var(--green);
+    }
+
+    &:focus-within {
+        box-shadow: 0 0 2px 2px var(--green-medium);
+    }
+}
+
+.no-style {
+    ::-webkit-input-placeholder {
+        transition: color var(--fast);
+    }
+    :-moz-placeholder {
+        transition: color var(--fast);
+    }
+    ::-moz-placeholder {
+        transition: color var(--fast);
+    }
+    :-ms-input-placeholder {
+        transition: color var(--fast);
+    }
+    &::placeholder {
+        transition: color var(--fast);
+    }
+
+    &:focus {
+        ::-webkit-input-placeholder {
+            color: transparent;
+        }
+        :-moz-placeholder {
+            color: transparent;
+        }
+        ::-moz-placeholder {
+            color: transparent;
+        }
+        :-ms-input-placeholder {
+            color: transparent;
+        }
+        &::placeholder {
+            color: transparent;
+        }
+    }
+}
+
+:-ms-input-placeholder,
+::-moz-placeholder,
+:-moz-placeholder,
+::-webkit-input-placeholder,
+::placeholder {
+    color: transparent;
+}
+
+.no-style {
+    border: 0;
+    outline: 0;
+    background: transparent;
+}

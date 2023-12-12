@@ -1,0 +1,60 @@
+.btn-switcher {
+    border: 0;
+    padding: 0;
+    outline: 0;
+    width: 100%;
+    text-align: left;
+    background-color: transparent;
+    color: var(--darkest);
+    font-size: var(--text-smaller);
+    font-weight: 500;
+
+    &:hover {
+        background-color: var(--grey-ultralight);
+    }
+
+    i {
+        font-weight: 100;
+        transition: transform var(--fast);
+        font-size: var(--text-small);
+    }
+
+    .expanded & {
+        i {
+            transform: rotateZ(180deg);
+        }
+    }
+}
+
+.button-add {
+    border: 1px solid transparent;
+    padding: 0;
+    outline: 0;
+    background-color: transparent;
+    color: var(--green);
+    font-size: var(--text-small);
+    text-align: left;
+    transition: border-bottom var(--fast);
+
+    &:hover {
+        border-bottom: 1px solid var(--green);
+    }
+
+    &:active {
+        transform: translateY(1px);
+    }
+}
+
+.employee-name {
+    font-size: var(--text-small);
+
+    &:nth-child(even) {
+        background-color: #eef2fd66;
+    }
+}
+
+.time-component {
+    .row {
+        --bs-gutter-x: 0.5em;
+    }
+}

@@ -1,7 +1,9 @@
 <!-- МИодуль отобраения данных от бвс на яндекс карте -->
 <template>
-    <div id="placemarks"></div>
-    <div class="h-100 w-100" :id="id"></div>
+    <div class="d-flex flex-column">
+        <div id="placemarks"></div>
+        <div class="w-100 flex-grow-1 fix-map" :id="id"></div>
+    </div>
 </template>
 
 <script>
@@ -109,10 +111,11 @@ export default {
          *
          * @param {Array} data массив объектов данных от БВС
          */
-        drawBvsData(data) {
-            if (!data || !data.length) {
+        async drawBvsData(data) {
+            if (!data || !data.length || !grasslandMap) {
                 return;
             }
+
             const vm = this;
 
             const placemarksHTML = document.getElementById("placemarks");
@@ -231,18 +234,25 @@ export default {
             const objectState = clusterer.getObjectState(placemarks);
 
             if (objectState.isClustered) {
-                // Если метка находится в кластере, выставим ее в качестве активного объекта.
-                // Тогда она будет "выбрана" в открытом балуне кластера.
                 objectState.cluster.state.set("activeObject", placemarks[2]);
                 clusterer.balloon.open(objectState.cluster);
-            } else if (objectState.isShown) {
-                // Если метка не попала в кластер и видна на карте, откроем ее балун.
-                // placemarks[2].balloon.open();E
             }
 
-            grasslandMap.setBounds(clusterer.getBounds(), {
-                checkZoomRange: true,
-            });
+            grasslandMap
+                .setBounds(clusterer.getBounds(), {
+                    checkZoomRange: true,
+                })
+                .then(
+                    function () {
+                        if (clusterer.getGeoObjects().length < 2) {
+                            grasslandMap.setZoom(15);
+                        }
+                    },
+                    function (err) {
+                        alert(err);
+                    },
+                    this
+                );
         },
 
         /**
@@ -284,18 +294,15 @@ export default {
          * @param {Object} bvsData данные от БВС
          */
         drawMapObjects(grasslandMap, bvsData) {
+            if (!grasslandMap || !bvsData.length) return;
             const vm = this;
-            if (!grasslandMap) return;
             grasslandMap.geoObjects.removeAll();
-            vm.drawBvsData(bvsData);
 
-            if (grasslandMap.geoObjects.getLength() > 0) {
-                grasslandMap.setBounds(grasslandMap.geoObjects.getBounds());
-            } else {
-                grasslandMap.setZoom(9);
-            }
+            vm.drawBvsData(bvsData).then(() => {
+                if (!grasslandMap.geoObjects.getLength()) {
+                    grasslandMap.setZoom(10);
+                }
 
-            vm.$nextTick(() => {
                 for (const _grassland of vm.grasslandsData) {
                     const points = JSON.parse(_grassland.geo_json);
                     vm.drawGrassland(points, grasslandMap);

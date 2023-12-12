@@ -2,8 +2,8 @@
  *
  */
 
-//хэлперы
-import { clog, getStyle, getDocHeight } from "@/misc/helpers";
+//вспомогательные функции
+import { clog, strip, getStyle, getDocHeight } from "@/misc/helpers";
 export default {
     data() {
         return {
@@ -41,6 +41,7 @@ export default {
             shiftY: 0,
             controllHeight: false,
             applyFixData: false,
+            stickyTrigger: false,
         };
     },
 
@@ -61,6 +62,7 @@ export default {
                 }
 
                 const el = vm?.$refs[vm?.targetRef];
+
                 if (!el || !vm.applyFixData) {
                     vm.resertFixedElement();
                     return;
@@ -153,6 +155,13 @@ export default {
             vm.fixData.top = totalShiftTop + fixBottomEdgeShift;
             vm.fixData.left = parentRect.left + paddingsParent.left;
 
+            vm.stickyTrigger =
+                window.scrollY >= this.getHeightBefore()
+                    ? 0
+                    : vm.stickyTrigger === 1
+                    ? -1
+                    : 1;
+
             vm.shiftY = shiftY;
             return;
         },
@@ -233,7 +242,10 @@ export default {
             }
             const compareHeight =
                 targetElement.offsetHeight + vm.getHeightBefore();
-            return compareHeight < getDocHeight();
+
+            const ifEnoughHeight = compareHeight <= getDocHeight();
+
+            return ifEnoughHeight;
         },
 
         /**
@@ -305,11 +317,12 @@ export default {
             vm.extraElements = extraElements;
 
             if (controllHeight) {
-                vm.fixData.height = targetElement.offsetHeight;
-                vm.fixData.maxHeight = targetElement.offsetHeight;
+                vm.fixData.height = getDocHeight() - vm.getHeightBefore();
+                vm.fixData.maxHeight = getDocHeight() - vm.getHeightBefore();
             }
 
             vm.updateFixElement(targetElement, vm.fixData);
+
             vm.$nextTick(() => {
                 vm.observer.observe(observeEl);
                 vm.observer.observe(targetElement);
@@ -344,10 +357,12 @@ export default {
          */
         updateFixElement(element, data) {
             for (const styleProp in data) {
-                element.style[styleProp] =
+                const prop =
                     typeof data[styleProp] === "number"
-                        ? `${data[styleProp]}px`
+                        ? `${parseInt(data[styleProp])}px`
                         : data[styleProp];
+
+                element.style[styleProp] = prop;
             }
 
             return;

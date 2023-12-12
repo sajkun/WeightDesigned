@@ -8,4 +8,5 @@ body {
     flex-direction: column;
     flex-grow: 1;
     font-family: sans-serif;
+    --bs-body-bg: var(--grey-ultralight);
 }

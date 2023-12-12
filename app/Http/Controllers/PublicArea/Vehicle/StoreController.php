@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\PublicArea\Vehicle;
 
 use App\Models\Rfid;
@@ -22,7 +23,7 @@ class StoreController extends Controller
     {
         try {
             $this->authorize('create', [Vehicle::class, $request->organisation_id]);
-
+            $organisation_id = (int)$request->organisation_id;
             $request->validate([
                 'user_id' => 'required',
                 'organisation_id' => 'required',
@@ -31,7 +32,7 @@ class StoreController extends Controller
 
             // форматирование данных бункера
             $may_be_vehicle = $request->post_data;
-            $may_be_vehicle['organisation_id'] = (int)$request->organisation_id;
+            $may_be_vehicle['organisation_id'] = $organisation_id;
 
             // проверка уникальности имени бункера
             $exists_vehicle = Vehicle::where(['name' => $may_be_vehicle['name']])->first();
@@ -43,7 +44,7 @@ class StoreController extends Controller
             $employee = null;
             if (isset($request->employee_id)) {
                 $employee = Employee::find($request->employee_id);
-                if ((int)$employee->organisation_id !== (int)$request->organisation_id) {
+                if ((int)$employee->organisation_id !== $organisation_id) {
                     throw new \ErrorException('Ошибка добавления ответственного', 403);
                 }
             }
@@ -87,7 +88,7 @@ class StoreController extends Controller
             }
 
             if (isset($request->group) && count($request->group) > 0) {
-                $group = Group::create();
+                $group = Group::create(['organisation_id' => $organisation_id]);
                 $vehicles = Vehicle::whereIn('id', $request->group)->get();
                 $group->vehicles()->saveMany($vehicles);
                 $vehicle->group()->associate($group)->save();
@@ -95,6 +96,7 @@ class StoreController extends Controller
 
             return response()->json([
                 'vehicle' => $vehicle,
+                'organisation_id' => $organisation_id,
                 'type' => 'success',
                 'message' => 'Техника создана успешно.' . $add_message,
             ]);

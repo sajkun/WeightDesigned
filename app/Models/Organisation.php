@@ -3,8 +3,10 @@
 namespace App\Models;
 
 use App\Models\User;
+use App\Models\Group;
 use App\Models\Vehicle;
 use App\Models\Grassland;
+use App\Models\SessionTask;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -180,17 +182,21 @@ class Organisation extends Model
                 $item['employee_name'] = $employee ? "$employee->last_name $employee->first_name $employee->middle_name " : '-';
                 $item['employee'] = $employee;
             }
+
             if ($showPin) {
                 $item['pin'] = $item->pincode()->first();
             }
+
             if ($showRfids) {
                 $item['rfids'] = $item->rfids()->get();
             }
+
             if ($showGroup) {
                 $item['group'] = $group ? $group->vehicles()->get()->filter(function ($el) use ($item) {
                     return $el['id'] !== $item['id'];
                 }) : [];
             }
+
             return $item;
         });
 
@@ -205,5 +211,25 @@ class Organisation extends Model
     public function grasslands()
     {
         return $this->hasMany(Grassland::class, 'organisation_id', 'id');
+    }
+
+    /**
+     * список полей
+     *
+     * @return Object
+     */
+    public function groups()
+    {
+        return $this->hasMany(Group::class, 'organisation_id', 'id');
+    }
+
+    /**
+     * список заданий
+     *
+     * @return Object
+     */
+    public function tasks()
+    {
+        return $this->hasMany(SessionTask::class, 'organisation_id', 'id');
     }
 }

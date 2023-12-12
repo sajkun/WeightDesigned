@@ -120,7 +120,7 @@ const crud = {
          * @param {String} url адрес запроса
          * @returns {Promise}
          */
-        deleteEntityHandler(postData, url) {
+        async deleteEntityHandler(postData, url) {
             return this.sendRequest(postData, url);
         },
 
