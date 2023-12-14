@@ -9,6 +9,7 @@
             :_can-select-date="true"
             :_current-date="baseDate"
             :_size-modificator="7"
+            v-on:select-date="setBaseDate"
         />
 
         <div class="text-center">
@@ -247,6 +248,25 @@ export default {
         },
 
         /**
+         * передает родителю сообщение
+         *
+         * @param {Enum} type  error|info|success
+         * @param {String} text
+         */
+        emitMessage(type, text) {
+            this.$emit("messageRequest", { type, text });
+        },
+
+        /**
+         * Задает текущую дату
+         *
+         * @param {data}
+         */
+        setBaseDate(data) {
+            this.baseDate = data.date.isoString;
+        },
+
+        /**
          * Хэндлер действия пожтверждения формы
          * эмитит родителю событие submited с данными периода времени и комментарием
          *
@@ -261,16 +281,6 @@ export default {
             const start = `${dateString}T${data.start}:00${timeZone}`;
             const end = `${dateString}T${data.end}:00${timeZone}`;
             vm.$emit("submited", { start, end, comment: data.comment });
-        },
-
-        /**
-         * передает родителю сообщение
-         *
-         * @param {Enum} type  error|info|success
-         * @param {String} text
-         */
-        emitMessage(type, text) {
-            this.$emit("messageRequest", { type, text });
         },
 
         /**

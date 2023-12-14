@@ -10,6 +10,12 @@
 .border-right {
     border-right: 1px solid var(--grey-ultralight);
 }
+.border-bottom {
+    border-bottom: 1px solid var(--grey-ultralight);
+}
+.border-top {
+    border-top: 1px solid var(--grey-ultralight);
+}
 
 .expandable-content {
     transition: height var(--fast);
@@ -52,6 +58,13 @@
         &:hover {
             background-color: inherit;
             color: inherit;
+        }
+    }
+}
+
+.task-container {
+    .task-item {
+        &:nth-child {
         }
     }
 }

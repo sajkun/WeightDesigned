@@ -6,7 +6,7 @@
 -->
 
 <template>
-    <div class="component-wrapper" :class="{ expanded: expanded }">
+    <div class="component-wrapper task-item" :class="{ expanded: expanded }">
         <div class="row m-0">
             <div class="col-3 px-0 border-right">
                 <button
@@ -28,78 +28,77 @@
                 </div>
             </div>
         </div>
-
-        <TransitionGroup
+        <Transition
             :css="false"
             v-on:before-enter="beforeEnter"
             v-on:enter="enter"
             v-on:after-enter="afterEnter"
             v-on:before-leave="beforeLeave"
             v-on:leave="leave"
-            v-if="expanded"
-            tag="div"
         >
-            <div
-                class="row m-0 overflow-hidden expandable-content employee-name"
-                v-for="(employee, key) in info.employees"
-                :key="'empl' + key"
-            >
-                <div class="col-3 text-left border-right ps-3">
-                    <div class="d-flex h-100 align-items-top">
-                        <span class="pt-2">
-                            {{
-                                formatName(
-                                    employee.last_name,
-                                    employee.first_name,
-                                    employee.middle_name
-                                )
-                            }}
-                        </span>
+            <div v-if="expanded" class="transition-height">
+                <div
+                    class="row m-0 overflow-hidden expandable-content employee-name"
+                    v-for="(employee, key) in employees"
+                    :key="'empl' + key"
+                >
+                    <div class="col-3 text-left border-right ps-3">
+                        <div class="d-flex h-100 align-items-top">
+                            <span class="pt-2">
+                                {{
+                                    formatName(
+                                        employee.last_name,
+                                        employee.first_name,
+                                        employee.middle_name
+                                    )
+                                }}
+                            </span>
+                        </div>
                     </div>
-                </div>
-                <div class="col-9 px-0">
-                    <div class="time-component px-1">
-                        <div class="row">
-                            <div
-                                class="col align-self-top"
-                                v-for="(date, key) in selectedDates"
-                                :key="'date' + key"
-                            >
-                                <div v-if="checkTask(date, employee)">
+                    <div class="col-9 px-0">
+                        <div class="time-component px-1">
+                            <div class="row">
+                                <div
+                                    class="col align-self-top"
+                                    v-for="(date, key) in selectedDates"
+                                    :key="'date' + key"
+                                >
+                                    <div v-if="employee.tasks[date.formatted]">
+                                        <button
+                                            class="btn btn-primary-alt w-100 p-1 btn-sm my-1"
+                                            type="button"
+                                            @click="
+                                                chooseTime(
+                                                    date,
+                                                    employee,
+                                                    task.id
+                                                )
+                                            "
+                                            v-for="(task, key2) in employee
+                                                .tasks[date.formatted]"
+                                            :key="key + 'task' + key2"
+                                        >
+                                            {{ task.start }} - {{ task.end }}
+                                        </button>
+                                    </div>
                                     <button
                                         class="btn btn-borders w-100 p-1 btn-sm my-1"
                                         type="button"
-                                        @click="
-                                            chooseTime(date, employee, task.id)
+                                        @click="chooseTime(date, employee)"
+                                        :title="
+                                            'добавить расписание на ' +
+                                            date.formatted
                                         "
-                                        v-for="(task, key2) in checkTask(
-                                            date,
-                                            employee
-                                        )"
-                                        :key="key + 'task' + key2"
                                     >
-                                        {{ task.start }} - {{ task.end }}
+                                        +
                                     </button>
                                 </div>
-                                <button
-                                    v-else
-                                    class="btn btn-borders w-100 p-1 btn-sm my-1"
-                                    type="button"
-                                    @click="chooseTime(date, employee)"
-                                    :title="
-                                        'добавить расписание на ' +
-                                        date.formatted
-                                    "
-                                >
-                                    +
-                                </button>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </TransitionGroup>
-
+        </Transition>
         <Transition
             :css="false"
             v-on:before-enter="beforeEnter"
@@ -111,6 +110,7 @@
             <div
                 class="row m-0 overflow-hidden expandable-content"
                 v-show="expanded"
+                v-if="employeesAvailable.length > 0"
             >
                 <div class="col-3 text-left border-right ps-3">
                     <button
@@ -148,7 +148,7 @@ export default {
                 this.info = info;
 
                 if (info.employees.length) {
-                    this.expanded = true;
+                    // this.expanded = true;
                 }
             },
             deep: true,
@@ -167,6 +167,16 @@ export default {
         /**
          * Наследование значений параметра от родителя
          */
+        _employeesAvailable: {
+            handler(employeesAvailable) {
+                this.employeesAvailable = employeesAvailable;
+            },
+            deep: true,
+        },
+
+        /**
+         * Наследование значений параметра от родителя
+         */
         _tasks: {
             handler(tasks) {
                 this.tasks = tasks;
@@ -176,6 +186,29 @@ export default {
     },
 
     computed: {
+        /**
+         * @returns {Array}
+         */
+        employees() {
+            const vm = this;
+            let employees = strip(vm.info.employees);
+
+            for (const id in employees) {
+                let tasks = {};
+                let tasksCount = 0;
+
+                for (const date of vm.selectedDates) {
+                    const task = vm.checkTask(date, employees[id]);
+                    tasks[date.formatted] = task;
+                    tasksCount = task ? tasksCount + 1 : tasksCount;
+                }
+
+                employees[id].tasks = tasks;
+            }
+
+            return employees;
+        },
+
         /**
          * Задачи  назначенные на технику данного компонента
          *
@@ -215,6 +248,16 @@ export default {
         },
 
         /**
+         * доступные для назначения работники
+         * @see app/Models/Employee
+         */
+        _employeesAvailable: {
+            type: Array,
+            default: [],
+            required: false,
+        },
+
+        /**
          * Массив сменных заданий
          * @var{Array<SessionTask>}
          * @see app/Models/SessionTask
@@ -249,8 +292,13 @@ export default {
             expanded: false,
 
             /**
+             * доступные к назначению рабочие
+             * @var {Array}
+             */
+            employeesAvailable: this._employeesAvailable,
+
+            /**
              * признак показывающий, что компонент смонтирован
-             *
              *  @var{Boolean}
              */
             mounted: false,

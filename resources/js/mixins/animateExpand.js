@@ -43,7 +43,7 @@ export default {
 
         leave: function (el, done) {
             el.style.height = 0;
-            // done();
+            done();
         },
     },
 };

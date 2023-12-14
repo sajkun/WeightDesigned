@@ -1,3 +1,13 @@
+.component-wrapper {
+    .btn {
+        --bs-btn-font-size: 0.8rem !important;
+    }
+
+    .btn-borders {
+        --green: var(--green-medium);
+    }
+}
+
 .btn-switcher {
     border: 0;
     padding: 0;
@@ -57,4 +67,8 @@
     .row {
         --bs-gutter-x: 0.5em;
     }
+}
+
+.transition-height {
+    transition: height var(--fast);
 }

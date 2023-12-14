@@ -29,6 +29,9 @@ class StoreController extends PublicController
 
             $new_task_data['organisation_id'] = (int)$request->organisation_id;
 
+            $new_task_data['start'] = new \DateTime($new_task_data['start']);
+            $new_task_data['end'] = new \DateTime($new_task_data['end']);
+
             $new_task = SessionTask::create($new_task_data);
             return response()->json([
                 'new_task' => $new_task,

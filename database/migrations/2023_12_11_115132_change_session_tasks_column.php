@@ -14,8 +14,8 @@ class ChangeSessionTasksColumn extends Migration
     public function up()
     {
         Schema::table('session_tasks', function (Blueprint $table) {
-            $table->string('start')->change();
-            $table->string('end')->change();
+            // $table->string('start')->change();
+            // $table->string('end')->change();
             $table->string('comment')->nullable();
         });
     }
@@ -28,8 +28,8 @@ class ChangeSessionTasksColumn extends Migration
     public function down()
     {
         Schema::table('session_tasks', function (Blueprint $table) {
-            $table->dateTime('start')->change();
-            $table->dateTime('end')->change();
+            // $table->dateTime('start')->change();
+            // $table->dateTime('end')->change();
             $table->dropColumn('comment');
         });
     }

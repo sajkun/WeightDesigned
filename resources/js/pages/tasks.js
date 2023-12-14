@@ -1,7 +1,7 @@
 /**
  * Страница работ со сменными заданиями
  */
-
+const axios = require("axios");
 //вспомогательные функции
 import { strip, clog } from "@/misc/helpers";
 import moment from "moment";
@@ -51,14 +51,6 @@ const task = {
             },
             deep: true,
         },
-
-        dateRange: {
-            handler() {
-                const vm = this;
-                vm.createDeps();
-            },
-            deep: true,
-        },
     },
 
     computed: {
@@ -70,13 +62,9 @@ const task = {
          */
         employeesByPoffesion() {
             const vm = this;
-            let employees = vm.employees;
-            employees = employees.filter((e) => {
-                return (
-                    e.specialisation ===
-                    vm.vehiclesProfessions[vm.vehicleSelected.type]
-                );
-            });
+
+            const employees = vm.getEmployeesByPoffesion(vm.vehicleSelected);
+
             return employees;
         },
 
@@ -238,31 +226,32 @@ const task = {
         };
     },
 
-    mounted() {
+    async mounted() {
         const vm = this;
-        /**
-         * Получение списка техники
-         */
-        vm.getVehicles().then((vehicles) => {
-            for (const vehicleType of Object.keys(vm.vehicleTypes)) {
-                vm.vehicles[`${vehicleType}s`] = [
-                    ...Object.values(vehicles[`${vehicleType}s`]),
-                ];
-            }
-        });
 
         /**
          * Получение списка групп
          */
-        vm.getGroups().then((e) => {
+        await vm.getGroups().then((e) => {
             vm.groups = e.groups;
         });
 
         /**
          * Получение списка сотрудников
          */
-        vm.getEmployees().then((e) => {
+        await vm.getEmployees().then((e) => {
             vm.employees = e.employees;
+        });
+
+        /**
+         * Получение списка техники
+         */
+        await vm.getVehicles().then((vehicles) => {
+            for (const vehicleType of Object.keys(vm.vehicleTypes)) {
+                vm.vehicles[`${vehicleType}s`] = [
+                    ...Object.values(vehicles[`${vehicleType}s`]),
+                ];
+            }
         });
 
         /**
@@ -293,8 +282,15 @@ const task = {
             });
         },
 
-        async checkTask() {
-            return true;
+        /**
+         *
+         * @param {Object} data
+         * @returns {Promise}
+         */
+        async checkTask(data) {
+            clog(data);
+            const vm = this;
+            return vm.sendRequest(data, "tasks/search");
         },
 
         /**
@@ -368,6 +364,31 @@ const task = {
         },
 
         /**
+         * Возвращает отфильтрованный в зависимости от типа выбранной техники массив сотрудников
+         *
+         * @param {Object} vehicle - объект техники
+         *
+         * @returns {Array<Object>}
+         * @see App\Models\Employee
+         */
+        getEmployeesByPoffesion(vehicle) {
+            const vm = this;
+            let employees = vm.employees;
+            // уже выбранные сотрудники
+            const selectedEmployeesIdx = strip(vehicle.employees).map(
+                (e) => e.id
+            );
+
+            employees = employees.filter((e) => {
+                return (
+                    e.specialisation === vm.vehiclesProfessions[vehicle.type] &&
+                    selectedEmployeesIdx.indexOf(e.id) < 0
+                );
+            });
+            return employees;
+        },
+
+        /**
          * Задает одну из предельных дат (начала или конца)
          * периода отображения данных
          *
@@ -425,9 +446,20 @@ const task = {
         setTask(data) {
             const vm = this;
 
-            vm.checkTask().then((checkSucceed) => {
-                if (!checkSucceed) {
-                    vm.messages.error = "Такое задание создать невозможно";
+            const sendData = {
+                vehicle_id: vm.mayBeTask.vehicle.id,
+                employee_id: vm.mayBeTask.employee.id,
+                start: data.start,
+                end: data.end,
+            };
+
+            vm.checkTask(sendData).then((response) => {
+                if (response.status !== 200) {
+                    return;
+                }
+
+                if (response.data.task_exists) {
+                    vm.messages[response.data.type] = response.data.message;
                     return;
                 }
 
@@ -441,9 +473,21 @@ const task = {
                     comment: data.comment,
                 };
 
-                vm.storeTask(task).then((response) => {
-                    vm.tasks.push(response.data.new_task);
-                });
+                const updateTasks = () => {
+                    vm.getTasks().then((e) => {
+                        vm.tasks = e.tasks;
+                    });
+
+                    document.removeEventListener(
+                        "updateList",
+                        updateTasks,
+                        false
+                    );
+                };
+
+                document.addEventListener("updateList", updateTasks);
+
+                vm.storeTask(task);
             });
         },
 
@@ -533,14 +577,7 @@ const task = {
                 task: task,
             };
 
-            return vm
-                .createEntity(data, "/tasks/store")
-                .then((response) => {
-                    return response;
-                })
-                .catch((e) => {
-                    return e.response;
-                });
+            return vm.sendRequest(data, "tasks/store");
         },
 
         /**
