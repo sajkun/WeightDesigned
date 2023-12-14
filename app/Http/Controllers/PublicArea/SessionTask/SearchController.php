@@ -46,6 +46,8 @@ class SearchController extends Controller
                         $query->whereDate('start',  $start)->whereTime('start', '<=', $start)->whereTime('end', '>', $start);
                     })->orWhere(function ($query) use ($end) {
                         $query->whereDate('end',  $end)->whereTime('start', '<', $end)->whereTime('end', '>=', $end);
+                    })->orWhere(function ($query) use ($end, $start) {
+                        $query->whereDate('end',  $end)->whereTime('start', '>', $start)->whereTime('end', '<', $end);
                     });
                 })
                 ->where(function ($query) use ($request) {
