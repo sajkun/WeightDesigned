@@ -36,7 +36,7 @@
             v-on:before-leave="beforeLeave"
             v-on:leave="leave"
         >
-            <div v-if="expanded" class="transition-height">
+            <div v-if="expanded" class="transition-height overflow-hidden">
                 <div
                     class="row m-0 overflow-hidden expandable-content employee-name"
                     v-for="(employee, key) in employees"
@@ -148,7 +148,7 @@ export default {
                 this.info = info;
 
                 if (info.employees.length) {
-                    // this.expanded = true;
+                    this.expanded = true;
                 }
             },
             deep: true,

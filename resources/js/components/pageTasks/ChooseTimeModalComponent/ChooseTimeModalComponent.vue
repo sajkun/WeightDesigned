@@ -98,7 +98,7 @@
 
 <script>
 //вспомогательные функции
-import { clog, getFormData } from "@/misc/helpers";
+import { strip, clog, getFormData } from "@/misc/helpers";
 import moment from "moment";
 
 // компоненты
@@ -122,22 +122,16 @@ export default {
          *
          */
         _taskSelected: {
-            handler(task) {
-                this.taskSelected = task;
-            },
-            deep: true,
-        },
-
-        show(show) {
-            const vm = this;
-
-            if (show) return;
-
-            vm.$nextTick(() => {
+            handler(newTask, oldTask) {
+                const vm = this;
                 vm.end = null;
                 vm.start = null;
                 vm.comment = null;
-            });
+                vm.$nextTick(() => {
+                    vm.taskSelected = newTask;
+                });
+            },
+            deep: true,
         },
 
         /**

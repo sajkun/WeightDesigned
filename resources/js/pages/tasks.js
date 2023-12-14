@@ -267,6 +267,22 @@ const task = {
     },
 
     methods: {
+        addUpdateTasksListener(closeModal = false) {
+            const vm = this;
+            const updateTasks = () => {
+                vm.getTasks().then((e) => {
+                    vm.tasks = e.tasks;
+                });
+
+                if (closeModal) {
+                    vm.closeModal();
+                }
+
+                document.removeEventListener("updateList", updateTasks, false);
+            };
+
+            document.addEventListener("updateList", updateTasks);
+        },
         /**
          * Добавляет сотрудника к технике, для формирования сменного задания
          *
@@ -288,7 +304,6 @@ const task = {
          * @returns {Promise}
          */
         async checkTask(data) {
-            clog(data);
             const vm = this;
             return vm.sendRequest(data, "tasks/search");
         },
@@ -341,16 +356,7 @@ const task = {
                 name: "Сменное задание",
             };
 
-            const doClose = () => {
-                vm.closeModal();
-                vm.getTasks().then((e) => {
-                    vm.tasks = e.tasks;
-                });
-                document.removeEventListener("updateList", doClose, false);
-            };
-
-            document.addEventListener("updateList", doClose);
-
+            vm.addUpdateTasksListener(true);
             vm.deleteEntity(sendData, `/tasks/delete`);
         },
 
@@ -386,6 +392,46 @@ const task = {
                 );
             });
             return employees;
+        },
+
+        /**
+         * Проверка возможности и редактирование существующего сменного задания
+         *
+         * @param {Object} task
+         * @returns {Void}
+         */
+        patchTask(task) {
+            const vm = this;
+            vm.checkTask(task).then((response) => {
+                if (response.status !== 200) {
+                    return;
+                }
+
+                if (response.data.task_exists) {
+                    vm.messages[response.data.type] = response.data.message;
+                    return;
+                }
+
+                vm.addUpdateTasksListener();
+                vm.patchTaskRequest(task);
+            });
+        },
+
+        /**
+         * Запрос на редактирование существующего сменного задания
+         *
+         * @param {Object} task
+         * @returns {Void}
+         */
+        async patchTaskRequest(task) {
+            const vm = this;
+            const data = {
+                user_id: vm.userId,
+                organisation_id: vm.organisationId,
+                task: task,
+            };
+
+            return vm.sendRequest(data, "tasks/update");
         },
 
         /**
@@ -445,15 +491,38 @@ const task = {
          */
         setTask(data) {
             const vm = this;
+            console.groupCollapsed("%c setTask", "font-weight: 900");
+            clog(data);
+            clog(vm.mayBeTask);
+            clog(vm.taskSelected?.id);
+            console.groupEnd("/setTask");
 
-            const sendData = {
+            let sendData = {
                 vehicle_id: vm.mayBeTask.vehicle.id,
                 employee_id: vm.mayBeTask.employee.id,
                 start: data.start,
                 end: data.end,
             };
 
-            vm.checkTask(sendData).then((response) => {
+            if (vm.taskSelected?.id) {
+                sendData.id = vm.taskSelected.id;
+                vm.patchTask(sendData);
+            } else {
+                vm.storeTask(sendData);
+            }
+        },
+
+        /**
+         * проверка на валидность запроса и сохранения
+         * нового сменного задания
+         *
+         * @param {Object} taskData
+         *
+         * @returns {Void}
+         */
+        storeTask(taskData) {
+            const vm = this;
+            vm.checkTask(taskData).then((response) => {
                 if (response.status !== 200) {
                     return;
                 }
@@ -463,31 +532,16 @@ const task = {
                     return;
                 }
 
-                vm.closeModal();
-
                 const task = {
                     vehicle_id: vm.mayBeTask.vehicle.id,
                     employee_id: vm.mayBeTask.employee.id,
-                    start: data.start,
-                    end: data.end,
-                    comment: data.comment,
+                    start: taskData.start,
+                    end: taskData.end,
+                    comment: taskData.comment,
                 };
 
-                const updateTasks = () => {
-                    vm.getTasks().then((e) => {
-                        vm.tasks = e.tasks;
-                    });
-
-                    document.removeEventListener(
-                        "updateList",
-                        updateTasks,
-                        false
-                    );
-                };
-
-                document.addEventListener("updateList", updateTasks);
-
-                vm.storeTask(task);
+                vm.addUpdateTasksListener(true);
+                vm.runStoreTaskRequest(task);
             });
         },
 
@@ -569,7 +623,7 @@ const task = {
             this.messages[message.type] = message.text;
         },
 
-        async storeTask(task) {
+        async runStoreTaskRequest(task) {
             const vm = this;
             const data = {
                 user_id: vm.userId,

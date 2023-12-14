@@ -27,6 +27,11 @@ class SearchController extends Controller
             ]);
 
 
+            $current_task_id = $request->id ? $request->id : -1;
+
+            // throw new \ErrorException('Тестим проверку' . $current_task_id, 404);
+
+
             $start = new \DateTime($request->start);
             $end = new \DateTime($request->end);
             $employee_id = $request->employee_id;
@@ -46,6 +51,7 @@ class SearchController extends Controller
                 ->where(function ($query) use ($request) {
                     $query->where('employee_id', (int)$request->employee_id)->orWhere('vehicle_id', (int)$request->vehicle_id);
                 })
+                ->where('id', '!=', (int)$current_task_id)
                 ->get();
 
 
