@@ -13852,19 +13852,11 @@ body.auth #app {
   box-shadow: 6px 6px 6px rgba(33, 40, 41, 0.03);
   z-index: 100;
   position: relative;
-  position: fixed;
-  left: 0;
-  right: 0;
-  top: 0;
   z-index: 1;
 }
 .public-header .row > .logo {
   width: -moz-max-content;
   width: max-content;
-}
-
-.header-spacer {
-  height: 3rem;
 }
 
 .main-menu {
