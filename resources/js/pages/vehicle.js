@@ -387,7 +387,17 @@ const appPublicVehicles = {
         const vm = this;
         vm.vehicleType = vm.$refs.vehicleType.value;
 
-        vm.updateData(true);
+        vm.updateData(true).then(() => {
+            const mayBeVehicle = Object.values(
+                strip(vm.vehicles[`${vm.vehicleType}s`])
+            ).shift();
+
+            if (mayBeVehicle && !window.search) {
+                vm.$nextTick(() => {
+                    vm.viewVehicle(mayBeVehicle);
+                });
+            }
+        });
 
         /**
          * добавление события обновления списков сотрудников и техники при их изменении
@@ -762,19 +772,13 @@ const appPublicVehicles = {
          *
          * @returns {Void}
          */
-        updateData(updateUrl = false) {
+        async updateData(updateUrl = false) {
             const vm = this;
-            /**
-             * получение списка сотрудников
-             */
-            vm.getEmployees().then((e) => {
-                vm.employees = e.employees;
-            });
 
             /**
              * Получение списка техники
              */
-            vm.getVehicles().then((vehicles) => {
+            await vm.getVehicles().then((vehicles) => {
                 vm.vehicles = vehicles;
 
                 if (!updateUrl) return;
@@ -795,6 +799,13 @@ const appPublicVehicles = {
                 vm.$nextTick(() => {
                     vm.mode = "list";
                 });
+            });
+
+            /**
+             * получение списка сотрудников
+             */
+            await vm.getEmployees().then((e) => {
+                vm.employees = e.employees;
             });
         },
     },

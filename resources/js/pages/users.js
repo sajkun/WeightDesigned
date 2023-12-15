@@ -88,7 +88,15 @@ const appPublicUsers = {
 
     mounted() {
         const vm = this;
-        vm.updateData(true);
+        vm.updateData(true).then(() => {
+            const mayBeUser = Object.values(strip(vm.users)).shift();
+
+            if (mayBeUser && !window.search) {
+                vm.$nextTick(() => {
+                    vm.viewUser(mayBeUser);
+                });
+            }
+        });
 
         document.addEventListener("updateList", () => {
             vm.updateData();
@@ -203,7 +211,7 @@ const appPublicUsers = {
             vm.deleteEntity(postData, `/users/delete`);
         },
 
-        editUser(user) {
+        viewUser(user) {
             const vm = this;
             vm.mode = "details";
             vm.editPassword = false;
@@ -308,7 +316,7 @@ const appPublicUsers = {
             const vm = this;
 
             // обновление данных о пользователях и их ролях
-            vm.getUsers().then((e) => {
+            await vm.getUsers().then((e) => {
                 vm.users = e.data.users;
                 vm.roles = e.data.roles;
 

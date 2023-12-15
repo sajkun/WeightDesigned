@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\PublicArea\SessionTask;
 
-use Illuminate\Http\Request;
-use App\Http\Controllers\PublicController;
 use App\Models\SessionTask;
+use Illuminate\Http\Request;
+use App\Http\Controllers\PublicArea\SessionTask\GeneralController;
 
-class StoreController extends PublicController
+class StoreController extends GeneralController
 {
     /**
      * Handle the incoming request.
@@ -29,12 +29,32 @@ class StoreController extends PublicController
 
             $new_task_data['organisation_id'] = (int)$request->organisation_id;
 
-            $new_task_data['start'] = new \DateTime($new_task_data['start']);
-            $new_task_data['end'] = new \DateTime($new_task_data['end']);
+            $start = new \DateTime($new_task_data['start']);
+            $end =  new \DateTime($new_task_data['end']);
 
-            $new_task = SessionTask::create($new_task_data);
+            $task_data = [$new_task_data];
+            $task_data[0]['start'] = $start;
+            $task_data[0]['end'] = $end;
+
+            if ($this->taskTakes2Days($start, $end)) {
+                $end_of_start_day = new \DateTime($new_task_data['start']);
+                $end_of_start_day->setTime(23, 59, 59);
+
+                $start_of_end_day =
+                    new \DateTime($new_task_data['end']);
+                $start_of_end_day->setTime(0, 0, 1);
+
+                $task_data[1] = $task_data[0];
+
+                $task_data[0]['end'] = $end_of_start_day;
+                $task_data[1]['start'] = $start_of_end_day;
+            }
+
+            foreach ($task_data as $new_task_data) {
+                SessionTask::create($new_task_data);
+            }
+
             return response()->json([
-                'new_task' => $new_task,
                 'message' => 'Запись о задании успешно добавлена',
                 'type' => 'success'
             ]);

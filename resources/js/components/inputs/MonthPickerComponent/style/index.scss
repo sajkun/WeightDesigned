@@ -17,6 +17,7 @@
         width: fit-content;
         border-radius: var(--brs);
         max-width: 360px;
+        z-index: 100;
 
         button {
             background-color: #fff;

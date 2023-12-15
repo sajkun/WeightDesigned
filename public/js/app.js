@@ -18039,6 +18039,9 @@ __webpack_require__.r(__webpack_exports__);
       var timeZone = date.format("ZZ");
       var start = "".concat(dateString, "T").concat(data.start, ":00").concat(timeZone);
       var end = "".concat(dateString, "T").concat(data.end, ":00").concat(timeZone);
+      if (moment__WEBPACK_IMPORTED_MODULE_1___default()(start) > moment__WEBPACK_IMPORTED_MODULE_1___default()(end)) {
+        end = moment__WEBPACK_IMPORTED_MODULE_1___default()(end).add(1, "days").format("YYYY-MM-DDTHH:mm:ssZZ");
+      }
       vm.$emit("submited", {
         start: start,
         end: end,
@@ -19040,7 +19043,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
   }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
     type: "search",
     "class": "no-style",
-    placeholder: "Илья муромец",
+    placeholder: "Техника",
     "onUpdate:modelValue": _cache[0] || (_cache[0] = function ($event) {
       return $data.value = $event;
     })
@@ -21031,10 +21034,13 @@ __webpack_require__.r(__webpack_exports__);
           id: "grassland-culture",
           name: "culture",
           label: "Культура",
-          type: "select",
+          type: "text",
           "class": "col-md-6 col-12 mt-2 ",
           required: true,
-          options: this.cultures
+          pattern: _formFields_patterns__WEBPACK_IMPORTED_MODULE_0__["default"].wordsDigitsSpace.pattern,
+          title: _formFields_patterns__WEBPACK_IMPORTED_MODULE_0__["default"].wordsDigitsSpace.title,
+          minlength: 4,
+          value: ""
         },
         size: {
           id: "grassland-size",
@@ -21234,7 +21240,7 @@ __webpack_require__.r(__webpack_exports__);
      *
      * @returns {Object<Object>}
      */
-    editUserFormStructure: function editUserFormStructure() {
+    viewUserFormStructure: function viewUserFormStructure() {
       var vm = this;
       var structure = [{
         id: "last_name-new-user",
@@ -24593,6 +24599,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_inputs_FormComponent___WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! @/components/inputs/FormComponent/ */ "./resources/js/components/inputs/FormComponent/index.js");
 /* harmony import */ var _components_inputs_InputComponent__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! @/components/inputs/InputComponent */ "./resources/js/components/inputs/InputComponent/index.js");
 /* harmony import */ var _components_common_MessagesComponent___WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! @/components/common/MessagesComponent/ */ "./resources/js/components/common/MessagesComponent/index.js");
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function _regeneratorRuntime() { "use strict"; /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/facebook/regenerator/blob/main/LICENSE */ _regeneratorRuntime = function _regeneratorRuntime() { return e; }; var t, e = {}, r = Object.prototype, n = r.hasOwnProperty, o = Object.defineProperty || function (t, e, r) { t[e] = r.value; }, i = "function" == typeof Symbol ? Symbol : {}, a = i.iterator || "@@iterator", c = i.asyncIterator || "@@asyncIterator", u = i.toStringTag || "@@toStringTag"; function define(t, e, r) { return Object.defineProperty(t, e, { value: r, enumerable: !0, configurable: !0, writable: !0 }), t[e]; } try { define({}, ""); } catch (t) { define = function define(t, e, r) { return t[e] = r; }; } function wrap(t, e, r, n) { var i = e && e.prototype instanceof Generator ? e : Generator, a = Object.create(i.prototype), c = new Context(n || []); return o(a, "_invoke", { value: makeInvokeMethod(t, r, c) }), a; } function tryCatch(t, e, r) { try { return { type: "normal", arg: t.call(e, r) }; } catch (t) { return { type: "throw", arg: t }; } } e.wrap = wrap; var h = "suspendedStart", l = "suspendedYield", f = "executing", s = "completed", y = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} var p = {}; define(p, a, function () { return this; }); var d = Object.getPrototypeOf, v = d && d(d(values([]))); v && v !== r && n.call(v, a) && (p = v); var g = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(p); function defineIteratorMethods(t) { ["next", "throw", "return"].forEach(function (e) { define(t, e, function (t) { return this._invoke(e, t); }); }); } function AsyncIterator(t, e) { function invoke(r, o, i, a) { var c = tryCatch(t[r], t, o); if ("throw" !== c.type) { var u = c.arg, h = u.value; return h && "object" == _typeof(h) && n.call(h, "__await") ? e.resolve(h.__await).then(function (t) { invoke("next", t, i, a); }, function (t) { invoke("throw", t, i, a); }) : e.resolve(h).then(function (t) { u.value = t, i(u); }, function (t) { return invoke("throw", t, i, a); }); } a(c.arg); } var r; o(this, "_invoke", { value: function value(t, n) { function callInvokeWithMethodAndArg() { return new e(function (e, r) { invoke(t, n, e, r); }); } return r = r ? r.then(callInvokeWithMethodAndArg, callInvokeWithMethodAndArg) : callInvokeWithMethodAndArg(); } }); } function makeInvokeMethod(e, r, n) { var o = h; return function (i, a) { if (o === f) throw new Error("Generator is already running"); if (o === s) { if ("throw" === i) throw a; return { value: t, done: !0 }; } for (n.method = i, n.arg = a;;) { var c = n.delegate; if (c) { var u = maybeInvokeDelegate(c, n); if (u) { if (u === y) continue; return u; } } if ("next" === n.method) n.sent = n._sent = n.arg;else if ("throw" === n.method) { if (o === h) throw o = s, n.arg; n.dispatchException(n.arg); } else "return" === n.method && n.abrupt("return", n.arg); o = f; var p = tryCatch(e, r, n); if ("normal" === p.type) { if (o = n.done ? s : l, p.arg === y) continue; return { value: p.arg, done: n.done }; } "throw" === p.type && (o = s, n.method = "throw", n.arg = p.arg); } }; } function maybeInvokeDelegate(e, r) { var n = r.method, o = e.iterator[n]; if (o === t) return r.delegate = null, "throw" === n && e.iterator["return"] && (r.method = "return", r.arg = t, maybeInvokeDelegate(e, r), "throw" === r.method) || "return" !== n && (r.method = "throw", r.arg = new TypeError("The iterator does not provide a '" + n + "' method")), y; var i = tryCatch(o, e.iterator, r.arg); if ("throw" === i.type) return r.method = "throw", r.arg = i.arg, r.delegate = null, y; var a = i.arg; return a ? a.done ? (r[e.resultName] = a.value, r.next = e.nextLoc, "return" !== r.method && (r.method = "next", r.arg = t), r.delegate = null, y) : a : (r.method = "throw", r.arg = new TypeError("iterator result is not an object"), r.delegate = null, y); } function pushTryEntry(t) { var e = { tryLoc: t[0] }; 1 in t && (e.catchLoc = t[1]), 2 in t && (e.finallyLoc = t[2], e.afterLoc = t[3]), this.tryEntries.push(e); } function resetTryEntry(t) { var e = t.completion || {}; e.type = "normal", delete e.arg, t.completion = e; } function Context(t) { this.tryEntries = [{ tryLoc: "root" }], t.forEach(pushTryEntry, this), this.reset(!0); } function values(e) { if (e || "" === e) { var r = e[a]; if (r) return r.call(e); if ("function" == typeof e.next) return e; if (!isNaN(e.length)) { var o = -1, i = function next() { for (; ++o < e.length;) if (n.call(e, o)) return next.value = e[o], next.done = !1, next; return next.value = t, next.done = !0, next; }; return i.next = i; } } throw new TypeError(_typeof(e) + " is not iterable"); } return GeneratorFunction.prototype = GeneratorFunctionPrototype, o(g, "constructor", { value: GeneratorFunctionPrototype, configurable: !0 }), o(GeneratorFunctionPrototype, "constructor", { value: GeneratorFunction, configurable: !0 }), GeneratorFunction.displayName = define(GeneratorFunctionPrototype, u, "GeneratorFunction"), e.isGeneratorFunction = function (t) { var e = "function" == typeof t && t.constructor; return !!e && (e === GeneratorFunction || "GeneratorFunction" === (e.displayName || e.name)); }, e.mark = function (t) { return Object.setPrototypeOf ? Object.setPrototypeOf(t, GeneratorFunctionPrototype) : (t.__proto__ = GeneratorFunctionPrototype, define(t, u, "GeneratorFunction")), t.prototype = Object.create(g), t; }, e.awrap = function (t) { return { __await: t }; }, defineIteratorMethods(AsyncIterator.prototype), define(AsyncIterator.prototype, c, function () { return this; }), e.AsyncIterator = AsyncIterator, e.async = function (t, r, n, o, i) { void 0 === i && (i = Promise); var a = new AsyncIterator(wrap(t, r, n, o), i); return e.isGeneratorFunction(r) ? a : a.next().then(function (t) { return t.done ? t.value : a.next(); }); }, defineIteratorMethods(g), define(g, u, "Generator"), define(g, a, function () { return this; }), define(g, "toString", function () { return "[object Generator]"; }), e.keys = function (t) { var e = Object(t), r = []; for (var n in e) r.push(n); return r.reverse(), function next() { for (; r.length;) { var t = r.pop(); if (t in e) return next.value = t, next.done = !1, next; } return next.done = !0, next; }; }, e.values = values, Context.prototype = { constructor: Context, reset: function reset(e) { if (this.prev = 0, this.next = 0, this.sent = this._sent = t, this.done = !1, this.delegate = null, this.method = "next", this.arg = t, this.tryEntries.forEach(resetTryEntry), !e) for (var r in this) "t" === r.charAt(0) && n.call(this, r) && !isNaN(+r.slice(1)) && (this[r] = t); }, stop: function stop() { this.done = !0; var t = this.tryEntries[0].completion; if ("throw" === t.type) throw t.arg; return this.rval; }, dispatchException: function dispatchException(e) { if (this.done) throw e; var r = this; function handle(n, o) { return a.type = "throw", a.arg = e, r.next = n, o && (r.method = "next", r.arg = t), !!o; } for (var o = this.tryEntries.length - 1; o >= 0; --o) { var i = this.tryEntries[o], a = i.completion; if ("root" === i.tryLoc) return handle("end"); if (i.tryLoc <= this.prev) { var c = n.call(i, "catchLoc"), u = n.call(i, "finallyLoc"); if (c && u) { if (this.prev < i.catchLoc) return handle(i.catchLoc, !0); if (this.prev < i.finallyLoc) return handle(i.finallyLoc); } else if (c) { if (this.prev < i.catchLoc) return handle(i.catchLoc, !0); } else { if (!u) throw new Error("try statement without catch or finally"); if (this.prev < i.finallyLoc) return handle(i.finallyLoc); } } } }, abrupt: function abrupt(t, e) { for (var r = this.tryEntries.length - 1; r >= 0; --r) { var o = this.tryEntries[r]; if (o.tryLoc <= this.prev && n.call(o, "finallyLoc") && this.prev < o.finallyLoc) { var i = o; break; } } i && ("break" === t || "continue" === t) && i.tryLoc <= e && e <= i.finallyLoc && (i = null); var a = i ? i.completion : {}; return a.type = t, a.arg = e, i ? (this.method = "next", this.next = i.finallyLoc, y) : this.complete(a); }, complete: function complete(t, e) { if ("throw" === t.type) throw t.arg; return "break" === t.type || "continue" === t.type ? this.next = t.arg : "return" === t.type ? (this.rval = this.arg = t.arg, this.method = "return", this.next = "end") : "normal" === t.type && e && (this.next = e), y; }, finish: function finish(t) { for (var e = this.tryEntries.length - 1; e >= 0; --e) { var r = this.tryEntries[e]; if (r.finallyLoc === t) return this.complete(r.completion, r.afterLoc), resetTryEntry(r), y; } }, "catch": function _catch(t) { for (var e = this.tryEntries.length - 1; e >= 0; --e) { var r = this.tryEntries[e]; if (r.tryLoc === t) { var n = r.completion; if ("throw" === n.type) { var o = n.arg; resetTryEntry(r); } return o; } } throw new Error("illegal catch attempt"); }, delegateYield: function delegateYield(e, r, n) { return this.delegate = { iterator: values(e), resultName: r, nextLoc: n }, "next" === this.method && (this.arg = t), y; } }, e; }
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 /**
  *
  * Приложение отвечающее за внешний вид и отправку
@@ -24759,7 +24769,14 @@ var appPublicEmployees = {
   },
   mounted: function mounted() {
     var vm = this;
-    vm.updateData(true);
+    vm.updateData(true).then(function () {
+      var mayBeEmployee = Object.values((0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.employees)).shift();
+      if (mayBeEmployee && !window.search) {
+        vm.$nextTick(function () {
+          vm.viewEmployee(mayBeEmployee);
+        });
+      }
+    });
     document.addEventListener("updateList", function () {
       vm.updateData();
     });
@@ -24866,7 +24883,7 @@ var appPublicEmployees = {
      *
      * @returns {Void}
      */
-    showEmployeeDetails: function showEmployeeDetails(person) {
+    viewEmployee: function viewEmployee(person) {
       var vm = this;
       vm.mode = "details";
       vm.editedEmployee = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(person);
@@ -24923,40 +24940,52 @@ var appPublicEmployees = {
      * @returns {Void}
      */
     updateData: function updateData() {
-      var updateUrl = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
-      var vm = this;
+      var _arguments = arguments,
+        _this = this;
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
+        var updateUrl, vm;
+        return _regeneratorRuntime().wrap(function _callee$(_context) {
+          while (1) switch (_context.prev = _context.next) {
+            case 0:
+              updateUrl = _arguments.length > 0 && _arguments[0] !== undefined ? _arguments[0] : false;
+              vm = _this; // обновление данных о сотрудниках
+              _context.next = 4;
+              return vm.getEmployees().then(function (e) {
+                vm.employees = e.employees;
 
-      // обновление данных о сотрудниках
-      vm.getEmployees().then(function (e) {
-        vm.employees = e.employees;
-
-        /**
-         *  выбрать из полученных сотрудников активного по id, переданному в урл
-         */
-        if (!updateUrl) return;
-        var id = parseInt((0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.getPropFromUrl)("id"));
-        if (!id) return;
-        var mayBeItem = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.employees).filter(function (i) {
-          return i.id === id;
-        }).pop();
-        vm.editedEmployee = mayBeItem ? mayBeItem : vm.editedEmployee;
-        if (vm.editedEmployee.hasOwnProperty("id")) {
-          return;
-        }
-        vm.$nextTick(function () {
-          vm.mode = "list";
-        });
-      });
-
-      // обновление данных о технике
-      vm.getVehicles().then(function (e) {
-        vm.vehicles = {
-          bunkers: Object.values(e.bunkers),
-          harvesters: Object.values(e.harvesters),
-          tractors: Object.values(e.tractors),
-          transporters: Object.values(e.transporters)
-        };
-      });
+                /**
+                 *  выбрать из полученных сотрудников активного по id, переданному в урл
+                 */
+                if (!updateUrl) return;
+                var id = parseInt((0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.getPropFromUrl)("id"));
+                if (!id) return;
+                var mayBeItem = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.employees).filter(function (i) {
+                  return i.id === id;
+                }).pop();
+                vm.editedEmployee = mayBeItem ? mayBeItem : vm.editedEmployee;
+                if (vm.editedEmployee.hasOwnProperty("id")) {
+                  return;
+                }
+                vm.$nextTick(function () {
+                  vm.mode = "list";
+                });
+              });
+            case 4:
+              _context.next = 6;
+              return vm.getVehicles().then(function (e) {
+                vm.vehicles = {
+                  bunkers: Object.values(e.bunkers),
+                  harvesters: Object.values(e.harvesters),
+                  tractors: Object.values(e.tractors),
+                  transporters: Object.values(e.transporters)
+                };
+              });
+            case 6:
+            case "end":
+              return _context.stop();
+          }
+        }, _callee);
+      }))();
     }
   }
 };
@@ -26510,6 +26539,15 @@ var task = {
   },
   computed: {
     /**
+     * Список бункеров вместе с сотрудниками, назначенными для них
+     *
+     * @returns {Array}
+     */
+    bunkers: function bunkers() {
+      var vm = this;
+      return vm.getVehiclesByType("bunkers");
+    },
+    /**
      * Возвращает отфильтрованный в зависимости от типа выбранной техники массив сотрудников
      *
      * @returns {Array<Object>}
@@ -26526,17 +26564,8 @@ var task = {
      * @returns {Array}
      */
     harvesters: function harvesters() {
-      var _this$vehicles;
       var vm = this;
-      var items = (_this$vehicles = this.vehicles) === null || _this$vehicles === void 0 ? void 0 : _this$vehicles.harvesters;
-      if (!items) {
-        return [];
-      }
-      items = items.map(function (h) {
-        h["employees"] = vm.vehiclesEmployeesDeps[h.id] ? Array.from(vm.vehiclesEmployeesDeps[h.id]) : [];
-        return h;
-      });
-      return items;
+      return vm.getVehiclesByType("harvesters");
     },
     /**
      * Список грузовозов вместе с сотрудниками, назначенными для них
@@ -26544,17 +26573,8 @@ var task = {
      * @returns {Array}
      */
     transporters: function transporters() {
-      var _this$vehicles2;
       var vm = this;
-      var items = (_this$vehicles2 = this.vehicles) === null || _this$vehicles2 === void 0 ? void 0 : _this$vehicles2.transporters;
-      if (!items) {
-        return [];
-      }
-      items = items.map(function (h) {
-        h["employees"] = vm.vehiclesEmployeesDeps[h.id] ? Array.from(vm.vehiclesEmployeesDeps[h.id]) : [];
-        return h;
-      });
-      return items;
+      return vm.getVehiclesByType("transporters");
     },
     /**
      * Соответствие типа техники и профессии механизатора, который может на ней работать
@@ -26608,15 +26628,19 @@ var task = {
        */
       mounted: false,
       /**
-       *
+       * Строка поиска
+       */
+      searchString: "",
+      /**
+       * массив сменных заданий
        */
       tasks: [],
       /**
-       *
+       * Выбранная дата сменного задания
        */
       taskDate: null,
       /**
-       *
+       * выбранное для редактирование сменное задание
        */
       taskSelected: {},
       /**
@@ -26699,6 +26723,14 @@ var task = {
     }))();
   },
   methods: {
+    /**
+     * Добавляет хэндлер при событии updateList
+     * Обновляет массив сменных заданий и удаляет event listener
+     *
+     * @param {Boolean} closeModal скрывать ли модальное окно при обновлении
+     *
+     * @returns {Void}
+     */
     addUpdateTasksListener: function addUpdateTasksListener() {
       var closeModal = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
       var vm = this;
@@ -26727,6 +26759,7 @@ var task = {
       });
     },
     /**
+     * Проверяет данное сменное задание на коллизии по времени
      *
      * @param {Object} data
      * @returns {Promise}
@@ -26807,7 +26840,28 @@ var task = {
      * @param {String} data
      */
     execSearch: function execSearch(data) {
-      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)("execSearch", data);
+      this.searchString = data.search;
+    },
+    /**
+     * Фильтрует технику по названию из строки поиска
+     *
+     * @returns {Array}
+     */
+    filterVehicles: function filterVehicles(vehicles) {
+      var _vm$searchString;
+      var vm = this;
+      if (!vm.searchString || ((_vm$searchString = vm.searchString) === null || _vm$searchString === void 0 ? void 0 : _vm$searchString.length) < 3) {
+        return vehicles;
+      }
+      var mayBevehicles = {};
+      var totalLength = 0;
+      for (var vehicleType in vehicles) {
+        mayBevehicles[vehicleType] = vehicles[vehicleType].filter(function (v) {
+          return v.name.toLowerCase().indexOf(vm.searchString.toLowerCase()) >= 0;
+        });
+        totalLength += mayBevehicles[vehicleType].length;
+      }
+      return totalLength ? mayBevehicles : vehicles;
     },
     /**
      * Возвращает отфильтрованный в зависимости от типа выбранной техники массив сотрудников
@@ -26830,6 +26884,26 @@ var task = {
       return employees;
     },
     /**
+     * Выбирает из массива техники заданний тип
+     * добавляет рабочих, назначенных на технику
+     *
+     * @param {Enum} type transporter | harvester | tractor | bunker
+     */
+    getVehiclesByType: function getVehiclesByType(type) {
+      var vm = this;
+      var items = vm.filterVehicles(vm.vehicles);
+      items = items[type];
+      if (!items) {
+        return [];
+      }
+      items = items.map(function (h) {
+        var employees = vm.vehiclesEmployeesDeps[h.id] ? Array.from(vm.vehiclesEmployeesDeps[h.id]) : [];
+        h["employees"] = employees;
+        return h;
+      });
+      return items;
+    },
+    /**
      * Проверка возможности и редактирование существующего сменного задания
      *
      * @param {Object} task
@@ -26845,7 +26919,7 @@ var task = {
           vm.messages[response.data.type] = response.data.message;
           return;
         }
-        vm.addUpdateTasksListener();
+        vm.addUpdateTasksListener(true);
         vm.patchTaskRequest(task);
       });
     },
@@ -26921,20 +26995,15 @@ var task = {
      * @param {Object} data
      */
     setTask: function setTask(data) {
-      var _vm$taskSelected, _vm$taskSelected2;
+      var _vm$taskSelected;
       var vm = this;
-      console.groupCollapsed("%c setTask", "font-weight: 900");
-      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)(data);
-      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)(vm.mayBeTask);
-      (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)((_vm$taskSelected = vm.taskSelected) === null || _vm$taskSelected === void 0 ? void 0 : _vm$taskSelected.id);
-      console.groupEnd("/setTask");
       var sendData = {
         vehicle_id: vm.mayBeTask.vehicle.id,
         employee_id: vm.mayBeTask.employee.id,
         start: data.start,
         end: data.end
       };
-      if ((_vm$taskSelected2 = vm.taskSelected) !== null && _vm$taskSelected2 !== void 0 && _vm$taskSelected2.id) {
+      if ((_vm$taskSelected = vm.taskSelected) !== null && _vm$taskSelected !== void 0 && _vm$taskSelected.id) {
         sendData.id = vm.taskSelected.id;
         vm.patchTask(sendData);
       } else {
@@ -26945,13 +27014,13 @@ var task = {
      * проверка на валидность запроса и сохранения
      * нового сменного задания
      *
-     * @param {Object} taskData
+     * @param {Object} task_data
      *
      * @returns {Void}
      */
-    storeTask: function storeTask(taskData) {
+    storeTask: function storeTask(task_data) {
       var vm = this;
-      vm.checkTask(taskData).then(function (response) {
+      vm.checkTask(task_data).then(function (response) {
         if (response.status !== 200) {
           return;
         }
@@ -26962,9 +27031,9 @@ var task = {
         var task = {
           vehicle_id: vm.mayBeTask.vehicle.id,
           employee_id: vm.mayBeTask.employee.id,
-          start: taskData.start,
-          end: taskData.end,
-          comment: taskData.comment
+          start: task_data.start,
+          end: task_data.end,
+          comment: task_data.comment
         };
         vm.addUpdateTasksListener(true);
         vm.runStoreTaskRequest(task);
@@ -27168,7 +27237,14 @@ var appPublicUsers = {
   },
   mounted: function mounted() {
     var vm = this;
-    vm.updateData(true);
+    vm.updateData(true).then(function () {
+      var mayBeUser = Object.values((0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.users)).shift();
+      if (mayBeUser && !window.search) {
+        vm.$nextTick(function () {
+          vm.viewUser(mayBeUser);
+        });
+      }
+    });
     document.addEventListener("updateList", function () {
       vm.updateData();
     });
@@ -27263,7 +27339,7 @@ var appPublicUsers = {
       };
       vm.deleteEntity(postData, "/users/delete");
     },
-    editUser: function editUser(user) {
+    viewUser: function viewUser(user) {
       var vm = this;
       vm.mode = "details";
       vm.editPassword = false;
@@ -27355,7 +27431,8 @@ var appPublicUsers = {
             case 0:
               updateUrl = _arguments.length > 0 && _arguments[0] !== undefined ? _arguments[0] : false;
               vm = _this; // обновление данных о пользователях и их ролях
-              vm.getUsers().then(function (e) {
+              _context.next = 4;
+              return vm.getUsers().then(function (e) {
                 vm.users = e.data.users;
                 vm.roles = e.data.roles;
 
@@ -27377,7 +27454,7 @@ var appPublicUsers = {
                   });
                 }
               });
-            case 3:
+            case 4:
             case "end":
               return _context.stop();
           }
@@ -27732,7 +27809,14 @@ var appPublicVehicles = {
   mounted: function mounted() {
     var vm = this;
     vm.vehicleType = vm.$refs.vehicleType.value;
-    vm.updateData(true);
+    vm.updateData(true).then(function () {
+      var mayBeVehicle = Object.values((0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.vehicles["".concat(vm.vehicleType, "s")])).shift();
+      if (mayBeVehicle && !window.search) {
+        vm.$nextTick(function () {
+          vm.viewVehicle(mayBeVehicle);
+        });
+      }
+    });
 
     /**
      * добавление события обновления списков сотрудников и техники при их изменении
@@ -28132,35 +28216,47 @@ var appPublicVehicles = {
      * @returns {Void}
      */
     updateData: function updateData() {
-      var updateUrl = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
-      var vm = this;
-      /**
-       * получение списка сотрудников
-       */
-      vm.getEmployees().then(function (e) {
-        vm.employees = e.employees;
-      });
-
-      /**
-       * Получение списка техники
-       */
-      vm.getVehicles().then(function (vehicles) {
-        vm.vehicles = vehicles;
-        if (!updateUrl) return;
-        var id = parseInt((0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.getPropFromUrl)("id"));
-        if (!id) return;
-        var mayBeItem = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.vehiclesCurrent).filter(function (i) {
-          return i.id === id;
-        }).pop();
-        var item = mayBeItem ? mayBeItem : vm.editedVehicle;
-        vm.viewVehiclePrepare(item);
-        if (vm.editedVehicle.hasOwnProperty("id")) {
-          return;
-        }
-        vm.$nextTick(function () {
-          vm.mode = "list";
-        });
-      });
+      var _arguments = arguments,
+        _this5 = this;
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
+        var updateUrl, vm;
+        return _regeneratorRuntime().wrap(function _callee5$(_context5) {
+          while (1) switch (_context5.prev = _context5.next) {
+            case 0:
+              updateUrl = _arguments.length > 0 && _arguments[0] !== undefined ? _arguments[0] : false;
+              vm = _this5;
+              /**
+               * Получение списка техники
+               */
+              _context5.next = 4;
+              return vm.getVehicles().then(function (vehicles) {
+                vm.vehicles = vehicles;
+                if (!updateUrl) return;
+                var id = parseInt((0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.getPropFromUrl)("id"));
+                if (!id) return;
+                var mayBeItem = (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.vehiclesCurrent).filter(function (i) {
+                  return i.id === id;
+                }).pop();
+                var item = mayBeItem ? mayBeItem : vm.editedVehicle;
+                vm.viewVehiclePrepare(item);
+                if (vm.editedVehicle.hasOwnProperty("id")) {
+                  return;
+                }
+                vm.$nextTick(function () {
+                  vm.mode = "list";
+                });
+              });
+            case 4:
+              _context5.next = 6;
+              return vm.getEmployees().then(function (e) {
+                vm.employees = e.employees;
+              });
+            case 6:
+            case "end":
+              return _context5.stop();
+          }
+        }, _callee5);
+      }))();
     }
   }
 };
@@ -28473,7 +28569,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "@charset \"UTF-8\";\n.row[data-v-674a5734] {\n  --bs-gutter-x: 0;\n  --bs-gutter-н: 0;\n}\n.month-picker[data-v-674a5734] {\n  position: relative;\n}\n.month-picker__dropdown[data-v-674a5734] {\n  padding: 0.5rem;\n  background-color: var(--lightest);\n  border: 1px solid var(--grey-light);\n  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);\n  position: absolute;\n  top: 100%;\n  right: 0;\n  width: -moz-fit-content;\n  width: fit-content;\n  border-radius: var(--brs);\n  max-width: 360px;\n}\n.month-picker__dropdown button[data-v-674a5734] {\n  background-color: #fff;\n  border: 1px solid transparent;\n}\n.month-picker__dropdown button.selected[data-v-674a5734] {\n  border: 1px solid var(--green);\n}\n.month-picker__dropdown button[data-v-674a5734]:hover {\n  background-color: var(--grey-light);\n}", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "@charset \"UTF-8\";\n.row[data-v-674a5734] {\n  --bs-gutter-x: 0;\n  --bs-gutter-н: 0;\n}\n.month-picker[data-v-674a5734] {\n  position: relative;\n}\n.month-picker__dropdown[data-v-674a5734] {\n  padding: 0.5rem;\n  background-color: var(--lightest);\n  border: 1px solid var(--grey-light);\n  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);\n  position: absolute;\n  top: 100%;\n  right: 0;\n  width: -moz-fit-content;\n  width: fit-content;\n  border-radius: var(--brs);\n  max-width: 360px;\n  z-index: 100;\n}\n.month-picker__dropdown button[data-v-674a5734] {\n  background-color: #fff;\n  border: 1px solid transparent;\n}\n.month-picker__dropdown button.selected[data-v-674a5734] {\n  border: 1px solid var(--green);\n}\n.month-picker__dropdown button[data-v-674a5734]:hover {\n  background-color: var(--grey-light);\n}", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 

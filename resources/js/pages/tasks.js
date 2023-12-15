@@ -55,6 +55,16 @@ const task = {
 
     computed: {
         /**
+         * Список бункеров вместе с сотрудниками, назначенными для них
+         *
+         * @returns {Array}
+         */
+        bunkers() {
+            const vm = this;
+            return vm.getVehiclesByType("bunkers");
+        },
+
+        /**
          * Возвращает отфильтрованный в зависимости от типа выбранной техники массив сотрудников
          *
          * @returns {Array<Object>}
@@ -75,19 +85,7 @@ const task = {
          */
         harvesters() {
             const vm = this;
-            let items = this.vehicles?.harvesters;
-
-            if (!items) {
-                return [];
-            }
-
-            items = items.map((h) => {
-                h["employees"] = vm.vehiclesEmployeesDeps[h.id]
-                    ? Array.from(vm.vehiclesEmployeesDeps[h.id])
-                    : [];
-                return h;
-            });
-            return items;
+            return vm.getVehiclesByType("harvesters");
         },
 
         /**
@@ -97,20 +95,7 @@ const task = {
          */
         transporters() {
             const vm = this;
-            let items = this.vehicles?.transporters;
-
-            if (!items) {
-                return [];
-            }
-
-            items = items.map((h) => {
-                h["employees"] = vm.vehiclesEmployeesDeps[h.id]
-                    ? Array.from(vm.vehiclesEmployeesDeps[h.id])
-                    : [];
-                return h;
-            });
-
-            return items;
+            return vm.getVehiclesByType("transporters");
         },
 
         /**
@@ -172,17 +157,22 @@ const task = {
             mounted: false,
 
             /**
-             *
+             * Строка поиска
+             */
+            searchString: "",
+
+            /**
+             * массив сменных заданий
              */
             tasks: [],
 
             /**
-             *
+             * Выбранная дата сменного задания
              */
             taskDate: null,
 
             /**
-             *
+             * выбранное для редактирование сменное задание
              */
             taskSelected: {},
 
@@ -267,6 +257,14 @@ const task = {
     },
 
     methods: {
+        /**
+         * Добавляет хэндлер при событии updateList
+         * Обновляет массив сменных заданий и удаляет event listener
+         *
+         * @param {Boolean} closeModal скрывать ли модальное окно при обновлении
+         *
+         * @returns {Void}
+         */
         addUpdateTasksListener(closeModal = false) {
             const vm = this;
             const updateTasks = () => {
@@ -299,6 +297,7 @@ const task = {
         },
 
         /**
+         * Проверяет данное сменное задание на коллизии по времени
          *
          * @param {Object} data
          * @returns {Promise}
@@ -366,7 +365,38 @@ const task = {
          * @param {String} data
          */
         execSearch(data) {
-            clog("execSearch", data);
+            this.searchString = data.search;
+        },
+
+        /**
+         * Фильтрует технику по названию из строки поиска
+         *
+         * @returns {Array}
+         */
+        filterVehicles(vehicles) {
+            const vm = this;
+            if (!vm.searchString || vm.searchString?.length < 3) {
+                return vehicles;
+            }
+
+            let mayBevehicles = {};
+            let totalLength = 0;
+
+            for (const vehicleType in vehicles) {
+                mayBevehicles[vehicleType] = vehicles[vehicleType].filter(
+                    (v) => {
+                        return (
+                            v.name
+                                .toLowerCase()
+                                .indexOf(vm.searchString.toLowerCase()) >= 0
+                        );
+                    }
+                );
+
+                totalLength += mayBevehicles[vehicleType].length;
+            }
+
+            return totalLength ? mayBevehicles : vehicles;
         },
 
         /**
@@ -395,6 +425,33 @@ const task = {
         },
 
         /**
+         * Выбирает из массива техники заданний тип
+         * добавляет рабочих, назначенных на технику
+         *
+         * @param {Enum} type transporter | harvester | tractor | bunker
+         */
+        getVehiclesByType(type) {
+            const vm = this;
+            let items = vm.filterVehicles(vm.vehicles);
+            items = items[type];
+
+            if (!items) {
+                return [];
+            }
+
+            items = items.map((h) => {
+                const employees = vm.vehiclesEmployeesDeps[h.id]
+                    ? Array.from(vm.vehiclesEmployeesDeps[h.id])
+                    : [];
+
+                h["employees"] = employees;
+                return h;
+            });
+
+            return items;
+        },
+
+        /**
          * Проверка возможности и редактирование существующего сменного задания
          *
          * @param {Object} task
@@ -412,7 +469,7 @@ const task = {
                     return;
                 }
 
-                vm.addUpdateTasksListener();
+                vm.addUpdateTasksListener(true);
                 vm.patchTaskRequest(task);
             });
         },
@@ -491,11 +548,6 @@ const task = {
          */
         setTask(data) {
             const vm = this;
-            console.groupCollapsed("%c setTask", "font-weight: 900");
-            clog(data);
-            clog(vm.mayBeTask);
-            clog(vm.taskSelected?.id);
-            console.groupEnd("/setTask");
 
             let sendData = {
                 vehicle_id: vm.mayBeTask.vehicle.id,
@@ -516,13 +568,14 @@ const task = {
          * проверка на валидность запроса и сохранения
          * нового сменного задания
          *
-         * @param {Object} taskData
+         * @param {Object} task_data
          *
          * @returns {Void}
          */
-        storeTask(taskData) {
+        storeTask(task_data) {
             const vm = this;
-            vm.checkTask(taskData).then((response) => {
+
+            vm.checkTask(task_data).then((response) => {
                 if (response.status !== 200) {
                     return;
                 }
@@ -535,9 +588,9 @@ const task = {
                 const task = {
                     vehicle_id: vm.mayBeTask.vehicle.id,
                     employee_id: vm.mayBeTask.employee.id,
-                    start: taskData.start,
-                    end: taskData.end,
-                    comment: taskData.comment,
+                    start: task_data.start,
+                    end: task_data.end,
+                    comment: task_data.comment,
                 };
 
                 vm.addUpdateTasksListener(true);

@@ -123,7 +123,7 @@ export default {
          *
          * @returns {Object<Object>}
          */
-        editUserFormStructure() {
+        viewUserFormStructure() {
             const vm = this;
             let structure = [
                 {

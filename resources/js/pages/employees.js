@@ -202,7 +202,15 @@ const appPublicEmployees = {
 
     mounted() {
         const vm = this;
-        vm.updateData(true);
+        vm.updateData(true).then(() => {
+            const mayBeEmployee = Object.values(strip(vm.employees)).shift();
+
+            if (mayBeEmployee && !window.search) {
+                vm.$nextTick(() => {
+                    vm.viewEmployee(mayBeEmployee);
+                });
+            }
+        });
 
         document.addEventListener("updateList", () => {
             vm.updateData();
@@ -325,7 +333,7 @@ const appPublicEmployees = {
          *
          * @returns {Void}
          */
-        showEmployeeDetails(person) {
+        viewEmployee(person) {
             const vm = this;
             vm.mode = "details";
             vm.editedEmployee = strip(person);
@@ -388,11 +396,11 @@ const appPublicEmployees = {
          *
          * @returns {Void}
          */
-        updateData(updateUrl = false) {
+        async updateData(updateUrl = false) {
             const vm = this;
 
             // обновление данных о сотрудниках
-            vm.getEmployees().then((e) => {
+            await vm.getEmployees().then((e) => {
                 vm.employees = e.employees;
 
                 /**
@@ -419,7 +427,7 @@ const appPublicEmployees = {
             });
 
             // обновление данных о технике
-            vm.getVehicles().then((e) => {
+            await vm.getVehicles().then((e) => {
                 vm.vehicles = {
                     bunkers: Object.values(e.bunkers),
                     harvesters: Object.values(e.harvesters),

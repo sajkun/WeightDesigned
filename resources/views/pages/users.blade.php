@@ -26,7 +26,7 @@
                                 <th>ФИО</th>
                                 <th>Роль</th>
                             </tr>
-                            <tr v-for='user, key in users' :key='"user" + key' @click='editUser(user)'>
+                            <tr v-for='user, key in users' :key='"user" + key' @click='viewUser(user)'>
                                 <td>@{{ key + 1 }}</td>
                                 <td title='Логин'>@{{ user.login }}</td>
                                 <td title='ФИО'>@{{ formatName(user.last_name, user.first_name, user.middle_name) }}</td>

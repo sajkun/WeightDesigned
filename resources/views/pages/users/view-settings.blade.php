@@ -1,7 +1,7 @@
 @can('update', [App\Models\User::class, $organisation_id])
     <div class="p-2" v-if='activeTab=== "settings"'>
 
-        <the-form ref='editUserForm' @exec-submit='patchUser' @cancel-form='mode="list"' :_structure='editUserFormStructure'
+        <the-form ref='viewUserForm' @exec-submit='patchUser' @cancel-form='mode="list"' :_structure='viewUserFormStructure'
             v-if='!editPassword'>
             <button class="btn btn-link" type='button' @click='showChangePassword'>Редактировать пароль</button>
         </the-form>

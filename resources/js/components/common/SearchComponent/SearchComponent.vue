@@ -5,7 +5,7 @@
             <input
                 type="search"
                 class="no-style"
-                placeholder="Илья муромец"
+                placeholder="Техника"
                 v-model="value"
             />
             <button class="btn p-0" type="submit">

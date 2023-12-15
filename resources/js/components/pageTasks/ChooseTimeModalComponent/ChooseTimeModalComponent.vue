@@ -273,7 +273,14 @@ export default {
             const dateString = date.format("YYYY-MM-DD");
             const timeZone = date.format("ZZ");
             const start = `${dateString}T${data.start}:00${timeZone}`;
-            const end = `${dateString}T${data.end}:00${timeZone}`;
+            let end = `${dateString}T${data.end}:00${timeZone}`;
+
+            if (moment(start) > moment(end)) {
+                end = moment(end)
+                    .add(1, "days")
+                    .format("YYYY-MM-DDTHH:mm:ssZZ");
+            }
+
             vm.$emit("submited", { start, end, comment: data.comment });
         },
 

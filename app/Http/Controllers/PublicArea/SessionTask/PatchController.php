@@ -31,6 +31,7 @@ class PatchController extends PublicController
             if (!$new_task) {
                 throw new \ErrorException('Редактируемое сменное задание не найдено', 404);
             }
+
             $new_task_data['start'] = new \DateTime($new_task_data['start']);
             $new_task_data['end'] = new \DateTime($new_task_data['end']);
 

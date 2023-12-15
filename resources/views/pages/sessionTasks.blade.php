@@ -56,6 +56,17 @@
                     <div class="task-container__body">
                         <div class="row m-0">
                             <div class="col-3 px-0 border-right border-bottom">
+                                <h4 class="h6 px-2 mt-2">Бункер перегрузчики</h4>
+                            </div>
+                        </div>
+                        <div></div>
+                        <item v-for='item, key in bunkers' :key='"harv" + key' :_info='item'
+                            :_date-range='dateRange.display' :_tasks='tasks'
+                            v-on:add-employee-request='showEmployeesModal' v-on:choose-time-request='showChooseTimeModal'
+                            :class='"m-0"' :_employees-available='getEmployeesByPoffesion(item)'>
+                        </item>
+                        <div class="row m-0">
+                            <div class="col-3 px-0 border-right border-bottom">
                                 <h4 class="h6 px-2 mt-2">Комбайны</h4>
                             </div>
                         </div>
