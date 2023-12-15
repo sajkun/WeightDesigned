@@ -24771,7 +24771,7 @@ var appPublicEmployees = {
     var vm = this;
     vm.updateData(true).then(function () {
       var mayBeEmployee = Object.values((0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.employees)).shift();
-      if (mayBeEmployee && !window.search) {
+      if (mayBeEmployee && !location.search) {
         vm.$nextTick(function () {
           vm.viewEmployee(mayBeEmployee);
         });
@@ -27239,7 +27239,7 @@ var appPublicUsers = {
     var vm = this;
     vm.updateData(true).then(function () {
       var mayBeUser = Object.values((0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.users)).shift();
-      if (mayBeUser && !window.search) {
+      if (mayBeUser && !location.search) {
         vm.$nextTick(function () {
           vm.viewUser(mayBeUser);
         });
@@ -27809,9 +27809,10 @@ var appPublicVehicles = {
   mounted: function mounted() {
     var vm = this;
     vm.vehicleType = vm.$refs.vehicleType.value;
+    (0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.clog)(window);
     vm.updateData(true).then(function () {
       var mayBeVehicle = Object.values((0,_misc_helpers__WEBPACK_IMPORTED_MODULE_0__.strip)(vm.vehicles["".concat(vm.vehicleType, "s")])).shift();
-      if (mayBeVehicle && !window.search) {
+      if (mayBeVehicle && !location.search) {
         vm.$nextTick(function () {
           vm.viewVehicle(mayBeVehicle);
         });
